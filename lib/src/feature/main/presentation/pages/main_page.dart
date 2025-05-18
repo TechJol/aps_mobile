@@ -23,9 +23,10 @@ class MainScreen extends StatelessWidget {
     return Scaffold(
       body: items[context.watch<MainCubit>().state],
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: BottomNavigationBar(
-          elevation: 0,
+          elevation: 1,
+          backgroundColor: AppColors.whiteColor,
           selectedItemColor: AppColors.buttonColor,
           unselectedItemColor: AppColors.blackColor,
           selectedLabelStyle: const TextStyle(height: 2),
