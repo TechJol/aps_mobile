@@ -30,7 +30,7 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Column(
           children: [
             30.h,
@@ -49,11 +49,14 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
                 OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    fixedSize: const Size(double.infinity, 48),
+                  ),
                   onPressed: () {},
                   child: Row(
                     children: [
                       Text(
-                        'Пополнить',
+                        'Добавить счет',
                         style: AppTextStyles.f16w500.copyWith(
                           color: AppColors.blackColor,
                         ),
