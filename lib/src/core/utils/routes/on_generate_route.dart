@@ -10,6 +10,9 @@ class RouteGenerator {
     // final args = (arguments is Map<String, dynamic>) ? arguments : {};
 
     switch (route) {
+      case AppRoutes.main:
+        return CupertinoPageRoute(builder: (_) => MainView());
+
       case AppRoutes.home:
         return CupertinoPageRoute(builder: (_) => HomePage());
 

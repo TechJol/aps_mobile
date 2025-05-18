@@ -1,6 +1,6 @@
 class AppRoutes {
   /// The Initial Page
-  static const main = 'main';
+  static const main = '/';
   static const onboarding = 'onboarding';
 
   /* <---- Login, Signup -----> */
@@ -10,5 +10,5 @@ class AppRoutes {
   static const otpCode = 'otpCode';
 
   /*  <---- Home -----> */
-  static const home = '/';
+  static const home = 'home';
 }
