@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget {
@@ -9,8 +10,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Aps Mobile',
       theme: ThemeData(
+        useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
+      onGenerateRoute: RouteGenerator.onGenerate,
+      initialRoute: '/',
     );
   }
 }
