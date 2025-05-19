@@ -9,7 +9,7 @@ class PassSuccessPage extends StatefulWidget {
 }
 
 class _PassSuccessPageState extends State<PassSuccessPage> {
-  String email = "example@gmail.com"; // Replace with actual user email
+  String email = "example@gmail.com"; // TODO: Replace with actual user email
   List<String> otpDigits = List.filled(4, '');
   late final List<FocusNode> focusNodes;
 
@@ -40,7 +40,7 @@ class _PassSuccessPageState extends State<PassSuccessPage> {
     });
 
     _timer?.cancel();
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_secondsRemaining > 0) {
         setState(() => _secondsRemaining--);
       } else {
@@ -51,7 +51,7 @@ class _PassSuccessPageState extends State<PassSuccessPage> {
   }
 
   void _resendCode() {
-    // Resend OTP logic here
+    // TODO: Add actual resend OTP logic here
     _startCountdown();
   }
 
@@ -70,21 +70,21 @@ class _PassSuccessPageState extends State<PassSuccessPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 200),
+            const SizedBox(height: 200),
 
-            // Centered Image
+            // Centered Success Image
             Center(
               child: Image.asset(
-                'assets/icons/success_check.png', // Make sure to add this image in pubspec.yaml
+                'assets/icons/success_check.png', // Ensure this asset is declared in pubspec.yaml
                 width: 98,
                 height: 98,
               ),
             ),
 
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-            // Centered Text
-            Center(
+            // Success message text
+            const Center(
               child: Text(
                 "Вы успешно изменили пароль!",
                 textAlign: TextAlign.center,
@@ -96,26 +96,29 @@ class _PassSuccessPageState extends State<PassSuccessPage> {
               ),
             ),
 
-            SizedBox(height: 32),
+            const SizedBox(height: 32),
 
-            // Button with side padding
+            // Button with horizontal padding
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
+                    // Navigate to home page after password reset success
                     Navigator.pushNamed(context, '/home');
+                    // Or to new password page if needed:
+                    // Navigator.pushNamed(context, '/new-password');
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF661EFB),
-                    disabledBackgroundColor: Color(0xFFC7C8FF),
-                    padding: EdgeInsets.symmetric(vertical: 15),
+                    backgroundColor: const Color(0xFF661EFB),
+                    disabledBackgroundColor: const Color(0xFFC7C8FF),
+                    padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     "Вернуться на главную",
                     style: TextStyle(
                       fontFamily: 'Inter',

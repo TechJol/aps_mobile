@@ -8,57 +8,62 @@ class NewPassPage extends StatefulWidget {
 }
 
 class _NewPassPageState extends State<NewPassPage> {
-  bool isLoginSelected = true;
+  bool isLoginSelected = true; // If you plan to add registration tab here
   bool isFormValid = false;
-  bool isLoginFormValid = false;
 
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
-  final FocusNode usernameFocus = FocusNode();
-  final FocusNode passwordFocus = FocusNode();
+  final FocusNode newPasswordFocus = FocusNode();
+  final FocusNode confirmPasswordFocus = FocusNode();
 
-  bool usernameTouched = false;
-  bool passwordTouched = false;
+  bool newPasswordTouched = false;
+  bool confirmPasswordTouched = false;
+
+  bool obscureNewPassword = true;
+  bool obscureConfirmPassword = true;
 
   @override
   void initState() {
     super.initState();
-    usernameController.addListener(_validateForm);
-    passwordController.addListener(_validateForm);
+    newPasswordController.addListener(_validateForm);
+    confirmPasswordController.addListener(_validateForm);
 
-    usernameFocus.addListener(() {
-      if (!usernameFocus.hasFocus) {
+    newPasswordFocus.addListener(() {
+      if (!newPasswordFocus.hasFocus) {
         setState(() {
-          usernameTouched = true;
+          newPasswordTouched = true;
         });
       }
     });
 
-    passwordFocus.addListener(() {
-      if (!passwordFocus.hasFocus) {
+    confirmPasswordFocus.addListener(() {
+      if (!confirmPasswordFocus.hasFocus) {
         setState(() {
-          passwordTouched = true;
+          confirmPasswordTouched = true;
         });
       }
     });
   }
 
   void _validateForm() {
+    final newPass = newPasswordController.text.trim();
+    final confirmPass = confirmPasswordController.text.trim();
     setState(() {
-      isLoginFormValid =
-          usernameController.text.trim().isNotEmpty &&
-          passwordController.text.trim().isNotEmpty;
-      isFormValid = isLoginSelected ? isLoginFormValid : false;
+      isFormValid =
+          newPass.isNotEmpty &&
+          confirmPass.isNotEmpty &&
+          newPass == confirmPass;
     });
   }
 
   @override
   void dispose() {
-    usernameController.dispose();
-    passwordController.dispose();
-    usernameFocus.dispose();
-    passwordFocus.dispose();
+    newPasswordController.dispose();
+    confirmPasswordController.dispose();
+    newPasswordFocus.dispose();
+    confirmPasswordFocus.dispose();
     super.dispose();
   }
 
@@ -68,8 +73,52 @@ class _NewPassPageState extends State<NewPassPage> {
       borderSide: BorderSide(
         color:
             touched && text.trim().isNotEmpty
-                ? Color(0xFF661EFB)
+                ? const Color(0xFF661EFB)
                 : Colors.transparent,
+      ),
+    );
+  }
+
+  Widget _buildPasswordField({
+    required String hint,
+    required TextEditingController controller,
+    required FocusNode focusNode,
+    required bool obscureText,
+    required VoidCallback toggleObscure,
+    required bool touched,
+  }) {
+    return TextField(
+      controller: controller,
+      focusNode: focusNode,
+      obscureText: obscureText,
+      textInputAction:
+          focusNode == confirmPasswordFocus
+              ? TextInputAction.done
+              : TextInputAction.next,
+      onSubmitted: (_) {
+        if (focusNode == newPasswordFocus) {
+          FocusScope.of(context).requestFocus(confirmPasswordFocus);
+        }
+      },
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+        hintText: hint,
+        hintStyle: TextStyle(color: Colors.black.withOpacity(0.2)),
+        suffixIcon: IconButton(
+          icon: Icon(
+            obscureText ? Icons.visibility_off : Icons.visibility,
+            color: Colors.black.withOpacity(0.4),
+          ),
+          onPressed: toggleObscure,
+        ),
+        border: _getBorder(touched, controller.text),
+        enabledBorder: _getBorder(touched, controller.text),
+        focusedBorder: _getBorder(true, controller.text),
+        filled: true,
+        fillColor: Colors.grey.shade50,
       ),
     );
   }
@@ -77,27 +126,24 @@ class _NewPassPageState extends State<NewPassPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF3F00C0),
+      backgroundColor: const Color(0xFF3F00C0),
       body: Column(
         children: [
-          SizedBox(height: 65),
+          const SizedBox(height: 65),
           Padding(
-            padding: const EdgeInsets.only(top: 0.0),
+            padding: const EdgeInsets.only(left: 20.0),
             child: Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      size: 20,
-                      color: Colors.white,
-                    ),
-                    onPressed: () => Navigator.pop(context),
+                IconButton(
+                  icon: const Icon(
+                    Icons.arrow_back_ios,
+                    size: 20,
+                    color: Colors.white,
                   ),
+                  onPressed: () => Navigator.pop(context),
                 ),
-                SizedBox(width: 8),
-                Text(
+                const SizedBox(width: 8),
+                const Text(
                   "Забыли пароль",
                   style: TextStyle(
                     fontSize: 24,
@@ -109,173 +155,56 @@ class _NewPassPageState extends State<NewPassPage> {
               ],
             ),
           ),
-
-          SizedBox(height: 105),
+          const SizedBox(height: 105),
           Expanded(
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 20.0,
-              ),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
               ),
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        GestureDetector(
-                          onTap: () => setState(() => isLoginSelected = true),
-                          child: Container(
-                            color:
-                                Colors
-                                    .transparent, // Prevents inherited background
-                            child: Column(children: [SizedBox(height: 4)]),
-                          ),
+                  // Tab placeholders if needed:
+                  // You can add tab UI here if required
+                  _buildPasswordField(
+                    hint: 'Введите новый пароль',
+                    controller: newPasswordController,
+                    focusNode: newPasswordFocus,
+                    obscureText: obscureNewPassword,
+                    toggleObscure:
+                        () => setState(
+                          () => obscureNewPassword = !obscureNewPassword,
                         ),
-                        SizedBox(width: 15),
-                        // Регистрация
-                        GestureDetector(
-                          onTap: () async {
-                            setState(() => isLoginSelected = false);
-                            await Navigator.pushNamed(context, '/registration');
-                            // When coming back from registration, reset the tab to login
-                            setState(() => isLoginSelected = true);
-                          },
-                          child: Column(
-                            children: [
-                              SizedBox(height: 4),
-                              Container(
-                                height: 2,
-                                width: 120,
-                                color:
-                                    !isLoginSelected
-                                        ? const Color(0xFF661EFB)
-                                        : Colors.transparent,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                    touched: newPasswordTouched,
                   ),
-                  SizedBox(height: 25),
-
-                  // Username input
-                  TextField(
-                    controller: usernameController,
-                    focusNode: usernameFocus,
-                    obscureText: true,
-                    obscuringCharacter: '*', // default is •
-                    style: TextStyle(
-                      fontSize: 20, // larger text including asterisks
-                      letterSpacing: 0, // optional: space out the asterisks
-                    ),
-                    textInputAction: TextInputAction.next,
-                    onSubmitted:
-                        (_) =>
-                            FocusScope.of(context).requestFocus(passwordFocus),
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 10,
-                      ),
-                      hintText: 'Введите новый пароль',
-                      hintStyle: TextStyle(
-                        fontSize: 17,
-                        color: Colors.black.withOpacity(0.2),
-                      ),
-                      suffixIcon: Padding(
-                        padding: const EdgeInsets.only(right: 12),
-                        child: Image.asset(
-                          'assets/icons/eye.png', // Replace with your actual path
-                          width: 28,
-                          height: 28,
-                          color: Colors.black.withOpacity(0.3), // Optional tint
+                  const SizedBox(height: 25),
+                  _buildPasswordField(
+                    hint: 'Подтвердите пароль',
+                    controller: confirmPasswordController,
+                    focusNode: confirmPasswordFocus,
+                    obscureText: obscureConfirmPassword,
+                    toggleObscure:
+                        () => setState(
+                          () =>
+                              obscureConfirmPassword = !obscureConfirmPassword,
                         ),
-                      ),
-                      border: _getBorder(
-                        usernameTouched,
-                        usernameController.text,
-                      ),
-                      enabledBorder: _getBorder(
-                        usernameTouched,
-                        usernameController.text,
-                      ),
-                      focusedBorder: _getBorder(true, usernameController.text),
-                      filled: true,
-                      fillColor: Colors.grey.shade50,
-                    ),
+                    touched: confirmPasswordTouched,
                   ),
-
-                  SizedBox(height: 25),
-
-                  // Password input
-                  TextField(
-                    controller: passwordController,
-                    focusNode: passwordFocus,
-                    obscureText: true,
-                    obscuringCharacter: '*', // default is •
-                    style: TextStyle(
-                      fontSize: 20, // larger text including asterisks
-                      letterSpacing: 0, // optional: space out the asterisks
-                    ),
-                    textInputAction: TextInputAction.done,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 10,
-                      ),
-                      hintText: 'Подтвердите пароль',
-                      hintStyle: TextStyle(
-                        fontSize: 17,
-                        color: Colors.black.withOpacity(0.2),
-                      ),
-                      suffixIcon: Padding(
-                        padding: const EdgeInsets.only(right: 12),
-                        child: Image.asset(
-                          'assets/icons/eye.png', // Replace with your actual path
-                          width: 28,
-                          height: 28,
-                          color: Colors.black.withOpacity(0.3), // Optional tint
-                        ),
-                      ),
-                      border: _getBorder(
-                        passwordTouched,
-                        passwordController.text,
-                      ),
-                      enabledBorder: _getBorder(
-                        passwordTouched,
-                        passwordController.text,
-                      ),
-                      focusedBorder: _getBorder(true, passwordController.text),
-                      filled: true,
-                      fillColor: Colors.grey.shade50,
-                    ),
-                  ),
-
-                  SizedBox(height: 60),
-
-                  // Login button
+                  const SizedBox(height: 60),
                   ElevatedButton(
                     onPressed:
                         isFormValid
                             ? () {
                               Navigator.pushNamed(context, '/password-success');
                             }
-                            : null, // Disables button if form is not valid
+                            : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
                           isFormValid
-                              ? const Color(0xFF661EFB) // Normal purple
-                              : const Color(
-                                0xFFC7C8FF,
-                              ), // Desaturated lighter purple for "disabled" look
+                              ? const Color(0xFF661EFB)
+                              : const Color(0xFFC7C8FF),
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
@@ -290,6 +219,18 @@ class _NewPassPageState extends State<NewPassPage> {
                       ),
                     ),
                   ),
+                  if (!isFormValid &&
+                      (newPasswordTouched || confirmPasswordTouched))
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: Text(
+                        newPasswordController.text !=
+                                confirmPasswordController.text
+                            ? "Пароли не совпадают"
+                            : "Пожалуйста, заполните все поля",
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ),
                 ],
               ),
             ),
