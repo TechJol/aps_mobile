@@ -30,7 +30,8 @@ class _RegistrationState extends State<Registration> {
 
   void _validateForm() {
     setState(() {
-      isFormValid = firmController.text.trim().isNotEmpty &&
+      isFormValid =
+          firmController.text.trim().isNotEmpty &&
           usernameController.text.trim().isNotEmpty &&
           emailController.text.trim().isNotEmpty &&
           nameController.text.trim().isNotEmpty &&
@@ -52,9 +53,10 @@ class _RegistrationState extends State<Registration> {
   OutlineInputBorder getDynamicBorder(bool hasText) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(30),
-      borderSide: hasText
-          ? BorderSide(color: Color(0xFF661EFB), width: 1.5)
-          : BorderSide.none,
+      borderSide:
+          hasText
+              ? BorderSide(color: Color(0xFF661EFB), width: 1.5)
+              : BorderSide.none,
     );
   }
 
@@ -98,8 +100,10 @@ class _RegistrationState extends State<Registration> {
           Expanded(
             child: Container(
               width: double.infinity,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 20.0,
+              ),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
@@ -117,7 +121,9 @@ class _RegistrationState extends State<Registration> {
                           GestureDetector(
                             onTap: () {
                               Navigator.pop(
-                                  context, '/'); // Go back to LoginPage
+                                context,
+                                '/',
+                              ); // Go back to LoginPage
                             },
                             child: Column(
                               children: [
@@ -172,26 +178,30 @@ class _RegistrationState extends State<Registration> {
 
                     // Input fields
                     buildInputField(controller: firmController, hint: "Фирма"),
-                    SizedBox(height: 20),
+                    SizedBox(height: 24),
                     buildInputField(
-                        controller: usernameController,
-                        hint: "Пользовательское имя"),
-                    SizedBox(height: 20),
+                      controller: usernameController,
+                      hint: "Пользовательское имя",
+                    ),
+                    SizedBox(height: 24),
                     buildInputField(
-                        controller: emailController, hint: "Эл.адрес"),
-                    SizedBox(height: 20),
+                      controller: emailController,
+                      hint: "Эл.адрес",
+                    ),
+                    SizedBox(height: 24),
                     buildInputField(controller: nameController, hint: "Имя"),
-                    SizedBox(height: 20),
+                    SizedBox(height: 24),
                     buildInputField(
-                        controller: surnameController, hint: "Фамилия"),
-                    SizedBox(height: 20),
+                      controller: surnameController,
+                      hint: "Фамилия",
+                    ),
+                    SizedBox(height: 15),
 
                     // Checkbox for agreement
                     Row(
                       children: [
                         Transform.scale(
-                          scale:
-                              0.8, // You can adjust this value (e.g., 0.7, 0.6) to make it smaller
+                          scale: 0.8, // Adjust to control size
                           child: Checkbox(
                             value: isAgreementChecked,
                             onChanged: (value) {
@@ -200,10 +210,35 @@ class _RegistrationState extends State<Registration> {
                                 _validateForm(); // Re-validate form
                               });
                             },
-                            activeColor: Color(0xFF661EFB),
-                            //inactiveColor: Colors.grey,
+                            activeColor: Color(
+                              0xFF661EFB,
+                            ), // Purple fill when checked
+                            checkColor: Colors.white,
+                            fillColor: MaterialStateProperty.resolveWith<Color>(
+                              (states) {
+                                if (states.contains(MaterialState.selected)) {
+                                  return Color(
+                                    0xFF661EFB,
+                                  ); // Purple when checked
+                                }
+                                return Colors
+                                    .white; // White fill when unchecked
+                              },
+                            ),
+                            side: MaterialStateBorderSide.resolveWith((states) {
+                              if (states.contains(MaterialState.selected)) {
+                                return BorderSide(
+                                  color: Color(0xFF661EFB),
+                                  width: 2,
+                                );
+                              }
+                              return BorderSide(
+                                color: Colors.grey,
+                                width: 2,
+                              ); // Grey border when unchecked
+                            }),
                             visualDensity:
-                                VisualDensity.compact, // Makes spacing tighter
+                                VisualDensity.compact, // Tighter spacing
                           ),
                         ),
                         Expanded(
@@ -219,32 +254,37 @@ class _RegistrationState extends State<Registration> {
                       ],
                     ),
 
-                    SizedBox(height: 10),
+                    SizedBox(height: 50),
 
                     // Login button
-                    Opacity(
-                      opacity: isFormValid ? 1.0 : 0.2,
-                      child: ElevatedButton(
-                        onPressed: isFormValid
-                            ? () {
+                    ElevatedButton(
+                      onPressed:
+                          isFormValid
+                              ? () {
                                 Navigator.pushNamed(
-                                    context, '/language-selection');
+                                  context,
+                                  '/language-selection',
+                                );
                               }
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF661EFB),
-                          minimumSize: Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
+                              : null, // Disables button if form is not valid
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            isFormValid
+                                ? const Color(0xFF661EFB) // Normal purple
+                                : const Color(
+                                  0xFFC7C8FF,
+                                ), // Desaturated lighter purple for "disabled" look
+                        minimumSize: const Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                        child: Text(
-                          "Войти",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
+                      ),
+                      child: const Text(
+                        "Войти",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
                         ),
                       ),
                     ),
@@ -270,9 +310,7 @@ class _RegistrationState extends State<Registration> {
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         hintText: hint,
-        hintStyle: TextStyle(
-          color: Colors.black.withOpacity(0.3),
-        ),
+        hintStyle: TextStyle(color: Colors.black.withOpacity(0.3)),
         border: getDynamicBorder(hasText),
         enabledBorder: getDynamicBorder(hasText),
         focusedBorder: getDynamicBorder(hasText),
