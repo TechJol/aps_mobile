@@ -173,7 +173,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
               child: ElevatedButton(
                 onPressed:
                     otpDigits.every((d) => d.isNotEmpty)
-                        ? () => Navigator.pushNamed(context, '/home')
+                        ? () => Navigator.pushNamed(context, '/new-password')
                         : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF661EFB),
