@@ -90,12 +90,11 @@ class CardWidget extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              cardColor!.withOpacity(0.5), // Верх — прозрачнее
-              cardColor!.withOpacity(1.0), // Низ — насыщенный
+              cardColor!.withOpacity(0.5), // top - more transparent
+              cardColor!.withOpacity(1.0), // bottom - saturated
             ],
           ),
         ),
-<<<<<<< HEAD
         child: LayoutBuilder(
           builder: (context, constraints) {
             return Stack(
@@ -119,6 +118,7 @@ class CardWidget extends StatelessWidget {
                               'подробнее',
                               style: AppTextStyles.f16w500.copyWith(
                                 color: Colors.white,
+                                fontFamily: 'Inter',
                               ),
                             ),
                             SizedBox(width: 10),
@@ -129,68 +129,6 @@ class CardWidget extends StatelessWidget {
                             ),
                           ],
                         ),
-=======
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: onTap,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    'подробнее',
-                    style: AppTextStyles.f16w500.copyWith(
-                      color: Colors.white,
-                      fontFamily: 'Inter',
-                    ),
-                  ),
-                  10.w,
-                  Icon(Icons.arrow_forward_ios, size: 17, color: Colors.white),
-                ],
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      price,
-                      style: AppTextStyles.f34w600.copyWith(
-                        color: Colors.white,
-                        fontFamily: 'Inter',
-                      ),
-                    ),
-                    Text(
-                      office,
-                      style: AppTextStyles.f16w500.copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  width: 69,
-                  height: 31,
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryColor.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Center(
-                    child: Text(
-                      currency ?? 'KGZ',
-                      style: AppTextStyles.f16w500.copyWith(
-                        color: AppColors.whiteColor,
-                        fontFamily: 'Inter',
->>>>>>> 1fbc685 (inter fonts  added)
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -204,6 +142,7 @@ class CardWidget extends StatelessWidget {
                                 price,
                                 style: AppTextStyles.f34w600.copyWith(
                                   color: Colors.white,
+                                  fontFamily: 'Inter',
                                 ),
                               ),
                               Text(
@@ -218,7 +157,7 @@ class CardWidget extends StatelessWidget {
                             width: 69,
                             height: 31,
                             decoration: BoxDecoration(
-                              color: AppColors.whiteColor.withOpacity(0.1),
+                              color: AppColors.primaryColor.withOpacity(0.5),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Center(
@@ -226,6 +165,7 @@ class CardWidget extends StatelessWidget {
                                 currency ?? 'KGZ',
                                 style: AppTextStyles.f16w500.copyWith(
                                   color: AppColors.whiteColor,
+                                  fontFamily: 'Inter',
                                 ),
                               ),
                             ),
