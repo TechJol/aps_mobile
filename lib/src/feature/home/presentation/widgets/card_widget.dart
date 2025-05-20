@@ -157,7 +157,7 @@ class CardWidget extends StatelessWidget {
                             width: 69,
                             height: 31,
                             decoration: BoxDecoration(
-                              color: AppColors.primaryColor.withOpacity(0.5),
+                              color: AppColors.whiteColor.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Center(

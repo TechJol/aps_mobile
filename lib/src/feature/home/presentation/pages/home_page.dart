@@ -85,7 +85,7 @@ class HomePage extends StatelessWidget {
               },
               price: '40 512 c',
               office: 'Офис касса',
-              cardColor: AppColors.primary200Color,
+              cardColor: AppColors.redColor,
             ),
             SizedBox(height: 20),
             CardWidget(
