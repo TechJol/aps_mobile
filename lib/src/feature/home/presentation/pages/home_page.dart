@@ -1,6 +1,6 @@
-import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
+import 'package:aps_mobile/src/core/core.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -36,7 +36,7 @@ class HomePage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: Column(
           children: [
-            30.h,
+            SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -71,21 +71,23 @@ class HomePage extends StatelessWidget {
                           fontFamily: 'Inter',
                         ),
                       ),
-                      10.w,
+                      SizedBox(width: 10),
                       Icon(Icons.add, size: 20, color: AppColors.blackColor),
                     ],
                   ),
                 ),
               ],
             ),
-            30.h,
+            SizedBox(height: 30),
             CardWidget(
-              onTap: () {},
+              onTap: () {
+                // Действия при нажатии "подробнее"
+              },
               price: '40 512 c',
               office: 'Офис касса',
-              cardColor: AppColors.violetColor,
+              cardColor: AppColors.primary200Color,
             ),
-            20.h,
+            SizedBox(height: 20),
             CardWidget(
               onTap: () {},
               price: '56 000 c',
