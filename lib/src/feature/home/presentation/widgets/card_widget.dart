@@ -47,7 +47,10 @@ class CardWidget extends StatelessWidget {
                 children: [
                   Text(
                     'подробнее',
-                    style: AppTextStyles.f16w500.copyWith(color: Colors.white),
+                    style: AppTextStyles.f16w500.copyWith(
+                      color: Colors.white,
+                      fontFamily: 'Inter',
+                    ),
                   ),
                   10.w,
                   Icon(Icons.arrow_forward_ios, size: 17, color: Colors.white),
@@ -66,6 +69,7 @@ class CardWidget extends StatelessWidget {
                       price,
                       style: AppTextStyles.f34w600.copyWith(
                         color: Colors.white,
+                        fontFamily: 'Inter',
                       ),
                     ),
                     Text(
@@ -88,6 +92,7 @@ class CardWidget extends StatelessWidget {
                       currency ?? 'KGZ',
                       style: AppTextStyles.f16w500.copyWith(
                         color: AppColors.whiteColor,
+                        fontFamily: 'Inter',
                       ),
                     ),
                   ),
