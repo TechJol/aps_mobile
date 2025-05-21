@@ -16,6 +16,9 @@ class RouteGenerator {
       case AppRoutes.home:
         return CupertinoPageRoute(builder: (_) => HomePage());
 
+      case AppRoutes.account:
+        return CupertinoPageRoute(builder: (_) => AccountPage());
+
       case AppRoutes.addAccount:
         return CupertinoPageRoute(builder: (_) => AddAccountPage());
 
