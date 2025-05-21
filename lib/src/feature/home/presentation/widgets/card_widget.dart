@@ -118,7 +118,6 @@ class CardWidget extends StatelessWidget {
                               'подробнее',
                               style: AppTextStyles.f16w500.copyWith(
                                 color: Colors.white,
-                                fontFamily: 'Inter',
                               ),
                             ),
                             SizedBox(width: 10),
@@ -142,7 +141,6 @@ class CardWidget extends StatelessWidget {
                                 price,
                                 style: AppTextStyles.f34w600.copyWith(
                                   color: Colors.white,
-                                  fontFamily: 'Inter',
                                 ),
                               ),
                               Text(
@@ -165,7 +163,6 @@ class CardWidget extends StatelessWidget {
                                 currency ?? 'KGZ',
                                 style: AppTextStyles.f16w500.copyWith(
                                   color: AppColors.whiteColor,
-                                  fontFamily: 'Inter',
                                 ),
                               ),
                             ),
