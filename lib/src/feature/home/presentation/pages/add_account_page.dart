@@ -39,6 +39,34 @@ class AddAccountPage extends StatelessWidget {
           ),
         ),
       ),
+      body: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            height: 50,
+            decoration: BoxDecoration(
+              color: AppColors.backroundColor,
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              ),
+            ),
+          ),
+          30.h,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              children: [
+                TextFieldWithSuffix(label: 'Название'),
+                12.h,
+                TextFieldWithSuffix(label: 'Тип'),
+                12.h,
+                TextFieldWithSuffix(label: 'Валюта'),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
