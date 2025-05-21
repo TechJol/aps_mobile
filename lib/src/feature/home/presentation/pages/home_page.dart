@@ -62,7 +62,7 @@ class HomePage extends StatelessWidget {
                     fixedSize: const Size(double.infinity, 48),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.addAccount);
+                    Navigator.pushNamed(context, AppRoutes.account);
                   },
                   child: Row(
                     children: [
