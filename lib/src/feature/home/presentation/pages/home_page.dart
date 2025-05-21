@@ -61,7 +61,9 @@ class HomePage extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     fixedSize: const Size(double.infinity, 48),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoutes.addAccount);
+                  },
                   child: Row(
                     children: [
                       Text(
@@ -71,14 +73,14 @@ class HomePage extends StatelessWidget {
                           fontFamily: 'Inter',
                         ),
                       ),
-                      SizedBox(width: 10),
+                      10.w,
                       Icon(Icons.add, size: 20, color: AppColors.blackColor),
                     ],
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 30),
+            30.h,
             CardWidget(
               onTap: () {
                 // Действия при нажатии "подробнее"
@@ -87,7 +89,7 @@ class HomePage extends StatelessWidget {
               office: 'Офис касса',
               cardColor: AppColors.redColor,
             ),
-            SizedBox(height: 20),
+            20.h,
             CardWidget(
               onTap: () {},
               price: '56 000 c',
