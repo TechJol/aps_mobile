@@ -11,4 +11,5 @@ class AppRoutes {
 
   /*  <---- Home -----> */
   static const home = 'home';
+  static const addAccount = 'addAccount';
 }
