@@ -14,13 +14,19 @@ class _AddAccountPageState extends State<AddAccountPage> {
   final TextEditingController currencyController = TextEditingController();
 
   bool isFormValid = false;
+  String? selectedName;
+  String? selectedType;
+  String? selectedCurrency;
 
   void checkFormValidity() {
     setState(() {
       isFormValid =
           nameController.text.isNotEmpty &&
           typeController.text.isNotEmpty &&
-          currencyController.text.isNotEmpty;
+          selectedCurrency != null &&
+          selectedCurrency!.isNotEmpty;
+      selectedType != null && selectedType!.isNotEmpty;
+      selectedName != null && selectedName!.isNotEmpty;
     });
   }
 
@@ -29,16 +35,20 @@ class _AddAccountPageState extends State<AddAccountPage> {
     super.initState();
     nameController.addListener(checkFormValidity);
     typeController.addListener(checkFormValidity);
-    currencyController.addListener(checkFormValidity);
   }
 
   @override
   void dispose() {
     nameController.dispose();
     typeController.dispose();
-    currencyController.dispose();
     super.dispose();
   }
+
+  final List<String> currencies = ['Доллар', 'Сом', 'Рубль', 'Евро'];
+
+  final List<String> types = ['банк', 'касса'];
+
+  final List<String> names = ['Бакай Банк', 'Мбанк', 'Офис касса'];
 
   @override
   Widget build(BuildContext context) {
@@ -80,16 +90,41 @@ class _AddAccountPageState extends State<AddAccountPage> {
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
               children: [
-                TextFieldWithSuffix(
-                  controller: nameController,
+                DropdownFormField(
                   label: 'Название',
+                  currencies: names,
+                  value: selectedName,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedName = value;
+                    });
+                    checkFormValidity();
+                  },
                 ),
                 12.h,
-                TextFieldWithSuffix(controller: typeController, label: 'Тип'),
+                DropdownFormField(
+                  label: 'Тип',
+                  currencies: types,
+                  value: selectedType,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedType = value;
+                    });
+                    checkFormValidity();
+                  },
+                ),
                 12.h,
-                TextFieldWithSuffix(
-                  controller: currencyController,
+                // Вот поле с Dropdown
+                DropdownFormField(
                   label: 'Валюта',
+                  currencies: currencies,
+                  value: selectedCurrency,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedCurrency = value;
+                    });
+                    checkFormValidity();
+                  },
                 ),
                 24.h,
                 ElevatedButtonWidget(
