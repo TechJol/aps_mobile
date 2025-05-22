@@ -19,7 +19,7 @@ class PopupMenuWid extends StatelessWidget {
     return Builder(
       builder: (context) {
         return IconButton(
-          icon: const Icon(Icons.more_vert),
+          icon: const Icon(Icons.more_vert, size: 15),
           onPressed: () async {
             final RenderBox button = context.findRenderObject() as RenderBox;
             final RenderBox overlay =

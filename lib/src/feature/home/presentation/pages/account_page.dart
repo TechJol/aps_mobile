@@ -68,7 +68,7 @@ class _AccountPageState extends State<AccountPage> {
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Column(
                 children: [
                   20.h,
@@ -147,7 +147,14 @@ class _AccountPageState extends State<AccountPage> {
                         DataCell(
                           Text(account['type']!, style: AppTextStyles.f16w500),
                         ),
-                        DataCell(PopupMenuWid(context: context)),
+
+                        DataCell(
+                          PopupMenuWid(
+                            context: context,
+                            tapDelete: () {},
+                            tapEdit: () {},
+                          ),
+                        ),
                       ],
                     );
                   }).toList(),
