@@ -62,6 +62,8 @@ class AddAccountPage extends StatelessWidget {
                 TextFieldWithSuffix(label: 'Тип'),
                 12.h,
                 TextFieldWithSuffix(label: 'Валюта'),
+                24.h,
+                ElevatedButtonWidget(text: 'Сохранить'),
               ],
             ),
           ),
