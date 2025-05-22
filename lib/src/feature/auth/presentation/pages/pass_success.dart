@@ -105,7 +105,7 @@ class _PassSuccessPageState extends State<PassSuccessPage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/new-password');
+                    Navigator.pushNamed(context, '/home');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF661EFB),
@@ -118,8 +118,9 @@ class _PassSuccessPageState extends State<PassSuccessPage> {
                   child: Text(
                     "Вернуться на главную",
                     style: TextStyle(
+                      fontFamily: 'Inter',
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w500,
                       color: Colors.white,
                     ),
                   ),

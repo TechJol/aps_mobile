@@ -58,15 +58,16 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
   String _maskEmail(String email) {
     int index = email.indexOf('@');
     if (index <= 2) return email;
-    return '${email.substring(0, 2)}${'*' * (index - 2)}${email.substring(index)}';
+    String visiblePart = email.substring(index - 2, index);
+    return '${'*' * (index - 2)}$visiblePart${email.substring(index)}';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 70),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 60),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -83,60 +84,75 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                   style: TextStyle(
                     fontSize: 24,
                     fontFamily: 'Inter',
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
             ),
 
-            SizedBox(height: 24),
+            SizedBox(height: 55),
             Text(
-              "Мы отправили код в вашу эл.почту",
+              "Мы отправили код в вашу эл. почту",
               style: TextStyle(
+                fontFamily: 'Inter',
                 color: Colors.grey.shade600,
                 fontSize: 20,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            SizedBox(height: 6),
+            //SizedBox(height: 0),
             Text(
               _maskEmail(email),
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                fontSize: 20,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w600,
+              ),
             ),
 
-            SizedBox(height: 30),
+            SizedBox(height: 10),
 
             // OTP Fields
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(4, (index) {
-                return SizedBox(
-                  width: 80,
-                  child: TextField(
-                    focusNode: focusNodes[index],
-                    onChanged: (value) {
-                      if (value.length == 1 && index < 3) {
-                        FocusScope.of(
-                          context,
-                        ).requestFocus(focusNodes[index + 1]);
-                      }
-                      setState(() => otpDigits[index] = value);
-                    },
-                    textAlign: TextAlign.center,
-                    maxLength: 1,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      counterText: '',
-                      contentPadding: EdgeInsets.all(12),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(color: Colors.grey.shade400),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Color(0xFF661EFB),
-                          width: 2,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 7.6),
+                  child: SizedBox(
+                    width: 76,
+                    height: 42,
+                    child: TextField(
+                      focusNode: focusNodes[index],
+                      onChanged: (value) {
+                        if (value.length == 1 && index < 3) {
+                          FocusScope.of(
+                            context,
+                          ).requestFocus(focusNodes[index + 1]);
+                        }
+                        setState(() => otpDigits[index] = value);
+                      },
+                      textAlign: TextAlign.center,
+                      maxLength: 1,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        counterText: '',
+                        contentPadding: EdgeInsets.all(12),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color:
+                                otpDigits[index].isNotEmpty
+                                    ? Color(0xFF661EFB)
+                                    : Colors.grey.shade300,
+                            width: otpDigits[index].isNotEmpty ? 1.5 : 1,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: Color(0xFF661EFB),
+                            width: 2,
+                          ),
                         ),
                       ),
                     ),
@@ -157,17 +173,20 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                       : "Отправить повторно через: $_secondsRemaining",
                   style: TextStyle(
                     fontSize: 14,
+                    fontFamily: 'Inter',
                     fontWeight: FontWeight.w500,
-                    color: _canResend ? Color(0xFF661EFB) : Colors.grey,
+                    color: _canResend ? Color(0xFF661EFB) : Color(0xFF7B818C),
                     decoration: _canResend ? TextDecoration.underline : null,
                   ),
                 ),
               ),
             ),
 
-            Spacer(),
-
-            // Continue Button
+            //Spacer(),
+            //SizedBox(height: 390),
+            SizedBox(
+              height: 425,
+            ), // 👈 Adjust this value to move the button lower
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
