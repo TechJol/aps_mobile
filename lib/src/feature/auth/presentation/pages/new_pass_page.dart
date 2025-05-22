@@ -120,7 +120,7 @@ class _NewPassPageState extends State<NewPassPage> {
               ),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
               ),
               child: Column(
                 children: [
@@ -170,6 +170,12 @@ class _NewPassPageState extends State<NewPassPage> {
                   TextField(
                     controller: usernameController,
                     focusNode: usernameFocus,
+                    obscureText: true,
+                    obscuringCharacter: '*', // default is •
+                    style: TextStyle(
+                      fontSize: 20, // larger text including asterisks
+                      letterSpacing: 0, // optional: space out the asterisks
+                    ),
                     textInputAction: TextInputAction.next,
                     onSubmitted:
                         (_) =>
@@ -177,17 +183,20 @@ class _NewPassPageState extends State<NewPassPage> {
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 14,
+                        vertical: 10,
                       ),
                       hintText: 'Введите новый пароль',
                       hintStyle: TextStyle(
+                        fontSize: 17,
                         color: Colors.black.withOpacity(0.2),
                       ),
                       suffixIcon: Padding(
                         padding: const EdgeInsets.only(right: 12),
-                        child: Icon(
-                          Icons.visibility_off,
-                          color: Colors.black.withOpacity(0.2),
+                        child: Image.asset(
+                          'assets/icons/eye.png', // Replace with your actual path
+                          width: 28,
+                          height: 28,
+                          color: Colors.black.withOpacity(0.3), // Optional tint
                         ),
                       ),
                       border: _getBorder(
@@ -211,21 +220,29 @@ class _NewPassPageState extends State<NewPassPage> {
                     controller: passwordController,
                     focusNode: passwordFocus,
                     obscureText: true,
+                    obscuringCharacter: '*', // default is •
+                    style: TextStyle(
+                      fontSize: 20, // larger text including asterisks
+                      letterSpacing: 0, // optional: space out the asterisks
+                    ),
                     textInputAction: TextInputAction.done,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 14,
+                        vertical: 10,
                       ),
                       hintText: 'Подтвердите пароль',
                       hintStyle: TextStyle(
+                        fontSize: 17,
                         color: Colors.black.withOpacity(0.2),
                       ),
                       suffixIcon: Padding(
                         padding: const EdgeInsets.only(right: 12),
-                        child: Icon(
-                          Icons.visibility_off,
-                          color: Colors.black.withOpacity(0.2),
+                        child: Image.asset(
+                          'assets/icons/eye.png', // Replace with your actual path
+                          width: 28,
+                          height: 28,
+                          color: Colors.black.withOpacity(0.3), // Optional tint
                         ),
                       ),
                       border: _getBorder(
