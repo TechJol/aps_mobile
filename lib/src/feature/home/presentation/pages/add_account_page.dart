@@ -1,8 +1,44 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
-class AddAccountPage extends StatelessWidget {
+class AddAccountPage extends StatefulWidget {
   const AddAccountPage({super.key});
+
+  @override
+  State<AddAccountPage> createState() => _AddAccountPageState();
+}
+
+class _AddAccountPageState extends State<AddAccountPage> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController typeController = TextEditingController();
+  final TextEditingController currencyController = TextEditingController();
+
+  bool isFormValid = false;
+
+  void checkFormValidity() {
+    setState(() {
+      isFormValid =
+          nameController.text.isNotEmpty &&
+          typeController.text.isNotEmpty &&
+          currencyController.text.isNotEmpty;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.addListener(checkFormValidity);
+    typeController.addListener(checkFormValidity);
+    currencyController.addListener(checkFormValidity);
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    typeController.dispose();
+    currencyController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,26 +51,13 @@ class AddAccountPage extends StatelessWidget {
         leading: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Container(
-            width: 10,
-            height: 10,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(30),
             ),
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(
-                    Icons.arrow_back_ios,
-                    color: Colors.black,
-                    size: 20,
-                  ),
-                ),
-              ),
+            child: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
             ),
           ),
         ),
@@ -57,13 +80,27 @@ class AddAccountPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
               children: [
-                TextFieldWithSuffix(label: 'Название'),
+                TextFieldWithSuffix(
+                  controller: nameController,
+                  label: 'Название',
+                ),
                 12.h,
-                TextFieldWithSuffix(label: 'Тип'),
+                TextFieldWithSuffix(controller: typeController, label: 'Тип'),
                 12.h,
-                TextFieldWithSuffix(label: 'Валюта'),
+                TextFieldWithSuffix(
+                  controller: currencyController,
+                  label: 'Валюта',
+                ),
                 24.h,
-                ElevatedButtonWidget(text: 'Сохранить'),
+                ElevatedButtonWidget(
+                  text: 'Сохранить',
+                  onPressed:
+                      isFormValid
+                          ? () {
+                            // Save action
+                          }
+                          : null,
+                ),
               ],
             ),
           ),

@@ -16,10 +16,19 @@ class ElevatedButtonWidget extends StatelessWidget {
             onPressed: onPressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryColorLight,
-              foregroundColor: Colors.white,
-              fixedSize: const Size(double.infinity, 48),
+              foregroundColor: AppColors.whiteColor,
+              fixedSize: const Size(double.infinity, 56),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              elevation: 0,
             ),
-            child: Text(text, style: AppTextStyles.f16w500),
+            child: Text(
+              text,
+              style: AppTextStyles.f16w500.copyWith(
+                color: AppColors.whiteColor,
+              ),
+            ),
           ),
         ),
       ],
