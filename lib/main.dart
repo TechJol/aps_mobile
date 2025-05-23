@@ -2,7 +2,7 @@ import 'package:aps_mobile/home_page.dart';
 import 'package:aps_mobile/src/feature/auth/presentation/pages/forgot_pass_page.dart';
 import 'package:aps_mobile/src/feature/auth/presentation/pages/language_page.dart';
 import 'package:aps_mobile/src/feature/auth/presentation/pages/pass_success.dart';
-import 'package:aps_mobile/src/feature/feature.dart';
+//import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'injection_container.dart' as di;
 import 'src/feature/auth/presentation/pages/login_page.dart';
