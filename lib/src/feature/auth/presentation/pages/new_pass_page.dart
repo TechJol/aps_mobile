@@ -8,7 +8,6 @@ class NewPassPage extends StatefulWidget {
 }
 
 class _NewPassPageState extends State<NewPassPage> {
-  bool isLoginSelected = true; // If you plan to add registration tab here
   bool isFormValid = false;
 
   final TextEditingController newPasswordController = TextEditingController();
@@ -27,22 +26,27 @@ class _NewPassPageState extends State<NewPassPage> {
   @override
   void initState() {
     super.initState();
+
     newPasswordController.addListener(_validateForm);
     confirmPasswordController.addListener(_validateForm);
 
     newPasswordFocus.addListener(() {
       if (!newPasswordFocus.hasFocus) {
-        setState(() {
-          newPasswordTouched = true;
-        });
+        if (!newPasswordTouched) {
+          setState(() {
+            newPasswordTouched = true;
+          });
+        }
       }
     });
 
     confirmPasswordFocus.addListener(() {
       if (!confirmPasswordFocus.hasFocus) {
-        setState(() {
-          confirmPasswordTouched = true;
-        });
+        if (!confirmPasswordTouched) {
+          setState(() {
+            confirmPasswordTouched = true;
+          });
+        }
       }
     });
   }
@@ -50,12 +54,16 @@ class _NewPassPageState extends State<NewPassPage> {
   void _validateForm() {
     final newPass = newPasswordController.text.trim();
     final confirmPass = confirmPasswordController.text.trim();
-    setState(() {
-      isFormValid =
-          newPass.isNotEmpty &&
-          confirmPass.isNotEmpty &&
-          newPass == confirmPass;
-    });
+
+    final isValid =
+        newPass.isNotEmpty && confirmPass.isNotEmpty && newPass == confirmPass;
+
+    // Only call setState if validation result changes to avoid unnecessary rebuilds
+    if (isFormValid != isValid) {
+      setState(() {
+        isFormValid = isValid;
+      });
+    }
   }
 
   @override
@@ -166,8 +174,6 @@ class _NewPassPageState extends State<NewPassPage> {
               ),
               child: Column(
                 children: [
-                  // Tab placeholders if needed:
-                  // You can add tab UI here if required
                   _buildPasswordField(
                     hint: 'Введите новый пароль',
                     controller: newPasswordController,
@@ -196,9 +202,10 @@ class _NewPassPageState extends State<NewPassPage> {
                   ElevatedButton(
                     onPressed:
                         isFormValid
-                            ? () {
-                              Navigator.pushNamed(context, '/password-success');
-                            }
+                            ? () => Navigator.pushNamed(
+                              context,
+                              '/password-success',
+                            )
                             : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
