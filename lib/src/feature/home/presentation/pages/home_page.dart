@@ -12,7 +12,10 @@ class HomePage extends StatelessWidget {
         centerTitle: false,
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Text('Управление счетами', style: AppTextStyles.f24w600),
+          child: Text(
+            'Управление счетами',
+            style: AppTextStyles.f24w600.copyWith(fontFamily: 'Inter'),
+          ),
         ),
         actions: [
           Padding(
@@ -39,11 +42,17 @@ class HomePage extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    Text('96 000 c', style: AppTextStyles.f24w600),
+                    Text(
+                      '96 000 c',
+                      style: AppTextStyles.f24w600.copyWith(
+                        fontFamily: 'Inter',
+                      ),
+                    ),
                     Text(
                       'общий баланс',
                       style: AppTextStyles.f14w500.copyWith(
                         color: AppColors.greyColor,
+                        fontFamily: 'Inter',
                       ),
                     ),
                   ],
@@ -59,6 +68,7 @@ class HomePage extends StatelessWidget {
                         'Добавить счет',
                         style: AppTextStyles.f16w500.copyWith(
                           color: AppColors.blackColor,
+                          fontFamily: 'Inter',
                         ),
                       ),
                       10.w,
