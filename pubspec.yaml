@@ -32,6 +32,7 @@ dependencies:
 
   # -- UI -- #
   auto_size_text: ^3.0.0
+  dropdown_button2: ^2.3.9
 
   # -- Images -- #
   flutter_svg: ^2.1.0
@@ -46,6 +47,7 @@ dependencies:
   # -- Logger -- #
   logger: ^2.5.0
   flutter_image_compress: ^2.4.0
+
 
 dev_dependencies:
   flutter_test:

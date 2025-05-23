@@ -33,13 +33,15 @@ class PopupMenuWid extends StatelessWidget {
             final RelativeRect positionRect = RelativeRect.fromLTRB(
               position.dx,
               position.dy + button.size.height,
-              position.dx + button.size.width - 30,
+              position.dx + button.size.width,
               position.dy,
             );
 
             final selected = await showMenu<String>(
               context: context,
               position: positionRect,
+
+              elevation: 8,
               color: AppColors.whiteColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12), // нужный радиус
