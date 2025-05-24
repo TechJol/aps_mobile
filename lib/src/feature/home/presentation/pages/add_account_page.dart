@@ -38,7 +38,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
       appBar: AppBar(
         backgroundColor: AppColors.backroundColor,
         centerTitle: true,
-        title: Text('Редактировать счет', style: AppTextStyles.f24w600),
+        title: Text('Добавить счет', style: AppTextStyles.f24w600),
         leadingWidth: 100,
         leading: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -54,71 +54,87 @@ class _AddAccountPageState extends State<AddAccountPage> {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            DropDownFormField(
-              items: names,
-              label: 'Название',
-              value: selectedName,
-              onChanged: (val) {
-                setState(() {
-                  selectedName = val;
-                });
-                checkFormValidity();
-              },
-            ),
-            const SizedBox(height: 12),
-            DropDownFormField(
-              items: types,
-              label: 'Тип',
-              value: selectedType,
-              onChanged: (val) {
-                setState(() {
-                  selectedType = val;
-                });
-                checkFormValidity();
-              },
-            ),
-            const SizedBox(height: 12),
-            DropDownFormField(
-              items: currencies,
-              label: 'Валюта',
-              value: selectedCurrency,
-              onChanged: (val) {
-                setState(() {
-                  selectedCurrency = val;
-                });
-                checkFormValidity();
-              },
-            ),
-
-            const SizedBox(height: 24),
-
-            ElevatedButton(
-              onPressed:
-                  isFormValid
-                      ? () {
-                        // Сактоо логикасы
-                      }
-                      : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary200Color,
-                minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-              ),
-              child: Text(
-                'Сохранить',
-                style: AppTextStyles.f16w500.copyWith(
-                  color: AppColors.whiteColor,
-                ),
+      body: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            height: 50,
+            decoration: BoxDecoration(
+              color: AppColors.backroundColor,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(12),
+                bottomRight: Radius.circular(12),
               ),
             ),
-          ],
-        ),
+          ),
+          24.h,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: [
+                DropDownFormField(
+                  items: names,
+                  label: 'Название',
+                  value: selectedName,
+                  onChanged: (val) {
+                    setState(() {
+                      selectedName = val;
+                    });
+                    checkFormValidity();
+                  },
+                ),
+                const SizedBox(height: 12),
+                DropDownFormField(
+                  items: types,
+                  label: 'Тип',
+                  value: selectedType,
+                  onChanged: (val) {
+                    setState(() {
+                      selectedType = val;
+                    });
+                    checkFormValidity();
+                  },
+                ),
+                const SizedBox(height: 12),
+                DropDownFormField(
+                  items: currencies,
+                  label: 'Валюта',
+                  value: selectedCurrency,
+                  onChanged: (val) {
+                    setState(() {
+                      selectedCurrency = val;
+                    });
+                    checkFormValidity();
+                  },
+                ),
+
+                const SizedBox(height: 24),
+
+                ElevatedButton(
+                  onPressed:
+                      isFormValid
+                          ? () {
+                            // Сактоо логикасы
+                          }
+                          : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary200Color,
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: Text(
+                    'Сохранить',
+                    style: AppTextStyles.f16w500.copyWith(
+                      color: AppColors.whiteColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
