@@ -1,8 +1,8 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
-class TextFieldWithSuffix extends StatelessWidget {
-  const TextFieldWithSuffix({super.key, this.controller, required this.label});
+class TextFieldWid extends StatelessWidget {
+  const TextFieldWid({super.key, this.controller, required this.label});
 
   final TextEditingController? controller;
   final String label;
@@ -12,10 +12,9 @@ class TextFieldWithSuffix extends StatelessWidget {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
+        floatingLabelBehavior: FloatingLabelBehavior.never,
         filled: true,
-        labelStyle: AppTextStyles.f16w500.copyWith(
-          color: AppColors.greyerColor,
-        ),
+        labelStyle: AppTextStyles.f16w500,
         fillColor: AppColors.backroundColor,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
         enabledBorder: OutlineInputBorder(
@@ -30,11 +29,6 @@ class TextFieldWithSuffix extends StatelessWidget {
           ),
         ),
         labelText: label,
-        suffixIcon: const Icon(
-          Icons.keyboard_arrow_down_outlined,
-          size: 30,
-          color: AppColors.greyerColor,
-        ),
       ),
     );
   }

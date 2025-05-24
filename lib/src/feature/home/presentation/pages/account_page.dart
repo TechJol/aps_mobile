@@ -152,7 +152,12 @@ class _AccountPageState extends State<AccountPage> {
                           PopupMenuWid(
                             context: context,
                             tapDelete: () {},
-                            tapEdit: () {},
+                            tapEdit: () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.editAccount,
+                              );
+                            },
                           ),
                         ),
                       ],

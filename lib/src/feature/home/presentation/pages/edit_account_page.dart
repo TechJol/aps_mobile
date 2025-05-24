@@ -1,20 +1,21 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
-class AddAccountPage extends StatefulWidget {
-  const AddAccountPage({super.key});
+class EditAccountPage extends StatefulWidget {
+  const EditAccountPage({super.key});
 
   @override
-  State<AddAccountPage> createState() => _AddAccountPageState();
+  State<EditAccountPage> createState() => _EditAccountPageState();
 }
 
-class _AddAccountPageState extends State<AddAccountPage> {
+class _EditAccountPageState extends State<EditAccountPage> {
   final List<String> currencies = ['Доллар', 'Сом', 'Рубль', 'Евро'];
   final List<String> types = ['Банк', 'Касса'];
   final List<String> names = ['Бакай банк', 'Мбанк', 'Офис касса'];
 
-  String? selectedName;
-  String? selectedType;
+  final nameController = TextEditingController();
+  final typeController = TextEditingController();
+
   String? selectedCurrency;
 
   bool isFormValid = false;
@@ -22,12 +23,10 @@ class _AddAccountPageState extends State<AddAccountPage> {
   void checkFormValidity() {
     setState(() {
       isFormValid =
-          selectedName != null &&
-          selectedType != null &&
           selectedCurrency != null &&
-          selectedName!.isNotEmpty &&
-          selectedType!.isNotEmpty &&
-          selectedCurrency!.isNotEmpty;
+          selectedCurrency!.isNotEmpty &&
+          nameController.text.isNotEmpty &&
+          typeController.text.isNotEmpty;
     });
   }
 
@@ -38,7 +37,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
       appBar: AppBar(
         backgroundColor: AppColors.backroundColor,
         centerTitle: true,
-        title: Text('Добавить счет', style: AppTextStyles.f24w600),
+        title: Text('Редактировать счет', style: AppTextStyles.f24w600),
         leadingWidth: 100,
         leading: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -72,29 +71,10 @@ class _AddAccountPageState extends State<AddAccountPage> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
-                DropDownFormField(
-                  items: names,
-                  label: 'Название',
-                  value: selectedName,
-                  onChanged: (val) {
-                    setState(() {
-                      selectedName = val;
-                    });
-                    checkFormValidity();
-                  },
-                ),
+                TextFieldWid(label: 'Название', controller: nameController),
+
                 const SizedBox(height: 12),
-                DropDownFormField(
-                  items: types,
-                  label: 'Тип',
-                  value: selectedType,
-                  onChanged: (val) {
-                    setState(() {
-                      selectedType = val;
-                    });
-                    checkFormValidity();
-                  },
-                ),
+                TextFieldWid(label: 'Тип', controller: typeController),
                 const SizedBox(height: 12),
                 DropDownFormField(
                   items: currencies,
