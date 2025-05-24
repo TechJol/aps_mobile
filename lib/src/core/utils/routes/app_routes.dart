@@ -14,4 +14,5 @@ class AppRoutes {
   static const account = 'account';
   static const addAccount = 'addAccount';
   static const editAccount = 'editAccount';
+  static const menu = 'menu';
 }

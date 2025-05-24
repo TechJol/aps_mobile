@@ -25,6 +25,9 @@ class RouteGenerator {
       case AppRoutes.editAccount:
         return CupertinoPageRoute(builder: (_) => EditAccountPage());
 
+      case AppRoutes.menu:
+        return CupertinoPageRoute(builder: (_) => MenuPage());
+
       default:
         return errorRoute();
     }

@@ -28,7 +28,12 @@ class HomePage extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(100),
               ),
-              child: Icon(Icons.more_vert_outlined),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.menu);
+                },
+                icon: Icon(Icons.more_vert_outlined),
+              ),
             ),
           ),
         ],
