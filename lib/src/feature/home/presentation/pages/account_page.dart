@@ -151,7 +151,17 @@ class _AccountPageState extends State<AccountPage> {
                         DataCell(
                           PopupMenuWid(
                             context: context,
-                            tapDelete: () {},
+                            tapDelete: () {
+                              ShowSheet().showDeleteDialog(
+                                context,
+                                accountName: account['name']!,
+
+                                onConfirm: () {
+                                  print('Удаляем: ${account['name']}');
+                                },
+                                title: 'Удалить счет',
+                              );
+                            },
                             tapEdit: () {
                               Navigator.pushNamed(
                                 context,
