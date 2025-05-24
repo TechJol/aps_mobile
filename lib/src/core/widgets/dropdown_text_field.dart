@@ -3,9 +3,14 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
 class DropDownFormField extends StatelessWidget {
-  const DropDownFormField({super.key, required this.items});
+  const DropDownFormField({
+    super.key,
+    required this.items,
+    required this.label,
+  });
 
   final List<String> items;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +24,8 @@ class DropDownFormField extends StatelessWidget {
       ),
       decoratorProps: DropDownDecoratorProps(
         decoration: InputDecoration(
-          label: Text('Название'),
+          label: Text(label, style: AppTextStyles.f16w500),
+          floatingLabelBehavior: FloatingLabelBehavior.never,
           fillColor: AppColors.backroundColor,
           filled: true,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
@@ -31,7 +37,7 @@ class DropDownFormField extends StatelessWidget {
             borderRadius: BorderRadius.circular(25),
             borderSide: const BorderSide(
               width: 1,
-              color: AppColors.backroundColor,
+              color: AppColors.primary200Color,
             ),
           ),
           contentPadding: const EdgeInsets.symmetric(
@@ -42,6 +48,18 @@ class DropDownFormField extends StatelessWidget {
       ),
       popupProps: PopupProps.menu(
         showSelectedItems: true,
+        listViewProps: ListViewProps(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          physics: const BouncingScrollPhysics(),
+          shrinkWrap: true,
+        ),
+        menuProps: MenuProps(
+          backgroundColor: AppColors.whiteColor,
+          borderRadius: BorderRadius.circular(16),
+          elevation: 8,
+
+          shadowColor: AppColors.whiteColor,
+        ),
 
         disabledItemFn: (item) => item == 'Item 3',
         fit: FlexFit.loose,

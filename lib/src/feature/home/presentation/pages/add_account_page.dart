@@ -58,13 +58,13 @@ class _AddAccountPageState extends State<AddAccountPage> {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            DropDownFormField(items: names),
+            DropDownFormField(items: names, label: 'Название'),
             const SizedBox(height: 12),
 
-            DropDownFormField(items: types),
+            DropDownFormField(items: types, label: 'Тип'),
             const SizedBox(height: 12),
 
-            DropDownFormField(items: currencies),
+            DropDownFormField(items: currencies, label: 'Валюта'),
             const SizedBox(height: 24),
 
             ElevatedButton(
