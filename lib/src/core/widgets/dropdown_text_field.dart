@@ -7,15 +7,25 @@ class DropDownFormField extends StatelessWidget {
     super.key,
     required this.items,
     required this.label,
+    required this.value,
+    required this.onChanged,
   });
 
   final List<String> items;
   final String label;
+  final String? value;
+  final ValueChanged<String?> onChanged;
 
   @override
   Widget build(BuildContext context) {
     return DropdownSearch<String>(
+      selectedItem: value,
+      onChanged: onChanged,
       items: (f, cs) => items,
+
+      dropdownBuilder:
+          (context, selectedItem) =>
+              Text(selectedItem ?? '', style: AppTextStyles.f16w500),
       suffixProps: DropdownSuffixProps(
         dropdownButtonProps: DropdownButtonProps(
           iconClosed: Icon(Icons.keyboard_arrow_down_outlined),
@@ -48,6 +58,34 @@ class DropDownFormField extends StatelessWidget {
       ),
       popupProps: PopupProps.menu(
         showSelectedItems: true,
+        itemClickProps: ClickProps(
+          splashColor: AppColors.primaryColor.withOpacity(0.3),
+        ),
+        fit: FlexFit.loose,
+        itemBuilder: (
+          BuildContext context,
+          String item,
+          bool isSelected,
+          bool isHovered,
+        ) {
+          return Container(
+            decoration: BoxDecoration(
+              color:
+                  isSelected
+                      ? AppColors.primary200Color.withOpacity(0.5)
+                      : Colors.transparent,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+            child: Text(
+              item,
+              style: AppTextStyles.f16w500.copyWith(
+                color:
+                    isSelected ? AppColors.primaryColor : AppColors.blackColor,
+              ),
+            ),
+          );
+        },
         listViewProps: ListViewProps(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           physics: const BouncingScrollPhysics(),
@@ -57,12 +95,8 @@ class DropDownFormField extends StatelessWidget {
           backgroundColor: AppColors.whiteColor,
           borderRadius: BorderRadius.circular(16),
           elevation: 8,
-
           shadowColor: AppColors.whiteColor,
         ),
-
-        disabledItemFn: (item) => item == 'Item 3',
-        fit: FlexFit.loose,
       ),
     );
   }
