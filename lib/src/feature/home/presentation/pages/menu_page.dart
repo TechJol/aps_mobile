@@ -45,7 +45,7 @@ class _MenuPageState extends State<MenuPage> {
         padding: const EdgeInsets.all(20),
         children: [
           ExpandableMenuItem(
-            icon: Icons.folder_copy_outlined,
+            icon: 'assets/icons/folder1.svg',
             title: 'Все операции',
             expanded: isOperationsExpanded,
             onTap:
@@ -56,7 +56,7 @@ class _MenuPageState extends State<MenuPage> {
           ),
           const SizedBox(height: 12),
           ExpandableMenuItem(
-            icon: Icons.insert_chart_outlined,
+            icon: 'assets/icons/folder2.svg',
             title: 'Отчеты',
             expanded: isReportsExpanded,
             onTap: () => setState(() => isReportsExpanded = !isReportsExpanded),
@@ -64,7 +64,7 @@ class _MenuPageState extends State<MenuPage> {
           ),
           const SizedBox(height: 12),
           ExpandableMenuItem(
-            icon: Icons.settings_outlined,
+            icon: 'assets/icons/setting.svg',
             title: 'Настройки',
             expanded: isSettingsExpanded,
             onTap:
@@ -72,9 +72,9 @@ class _MenuPageState extends State<MenuPage> {
             children: const ['Профиль', 'Безопасность'],
           ),
           const SizedBox(height: 20),
-          const MenuItem(icon: Icons.logout, title: 'Выход'),
+          const MenuItem(icon: 'assets/icons/folder3.svg', title: 'Выход'),
           const SizedBox(height: 20),
-          const MenuItem(icon: Icons.person_outline, title: 'Привет, Аяна'),
+          const MenuItem(icon: 'assets/icons/user.svg', title: 'Привет, Аяна'),
         ],
       ),
     );

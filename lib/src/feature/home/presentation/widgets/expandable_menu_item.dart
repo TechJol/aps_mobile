@@ -1,8 +1,9 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class ExpandableMenuItem extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final String title;
   final bool expanded;
   final VoidCallback onTap;
@@ -24,19 +25,29 @@ class ExpandableMenuItem extends StatelessWidget {
       children: [
         InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(20),
           child: Container(
+            width: double.infinity,
+            height: 68,
             decoration: BoxDecoration(
-              color:
-                  expanded
-                      ? AppColors.primaryColor.withOpacity(0.1)
-                      : Colors.transparent,
+              color: expanded ? AppColors.primary50Color : Colors.transparent,
               borderRadius: BorderRadius.circular(12),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
             child: Row(
               children: [
-                Icon(icon, color: AppColors.primaryColor),
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary200Color,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SvgPicture.asset(icon),
+                  ),
+                ),
                 const SizedBox(width: 12),
                 Expanded(child: Text(title, style: AppTextStyles.f16w500)),
                 Icon(expanded ? Icons.expand_less : Icons.expand_more),
