@@ -8,6 +8,7 @@ class ExpandableMenuItem extends StatelessWidget {
   final bool expanded;
   final VoidCallback onTap;
   final List<String> children;
+  final void Function(String childTitle)? onChildTap;
 
   const ExpandableMenuItem({
     super.key,
@@ -16,6 +17,7 @@ class ExpandableMenuItem extends StatelessWidget {
     required this.expanded,
     required this.onTap,
     required this.children,
+    this.onChildTap,
   });
 
   @override
@@ -67,12 +69,15 @@ class ExpandableMenuItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 for (int i = 0; i < children.length; i++) ...[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 16,
-                      horizontal: 24,
+                  GestureDetector(
+                    onTap: () => onChildTap?.call(children[i]),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 24,
+                      ),
+                      child: Text(children[i], style: AppTextStyles.f14w400),
                     ),
-                    child: Text(children[i], style: AppTextStyles.f14w400),
                   ),
                   if (i != children.length - 1)
                     const Divider(

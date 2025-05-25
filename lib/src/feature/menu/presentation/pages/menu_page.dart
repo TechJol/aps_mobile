@@ -53,7 +53,26 @@ class _MenuPageState extends State<MenuPage> {
                   () => isOperationsExpanded = !isOperationsExpanded,
                 ),
             children: const ['Все транзакции', 'По контрагентам', 'По счетам'],
+            onChildTap: (value) {
+              if (value == 'Все транзакции') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const TransactionsPage()),
+                );
+              } else if (value == 'По контрагентам') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CounterpartiesPage()),
+                );
+              } else if (value == 'По счетам') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const MenuAccountsPage()),
+                );
+              }
+            },
           ),
+
           const SizedBox(height: 12),
           ExpandableMenuItem(
             icon: 'assets/icons/folder2.svg',

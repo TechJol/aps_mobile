@@ -28,6 +28,15 @@ class RouteGenerator {
       case AppRoutes.menu:
         return CupertinoPageRoute(builder: (_) => MenuPage());
 
+      case AppRoutes.transactions:
+        return CupertinoPageRoute(builder: (_) => TransactionsPage());
+
+      case AppRoutes.counterparties:
+        return CupertinoPageRoute(builder: (_) => CounterpartiesPage());
+
+      case AppRoutes.menuAccounts:
+        return CupertinoPageRoute(builder: (_) => MenuAccountsPage());
+
       default:
         return errorRoute();
     }

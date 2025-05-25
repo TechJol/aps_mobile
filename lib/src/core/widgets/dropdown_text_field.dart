@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
