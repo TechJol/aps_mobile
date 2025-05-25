@@ -18,28 +18,9 @@ class _MenuPageState extends State<MenuPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      appBar: AppBar(
+      appBar: CustomAppBar(
+        title: 'Меню',
         backgroundColor: AppColors.whiteColor,
-        centerTitle: false,
-        title: Text('Меню', style: AppTextStyles.f20w500),
-        leadingWidth: 100,
-        leading: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.black,
-                size: 16,
-              ),
-            ),
-          ),
-        ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),

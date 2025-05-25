@@ -34,24 +34,9 @@ class _EditAccountPageState extends State<EditAccountPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      appBar: AppBar(
+      appBar: CustomAppBar(
+        title: 'Редактировать счет',
         backgroundColor: AppColors.backroundColor,
-        centerTitle: true,
-        title: Text('Редактировать счет', style: AppTextStyles.f24w600),
-        leadingWidth: 100,
-        leading: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-            ),
-          ),
-        ),
       ),
       body: Column(
         children: [

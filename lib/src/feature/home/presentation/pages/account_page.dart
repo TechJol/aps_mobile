@@ -25,37 +25,9 @@ class _AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
-      appBar: AppBar(
+      appBar: CustomAppBar(
+        title: 'Счета',
         backgroundColor: AppColors.backroundColor,
-        centerTitle: false,
-        title: Text('Счета', style: AppTextStyles.f24w600),
-        leadingWidth: 100,
-        leading: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Container(
-            width: 10,
-            height: 10,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(
-                    Icons.arrow_back_ios,
-                    color: Colors.black,
-                    size: 20,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
       ),
       body: Column(
         children: [
