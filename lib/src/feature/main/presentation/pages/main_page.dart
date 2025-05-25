@@ -22,7 +22,9 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: items[context.watch<MainCubit>().state],
-      bottomNavigationBar: Padding(
+      bottomNavigationBar: Container(
+        color: AppColors.whiteColor,
+
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: BottomNavigationBar(
           elevation: 1,

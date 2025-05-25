@@ -10,6 +10,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
+        backgroundColor: AppColors.whiteColor,
         centerTitle: false,
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
