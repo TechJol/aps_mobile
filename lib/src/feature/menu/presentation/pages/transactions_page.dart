@@ -66,51 +66,49 @@ class _TransactionsPageState extends State<TransactionsPage> {
                 OutlinedButtonWidget(text: 'Скачать в Excel', onPressed: () {}),
               ],
             ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columnSpacing: 32,
-                  headingRowColor: WidgetStateProperty.all(
-                    const Color(0xFF6C2BD9),
-                  ),
-                  headingTextStyle: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  dataRowColor: WidgetStateProperty.all(Colors.white),
-                  columns: const [
-                    DataColumn(label: Text('№')),
-                    DataColumn(label: Text('Сумма')),
-                    DataColumn(label: Text('Вл')),
-                    DataColumn(label: Text('Дата')),
-                    DataColumn(label: Text('Тип')),
-                    DataColumn(label: Text('Счет')),
-                    DataColumn(label: Text('Статьи')),
-                    DataColumn(label: Text('Контрагент')),
-                    DataColumn(label: Text('Вл')),
-                  ],
-                  rows:
-                      paginatedData.map((row) {
-                        return DataRow(
-                          cells: [
-                            DataCell(Text(row['№']!)),
-                            DataCell(Text(row['Сумма']!)),
-                            DataCell(Text(row['Вл']!)),
-                            DataCell(Text(row['Дата']!)),
-                            DataCell(Text(row['Тип']!)),
-                            DataCell(Text(row['Счет']!)),
-                            DataCell(Text(row['Статьи']!)),
-                            DataCell(Text(row['Контрагент']!)),
-                            DataCell(Text(row['ВлТекст']!)),
-                          ],
-                        );
-                      }).toList(),
+            20.h,
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columnSpacing: 32,
+                headingRowColor: WidgetStateProperty.all(
+                  AppColors.primaryColorLight,
                 ),
+                headingTextStyle: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+                dataRowColor: WidgetStateProperty.all(Colors.white),
+                columns: const [
+                  DataColumn(label: Text('№')),
+                  DataColumn(label: Text('Сумма')),
+                  DataColumn(label: Text('Вл')),
+                  DataColumn(label: Text('Дата')),
+                  DataColumn(label: Text('Тип')),
+                  DataColumn(label: Text('Счет')),
+                  DataColumn(label: Text('Статьи')),
+                  DataColumn(label: Text('Контрагент')),
+                  DataColumn(label: Text('Вл')),
+                ],
+                rows:
+                    paginatedData.map((row) {
+                      return DataRow(
+                        cells: [
+                          DataCell(Text(row['№']!)),
+                          DataCell(Text(row['Сумма']!)),
+                          DataCell(Text(row['Вл']!)),
+                          DataCell(Text(row['Дата']!)),
+                          DataCell(Text(row['Тип']!)),
+                          DataCell(Text(row['Счет']!)),
+                          DataCell(Text(row['Статьи']!)),
+                          DataCell(Text(row['Контрагент']!)),
+                          DataCell(Text(row['ВлТекст']!)),
+                        ],
+                      );
+                    }).toList(),
               ),
             ),
-            const SizedBox(height: 16),
+            20.h,
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -157,7 +155,8 @@ class _TransactionsPageState extends State<TransactionsPage> {
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
-          backgroundColor: page == currentPage ? const Color(0xFF6C2BD9) : null,
+          backgroundColor:
+              page == currentPage ? AppColors.primaryColorLight : null,
           foregroundColor: page == currentPage ? Colors.white : Colors.black,
           minimumSize: const Size(36, 36),
           padding: const EdgeInsets.symmetric(horizontal: 12),
