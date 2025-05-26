@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
 class CounterpartiesPage extends StatelessWidget {
@@ -5,6 +6,12 @@ class CounterpartiesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      backgroundColor: AppColors.whiteColor,
+      appBar: CustomAppBar(
+        title: 'Категории контрагентов',
+        backgroundColor: AppColors.whiteColor,
+      ),
+    );
   }
 }
