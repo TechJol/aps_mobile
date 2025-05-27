@@ -1,6 +1,6 @@
-import 'package:aps_mobile/settings.dart';
 import 'package:flutter/material.dart';
-import 'package:aps_mobile/navigation_bar/BottomNavigationBar.dart';
+import 'package:aps_mobile/settings.dart';
+import 'package:aps_mobile/navigation_bar/bottom_navigation_bar.dart';
 
 class HomePageM extends StatefulWidget {
   const HomePageM({super.key});
@@ -14,26 +14,11 @@ class _HomePageMState extends State<HomePageM> {
   String selectedView = 'Spending';
   String selectedPeriod = 'Аналитика';
 
-  final List<String> viewOptions = ['Расходы', 'Доход', 'Общий'];
-  final List<String> periodOptions = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
+  final viewOptions = ['Расходы', 'Доход', 'Общий'];
+  final periodOptions = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
 
-  void onItemTapped(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
-  }
-
-  void selectView(String view) {
-    setState(() {
-      selectedView = view;
-    });
-  }
-
-  void selectPeriod(String period) {
-    setState(() {
-      selectedPeriod = period;
-    });
-  }
+  void updateState<T>(T value, void Function(T) updater) =>
+      setState(() => updater(value));
 
   @override
   Widget build(BuildContext context) {
@@ -41,20 +26,18 @@ class _HomePageMState extends State<HomePageM> {
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         centerTitle: false,
-        title: Text(
-          'La hawla...',
+        title: const Text(
+          'Привет,  Aяна',
           style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.more_vert_rounded, size: 30),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Settings()),
-              );
-              // Navigate to settings
-            },
+            icon: const Icon(Icons.more_vert_rounded, size: 30),
+            onPressed:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const Settings()),
+                ),
           ),
         ],
       ),
@@ -62,271 +45,28 @@ class _HomePageMState extends State<HomePageM> {
         padding: const EdgeInsets.all(22.0),
         child: Column(
           children: [
-            // Top Section
-            Container(
-              height: 215,
-              width: 335,
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20), // Rounded edges
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Period Navigation
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Transform.translate(
-                        offset: Offset(-25, 70), // x: right (+), y: up (-)
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.grey.shade200,
-                          ),
-                          padding: EdgeInsets.all(5),
-                          child: Icon(Icons.arrow_back_ios_rounded, size: 20),
-                        ),
-                      ),
-                      Transform.translate(
-                        offset: Offset(-110, -13),
-                        child: Text(
-                          //analytics text
-                          selectedPeriod,
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      Transform.translate(
-                        offset: Offset(25, 70), // x: right (+), y: up (-)
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.grey.shade200,
-                          ),
-                          padding: EdgeInsets.all(5),
-                          child: Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  //SizedBox(height: 10),
-
-                  // Pie Chart with Legend
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Transform.translate(
-                        offset: Offset(12, 3), // Slight shift to right
-                        child: CustomPaint(
-                          size: Size(106, 106),
-                          painter: PieChartPainter(),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(right: 35),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundColor: Colors.purpleAccent,
-                                  radius: 5,
-                                ),
-                                SizedBox(width: 6),
-                                Text('Аренда'),
-                              ],
-                            ),
-                            SizedBox(height: 7),
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundColor: Colors.blueAccent,
-                                  radius: 5,
-                                ),
-                                SizedBox(width: 6),
-                                Text('Зарплата'),
-                              ],
-                            ),
-                            SizedBox(height: 7),
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundColor: Colors.purple,
-                                  radius: 5,
-                                ),
-                                SizedBox(width: 6),
-                                Text('Прочие расходы'),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: 18),
-
-                  // Period Filter Buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children:
-                        periodOptions.map((period) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 15.0,
-                            ),
-                            child: GestureDetector(
-                              onTap: () => selectPeriod(period),
-                              child: Text(
-                                period,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: 'Inter',
-                                  fontSize: 13,
-                                  color:
-                                      selectedPeriod == period
-                                          ? Colors.black
-                                          : Colors.grey,
-                                ),
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                  ),
-                ],
+            _buildTopSection(),
+            const SizedBox(height: 15),
+            _buildOperationFilters(),
+            const SizedBox(height: 20),
+            _buildOperationsHeader(),
+            const SizedBox(height: 8),
+            const Text(
+              'Today --------------------------------------',
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.grey,
+                fontWeight: FontWeight.w500,
               ),
             ),
-
-            // Operations Section     BOTTOM PART
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header and "View all"
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children:
-                        viewOptions.map((view) {
-                          IconData icon;
-                          switch (view) {
-                            case 'Расходы': //
-                              icon = Icons.arrow_back;
-                              //icon = Icons.arrow_right;
-                              break;
-                            case 'Доход': //
-                              icon = Icons.arrow_back;
-                              break;
-                            case 'Общий': //
-                              icon = Icons.stacked_bar_chart;
-                              break;
-                            default:
-                              icon = Icons.help_outline;
-                          }
-
-                          return Column(
-                            children: [
-                              SizedBox(
-                                width: 103,
-                                height: 43,
-                                child: ElevatedButton(
-                                  onPressed: () => selectView(view),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        selectedView == view
-                                            ? Colors.black
-                                            : Colors.white,
-                                    foregroundColor:
-                                        selectedView == view
-                                            ? Colors.white
-                                            : Colors.black,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(25),
-                                    ),
-                                  ),
-                                  child: Icon(icon, size: 20),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 3,
-                              ), // Add spacing here (adjust as needed)
-                              Text(
-                                view,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: 'Inter',
-                                  fontSize: 14,
-                                  color:
-                                      selectedView == view
-                                          ? Colors.black
-                                          : Colors.black,
-                                ),
-                              ),
-                            ],
-                          );
-                        }).toList(),
-                  ),
-
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Operations',
-                        style: TextStyle(
-                          fontSize: 21,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            'view all',
-                            style: TextStyle(
-                              fontSize: 15,
-                              //color: Colors.blue,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          SizedBox(width: 4),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 14,
-                            //color: Colors.blue,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Today --------------------------------------',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Content Display
             Expanded(
               child: Center(
                 child: Text(
                   '$selectedView view content goes here',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ),
@@ -335,45 +75,208 @@ class _HomePageMState extends State<HomePageM> {
       ),
       bottomNavigationBar: CustomBottomNavBar(
         selectedIndex: selectedIndex,
-        onItemTapped: onItemTapped,
+        onItemTapped: (i) => updateState(i, (val) => selectedIndex = val),
       ),
     );
   }
+
+  Widget _buildTopSection() {
+    return Container(
+      height: 215,
+      width: 335,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _circleIcon(Icons.arrow_back_ios_rounded, Offset(-25, 70)),
+              Transform.translate(
+                offset: const Offset(-110, -13),
+                child: Text(
+                  selectedPeriod,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'Inter',
+                  ),
+                ),
+              ),
+              _circleIcon(Icons.arrow_forward_ios_rounded, Offset(25, 70)),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Transform.translate(
+                offset: const Offset(12, 3),
+                child: CustomPaint(
+                  size: const Size(106, 106),
+                  painter: PieChartPainter(),
+                ),
+              ),
+              _legend(),
+            ],
+          ),
+          const SizedBox(height: 18),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: periodOptions.map((p) => _periodButton(p)).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _circleIcon(IconData icon, Offset offset) => Transform.translate(
+    offset: offset,
+    child: Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.grey.shade200,
+      ),
+      padding: const EdgeInsets.all(5),
+      child: Icon(icon, size: 20),
+    ),
+  );
+
+  Widget _legend() {
+    const items = [
+      {'color': Colors.purpleAccent, 'label': 'Аренда'},
+      {'color': Colors.blueAccent, 'label': 'Зарплата'},
+      {'color': Colors.purple, 'label': 'Прочие расходы'},
+    ];
+    return Padding(
+      padding: const EdgeInsets.only(right: 35),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children:
+            items
+                .map(
+                  (item) => Padding(
+                    padding: const EdgeInsets.only(bottom: 7),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: item['color'] as Color,
+                          radius: 5,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(item['label'] as String),
+                      ],
+                    ),
+                  ),
+                )
+                .toList(),
+      ),
+    );
+  }
+
+  Widget _periodButton(String period) => GestureDetector(
+    onTap: () => updateState(period, (val) => selectedPeriod = val),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      child: Text(
+        period,
+        style: TextStyle(
+          fontWeight: FontWeight.w400,
+          fontFamily: 'Inter',
+          fontSize: 13,
+          color: selectedPeriod == period ? Colors.black : Colors.grey,
+        ),
+      ),
+    ),
+  );
+
+  Widget _buildOperationFilters() => Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children:
+        viewOptions.map((view) {
+          final isSelected = selectedView == view;
+          final icon =
+              view == 'Общий' ? Icons.stacked_bar_chart : Icons.arrow_back;
+          return Column(
+            children: [
+              SizedBox(
+                width: 103,
+                height: 43,
+                child: ElevatedButton(
+                  onPressed:
+                      () => updateState(view, (val) => selectedView = val),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isSelected ? Colors.black : Colors.white,
+                    foregroundColor: isSelected ? Colors.white : Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                  ),
+                  child: Icon(icon, size: 20),
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                view,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          );
+        }).toList(),
+  );
+
+  Widget _buildOperationsHeader() => Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: const [
+      Text(
+        'Operations',
+        style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+      ),
+      Row(
+        children: [
+          Text(
+            'view all',
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+          ),
+          SizedBox(width: 4),
+          Icon(Icons.arrow_forward_ios, size: 14),
+        ],
+      ),
+    ],
+  );
 }
 
 class PieChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final double strokeWidth = 9;
-    final Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    final Paint paint =
+    final paint =
         Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = strokeWidth
+          ..strokeWidth = 9
           ..strokeCap = StrokeCap.round;
 
-    final double gap = 0.27; // small angular gap in radians
+    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
+    const segments = [
+      {'color': Colors.purpleAccent, 'sweep': 2.0},
+      {'color': Colors.blueAccent, 'sweep': 2.1},
+      {'color': Colors.deepPurpleAccent, 'sweep': 2.18},
+    ];
+    const gap = 0.27;
+    double start = 0;
 
-    // Define the sweep angles (sum close to 2π = 6.28)
-    final double sweep1 = 2.0;
-    final double sweep2 = 2.1;
-    final double sweep3 = 2.18;
-
-    double currentStart = 0.0;
-
-    // Red Segment
-    paint.color = Colors.purpleAccent;
-    canvas.drawArc(rect, currentStart, sweep1 - gap, false, paint);
-    currentStart += sweep1;
-
-    // Green Segment
-    paint.color = Colors.blueAccent;
-    canvas.drawArc(rect, currentStart, sweep2 - gap, false, paint);
-    currentStart += sweep2;
-
-    // Blue Segment
-    paint.color = Colors.deepPurpleAccent;
-    canvas.drawArc(rect, currentStart, sweep3 - gap, false, paint);
+    for (var seg in segments) {
+      paint.color = seg['color'] as Color;
+      final sweep = (seg['sweep'] as double) - gap;
+      canvas.drawArc(rect, start, sweep, false, paint);
+      start += seg['sweep'] as double;
+    }
   }
 
   @override
