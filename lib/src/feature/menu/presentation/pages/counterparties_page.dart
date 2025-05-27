@@ -109,7 +109,24 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                             ? () => goToPage(currentPage - 1)
                             : null,
                   ),
-                  ..._buildPageButtons(pageCount),
+                  if (currentPage > 4) ...[
+                    pageButton(1),
+                    pageButton(2),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4),
+                      child: Text("..."),
+                    ),
+                  ],
+                  for (int i = currentPage - 2; i <= currentPage + 2; i++)
+                    if (i >= 1 && i <= pageCount) pageButton(i),
+                  if (currentPage < pageCount - 3) ...[
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4),
+                      child: Text("..."),
+                    ),
+                    pageButton(pageCount - 1),
+                    pageButton(pageCount),
+                  ],
                   IconButton(
                     icon: const Icon(Icons.chevron_right),
                     onPressed:
@@ -141,45 +158,6 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
         });
       },
       child: Text(label),
-    );
-  }
-
-  List<Widget> _buildPageButtons(int pageCount) {
-    List<Widget> widgets = [];
-
-    if (pageCount <= 5) {
-      for (int i = 1; i <= pageCount; i++) {
-        widgets.add(pageButton(i));
-      }
-    } else if (currentPage <= 3) {
-      for (int i = 1; i <= 5; i++) {
-        widgets.add(pageButton(i));
-      }
-      widgets.add(_ellipsis());
-      widgets.add(pageButton(pageCount));
-    } else if (currentPage >= pageCount - 2) {
-      widgets.add(pageButton(1));
-      widgets.add(_ellipsis());
-      for (int i = pageCount - 4; i <= pageCount; i++) {
-        widgets.add(pageButton(i));
-      }
-    } else {
-      widgets.add(pageButton(1));
-      widgets.add(_ellipsis());
-      for (int i = currentPage - 2; i <= currentPage + 2; i++) {
-        widgets.add(pageButton(i));
-      }
-      widgets.add(_ellipsis());
-      widgets.add(pageButton(pageCount));
-    }
-
-    return widgets;
-  }
-
-  Widget _ellipsis() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 6.0),
-      child: Text('...'),
     );
   }
 
