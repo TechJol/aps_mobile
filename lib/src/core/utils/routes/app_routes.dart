@@ -5,9 +5,12 @@ class AppRoutes {
 
   /* <---- Login, Signup -----> */
   static const login = 'login';
-  static const signup = 'signup';
+  static const registration = 'registration';
   static const forgotPassword = 'forgotPassword';
-  static const otpCode = 'otpCode';
+  static const languageSelection = 'languageSelection';
+  static const newPassword = 'newPassword';
+  static const passwordSuccess = 'passwordSuccess';
+  static const homeM = 'homeM';
 
   /*  <---- Home -----> */
   static const home = 'home';

@@ -4,19 +4,19 @@ import 'package:aps_mobile/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:aps_mobile/navigation_bar/BottomNavigationBar.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomePageM extends StatefulWidget {
+  const HomePageM({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageMState createState() => _HomePageMState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageMState extends State<HomePageM> {
   int selectedIndex = 0;
   String selectedView = 'Spending';
-  String selectedPeriod = 'Analytics';
+  String selectedPeriod = 'Аналитика';
 
-  final List<String> viewOptions = ['Spending', 'Incoming', 'All'];
+  final List<String> viewOptions = ['Расходы', 'Доход', 'Общий'];
   final List<String> periodOptions = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
 
   void onItemTapped(int index) {
@@ -61,13 +61,13 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(30.0),
+        padding: const EdgeInsets.all(22.0),
         child: Column(
           children: [
             // Top Section
             Container(
-              height: 208,
-              width: 325,
+              height: 215,
+              width: 335,
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -81,28 +81,42 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.grey.shade200,
-                        ),
-                        padding: EdgeInsets.all(5),
-                        child: Icon(Icons.arrow_back_ios_rounded, size: 20),
-                      ),
-                      Text(
-                        selectedPeriod,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                      Transform.translate(
+                        offset: Offset(-25, 70), // x: right (+), y: up (-)
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey.shade200,
+                          ),
+                          padding: EdgeInsets.all(5),
+                          child: Icon(Icons.arrow_back_ios_rounded, size: 20),
                         ),
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.grey.shade200,
+                      Transform.translate(
+                        offset: Offset(-110, -13),
+                        child: Text(
+                          //analytics text
+                          selectedPeriod,
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                        padding: EdgeInsets.all(5),
-                        child: Icon(Icons.arrow_forward_ios_rounded, size: 20),
+                      ),
+                      Transform.translate(
+                        offset: Offset(25, 70), // x: right (+), y: up (-)
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey.shade200,
+                          ),
+                          padding: EdgeInsets.all(5),
+                          child: Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 20,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -112,17 +126,15 @@ class _HomePageState extends State<HomePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: 25,
-                        ), // Slight shift to right
+                      Transform.translate(
+                        offset: Offset(12, 3), // Slight shift to right
                         child: CustomPaint(
-                          size: Size(100, 100),
+                          size: Size(106, 106),
                           painter: PieChartPainter(),
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(right: 50),
+                        padding: EdgeInsets.only(right: 35),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -133,10 +145,10 @@ class _HomePageState extends State<HomePage> {
                                   radius: 5,
                                 ),
                                 SizedBox(width: 6),
-                                Text('Rent'),
+                                Text('Аренда'),
                               ],
                             ),
-                            SizedBox(height: 6),
+                            SizedBox(height: 7),
                             Row(
                               children: [
                                 CircleAvatar(
@@ -144,10 +156,10 @@ class _HomePageState extends State<HomePage> {
                                   radius: 5,
                                 ),
                                 SizedBox(width: 6),
-                                Text('Payment'),
+                                Text('Зарплата'),
                               ],
                             ),
-                            SizedBox(height: 6),
+                            SizedBox(height: 7),
                             Row(
                               children: [
                                 CircleAvatar(
@@ -155,7 +167,7 @@ class _HomePageState extends State<HomePage> {
                                   radius: 5,
                                 ),
                                 SizedBox(width: 6),
-                                Text('Other'),
+                                Text('Прочие расходы'),
                               ],
                             ),
                           ],
@@ -164,23 +176,30 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
 
-                  SizedBox(height: 15),
+                  SizedBox(height: 18),
 
                   // Period Filter Buttons
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children:
                         periodOptions.map((period) {
-                          return GestureDetector(
-                            onTap: () => selectPeriod(period),
-                            child: Text(
-                              period,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color:
-                                    selectedPeriod == period
-                                        ? Colors.black
-                                        : Colors.grey,
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 15.0,
+                            ),
+                            child: GestureDetector(
+                              onTap: () => selectPeriod(period),
+                              child: Text(
+                                period,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: 'Inter',
+                                  fontSize: 13,
+                                  color:
+                                      selectedPeriod == period
+                                          ? Colors.black
+                                          : Colors.grey,
+                                ),
                               ),
                             ),
                           );
@@ -192,7 +211,7 @@ class _HomePageState extends State<HomePage> {
 
             // Operations Section     BOTTOM PART
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              padding: const EdgeInsets.symmetric(vertical: 15.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -203,14 +222,14 @@ class _HomePageState extends State<HomePage> {
                         viewOptions.map((view) {
                           IconData icon;
                           switch (view) {
-                            case 'Spending':
+                            case 'Расходы': //
                               icon = Icons.arrow_back;
                               //icon = Icons.arrow_right;
                               break;
-                            case 'Incoming':
+                            case 'Доход': //
                               icon = Icons.arrow_back;
                               break;
-                            case 'All':
+                            case 'Общий': //
                               icon = Icons.stacked_bar_chart;
                               break;
                             default:
@@ -240,14 +259,19 @@ class _HomePageState extends State<HomePage> {
                                   child: Icon(icon, size: 20),
                                 ),
                               ),
+                              SizedBox(
+                                height: 3,
+                              ), // Add spacing here (adjust as needed)
                               Text(
                                 view,
                                 style: TextStyle(
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Inter',
+                                  fontSize: 14,
                                   color:
                                       selectedView == view
                                           ? Colors.black
-                                          : Colors.grey,
+                                          : Colors.black,
                                 ),
                               ),
                             ],
@@ -311,29 +335,6 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      /*  bottomNavigationBar: SizedBox(
-        //height: 120,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 40.0),
-          child: BottomNavigationBar(
-            backgroundColor: Colors.white,
-            currentIndex: selectedIndex,
-            onTap: onItemTapped,
-            selectedItemColor: Colors.black,
-            unselectedItemColor: Colors.black,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.newspaper_rounded), label: 'Accounts'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.add_circle_outline_sharp),
-                  label: 'Spending'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.remove_circle_outline_sharp),
-                  label: 'Incoming'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.stacked_bar_chart), label: 'All'),
-            ],
-          ),*/
       bottomNavigationBar: CustomBottomNavBar(
         selectedIndex: selectedIndex,
         onItemTapped: onItemTapped,
@@ -345,7 +346,7 @@ class _HomePageState extends State<HomePage> {
 class PieChartPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final double strokeWidth = 12;
+    final double strokeWidth = 9;
     final Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
     final Paint paint =
         Paint()
@@ -353,12 +354,12 @@ class PieChartPainter extends CustomPainter {
           ..strokeWidth = strokeWidth
           ..strokeCap = StrokeCap.round;
 
-    final double gap = 0.05; // small angular gap in radians
+    final double gap = 0.27; // small angular gap in radians
 
     // Define the sweep angles (sum close to 2π = 6.28)
     final double sweep1 = 2.0;
     final double sweep2 = 2.1;
-    final double sweep3 = 2.05;
+    final double sweep3 = 2.18;
 
     double currentStart = 0.0;
 

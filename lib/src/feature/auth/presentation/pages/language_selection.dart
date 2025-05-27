@@ -34,10 +34,7 @@ class _LanguageSelectionState extends State<LanguageSelection> {
         child: Row(
           children: [
             // Flag icon
-            CircleAvatar(
-              radius: 12,
-              backgroundImage: AssetImage(assetPath),
-            ),
+            CircleAvatar(radius: 12, backgroundImage: AssetImage(assetPath)),
             SizedBox(width: 12),
             // Language text
             Expanded(
@@ -62,18 +59,19 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                 ),
                 color: isSelected ? Color(0xFF661EFB) : Colors.transparent,
               ),
-              child: isSelected
-                  ? Center(
-                      child: Container(
-                        width: 6.5,
-                        height: 6.5,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
+              child:
+                  isSelected
+                      ? Center(
+                        child: Container(
+                          width: 6.5,
+                          height: 6.5,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                    )
-                  : null,
+                      )
+                      : null,
             ),
           ],
         ),
@@ -107,11 +105,12 @@ class _LanguageSelectionState extends State<LanguageSelection> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: selectedLanguage != null
-                    ? () {
-                        Navigator.pushNamed(context, '/home');
-                      }
-                    : null,
+                onPressed:
+                    selectedLanguage != null
+                        ? () {
+                          Navigator.pushNamed(context, '/home');
+                        }
+                        : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF661EFB),
                   disabledBackgroundColor: Color(0xFF661EFB).withOpacity(0.4),
