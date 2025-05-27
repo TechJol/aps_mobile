@@ -109,40 +109,45 @@ class _TransactionsPageState extends State<TransactionsPage> {
               ),
             ),
             20.h,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.chevron_left),
-                  onPressed:
-                      currentPage > 1 ? () => goToPage(currentPage - 1) : null,
-                ),
-                if (currentPage > 4) ...[
-                  pageButton(1),
-                  pageButton(2),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4),
-                    child: Text("..."),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.chevron_left),
+                    onPressed:
+                        currentPage > 1
+                            ? () => goToPage(currentPage - 1)
+                            : null,
+                  ),
+                  if (currentPage > 4) ...[
+                    pageButton(1),
+                    pageButton(2),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4),
+                      child: Text("..."),
+                    ),
+                  ],
+                  for (int i = currentPage - 2; i <= currentPage + 2; i++)
+                    if (i >= 1 && i <= pageCount) pageButton(i),
+                  if (currentPage < pageCount - 3) ...[
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4),
+                      child: Text("..."),
+                    ),
+                    pageButton(pageCount - 1),
+                    pageButton(pageCount),
+                  ],
+                  IconButton(
+                    icon: const Icon(Icons.chevron_right),
+                    onPressed:
+                        currentPage < pageCount
+                            ? () => goToPage(currentPage + 1)
+                            : null,
                   ),
                 ],
-                for (int i = currentPage - 2; i <= currentPage + 2; i++)
-                  if (i >= 1 && i <= pageCount) pageButton(i),
-                if (currentPage < pageCount - 3) ...[
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4),
-                    child: Text("..."),
-                  ),
-                  pageButton(pageCount - 1),
-                  pageButton(pageCount),
-                ],
-                IconButton(
-                  icon: const Icon(Icons.chevron_right),
-                  onPressed:
-                      currentPage < pageCount
-                          ? () => goToPage(currentPage + 1)
-                          : null,
-                ),
-              ],
+              ),
             ),
           ],
         ),
@@ -152,14 +157,14 @@ class _TransactionsPageState extends State<TransactionsPage> {
 
   Widget pageButton(int page) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      padding: const EdgeInsets.symmetric(horizontal: 2.0),
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
           backgroundColor:
               page == currentPage ? AppColors.primaryColorLight : null,
           foregroundColor: page == currentPage ? Colors.white : Colors.black,
           minimumSize: const Size(36, 36),
-          padding: const EdgeInsets.symmetric(horizontal: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
         ),
         onPressed: () => goToPage(page),
         child: Text('$page'),
