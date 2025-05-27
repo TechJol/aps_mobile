@@ -46,7 +46,8 @@ class _LoginPageState extends State<LoginPage> {
 
   void _validateForm() {
     setState(() {
-      isLoginFormValid = usernameController.text.trim().isNotEmpty &&
+      isLoginFormValid =
+          usernameController.text.trim().isNotEmpty &&
           passwordController.text.trim().isNotEmpty;
       isFormValid = isLoginSelected ? isLoginFormValid : false;
     });
@@ -65,9 +66,10 @@ class _LoginPageState extends State<LoginPage> {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(30),
       borderSide: BorderSide(
-        color: touched && text.trim().isNotEmpty
-            ? Color(0xFF661EFB)
-            : Colors.grey.shade300,
+        color:
+            touched && text.trim().isNotEmpty
+                ? Color(0xFF661EFB)
+                : Colors.transparent,
       ),
     );
   }
@@ -112,13 +114,13 @@ class _LoginPageState extends State<LoginPage> {
           Expanded(
             child: Container(
               width: double.infinity,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 20.0,
+              ),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(30),
-                ),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
               ),
               child: Column(
                 children: [
@@ -128,37 +130,47 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         // Войти
+                        // Войти
                         GestureDetector(
                           onTap: () => setState(() => isLoginSelected = true),
-                          child: Column(
-                            children: [
-                              Text(
-                                "Войти",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: isLoginSelected || isLoginFormValid
-                                      ? const Color(0xFF661EFB)
-                                      : Colors.grey,
+                          child: Container(
+                            color:
+                                Colors
+                                    .transparent, // Prevents inherited background
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Войти",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color:
+                                        isLoginSelected || isLoginFormValid
+                                            ? const Color(0xFF661EFB)
+                                            : Colors.grey,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: 4),
-                              Container(
-                                height: 2,
-                                width: 100,
-                                color: isLoginSelected || isLoginFormValid
-                                    ? const Color(0xFF661EFB)
-                                    : Colors.transparent,
-                              ),
-                            ],
+                                SizedBox(height: 4),
+                                Container(
+                                  height: 2,
+                                  width: 100,
+                                  color:
+                                      isLoginSelected || isLoginFormValid
+                                          ? const Color(0xFF661EFB)
+                                          : Colors.transparent,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         SizedBox(width: 15),
                         // Регистрация
                         GestureDetector(
-                          onTap: () {
+                          onTap: () async {
                             setState(() => isLoginSelected = false);
-                            Navigator.pushNamed(context, '/registration');
+                            await Navigator.pushNamed(context, '/registration');
+                            // When coming back from registration, reset the tab to login
+                            setState(() => isLoginSelected = true);
                           },
                           child: Column(
                             children: [
@@ -167,18 +179,20 @@ class _LoginPageState extends State<LoginPage> {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: !isLoginSelected
-                                      ? const Color(0xFF661EFB)
-                                      : Colors.grey,
+                                  color:
+                                      !isLoginSelected
+                                          ? const Color(0xFF661EFB)
+                                          : Colors.grey,
                                 ),
                               ),
                               SizedBox(height: 4),
                               Container(
                                 height: 2,
                                 width: 120,
-                                color: !isLoginSelected
-                                    ? const Color(0xFF661EFB)
-                                    : Colors.transparent,
+                                color:
+                                    !isLoginSelected
+                                        ? const Color(0xFF661EFB)
+                                        : Colors.transparent,
                               ),
                             ],
                           ),
@@ -193,19 +207,26 @@ class _LoginPageState extends State<LoginPage> {
                     controller: usernameController,
                     focusNode: usernameFocus,
                     textInputAction: TextInputAction.next,
-                    onSubmitted: (_) =>
-                        FocusScope.of(context).requestFocus(passwordFocus),
+                    onSubmitted:
+                        (_) =>
+                            FocusScope.of(context).requestFocus(passwordFocus),
                     decoration: InputDecoration(
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
                       hintText: 'Логин',
                       hintStyle: TextStyle(
                         color: Colors.black.withOpacity(0.2),
                       ),
-                      border:
-                          _getBorder(usernameTouched, usernameController.text),
-                      enabledBorder:
-                          _getBorder(usernameTouched, usernameController.text),
+                      border: _getBorder(
+                        usernameTouched,
+                        usernameController.text,
+                      ),
+                      enabledBorder: _getBorder(
+                        usernameTouched,
+                        usernameController.text,
+                      ),
                       focusedBorder: _getBorder(true, usernameController.text),
                       filled: true,
                       fillColor: Colors.grey.shade50,
@@ -221,16 +242,22 @@ class _LoginPageState extends State<LoginPage> {
                     obscureText: true,
                     textInputAction: TextInputAction.done,
                     decoration: InputDecoration(
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
                       hintText: 'Пароль',
                       hintStyle: TextStyle(
                         color: Colors.black.withOpacity(0.2),
                       ),
-                      border:
-                          _getBorder(passwordTouched, passwordController.text),
-                      enabledBorder:
-                          _getBorder(passwordTouched, passwordController.text),
+                      border: _getBorder(
+                        passwordTouched,
+                        passwordController.text,
+                      ),
+                      enabledBorder: _getBorder(
+                        passwordTouched,
+                        passwordController.text,
+                      ),
                       focusedBorder: _getBorder(true, passwordController.text),
                       filled: true,
                       fillColor: Colors.grey.shade50,
@@ -258,28 +285,31 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 35),
 
                   // Login button
-                  Opacity(
-                    opacity: isFormValid ? 1.0 : 0.2,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (isFormValid) {
-                          Navigator.pushNamed(context, '/home');
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF661EFB),
-                        minimumSize: Size(double.infinity, 50),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
+                  ElevatedButton(
+                    onPressed:
+                        isFormValid
+                            ? () {
+                              Navigator.pushNamed(context, '/home');
+                            }
+                            : null, // Disables button if form is not valid
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          isFormValid
+                              ? const Color(0xFF661EFB) // Normal purple
+                              : const Color(
+                                0xFFC7C8FF,
+                              ), // Desaturated lighter purple for "disabled" look
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
                       ),
-                      child: Text(
-                        "Войти",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                    ),
+                    child: const Text(
+                      "Войти",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
                       ),
                     ),
                   ),
