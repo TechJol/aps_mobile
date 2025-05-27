@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:aps_mobile/settings.dart';
 import 'package:aps_mobile/navigation_bar/bottom_navigation_bar.dart';
 
-class HomePageM extends StatefulWidget {
-  const HomePageM({super.key});
+class PieChartPage extends StatefulWidget {
+  const PieChartPage({super.key});
 
   @override
-  _HomePageMState createState() => _HomePageMState();
+  _PieChartPageState createState() => _PieChartPageState();
 }
 
-class _HomePageMState extends State<HomePageM> {
+class _PieChartPageState extends State<PieChartPage> {
   int selectedIndex = 0;
   String selectedView = 'Spending';
   String selectedPeriod = 'Аналитика';
