@@ -1,6 +1,5 @@
 import 'package:aps_mobile/pie_chart_page.dart';
 import 'package:flutter/material.dart';
-import 'package:aps_mobile/navigation_bar/accounts_management.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int selectedIndex;
