@@ -60,7 +60,39 @@ class _MenuPageState extends State<MenuPage> {
             title: 'Отчеты',
             expanded: isReportsExpanded,
             onTap: () => setState(() => isReportsExpanded = !isReportsExpanded),
-            children: const ['Финансовый отчет', 'Графики'],
+            children: const [
+              'Отчеты по статьям',
+              'Общее положение доходов и расходов',
+              'Месячный отчет по доходам и расходам',
+              'Показатели',
+            ],
+            onChildTap: (value) {
+              if (value == 'Отчеты по статьям') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const CategoryReportsPage(),
+                  ),
+                );
+              } else if (value == 'Общее положение доходов и расходов') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const IncomeExpenseSummaryPage(),
+                  ),
+                );
+              } else if (value == 'Месячный отчет по доходам и расходам') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const MonthlyReportPage()),
+                );
+              } else if (value == 'Показатели') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const MetricsPage()),
+                );
+              }
+            },
           ),
           const SizedBox(height: 12),
           ExpandableMenuItem(
@@ -69,7 +101,12 @@ class _MenuPageState extends State<MenuPage> {
             expanded: isSettingsExpanded,
             onTap:
                 () => setState(() => isSettingsExpanded = !isSettingsExpanded),
-            children: const ['Профиль', 'Безопасность'],
+            children: const [
+              'Контрагенты',
+              'Тип контрагентов',
+              'Счета',
+              'Статьи',
+            ],
           ),
           const SizedBox(height: 20),
           const MenuItem(icon: 'assets/icons/folder3.svg', title: 'Выход'),
