@@ -297,7 +297,7 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed:
                         isFormValid
                             ? () {
-                              Navigator.pushNamed(context, AppRoutes.home);
+                              Navigator.pushNamed(context, AppRoutes.main);
                             }
                             : null, // Disables button if form is not valid
                     style: ElevatedButton.styleFrom(
