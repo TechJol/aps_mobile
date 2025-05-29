@@ -1,3 +1,4 @@
+import 'package:aps_mobile/pie_chart_page.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +10,12 @@ class MainView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MainScreen([HomePage(), SizedBox(), SizedBox(), SizedBox()]);
+    return const MainScreen([
+      HomePage(),
+      PieChartPage(),
+      SizedBox(),
+      SizedBox(),
+    ]);
   }
 }
 
@@ -62,7 +68,7 @@ class MainScreen extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              label: 'Приход',
+              label: 'Доход',
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(

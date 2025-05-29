@@ -52,7 +52,7 @@ class _PieChartPageState extends State<PieChartPage> {
             _buildOperationsHeader(),
             const SizedBox(height: 8),
             const Text(
-              'Today --------------------------------------',
+              'Сегодня  ------------------------------------------',
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.grey,
@@ -273,13 +273,13 @@ class _PieChartPageState extends State<PieChartPage> {
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: const [
       Text(
-        'Operations',
-        style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+        'Операции',
+        style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
       ),
       Row(
         children: [
           Text(
-            'view all',
+            'смотреть все',
             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
           ),
           SizedBox(width: 4),
