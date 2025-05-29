@@ -93,8 +93,10 @@ class _AddAccountState extends State<AddAccount> {
                   // Table Header
                   Container(
                     color: Colors.black,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 4,
+                    ),
                     child: Row(
                       children: [
                         Expanded(
@@ -107,11 +109,7 @@ class _AddAccountState extends State<AddAccount> {
                             ),
                           ),
                         ),
-                        Container(
-                          width: 1,
-                          height: 24,
-                          color: Colors.white,
-                        ),
+                        Container(width: 1, height: 24, color: Colors.white),
                         Expanded(
                           child: Text(
                             "Account Type",
@@ -134,7 +132,9 @@ class _AddAccountState extends State<AddAccount> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 10),
+                            vertical: 0,
+                            horizontal: 10,
+                          ),
                           child: Row(
                             children: [
                               Expanded(
@@ -169,7 +169,7 @@ class _AddAccountState extends State<AddAccount> {
                   }),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
 class PassSuccessPage extends StatefulWidget {
@@ -74,7 +75,7 @@ class _PassSuccessPageState extends State<PassSuccessPage> {
                 child: ElevatedButton(
                   onPressed: () {
                     // Navigate to home page after password reset success
-                    Navigator.pushReplacementNamed(context, '/home');
+                    Navigator.pushReplacementNamed(context, AppRoutes.main);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF661EFB),

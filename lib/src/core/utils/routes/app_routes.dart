@@ -1,16 +1,16 @@
 class AppRoutes {
   /// The Initial Page
-  static const main = '/';
+  static const main = 'main';
   static const onboarding = 'onboarding';
 
   /* <---- Login, Signup -----> */
-  static const login = 'login';
+  static const login = '/';
   static const registration = 'registration';
   static const forgotPassword = 'forgotPassword';
   static const languageSelection = 'languageSelection';
   static const newPassword = 'newPassword';
   static const passwordSuccess = 'passwordSuccess';
-  static const homeM = 'homeM';
+  static const pieChart = 'pieChart';
 
   /*  <---- Home -----> */
   static const home = 'home';

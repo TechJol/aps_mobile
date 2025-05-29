@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPassPage extends StatefulWidget {
@@ -192,7 +193,8 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
               child: ElevatedButton(
                 onPressed:
                     otpDigits.every((d) => d.isNotEmpty)
-                        ? () => Navigator.pushNamed(context, '/new-password')
+                        ? () =>
+                            Navigator.pushNamed(context, AppRoutes.newPassword)
                         : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF661EFB),

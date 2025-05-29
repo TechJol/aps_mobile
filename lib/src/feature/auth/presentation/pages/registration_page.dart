@@ -1,5 +1,6 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, deprecated_member_use
 
+import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
 class Registration extends StatefulWidget {
@@ -124,7 +125,7 @@ class _RegistrationState extends State<Registration> {
                             onTap: () {
                               Navigator.pop(
                                 context,
-                                '/',
+                                AppRoutes.login,
                               ); // Go back to LoginPage
                             },
                             child: Column(
@@ -216,19 +217,16 @@ class _RegistrationState extends State<Registration> {
                               0xFF661EFB,
                             ), // Purple fill when checked
                             checkColor: Colors.white,
-                            fillColor: MaterialStateProperty.resolveWith<Color>(
-                              (states) {
-                                if (states.contains(MaterialState.selected)) {
-                                  return Color(
-                                    0xFF661EFB,
-                                  ); // Purple when checked
-                                }
-                                return Colors
-                                    .white; // White fill when unchecked
-                              },
-                            ),
-                            side: MaterialStateBorderSide.resolveWith((states) {
-                              if (states.contains(MaterialState.selected)) {
+                            fillColor: WidgetStateProperty.resolveWith<Color>((
+                              states,
+                            ) {
+                              if (states.contains(WidgetState.selected)) {
+                                return Color(0xFF661EFB); // Purple when checked
+                              }
+                              return Colors.white; // White fill when unchecked
+                            }),
+                            side: WidgetStateBorderSide.resolveWith((states) {
+                              if (states.contains(WidgetState.selected)) {
                                 return BorderSide(
                                   color: Color(0xFF661EFB),
                                   width: 2,
@@ -265,7 +263,7 @@ class _RegistrationState extends State<Registration> {
                               ? () {
                                 Navigator.pushNamed(
                                   context,
-                                  '/language-selection',
+                                  AppRoutes.languageSelection,
                                 );
                               }
                               : null, // Disables button if form is not valid

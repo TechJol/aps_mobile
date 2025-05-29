@@ -25,7 +25,8 @@ class _SettingsState extends State<Settings> {
       child: Center(
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: color ??
+            backgroundColor:
+                color ??
                 (expandable && isExpanded
                     ? const Color(0xFFC7C8FF)
                     : const Color(0xFFF3F4F7)),
@@ -65,10 +66,7 @@ class _SettingsState extends State<Settings> {
     bool isBottom = false,
   }) {
     return ConstrainedBox(
-      constraints: const BoxConstraints(
-        minWidth: 315,
-        minHeight: 58,
-      ),
+      constraints: const BoxConstraints(minWidth: 315, minHeight: 58),
       child: Container(
         margin: EdgeInsets.only(
           left: 38,
@@ -122,14 +120,9 @@ class _SettingsState extends State<Settings> {
           const SizedBox(height: 10),
 
           /// All Operations
-          buildMainButton(
-            'All Operations',
-            Icons.dashboard,
-            () {
-              setState(() => expandOperations = !expandOperations);
-            },
-            isExpanded: expandOperations,
-          ),
+          buildMainButton('All Operations', Icons.dashboard, () {
+            setState(() => expandOperations = !expandOperations);
+          }, isExpanded: expandOperations),
           if (expandOperations) ...[
             const SizedBox(height: 10),
             buildSubButton('All Transactions', null, isTop: true),
@@ -138,14 +131,9 @@ class _SettingsState extends State<Settings> {
           ],
 
           /// Reports
-          buildMainButton(
-            'Reports',
-            Icons.bar_chart,
-            () {
-              setState(() => expandReports = !expandReports);
-            },
-            isExpanded: expandReports,
-          ),
+          buildMainButton('Reports', Icons.bar_chart, () {
+            setState(() => expandReports = !expandReports);
+          }, isExpanded: expandReports),
           if (expandReports) ...[
             const SizedBox(height: 10),
             buildSubButton('Reports on Articles', null, isTop: true),
@@ -155,14 +143,9 @@ class _SettingsState extends State<Settings> {
           ],
 
           /// Settings
-          buildMainButton(
-            'Settings',
-            Icons.settings,
-            () {
-              setState(() => expandSettings = !expandSettings);
-            },
-            isExpanded: expandSettings,
-          ),
+          buildMainButton('Settings', Icons.settings, () {
+            setState(() => expandSettings = !expandSettings);
+          }, isExpanded: expandSettings),
           if (expandSettings) ...[
             const SizedBox(height: 0),
             buildSubButton('Agents', null, isTop: true),
@@ -187,9 +170,7 @@ class _SettingsState extends State<Settings> {
             () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const UserInfoPage(),
-                ),
+                MaterialPageRoute(builder: (context) => const UserInfoPage()),
               );
             },
             expandable: false,

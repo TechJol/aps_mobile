@@ -1,5 +1,6 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, deprecated_member_use
 
+import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -170,8 +171,10 @@ class _LoginPageState extends State<LoginPage> {
                         GestureDetector(
                           onTap: () async {
                             setState(() => isLoginSelected = false);
-                            await Navigator.pushNamed(context, '/registration');
-                            // When coming back from registration, reset the tab to login
+                            await Navigator.pushNamed(
+                              context,
+                              AppRoutes.registration,
+                            );
                             setState(() => isLoginSelected = true);
                           },
                           child: Column(
@@ -272,7 +275,10 @@ class _LoginPageState extends State<LoginPage> {
                       padding: EdgeInsets.only(left: 150.0),
                       child: TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/forgot-password');
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.forgotPassword,
+                          );
                         },
                         child: const Text(
                           "Забыли пароль?",
@@ -291,7 +297,7 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed:
                         isFormValid
                             ? () {
-                              Navigator.pushNamed(context, '/home');
+                              Navigator.pushNamed(context, AppRoutes.main);
                             }
                             : null, // Disables button if form is not valid
                     style: ElevatedButton.styleFrom(

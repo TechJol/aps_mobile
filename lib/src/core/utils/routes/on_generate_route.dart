@@ -1,3 +1,4 @@
+import 'package:aps_mobile/pie_chart_page.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/cupertino.dart';
 import 'app_routes.dart';
@@ -10,6 +11,27 @@ class RouteGenerator {
     // final args = (arguments is Map<String, dynamic>) ? arguments : {};
 
     switch (route) {
+      case AppRoutes.login:
+        return CupertinoPageRoute(builder: (_) => LoginPage());
+
+      case AppRoutes.registration:
+        return CupertinoPageRoute(builder: (_) => Registration());
+
+      case AppRoutes.forgotPassword:
+        return CupertinoPageRoute(builder: (_) => ForgotPassPage());
+
+      case AppRoutes.languageSelection:
+        return CupertinoPageRoute(builder: (_) => LanguageSelection());
+
+      case AppRoutes.newPassword:
+        return CupertinoPageRoute(builder: (_) => NewPassPage());
+
+      case AppRoutes.passwordSuccess:
+        return CupertinoPageRoute(builder: (_) => PassSuccessPage());
+
+      case AppRoutes.pieChart:
+        return CupertinoPageRoute(builder: (_) => PieChartPage());
+
       case AppRoutes.main:
         return CupertinoPageRoute(builder: (_) => MainView());
 

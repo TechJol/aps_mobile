@@ -1,6 +1,7 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:aps_mobile/settings.dart';
-import 'package:aps_mobile/navigation_bar/bottom_navigation_bar.dart';
 
 class PieChartPage extends StatefulWidget {
   const PieChartPage({super.key});
@@ -73,10 +74,10 @@ class _PieChartPageState extends State<PieChartPage> {
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: selectedIndex,
-        onItemTapped: (i) => updateState(i, (val) => selectedIndex = val),
-      ),
+      // bottomNavigationBar: CustomBottomNavBar(
+      //   selectedIndex: selectedIndex,
+      //   onItemTapped: (i) => updateState(i, (val) => selectedIndex = val),
+      // ),
     );
   }
 

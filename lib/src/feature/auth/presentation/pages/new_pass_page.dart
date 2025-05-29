@@ -1,3 +1,6 @@
+// ignore_for_file: library_private_types_in_public_api, deprecated_member_use
+
+import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
 class NewPassPage extends StatefulWidget {
@@ -204,7 +207,7 @@ class _NewPassPageState extends State<NewPassPage> {
                         isFormValid
                             ? () => Navigator.pushNamed(
                               context,
-                              '/password-success',
+                              AppRoutes.passwordSuccess,
                             )
                             : null,
                     style: ElevatedButton.styleFrom(

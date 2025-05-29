@@ -1,3 +1,6 @@
+// ignore_for_file: library_private_types_in_public_api
+
+import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
 class LanguageSelection extends StatefulWidget {
@@ -108,7 +111,7 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                 onPressed:
                     selectedLanguage != null
                         ? () {
-                          Navigator.pushNamed(context, '/home');
+                          Navigator.pushNamed(context, AppRoutes.main);
                         }
                         : null,
                 style: ElevatedButton.styleFrom(
