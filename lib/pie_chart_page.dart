@@ -1,5 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api
-
+import 'package:aps_mobile/src/feature/main/main.dart';
 import 'package:flutter/material.dart';
 import 'package:aps_mobile/settings.dart';
 
@@ -16,7 +15,7 @@ class _PieChartPageState extends State<PieChartPage> {
   String selectedPeriod = 'Аналитика';
 
   final viewOptions = ['Расходы', 'Доход', 'Общий'];
-  final periodOptions = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
+  final periodOptions = ['День', 'Неделя', 'Месяц', 'Год'];
 
   void updateState<T>(T value, void Function(T) updater) =>
       setState(() => updater(value));
@@ -29,7 +28,7 @@ class _PieChartPageState extends State<PieChartPage> {
         centerTitle: false,
         title: const Text(
           'Привет,  Aяна',
-          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
         ),
         actions: [
           IconButton(
@@ -74,21 +73,26 @@ class _PieChartPageState extends State<PieChartPage> {
           ],
         ),
       ),
-      // bottomNavigationBar: CustomBottomNavBar(
-      //   selectedIndex: selectedIndex,
-      //   onItemTapped: (i) => updateState(i, (val) => selectedIndex = val),
-      // ),
+      //bottomNavigationBar: MainView(
+      //selectedIndex: selectedIndex,
+      //onItemTapped: (i) => updateState(i, (val) => selectedIndex = val),
+      //),
+
+      /*     bottomNavigationBar: CustomBottomNavBar(
+        selectedIndex: selectedIndex,
+        onItemTapped: (i) => updateState(i, (val) => selectedIndex = val),
+      ),*/
     );
   }
 
   Widget _buildTopSection() {
     return Container(
-      height: 215,
-      width: 335,
+      height: 235,
+      width: 370,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(25),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -102,7 +106,7 @@ class _PieChartPageState extends State<PieChartPage> {
                 child: Text(
                   selectedPeriod,
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 18,
                     fontWeight: FontWeight.w500,
                     fontFamily: 'Inter',
                   ),
@@ -124,10 +128,42 @@ class _PieChartPageState extends State<PieChartPage> {
               _legend(),
             ],
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 30),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: periodOptions.map((p) => _periodButton(p)).toList(),
+            mainAxisAlignment: MainAxisAlignment.center,
+            children:
+                periodOptions.map((period) {
+                  final isSelected = selectedPeriod == period;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 23.0),
+                    child: GestureDetector(
+                      onTap:
+                          () => updateState(
+                            period,
+                            (val) => selectedPeriod = val,
+                          ),
+                      child: Text(
+                        period,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          fontFamily: 'Inter',
+                          color:
+                              isSelected
+                                  ? const Color(0xFF3F00C0)
+                                  : const Color(0xFF878585),
+                          decoration:
+                              isSelected
+                                  ? TextDecoration.underline
+                                  : TextDecoration.none,
+                          decorationThickness: 1.5,
+                          decorationColor: const Color(0xFF3F00C0),
+                          height: 0, //
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
           ),
         ],
       ),
@@ -142,32 +178,32 @@ class _PieChartPageState extends State<PieChartPage> {
         color: Colors.grey.shade200,
       ),
       padding: const EdgeInsets.all(5),
-      child: Icon(icon, size: 20),
+      child: Icon(icon, size: 23),
     ),
   );
 
   Widget _legend() {
     const items = [
-      {'color': Colors.purpleAccent, 'label': 'Аренда'},
-      {'color': Colors.blueAccent, 'label': 'Зарплата'},
-      {'color': Colors.purple, 'label': 'Прочие расходы'},
+      {'color': Color(0xFF4600D7), 'label': 'Аренда'},
+      {'color': Color(0xFFBC6FF8), 'label': 'Зарплата'},
+      {'color': Color(0xFF8385F2), 'label': 'Прочие расходы'},
     ];
     return Padding(
-      padding: const EdgeInsets.only(right: 35),
+      padding: const EdgeInsets.only(right: 40),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children:
             items
                 .map(
                   (item) => Padding(
-                    padding: const EdgeInsets.only(bottom: 7),
+                    padding: const EdgeInsets.only(bottom: 12),
                     child: Row(
                       children: [
                         CircleAvatar(
                           backgroundColor: item['color'] as Color,
-                          radius: 5,
+                          radius: 6,
                         ),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: 10),
                         Text(item['label'] as String),
                       ],
                     ),
@@ -260,14 +296,14 @@ class PieChartPainter extends CustomPainter {
     final paint =
         Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 9
+          ..strokeWidth = 9.5
           ..strokeCap = StrokeCap.round;
 
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
+    final rect = Rect.fromLTWH(0, 0, 112, 112);
     const segments = [
-      {'color': Colors.purpleAccent, 'sweep': 2.0},
-      {'color': Colors.blueAccent, 'sweep': 2.1},
-      {'color': Colors.deepPurpleAccent, 'sweep': 2.18},
+      {'color': Color(0xFF4600D7), 'sweep': 2.0},
+      {'color': Color(0xFFBC6FF8), 'sweep': 2.1},
+      {'color': Color(0xFF8385F2), 'sweep': 2.18},
     ];
     const gap = 0.27;
     double start = 0;
