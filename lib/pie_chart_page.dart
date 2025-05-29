@@ -1,6 +1,6 @@
 import 'package:aps_mobile/src/feature/main/main.dart';
+import 'package:aps_mobile/src/feature/menu/presentation/pages/menu_page.dart';
 import 'package:flutter/material.dart';
-import 'package:aps_mobile/settings.dart';
 
 class PieChartPage extends StatefulWidget {
   const PieChartPage({super.key});
@@ -36,7 +36,7 @@ class _PieChartPageState extends State<PieChartPage> {
             onPressed:
                 () => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const Settings()),
+                  MaterialPageRoute(builder: (_) => const MenuPage()),
                 ),
           ),
         ],
