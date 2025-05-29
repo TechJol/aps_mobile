@@ -1,4 +1,4 @@
-import 'package:aps_mobile/navigation_bar/AddAccount.dart';
+import 'package:aps_mobile/navigation_bar/add_account.dart';
 import 'package:flutter/material.dart';
 
 // Dummy Add Account Page
@@ -61,18 +61,24 @@ class CreditCardWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(bankName,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold)),
+              Text(
+                bankName,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               Spacer(),
               Text('Balance', style: TextStyle(color: Colors.white70)),
-              Text(balance,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold)),
+              Text(
+                balance,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ],
           ),
         ),
@@ -153,8 +159,10 @@ class _AccountsManagementState extends State<AccountsManagementPage> {
                     );
                   },
                   icon: Icon(Icons.add, color: Colors.black),
-                  label: Text('Add Account',
-                      style: TextStyle(color: Colors.black)),
+                  label: Text(
+                    'Add Account',
+                    style: TextStyle(color: Colors.black),
+                  ),
                   style: OutlinedButton.styleFrom(
                     side: BorderSide(color: Colors.black),
                   ),
@@ -171,8 +179,8 @@ class _AccountsManagementState extends State<AccountsManagementPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          AccountDetails(accountName: 'Bank A')),
+                    builder: (context) => AccountDetails(accountName: 'Bank A'),
+                  ),
                 );
               },
             ),
@@ -184,8 +192,8 @@ class _AccountsManagementState extends State<AccountsManagementPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          AccountDetails(accountName: 'Bank B')),
+                    builder: (context) => AccountDetails(accountName: 'Bank B'),
+                  ),
                 );
               },
             ),
@@ -199,13 +207,21 @@ class _AccountsManagementState extends State<AccountsManagementPage> {
         unselectedItemColor: Colors.black,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              icon: Icon(Icons.newspaper_rounded), label: 'Accounts'),
+            icon: Icon(Icons.newspaper_rounded),
+            label: 'Accounts',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.add_circle_outline_sharp), label: 'Spending'),
+            icon: Icon(Icons.add_circle_outline_sharp),
+            label: 'Spending',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.remove_circle_outline_sharp), label: 'Incoming'),
+            icon: Icon(Icons.remove_circle_outline_sharp),
+            label: 'Incoming',
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.stacked_bar_chart), label: 'All'),
+            icon: Icon(Icons.stacked_bar_chart),
+            label: 'All',
+          ),
         ],
       ),
     );

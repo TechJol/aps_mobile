@@ -1,5 +1,5 @@
+import 'package:aps_mobile/pie_chart_page.dart';
 import 'package:flutter/material.dart';
-import 'package:aps_mobile/navigation_bar/AccountsManagement.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -26,8 +26,7 @@ class CustomBottomNavBar extends StatelessWidget {
             if (index == 0) {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => AccountsManagementPage()),
+                MaterialPageRoute(builder: (context) => PieChartPage()),
               );
             }
           },

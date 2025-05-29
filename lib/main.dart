@@ -1,12 +1,10 @@
-import 'package:aps_mobile/home_page_m.dart';
+import 'package:aps_mobile/pie_chart_page.dart';
+import 'package:aps_mobile/src/feature/auth/presentation/pages/Login.dart';
 import 'package:aps_mobile/src/feature/auth/presentation/pages/forgot_pass_page.dart';
 import 'package:aps_mobile/src/feature/auth/presentation/pages/language_page.dart';
 import 'package:aps_mobile/src/feature/auth/presentation/pages/pass_success.dart';
-import 'package:aps_mobile/src/feature/feature.dart';
-//import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'injection_container.dart' as di;
-import 'src/feature/auth/presentation/pages/login_page.dart';
 import 'src/feature/auth/presentation/pages/new_pass_page.dart';
 import 'src/feature/auth/presentation/pages/registration_page.dart';
 
@@ -32,7 +30,7 @@ class AccountingApp extends StatelessWidget {
         '/registration': (context) => Registration(),
         '/forgot-password': (context) => ForgotPassPage(),
         '/language-selection': (context) => LanguageSelection(),
-        '/home': (context) => HomePageM(),
+        '/home': (context) => PieChartPage(),
         '/new-password': (context) => NewPassPage(),
         '/password-success': (context) => PassSuccessPage(),
       },
