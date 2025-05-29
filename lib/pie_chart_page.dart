@@ -1,7 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
-import 'package:aps_mobile/settings.dart';
 
 class PieChartPage extends StatefulWidget {
   const PieChartPage({super.key});
@@ -34,11 +33,11 @@ class _PieChartPageState extends State<PieChartPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.more_vert_rounded, size: 30),
-            onPressed:
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const Settings()),
-                ),
+            onPressed: () {},
+            // () => Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (_) => const Settings()),
+            // ),
           ),
         ],
       ),

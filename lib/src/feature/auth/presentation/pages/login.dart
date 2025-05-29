@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api, deprecated_member_use
+// ignore_for_file: file_names, library_private_types_in_public_api, deprecated_member_use
 
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
@@ -297,7 +297,7 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed:
                         isFormValid
                             ? () {
-                              Navigator.pushNamed(context, AppRoutes.main);
+                              Navigator.pushNamed(context, AppRoutes.home);
                             }
                             : null, // Disables button if form is not valid
                     style: ElevatedButton.styleFrom(

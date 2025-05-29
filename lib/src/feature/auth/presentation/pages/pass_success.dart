@@ -9,7 +9,7 @@ class PassSuccessPage extends StatefulWidget {
 }
 
 class _PassSuccessPageState extends State<PassSuccessPage> {
-  String email = "example@gmail.com"; // TODO: Replace with actual user email
+  String email = "example@gmail.com";
 
   String _maskEmail(String email) {
     int index = email.indexOf('@');

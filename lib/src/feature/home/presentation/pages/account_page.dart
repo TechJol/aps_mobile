@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -129,7 +131,7 @@ class _AccountPageState extends State<AccountPage> {
                                 accountName: account['name']!,
 
                                 onConfirm: () {
-                                  print('Удаляем: ${account['name']}');
+                                  log('Удаляем: ${account['name']}');
                                 },
                                 title: 'Удалить счет',
                               );
