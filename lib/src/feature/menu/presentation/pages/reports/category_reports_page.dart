@@ -22,7 +22,16 @@ class CategoryReportsPage extends StatelessWidget {
             20.h,
             MonthsTabs(),
             20.h,
-            TitleSection(),
+            TitleSection(title: 'Основные статьи , доход'),
+            20.h,
+            PieChartSection(),
+            20.h,
+            LegendSection(),
+            40.h,
+            DataTableSection(),
+
+            40.h,
+            TitleSection(title: 'Основные статьи , расход'),
             20.h,
             PieChartSection(),
             20.h,
@@ -130,11 +139,12 @@ class MonthsTabs extends StatelessWidget {
 
 // Заголовок
 class TitleSection extends StatelessWidget {
-  const TitleSection({super.key});
+  const TitleSection({super.key, required this.title});
+  final String title;
 
   @override
   Widget build(BuildContext context) {
-    return Text('Основные статьи , доход', style: AppTextStyles.f16w500);
+    return Text(title, style: AppTextStyles.f16w500);
   }
 }
 
