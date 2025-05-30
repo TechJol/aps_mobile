@@ -39,10 +39,11 @@ class MonthlyReportPage extends StatelessWidget {
                   MonthlyReportChart(),
                   20.h,
                   _legendSection(),
-                  20.h,
                 ],
               ),
             ),
+            40.h,
+            _dataTableSection(),
           ],
         ),
       ),
@@ -110,6 +111,69 @@ class MonthlyReportPage extends StatelessWidget {
           const SizedBox(width: 8),
           Text(text, style: AppTextStyles.f14w500),
         ],
+      ),
+    );
+  }
+
+  _dataTableSection() {
+    final int rowsPerPage = 10;
+    int currentPage = 1;
+
+    final List<Map<String, String>> data = List.generate(223, (index) {
+      return {
+        'Месяц': '2024-10',
+        'Доход (KGZ)': '120037,00',
+        'Расход (KGZ)': '9999',
+        'Чистый доход (KGZ)': '156666',
+      };
+    });
+
+    final start = (currentPage - 1) * rowsPerPage;
+    final end = (start + rowsPerPage).clamp(0, data.length);
+    final paginatedData = data.sublist(start, end);
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: DataTable(
+        columnSpacing: 32,
+        headingRowColor: WidgetStateProperty.all(AppColors.primaryColorLight),
+        headingTextStyle: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+        dataRowColor: WidgetStateProperty.all(Colors.white),
+        columns: const [
+          DataColumn(label: Text('Месяц')),
+          DataColumn(label: Text('Доход (KGZ)')),
+          DataColumn(label: Text('Расход (KGZ)')),
+          DataColumn(label: Text('Чистый доход (KGZ)')),
+        ],
+        rows:
+            paginatedData.map((row) {
+              return DataRow(
+                cells: [
+                  DataCell(Text(row['Месяц']!)),
+                  DataCell(
+                    Text(
+                      row['Доход (KGZ)']!,
+                      style: TextStyle(color: AppColors.greenColor),
+                    ),
+                  ),
+                  DataCell(
+                    Text(
+                      row['Расход (KGZ)']!,
+                      style: TextStyle(color: AppColors.redColor),
+                    ),
+                  ),
+                  DataCell(
+                    Text(
+                      row['Чистый доход (KGZ)']!,
+                      style: TextStyle(color: AppColors.greenColor),
+                    ),
+                  ),
+                ],
+              );
+            }).toList(),
       ),
     );
   }
