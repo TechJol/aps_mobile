@@ -103,12 +103,12 @@ class DataTableSectionB extends StatelessWidget {
           color: Colors.white,
           child: DataTable(
             columnSpacing: 0, // убираем внутренние отступы
-            headingRowColor: MaterialStateProperty.all(AppColors.blackColor),
+            headingRowColor: WidgetStateProperty.all(AppColors.blackColor),
             headingTextStyle: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
-            dataRowColor: MaterialStateProperty.all(Colors.white),
+            dataRowColor: WidgetStateProperty.all(Colors.white),
             columns: [
               DataColumn(
                 label: SizedBox(
