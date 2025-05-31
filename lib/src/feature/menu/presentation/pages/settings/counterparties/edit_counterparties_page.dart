@@ -1,30 +1,48 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
-class EditAccountPage extends StatefulWidget {
-  const EditAccountPage({super.key});
+class EditCounterpartiesPage extends StatefulWidget {
+  const EditCounterpartiesPage({super.key});
 
   @override
-  State<EditAccountPage> createState() => _EditAccountPageState();
+  State<EditCounterpartiesPage> createState() => _EditCounterpartiesPageState();
 }
 
-class _EditAccountPageState extends State<EditAccountPage> {
-  final List<String> currencies = ['Доллар', 'Сом', 'Рубль', 'Евро'];
+class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
+  final List<String> types = ['Клиент', 'Сотрудник', 'Поставщик'];
 
   final nameController = TextEditingController();
-  final typeController = TextEditingController();
+  final contactInfoController = TextEditingController();
 
-  String? selectedCurrency;
+  String? selectedType;
 
   bool isFormValid = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Подписываемся на изменения текста
+    nameController.addListener(checkFormValidity);
+    contactInfoController.addListener(checkFormValidity);
+  }
+
+  @override
+  void dispose() {
+    nameController.removeListener(checkFormValidity);
+    contactInfoController.removeListener(checkFormValidity);
+    nameController.dispose();
+    contactInfoController.dispose();
+    super.dispose();
+  }
 
   void checkFormValidity() {
     setState(() {
       isFormValid =
-          selectedCurrency != null &&
-          selectedCurrency!.isNotEmpty &&
+          selectedType != null &&
+          selectedType!.isNotEmpty &&
           nameController.text.isNotEmpty &&
-          typeController.text.isNotEmpty;
+          contactInfoController.text.isNotEmpty;
     });
   }
 
@@ -33,7 +51,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Редактировать счет',
+        title: 'Редактировать контрагента',
         backgroundColor: AppColors.backroundColor,
       ),
       body: Column(
@@ -55,20 +73,22 @@ class _EditAccountPageState extends State<EditAccountPage> {
             child: Column(
               children: [
                 TextFieldWid(label: 'Название', controller: nameController),
-
-                12.h,
-                TextFieldWid(label: 'Тип', controller: typeController),
                 12.h,
                 DropDownFormField(
-                  items: currencies,
-                  label: 'Валюта',
-                  value: selectedCurrency,
+                  items: types,
+                  label: 'Тип',
+                  value: selectedType,
                   onChanged: (val) {
                     setState(() {
-                      selectedCurrency = val;
+                      selectedType = val;
                     });
                     checkFormValidity();
                   },
+                ),
+                12.h,
+                TextFieldWid(
+                  label: 'Контактная информация',
+                  controller: contactInfoController,
                 ),
 
                 24.h,

@@ -42,7 +42,10 @@ class CounterpartiesPage extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            Navigator.pushNamed(context, AppRoutes.addAccount);
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.addCounterparties,
+                            );
                           },
                           label: const Text(
                             'Добавить контрагента',
@@ -128,7 +131,7 @@ class CounterpartiesPage extends StatelessWidget {
                             tapEdit: () {
                               Navigator.pushNamed(
                                 context,
-                                AppRoutes.editAccount,
+                                AppRoutes.editCounterparties,
                               );
                             },
                           ),
