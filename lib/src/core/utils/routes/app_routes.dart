@@ -33,4 +33,7 @@ class AppRoutes {
   static const articles = 'articles';
   static const settingAccount = 'settingAccount';
   static const typeCounterparties = 'typeCounterparties';
+
+  static const addCounterparties = 'addCounterparties';
+  static const editCounterparties = 'editCounterparties';
 }
