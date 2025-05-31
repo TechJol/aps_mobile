@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
 class MetricsPage extends StatelessWidget {
@@ -5,6 +6,16 @@ class MetricsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      backgroundColor: AppColors.whiteColor,
+      appBar: CustomAppBar(
+        title: 'Показатели',
+        backgroundColor: AppColors.whiteColor,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: ListView(children: []),
+      ),
+    );
   }
 }
