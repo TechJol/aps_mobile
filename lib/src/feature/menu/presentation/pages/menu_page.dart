@@ -1,7 +1,4 @@
 import 'package:aps_mobile/src/feature/feature.dart';
-import 'package:aps_mobile/src/feature/menu/presentation/pages/reports/category_reports_page.dart';
-import 'package:aps_mobile/src/feature/menu/presentation/pages/reports/income_expense_summary_page.dart';
-import 'package:aps_mobile/src/feature/menu/presentation/pages/reports/monthly_report_page.dart';
 import 'package:flutter/material.dart';
 import 'package:aps_mobile/src/core/core.dart';
 
@@ -92,7 +89,7 @@ class _MenuPageState extends State<MenuPage> {
               } else if (value == 'Показатели') {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const TransactionsPage()),
+                  MaterialPageRoute(builder: (_) => const MetricsPage()),
                 );
               }
             },
