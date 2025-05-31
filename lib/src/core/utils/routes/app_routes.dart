@@ -21,6 +21,16 @@ class AppRoutes {
   /*  <---- Menu -----> */
   static const menu = 'menu';
   static const transactions = 'transactions';
-  static const counterparties = 'counterparties';
+  static const forCounterparties = 'forCounterparties';
   static const menuAccounts = 'menuAccounts';
+
+  static const categoryReports = 'categoryReports';
+  static const metrics = 'metrics';
+  static const incomeExpenseSummary = 'incomeExpenseSummary';
+  static const monthlyReport = 'monthlyReport';
+
+  static const counterparties = 'counterparties';
+  static const articles = 'articles';
+  static const settingAccount = 'settingAccount';
+  static const typeCounterparties = 'typeCounterparties';
 }

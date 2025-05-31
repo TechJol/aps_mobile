@@ -11,6 +11,7 @@ class RouteGenerator {
     // final args = (arguments is Map<String, dynamic>) ? arguments : {};
 
     switch (route) {
+      //! Registration
       case AppRoutes.login:
         return CupertinoPageRoute(builder: (_) => LoginPage());
 
@@ -29,12 +30,14 @@ class RouteGenerator {
       case AppRoutes.passwordSuccess:
         return CupertinoPageRoute(builder: (_) => PassSuccessPage());
 
+      //! Main
       case AppRoutes.pieChart:
         return CupertinoPageRoute(builder: (_) => PieChartPage());
 
       case AppRoutes.main:
         return CupertinoPageRoute(builder: (_) => MainView());
 
+      //! Home
       case AppRoutes.home:
         return CupertinoPageRoute(builder: (_) => HomePage());
 
@@ -47,17 +50,45 @@ class RouteGenerator {
       case AppRoutes.editAccount:
         return CupertinoPageRoute(builder: (_) => EditAccountPage());
 
+      //! Menu
       case AppRoutes.menu:
         return CupertinoPageRoute(builder: (_) => MenuPage());
 
+      // Operations
       case AppRoutes.transactions:
         return CupertinoPageRoute(builder: (_) => TransactionsPage());
 
-      case AppRoutes.counterparties:
-        return CupertinoPageRoute(builder: (_) => CounterpartiesPage());
+      case AppRoutes.forCounterparties:
+        return CupertinoPageRoute(builder: (_) => ForCounterpartiesPage());
 
       case AppRoutes.menuAccounts:
         return CupertinoPageRoute(builder: (_) => MenuAccountsPage());
+
+      // Reports
+      case AppRoutes.categoryReports:
+        return CupertinoPageRoute(builder: (_) => CategoryReportsPage());
+
+      case AppRoutes.metrics:
+        return CupertinoPageRoute(builder: (_) => MetricsPage());
+
+      case AppRoutes.incomeExpenseSummary:
+        return CupertinoPageRoute(builder: (_) => IncomeExpenseSummaryPage());
+
+      case AppRoutes.monthlyReport:
+        return CupertinoPageRoute(builder: (_) => MonthlyReportPage());
+
+      // Settings
+      case AppRoutes.articles:
+        return CupertinoPageRoute(builder: (_) => ArticlesPage());
+
+      case AppRoutes.settingAccount:
+        return CupertinoPageRoute(builder: (_) => SettingAccountPage());
+
+      case AppRoutes.typeCounterparties:
+        return CupertinoPageRoute(builder: (_) => TypeCounterpartiesPage());
+
+      case AppRoutes.counterparties:
+        return CupertinoPageRoute(builder: (_) => CounterpartiesPage());
 
       default:
         return errorRoute();
