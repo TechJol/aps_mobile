@@ -1,14 +1,14 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
-class CounterpartiesPage extends StatefulWidget {
-  const CounterpartiesPage({super.key});
+class ForCounterpartiesPage extends StatefulWidget {
+  const ForCounterpartiesPage({super.key});
 
   @override
-  State<CounterpartiesPage> createState() => _CounterpartiesPageState();
+  State<ForCounterpartiesPage> createState() => _ForCounterpartiesPageState();
 }
 
-class _CounterpartiesPageState extends State<CounterpartiesPage> {
+class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
   int currentPage = 1;
   final int rowsPerPage = 10;
   String activeCategory = 'Клиент aps';

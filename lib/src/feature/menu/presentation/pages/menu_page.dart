@@ -43,7 +43,9 @@ class _MenuPageState extends State<MenuPage> {
               } else if (value == 'По контрагентам') {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const CounterpartiesPage()),
+                  MaterialPageRoute(
+                    builder: (_) => const ForCounterpartiesPage(),
+                  ),
                 );
               } else if (value == 'По счетам') {
                 Navigator.push(
