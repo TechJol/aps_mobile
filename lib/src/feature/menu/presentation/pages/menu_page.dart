@@ -36,22 +36,11 @@ class _MenuPageState extends State<MenuPage> {
             children: const ['Все транзакции', 'По контрагентам', 'По счетам'],
             onChildTap: (value) {
               if (value == 'Все транзакции') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const TransactionsPage()),
-                );
+                Navigator.pushNamed(context, AppRoutes.transactions);
               } else if (value == 'По контрагентам') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const ForCounterpartiesPage(),
-                  ),
-                );
+                Navigator.pushNamed(context, AppRoutes.forCounterparties);
               } else if (value == 'По счетам') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const MenuAccountsPage()),
-                );
+                Navigator.pushNamed(context, AppRoutes.menuAccounts);
               }
             },
           ),
@@ -70,29 +59,13 @@ class _MenuPageState extends State<MenuPage> {
             ],
             onChildTap: (value) {
               if (value == 'Отчеты по статьям') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const CategoryReportsPage(),
-                  ),
-                );
+                Navigator.pushNamed(context, AppRoutes.categoryReports);
               } else if (value == 'Общее положение доходов и расходов') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const IncomeExpenseSummaryPage(),
-                  ),
-                );
+                Navigator.pushNamed(context, AppRoutes.incomeExpenseSummary);
               } else if (value == 'Месячный отчет по доходам и расходам') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const MonthlyReportPage()),
-                );
+                Navigator.pushNamed(context, AppRoutes.monthlyReport);
               } else if (value == 'Показатели') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const MetricsPage()),
-                );
+                Navigator.pushNamed(context, AppRoutes.metrics);
               }
             },
           ),
@@ -109,6 +82,20 @@ class _MenuPageState extends State<MenuPage> {
               'Счета',
               'Статьи',
             ],
+            onChildTap: (childTitle) {
+              if (childTitle == 'Контрагенты') {
+                Navigator.pushNamed(context, AppRoutes.counterparties);
+              }
+              if (childTitle == 'Тип контрагентов') {
+                Navigator.pushNamed(context, AppRoutes.typeCounterparties);
+              }
+              if (childTitle == 'Счета') {
+                Navigator.pushNamed(context, AppRoutes.settingAccount);
+              }
+              if (childTitle == 'Статьи') {
+                Navigator.pushNamed(context, AppRoutes.articles);
+              }
+            },
           ),
           const SizedBox(height: 20),
           const MenuItem(icon: 'assets/icons/folder3.svg', title: 'Выход'),
