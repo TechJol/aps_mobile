@@ -103,6 +103,12 @@ class RouteGenerator {
       case AppRoutes.editType:
         return CupertinoPageRoute(builder: (_) => EditTypePage());
 
+      case AppRoutes.addSettingAccount:
+        return CupertinoPageRoute(builder: (_) => AddSettingAccountsPage());
+
+      case AppRoutes.editSettingAccount:
+        return CupertinoPageRoute(builder: (_) => EditSettingAccountPage());
+
       default:
         return errorRoute();
     }

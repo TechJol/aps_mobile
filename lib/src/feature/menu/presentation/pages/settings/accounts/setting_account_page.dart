@@ -48,7 +48,10 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            Navigator.pushNamed(context, AppRoutes.addAccount);
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.addSettingAccount,
+                            );
                           },
                           label: const Text(
                             'Добавить счет',
@@ -136,7 +139,7 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
                             tapEdit: () {
                               Navigator.pushNamed(
                                 context,
-                                AppRoutes.editAccount,
+                                AppRoutes.editSettingAccount,
                               );
                             },
                           ),
