@@ -115,6 +115,9 @@ class RouteGenerator {
       case AppRoutes.editArticles:
         return CupertinoPageRoute(builder: (_) => EditArticlesPage());
 
+      case AppRoutes.profile:
+        return CupertinoPageRoute(builder: (_) => ProfilePage());
+
       default:
         return errorRoute();
     }
