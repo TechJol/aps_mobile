@@ -41,10 +41,7 @@ class TypeCounterpartiesPage extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            Navigator.pushNamed(
-                              context,
-                              AppRoutes.addCounterparties,
-                            );
+                            Navigator.pushNamed(context, AppRoutes.addType);
                           },
                           label: const Text(
                             'Добавить тип',
@@ -136,7 +133,7 @@ class TypeCounterpartiesPage extends StatelessWidget {
                                   tapEdit: () {
                                     Navigator.pushNamed(
                                       context,
-                                      AppRoutes.editCounterparties,
+                                      AppRoutes.editType,
                                     );
                                   },
                                 ),

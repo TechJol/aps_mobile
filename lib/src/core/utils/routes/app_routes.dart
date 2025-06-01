@@ -36,4 +36,6 @@ class AppRoutes {
 
   static const addCounterparties = 'addCounterparties';
   static const editCounterparties = 'editCounterparties';
+  static const addType = 'addType';
+  static const editType = 'editType';
 }
