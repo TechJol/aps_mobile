@@ -97,6 +97,12 @@ class RouteGenerator {
       case AppRoutes.editCounterparties:
         return CupertinoPageRoute(builder: (_) => EditCounterpartiesPage());
 
+      case AppRoutes.addType:
+        return CupertinoPageRoute(builder: (_) => AddTypePage());
+
+      case AppRoutes.editType:
+        return CupertinoPageRoute(builder: (_) => EditTypePage());
+
       default:
         return errorRoute();
     }
