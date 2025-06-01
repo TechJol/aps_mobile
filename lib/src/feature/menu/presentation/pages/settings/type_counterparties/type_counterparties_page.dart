@@ -17,6 +17,7 @@ class TypeCounterpartiesPage extends StatelessWidget {
       {'name': 'ИП Егор'},
     ];
     return Scaffold(
+      backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
         title: 'Типы контрагентов',
         backgroundColor: AppColors.backroundColor,
