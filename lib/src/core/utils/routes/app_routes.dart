@@ -42,4 +42,6 @@ class AppRoutes {
   static const editSettingAccount = 'editSettingAccount';
   static const addArticles = 'addArticles';
   static const editArticles = 'editArticles';
+
+  static const profile = 'profile';
 }

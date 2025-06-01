@@ -98,9 +98,19 @@ class _MenuPageState extends State<MenuPage> {
             },
           ),
           const SizedBox(height: 20),
-          const MenuItem(icon: 'assets/icons/folder3.svg', title: 'Выход'),
+          MenuItem(
+            onTap: () {},
+            icon: 'assets/icons/folder3.svg',
+            title: 'Выход',
+          ),
           const SizedBox(height: 20),
-          const MenuItem(icon: 'assets/icons/user.svg', title: 'Привет, Аяна'),
+          MenuItem(
+            onTap: () {
+              Navigator.pushNamed(context, AppRoutes.profile);
+            },
+            icon: 'assets/icons/user.svg',
+            title: 'Привет, Аяна',
+          ),
         ],
       ),
     );
