@@ -40,4 +40,6 @@ class AppRoutes {
   static const editType = 'editType';
   static const addSettingAccount = 'addSettingAccount';
   static const editSettingAccount = 'editSettingAccount';
+  static const addArticles = 'addArticles';
+  static const editArticles = 'editArticles';
 }
