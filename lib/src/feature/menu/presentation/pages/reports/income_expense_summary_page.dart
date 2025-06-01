@@ -94,78 +94,56 @@ class DataTableSectionB extends StatelessWidget {
     final end = (start + rowsPerPage).clamp(0, data.length);
     final paginatedData = data.sublist(start, end);
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final double columnWidth = constraints.maxWidth / 3;
-
-        return Container(
-          width: constraints.maxWidth,
+    return SizedBox(
+      width: double.infinity,
+      child: DataTable(
+        headingRowColor: WidgetStateProperty.all(AppColors.blackColor),
+        headingTextStyle: const TextStyle(
           color: Colors.white,
-          child: DataTable(
-            columnSpacing: 0, // убираем внутренние отступы
-            headingRowColor: WidgetStateProperty.all(AppColors.blackColor),
-            headingTextStyle: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-            dataRowColor: WidgetStateProperty.all(Colors.white),
-            columns: [
-              DataColumn(
-                label: SizedBox(
-                  width: columnWidth,
-                  child: const Text('Валюта', textAlign: TextAlign.center),
-                ),
-              ),
-              DataColumn(
-                label: SizedBox(
-                  width: columnWidth,
-                  child: const Text('Курс к KGZ', textAlign: TextAlign.center),
-                ),
-              ),
-              DataColumn(
-                label: SizedBox(
-                  width: columnWidth,
-                  child: const Text('Дата обн.', textAlign: TextAlign.center),
-                ),
-              ),
-            ],
-            rows:
-                paginatedData.map((row) {
-                  return DataRow(
-                    cells: [
-                      DataCell(
-                        SizedBox(
-                          width: columnWidth,
-                          child: Text(
-                            row['Валюта']!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                      DataCell(
-                        SizedBox(
-                          width: columnWidth,
-                          child: Text(
-                            row['Курс к KGZ']!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                      DataCell(
-                        SizedBox(
-                          width: columnWidth,
-                          child: Text(
-                            row['Дата обн.']!,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                }).toList(),
+          fontWeight: FontWeight.bold,
+        ),
+        dataRowColor: WidgetStateProperty.all(Colors.white),
+        columns: [
+          DataColumn(label: const Text('Валюта', textAlign: TextAlign.center)),
+          DataColumn(
+            label: const Text('Курс к KGZ', textAlign: TextAlign.center),
           ),
-        );
-      },
+          DataColumn(
+            label: const Text('Дата обн.', textAlign: TextAlign.center),
+          ),
+        ],
+        rows:
+            paginatedData.map((row) {
+              return DataRow(
+                cells: [
+                  DataCell(
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(row['Валюта']!, textAlign: TextAlign.center),
+                    ),
+                  ),
+                  DataCell(
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        row['Курс к KGZ']!,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        row['Дата обн.']!,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }).toList(),
+      ),
     );
   }
 }
