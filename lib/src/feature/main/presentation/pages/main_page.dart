@@ -42,7 +42,13 @@ class MainScreen extends StatelessWidget {
           showUnselectedLabels: true,
           currentIndex: context.watch<MainCubit>().state,
           onTap: (index) {
-            context.read<MainCubit>().change(index);
+            // context.read<MainCubit>().change(index);
+            if (index == 1) {
+              // Доход — показать Bottom Sheet
+              IncomePage().showIncomeBottomSheet(context);
+            } else {
+              context.read<MainCubit>().change(index);
+            }
           },
           type: BottomNavigationBarType.fixed,
           items: [
