@@ -38,8 +38,15 @@ class MainScreen extends StatelessWidget {
           onTap: (index) {
             // context.read<MainCubit>().change(index);
             if (index == 1) {
-              // Доход — показать Bottom Sheet
-              IncomePage().showIncomeBottomSheet(context);
+              IncomePage().showIncomeBottomSheet(
+                context: context,
+                title: ' Приход',
+              );
+            } else if (index == 2) {
+              IncomePage().showIncomeBottomSheet(
+                context: context,
+                title: 'Расход',
+              );
             } else {
               context.read<MainCubit>().change(index);
             }
