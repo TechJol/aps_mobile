@@ -28,7 +28,8 @@ class TextFieldWid extends StatelessWidget {
             color: AppColors.backroundColor,
           ),
         ),
-        labelText: label,
+        hintText: label,
+        // labelText: label,
       ),
     );
   }
