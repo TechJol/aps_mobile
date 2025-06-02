@@ -4,7 +4,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
 class IncomePage {
-  void showIncomeBottomSheet(BuildContext context) {
+  void showIncomeBottomSheet({
+    required BuildContext context,
+    required String title,
+  }) {
     DateTime selectedDateTime = DateTime.now();
 
     showModalBottomSheet(
@@ -50,8 +53,8 @@ class IncomePage {
                             40.w,
 
                             Center(
-                              child: const Text(
-                                'Доход',
+                              child: Text(
+                                title,
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -268,6 +271,13 @@ class IncomePage {
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary200Color,
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
                     onPressed: () {
                       final newDateTime = DateTime(
                         tempDate.year,
@@ -279,7 +289,12 @@ class IncomePage {
                       onDateTimeSelected(newDateTime);
                       Navigator.pop(context);
                     },
-                    child: const Text("Выбрать"),
+                    child: Text(
+                      "Выбрать",
+                      style: AppTextStyles.f16w500.copyWith(
+                        color: AppColors.whiteColor,
+                      ),
+                    ),
                   ),
                 ],
               ),
