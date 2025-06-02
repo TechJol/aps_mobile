@@ -49,7 +49,36 @@ class OperationPage extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-              child: TextFieldWid(label: 'Выбрать период'),
+              child: TextFormField(
+                onTap: () {},
+                readOnly: true,
+                // controller: controller,
+                decoration: InputDecoration(
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  filled: true,
+                  labelStyle: AppTextStyles.f16w500,
+                  suffixIcon: Icon(Icons.keyboard_arrow_down_outlined),
+                  fillColor: AppColors.backroundColor,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25),
+                    borderSide: const BorderSide(
+                      color: AppColors.backroundColor,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25),
+                    borderSide: const BorderSide(
+                      width: 1,
+                      color: AppColors.backroundColor,
+                    ),
+                  ),
+                  hintText: 'Выбрать период',
+                  // labelText: label,
+                ),
+              ),
             ),
           ),
         ],
