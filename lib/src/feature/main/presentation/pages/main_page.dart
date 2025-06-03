@@ -10,7 +10,7 @@ class MainView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MainScreen([
-      PieChartPage(),
+      HomePage(),
       MainAccountPage(),
       SizedBox(),
       SizedBox(),

@@ -31,7 +31,7 @@ class RouteGenerator {
 
       //! Main
       case AppRoutes.pieChart:
-        return CupertinoPageRoute(builder: (_) => PieChartPage());
+        return CupertinoPageRoute(builder: (_) => HomePage());
 
       case AppRoutes.main:
         return CupertinoPageRoute(builder: (_) => MainView());
