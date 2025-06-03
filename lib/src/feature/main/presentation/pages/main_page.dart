@@ -10,6 +10,7 @@ class MainView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MainScreen([
+      SizedBox(),
       HomePage(),
       SizedBox(),
       SizedBox(),
@@ -42,12 +43,12 @@ class MainScreen extends StatelessWidget {
           currentIndex: context.watch<MainCubit>().state,
           onTap: (index) {
             // context.read<MainCubit>().change(index);
-            if (index == 1) {
+            if (index == 2) {
               IncomePage().showIncomeBottomSheet(
                 context: context,
                 title: ' Приход',
               );
-            } else if (index == 2) {
+            } else if (index == 3) {
               IncomePage().showIncomeBottomSheet(
                 context: context,
                 title: 'Расход',
@@ -60,7 +61,7 @@ class MainScreen extends StatelessWidget {
           items: [
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
-                'assets/icons/home.svg',
+                'assets/icons/main.svg',
                 colorFilter: ColorFilter.mode(
                   context.watch<MainCubit>().state == 0
                       ? AppColors.buttonColor
@@ -72,9 +73,21 @@ class MainScreen extends StatelessWidget {
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
-                'assets/icons/income.svg',
+                'assets/icons/home.svg',
                 colorFilter: ColorFilter.mode(
                   context.watch<MainCubit>().state == 1
+                      ? AppColors.buttonColor
+                      : AppColors.blackColor,
+                  BlendMode.srcIn,
+                ),
+              ),
+              label: 'Счета',
+            ),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                'assets/icons/income.svg',
+                colorFilter: ColorFilter.mode(
+                  context.watch<MainCubit>().state == 2
                       ? AppColors.buttonColor
                       : AppColors.blackColor,
                   BlendMode.srcIn,
@@ -86,7 +99,7 @@ class MainScreen extends StatelessWidget {
               icon: SvgPicture.asset(
                 'assets/icons/comeout.svg',
                 colorFilter: ColorFilter.mode(
-                  context.watch<MainCubit>().state == 2
+                  context.watch<MainCubit>().state == 3
                       ? AppColors.buttonColor
                       : AppColors.blackColor,
                   BlendMode.srcIn,
@@ -98,7 +111,7 @@ class MainScreen extends StatelessWidget {
               icon: SvgPicture.asset(
                 'assets/icons/operation.svg',
                 colorFilter: ColorFilter.mode(
-                  context.watch<MainCubit>().state == 3
+                  context.watch<MainCubit>().state == 4
                       ? AppColors.buttonColor
                       : AppColors.blackColor,
                   BlendMode.srcIn,
