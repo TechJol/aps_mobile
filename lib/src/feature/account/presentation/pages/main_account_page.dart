@@ -2,8 +2,8 @@ import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:aps_mobile/src/core/core.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class MainAccountPage extends StatelessWidget {
+  const MainAccountPage({super.key});
 
   @override
   Widget build(BuildContext context) {

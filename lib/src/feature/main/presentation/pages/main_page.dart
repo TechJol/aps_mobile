@@ -10,8 +10,8 @@ class MainView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MainScreen([
-      SizedBox(),
-      HomePage(),
+      PieChartPage(),
+      MainAccountPage(),
       SizedBox(),
       SizedBox(),
       OperationPage(),
@@ -69,7 +69,7 @@ class MainScreen extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              label: 'Счета',
+              label: 'Главная',
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(

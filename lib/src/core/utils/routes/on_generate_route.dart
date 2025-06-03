@@ -1,4 +1,3 @@
-import 'package:aps_mobile/pie_chart_page.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/cupertino.dart';
 import 'app_routes.dart';
@@ -39,7 +38,7 @@ class RouteGenerator {
 
       //! Home
       case AppRoutes.home:
-        return CupertinoPageRoute(builder: (_) => HomePage());
+        return CupertinoPageRoute(builder: (_) => MainAccountPage());
 
       case AppRoutes.account:
         return CupertinoPageRoute(builder: (_) => AccountPage());
