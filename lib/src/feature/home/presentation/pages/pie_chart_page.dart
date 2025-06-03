@@ -318,7 +318,11 @@ class _PieChartPageState extends State<PieChartPage> {
         viewOptions.map((view) {
           final isSelected = selectedView == view;
           final icon =
-              view == 'Общий' ? Icons.stacked_bar_chart : Icons.call_received;
+              view == 'Общий'
+                  ? Icons.swap_horiz
+                  : view == 'Доход'
+                  ? Icons.call_received
+                  : Icons.north_west;
           return Column(
             children: [
               GestureDetector(
