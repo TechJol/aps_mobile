@@ -1,7 +1,10 @@
 // ignore_for_file: file_names, library_private_types_in_public_api, deprecated_member_use
 
 import 'package:aps_mobile/src/core/core.dart';
+import 'package:aps_mobile/src/feature/auth/domain/entities/auth_entity.dart';
+import 'package:aps_mobile/src/feature/auth/presentation/cubit/credential/credential_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -293,33 +296,41 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(height: 35),
 
                   // Login button
-                  ElevatedButton(
-                    onPressed:
-                        isFormValid
-                            ? () {
-                              Navigator.pushNamed(context, AppRoutes.main);
-                            }
-                            : null, // Disables button if form is not valid
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          isFormValid
-                              ? const Color(0xFF661EFB) // Normal purple
-                              : const Color(
-                                0xFFC7C8FF,
-                              ), // Desaturated lighter purple for "disabled" look
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    child: const Text(
-                      "Войти",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
+                  BlocBuilder<CredentialCubit, CredentialState>(
+                    builder: (context, state) {
+                      return ElevatedButton(
+                        onPressed:
+                            isFormValid
+                                ? () {
+                                  final user = AuthEntity(
+                                    username: usernameController.text,
+                                    password: passwordController.text,
+                                  );
+                                  context.read<CredentialCubit>().login(user);
+                                }
+                                : null, // Disables button if form is not valid
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              isFormValid
+                                  ? const Color(0xFF661EFB) // Normal purple
+                                  : const Color(
+                                    0xFFC7C8FF,
+                                  ), // Desaturated lighter purple for "disabled" look
+                          minimumSize: const Size(double.infinity, 50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: const Text(
+                          "Войти",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
