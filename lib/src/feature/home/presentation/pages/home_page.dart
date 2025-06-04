@@ -16,7 +16,7 @@ class _HomePageState extends State<HomePage> {
   String selectedPeriod = 'Аналитика';
 
   final viewOptions = ['Расходы', 'Доход', 'Общий'];
-  final periodOptions = ['Daily', 'Weekly', 'Monthly', 'Yearly'];
+  final periodOptions = ['День', 'Неделя', 'Месяц', 'Год'];
 
   void updateState<T>(T value, void Function(T) updater) =>
       setState(() => updater(value));
@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Color(0xFFF3F4F7),
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: const Text('Привет , Aяна', style: AppTextStyles.f24w600),
+          child: const Text('Привет, Aяна', style: AppTextStyles.f24w600),
         ),
         centerTitle: false,
         actions: [
@@ -69,12 +69,13 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   Navigator.pushNamed(context, AppRoutes.menu);
                 },
-                icon: const Icon(Icons.more_vert_outlined),
+                icon: const Icon(Icons.more_vert_outlined, size: 28),
               ),
             ),
           ),
         ],
       ),
+
       body: Column(
         children: [
           Container(
@@ -201,7 +202,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildTopSection() {
     return Container(
-      height: 215,
+      height: 240,
       width: double.infinity,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -216,12 +217,12 @@ class _HomePageState extends State<HomePage> {
             children: [
               _circleIcon(Icons.arrow_back_ios_rounded, Offset(-22, 70)),
               Transform.translate(
-                offset: const Offset(-110, -13),
+                offset: const Offset(-130, -13),
                 child: Text(
                   selectedPeriod,
                   style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
                     fontFamily: 'Inter',
                   ),
                 ),
@@ -235,7 +236,7 @@ class _HomePageState extends State<HomePage> {
               Transform.translate(
                 offset: const Offset(15, 3),
                 child: CustomPaint(
-                  size: const Size(106, 106),
+                  size: const Size(112, 112),
                   painter: PieChartPainter(),
                 ),
               ),
@@ -266,24 +267,24 @@ class _HomePageState extends State<HomePage> {
 
   Widget _legend() {
     const items = [
-      {'color': Colors.purpleAccent, 'label': 'Аренда'},
-      {'color': Colors.blueAccent, 'label': 'Зарплата'},
-      {'color': Colors.purple, 'label': 'Прочие расходы'},
+      {'color': Color(0xFF4600D7), 'label': 'Аренда'},
+      {'color': Color(0xFFBC6FF8), 'label': 'Зарплата'},
+      {'color': Color(0xFF8385F2), 'label': 'Прочие расходы'},
     ];
     return Padding(
-      padding: const EdgeInsets.only(right: 35),
+      padding: const EdgeInsets.only(top: 22, right: 60),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children:
             items
                 .map(
                   (item) => Padding(
-                    padding: const EdgeInsets.only(bottom: 7),
+                    padding: const EdgeInsets.only(bottom: 12),
                     child: Row(
                       children: [
                         CircleAvatar(
                           backgroundColor: item['color'] as Color,
-                          radius: 5,
+                          radius: 5.5,
                         ),
                         const SizedBox(width: 6),
                         Text(item['label'] as String),
@@ -319,24 +320,25 @@ class _HomePageState extends State<HomePage> {
           final isSelected = selectedView == view;
           final icon =
               view == 'Общий'
-                  ? Icons.swap_horiz
+                  ? 'assets/icons/V.png'
                   : view == 'Доход'
-                  ? Icons.call_received
-                  : Icons.north_west;
+                  ? 'assets/icons/V_down.png'
+                  : 'assets/icons/V_up.png';
           return Column(
             children: [
               GestureDetector(
                 onTap: () => updateState(view, (val) => selectedView = val),
                 child: Container(
-                  width: 103,
-                  height: 43,
+                  width: 120,
+                  height: 48,
                   decoration: BoxDecoration(
                     color: isSelected ? Colors.black : Colors.white,
                     borderRadius: BorderRadius.circular(25),
                   ),
-                  child: Icon(
+                  child: Image.asset(
                     icon,
-                    size: 20,
+                    width: 40,
+                    height: 40,
                     color: isSelected ? Colors.white : Colors.black,
                   ),
                 ),
@@ -347,7 +349,7 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontFamily: 'Inter',
-                  fontSize: 14,
+                  fontSize: 16,
                 ),
               ),
             ],
@@ -362,14 +364,14 @@ class PieChartPainter extends CustomPainter {
     final paint =
         Paint()
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 9
+          ..strokeWidth = 9.5
           ..strokeCap = StrokeCap.round;
 
     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
     const segments = [
-      {'color': Colors.purpleAccent, 'sweep': 2.0},
-      {'color': Colors.blueAccent, 'sweep': 2.1},
-      {'color': Colors.deepPurpleAccent, 'sweep': 2.18},
+      {'color': Color(0xFF4600D7), 'sweep': 2.0},
+      {'color': Color(0xFFBC6FF8), 'sweep': 2.1},
+      {'color': Color(0xFF8385F2), 'sweep': 2.18},
     ];
     const gap = 0.27;
     double start = 0;
