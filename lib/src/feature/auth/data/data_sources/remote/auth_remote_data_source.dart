@@ -1,7 +1,7 @@
-import 'package:aps_mobile/src/feature/auth/auth.dart';
+import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dartz/dartz.dart';
 
-abstract class AuthRepository {
+abstract class AuthRemoteDataSource {
   Future<Either> login(AuthEntity user);
   Future<Either> register(AuthEntity user);
 }
