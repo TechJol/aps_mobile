@@ -40,7 +40,7 @@ class OperationPage extends StatelessWidget {
         backgroundColor: Color(0xFFF3F4F7),
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: const Text('Привет , Aяна', style: AppTextStyles.f24w600),
+          child: const Text('Привет, Aяна', style: AppTextStyles.f24w600),
         ),
         centerTitle: false,
         actions: [

@@ -94,7 +94,7 @@ class MainScreen extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              label: 'Приход',
+              label: 'Доход',
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
