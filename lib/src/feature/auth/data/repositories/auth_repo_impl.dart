@@ -1,5 +1,6 @@
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dartz/dartz.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource authRemoteDataSource;
@@ -12,12 +13,39 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either> login(String username, String password) async {
-    return await authRemoteDataSource.login(username, password);
+    Either result = await authRemoteDataSource.login(username, password);
+
+    return result.fold(
+      (l) {
+        return Left(l);
+      },
+      (r) async {
+        Map<String, dynamic> response = r;
+
+        SharedPreferences storage = await SharedPreferences.getInstance();
+        storage.setString('accessToken', response['access']);
+        // storage.setInt('id', response['id']);
+        return Right(response);
+      },
+    );
   }
 
   @override
   Future<Either> register(AuthEntity user) async {
-    return await authRemoteDataSource.register(user);
+    final Either result = await authRemoteDataSource.register(user);
+    return result.fold(
+      (l) {
+        return Left(l);
+      },
+      (r) async {
+        Map<String, dynamic> response = r;
+
+        SharedPreferences storage = await SharedPreferences.getInstance();
+        storage.setString('accessToken', response['access']);
+
+        return Right(response);
+      },
+    );
   }
 
   @override

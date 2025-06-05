@@ -41,6 +41,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       final response = await sl<DioClient>().post(
         AppApi.register,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRFTOKEN': 'fi0b25V9IEeulV5AoTdUL3JSAaP4YZDP',
+          },
+        ),
         data: (user as AuthModel).toJson(),
       );
 
