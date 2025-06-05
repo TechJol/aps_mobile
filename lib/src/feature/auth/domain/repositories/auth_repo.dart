@@ -4,4 +4,7 @@ import 'package:dartz/dartz.dart';
 abstract class AuthRepository {
   Future<Either> login(AuthEntity user);
   Future<Either> register(AuthEntity user);
+
+  Future<Either> logOut();
+  Future<bool> isLoggedIn();
 }

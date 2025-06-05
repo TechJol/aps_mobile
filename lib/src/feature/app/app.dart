@@ -11,8 +11,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => MainCubit()),
+        BlocProvider(create: (context) => di.sl<MainCubit>()),
         BlocProvider(create: (context) => di.sl<CredentialCubit>()),
+        BlocProvider(create: (context) => di.sl<AuthCubit>()..appStarted()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -22,7 +23,22 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
         onGenerateRoute: RouteGenerator.onGenerate,
-        initialRoute: 'main',
+        initialRoute: '/',
+        routes: {
+          '/': (context) {
+            return BlocBuilder<AuthCubit, AuthState>(
+              builder: (context, state) {
+                if (state is Authenticated) {
+                  return const MainView();
+                }
+                if (state is UnAuthenticated) {
+                  return const LoginPage();
+                }
+                return Container();
+              },
+            );
+          },
+        },
       ),
     );
   }

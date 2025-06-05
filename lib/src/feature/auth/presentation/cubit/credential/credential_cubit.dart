@@ -8,8 +8,13 @@ part 'credential_state.dart';
 class CredentialCubit extends Cubit<CredentialState> {
   final LoginUsecase loginUsecase;
   final RegisterUsecase registerUsecase;
-  CredentialCubit({required this.loginUsecase, required this.registerUsecase})
-    : super(CredentialInitial());
+  final LogoutUsecase logoutUsecase;
+
+  CredentialCubit({
+    required this.loginUsecase,
+    required this.registerUsecase,
+    required this.logoutUsecase,
+  }) : super(CredentialInitial());
 
   void register(AuthEntity user) async {
     emit(CredentialLoading());
@@ -32,6 +37,23 @@ class CredentialCubit extends Cubit<CredentialState> {
     emit(CredentialLoading());
     try {
       Either result = await loginUsecase.call(user);
+      result.fold(
+        (l) {
+          emit(CredentialFailure(errorMessage: l));
+        },
+        (r) {
+          emit(CredentialSuccess());
+        },
+      );
+    } catch (e) {
+      emit(CredentialFailure(errorMessage: e.toString()));
+    }
+  }
+
+  void logout() async {
+    emit(CredentialLoading());
+    try {
+      Either result = await logoutUsecase.call();
       result.fold(
         (l) {
           emit(CredentialFailure(errorMessage: l));
