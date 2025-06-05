@@ -15,10 +15,9 @@ class _HomePageState extends State<HomePage> {
   String selectedView = 'Spending';
   String selectedPeriod = 'Аналитика';
 
-  final viewOptions = ['Расходы', 'Доход', 'Общий'];
+  final viewOptions = ['Расходы', 'Доходы', 'Общий'];
 
   final periodOptions = ['День', 'Неделя', 'Месяц', 'Год'];
-
 
   void updateState<T>(T value, void Function(T) updater) =>
       setState(() => updater(value));

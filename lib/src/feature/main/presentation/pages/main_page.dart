@@ -47,12 +47,12 @@ class MainScreen extends StatelessWidget {
             if (index == 2) {
               IncomePage().showIncomeBottomSheet(
                 context: context,
-                title: ' Приход',
+                title: 'Доходы',
               );
             } else if (index == 3) {
               IncomePage().showIncomeBottomSheet(
                 context: context,
-                title: 'Расход',
+                title: 'Расходы',
               );
             } else {
               context.read<MainCubit>().change(index);
@@ -94,7 +94,7 @@ class MainScreen extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              label: 'Доход',
+              label: 'Доходы',
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
@@ -106,7 +106,7 @@ class MainScreen extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              label: 'Расход',
+              label: 'Расходы',
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
