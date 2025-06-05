@@ -33,10 +33,13 @@ class CredentialCubit extends Cubit<CredentialState> {
     }
   }
 
-  void login(AuthEntity user) async {
+  void login(String username, String password) async {
     emit(CredentialLoading());
     try {
-      Either result = await loginUsecase.call(user);
+      Either result = await loginUsecase.call(
+        username: username,
+        password: password,
+      );
       result.fold(
         (l) {
           emit(CredentialFailure(errorMessage: l));

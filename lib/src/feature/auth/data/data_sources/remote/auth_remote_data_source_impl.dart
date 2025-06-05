@@ -10,11 +10,18 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final Dio dio;
 
   @override
-  Future<Either> login(AuthEntity user) async {
+  Future<Either> login(String username, String password) async {
     try {
       final response = await sl<DioClient>().post(
         AppApi.login,
-        data: (user as AuthModel).toJson(),
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRFTOKEN': 'fi0b25V9IEeulV5AoTdUL3JSAaP4YZDP',
+          },
+        ),
+        data: {'username': username, 'password': password},
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {

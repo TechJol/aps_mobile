@@ -6,6 +6,8 @@ class LoginUsecase {
 
   LoginUsecase({required this.authRepository});
 
-  Future<Either> call(AuthEntity user) async =>
-      await authRepository.login(user);
+  Future<Either> call({
+    required String username,
+    required String password,
+  }) async => await authRepository.login(username, password);
 }

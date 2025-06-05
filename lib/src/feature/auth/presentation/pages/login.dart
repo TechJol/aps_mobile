@@ -306,7 +306,10 @@ class _LoginPageState extends State<LoginPage> {
                                     username: usernameController.text,
                                     password: passwordController.text,
                                   );
-                                  context.read<CredentialCubit>().login(user);
+                                  context.read<CredentialCubit>().login(
+                                    user.username,
+                                    user.password,
+                                  );
                                 }
                                 : null, // Disables button if form is not valid
                         style: ElevatedButton.styleFrom(

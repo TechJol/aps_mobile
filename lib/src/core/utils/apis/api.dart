@@ -1,9 +1,7 @@
 class AppApi {
-  static const String baseUrl = 'api.softkgpro.online/';
+  static const domain = 'https://api.softkgpro.online/';
 
-  static String get url => baseUrl;
+  static const login = '$domain/api/login/';
 
-  static String get login => '${baseUrl}api/login/';
-
-  static String get register => '${baseUrl}api/register/';
+  static const register = '$domain/api/register/';
 }
