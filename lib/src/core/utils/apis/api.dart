@@ -4,4 +4,6 @@ class AppApi {
   static const login = '$domain/api/login/';
 
   static const register = '$domain/api/register/';
+
+  static const postTransactions = '$domain/api/transactions/';
 }
