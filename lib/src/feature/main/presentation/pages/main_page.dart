@@ -3,6 +3,7 @@ import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+//import 'package:pie_chart_page.dart';
 
 class MainView extends StatelessWidget {
   const MainView({super.key});
@@ -46,12 +47,12 @@ class MainScreen extends StatelessWidget {
             if (index == 2) {
               IncomePage().showIncomeBottomSheet(
                 context: context,
-                title: ' Приход',
+                title: 'Доходы',
               );
             } else if (index == 3) {
               IncomePage().showIncomeBottomSheet(
                 context: context,
-                title: 'Расход',
+                title: 'Расходы',
               );
             } else {
               context.read<MainCubit>().change(index);
@@ -93,7 +94,7 @@ class MainScreen extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              label: 'Приход',
+              label: 'Доходы',
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
@@ -105,7 +106,7 @@ class MainScreen extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              label: 'Расход',
+              label: 'Расходы',
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
