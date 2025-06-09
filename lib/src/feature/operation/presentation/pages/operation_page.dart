@@ -381,10 +381,10 @@ class OperationPage extends StatelessWidget {
                   ),
 
                   side: BorderSide(color: Colors.grey.shade300, width: 1),
-                  fillColor: MaterialStateProperty.resolveWith((states) {
+                  fillColor: WidgetStateProperty.resolveWith((states) {
                     return isSelected ? AppColors.primaryColor : Colors.white;
                   }),
-                  checkColor: MaterialStateProperty.all(Colors.white),
+                  checkColor: WidgetStateProperty.all(Colors.white),
                 ),
               ),
               child: Checkbox(
