@@ -1,7 +1,7 @@
 final class ApsKeys {
   // login
   static const loginInitial = 'login-initial';
-  static const loginNext = 'login-next';
+  static const login = 'login';
   static const signInView = 'sign-in-view';
   static const sendOtp = 'send-otp';
   static const verifyOtpView = 'verify-otp-view';
