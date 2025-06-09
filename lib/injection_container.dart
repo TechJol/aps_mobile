@@ -20,11 +20,14 @@ Future<void> init() async {
 
   sl.registerFactory(() => AuthCubit(isLoggedInUsecase: sl.call()));
 
+  sl.registerFactory(() => IncomeCubit(usecase: sl.call()));
+
   //! UseCase
   sl.registerLazySingleton(() => LoginUsecase(authRepository: sl.call()));
   sl.registerLazySingleton(() => RegisterUsecase(authRepository: sl.call()));
   sl.registerLazySingleton(() => LogoutUsecase(authRepository: sl.call()));
   sl.registerLazySingleton(() => IsLoggedInUsecase(authRepository: sl.call()));
+  sl.registerLazySingleton(() => AddIncomeUsecase(repository: sl.call()));
 
   //! Repository
   sl.registerLazySingleton<AuthRepository>(
@@ -34,6 +37,10 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<IncomeRepository>(
+    () => IncomeRepositoryImpl(remoteIncomeDataSource: sl.call()),
+  );
+
   //! Data Source
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(dio: sl.call()),
@@ -41,6 +48,10 @@ Future<void> init() async {
 
   sl.registerLazySingleton<AuthLocalDataSource>(
     () => AuthLocalDataSourceImpl(),
+  );
+
+  sl.registerLazySingleton<RemoteIncomeDataSource>(
+    () => RemoteIncomeDataSourceImpl(dio: sl.call()),
   );
 
   //! Network

@@ -5,6 +5,10 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
 class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
+  RemoteIncomeDataSourceImpl({required this.dio});
+
+  final Dio dio;
+
   @override
   Future<Either> addIncome(IncomeAndComeoutEntity income) async {
     try {
