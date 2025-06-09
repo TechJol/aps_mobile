@@ -2,10 +2,10 @@ class IncomeAndComeoutEntity {
   final String currency;
   final String date;
   final String amount;
-  final String? kgsCurrencyAmount;
+  final int? kgsCurrencyAmount;
   final String transactionType;
   final String? description;
-  final int company;
+  final int? company;
   final int account;
   final int? partner;
   final int? partners;
@@ -18,7 +18,7 @@ class IncomeAndComeoutEntity {
     this.kgsCurrencyAmount,
     required this.transactionType,
     this.description,
-    required this.company,
+    this.company,
     required this.account,
     this.partner,
     this.partners,

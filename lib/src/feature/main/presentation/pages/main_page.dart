@@ -48,11 +48,13 @@ class MainScreen extends StatelessWidget {
               IncomePage().showIncomeBottomSheet(
                 context: context,
                 title: 'Доходы',
+                transactionType: 'income',
               );
             } else if (index == 3) {
               IncomePage().showIncomeBottomSheet(
                 context: context,
                 title: 'Расходы',
+                transactionType: 'expense',
               );
             } else {
               context.read<MainCubit>().change(index);
