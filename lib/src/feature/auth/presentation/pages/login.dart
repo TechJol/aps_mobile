@@ -1,8 +1,8 @@
 // ignore_for_file: file_names, library_private_types_in_public_api, deprecated_member_use
 
+import 'package:aps_ci_keys/aps_ci_keys.dart';
 import 'package:aps_mobile/src/core/core.dart';
-import 'package:aps_mobile/src/feature/auth/domain/entities/auth_entity.dart';
-import 'package:aps_mobile/src/feature/auth/presentation/cubit/credential/credential_cubit.dart';
+import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -166,7 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: Column(
                             children: [
                               Text(
-                                "Войти",
+                                ApsKeys.login,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,

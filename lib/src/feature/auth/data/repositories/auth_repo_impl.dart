@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dartz/dartz.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,7 +26,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
         SharedPreferences storage = await SharedPreferences.getInstance();
         storage.setString('accessToken', response['access']);
-        // storage.setInt('id', response['id']);
+        final companyId = storage.setInt('companyId', response['company_id']);
+
+        log(companyId.toString());
         return Right(response);
       },
     );

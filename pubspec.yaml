@@ -51,6 +51,10 @@ dependencies:
   dropdown_search: ^6.0.2
   fl_chart: ^1.0.0
 
+  # -- Packages -- #
+  aps_ci_keys:
+    path: ./packages/aps_ci_keys
+
 
 dev_dependencies:
   flutter_test:
