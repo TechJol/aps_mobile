@@ -31,8 +31,8 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
           'Failed to post income. Status code: ${response.statusCode}',
         );
       }
-    } on DioException catch (e) {
-      throw Exception('Something went wrong with income: ${e.response?.data}');
+    } catch (e) {
+      return Left(Exception('Something went wrong: ${e.toString()}'));
     }
   }
 }
