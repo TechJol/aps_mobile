@@ -26,9 +26,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
         SharedPreferences storage = await SharedPreferences.getInstance();
         storage.setString('accessToken', response['access']);
-        final companyId = storage.setInt('companyId', response['company_id']);
+        storage.setInt('companyId', response['company_id']);
 
-        log(companyId.toString());
+        log("Bul ${response['company_id']}");
         return Right(response);
       },
     );

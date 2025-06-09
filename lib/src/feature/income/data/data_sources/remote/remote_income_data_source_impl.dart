@@ -3,6 +3,7 @@ import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
   RemoteIncomeDataSourceImpl({required this.dio});
@@ -11,6 +12,8 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
 
   @override
   Future<Either> addIncome(IncomeAndComeoutEntity income) async {
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    var companyId = storage.getString('companyId');
     try {
       final response = await sl<DioClient>().post(
         AppApi.postTransactions,
@@ -21,7 +24,8 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
             'X-CSRFTOKEN': 'fi0b25V9IEeulV5AoTdUL3JSAaP4YZDP',
           },
         ),
-        data: (income as IncomeAndComeoutModel).toJson(),
+        data:
+            (income as IncomeAndComeoutModel).toJson()..['company'] = companyId,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {

@@ -1,15 +1,27 @@
 class IncomeAndComeoutEntity {
+  final String currency;
   final String date;
-  final String account;
-  final String summa;
-  final String article;
-  final String description;
+  final String amount;
+  final String? kgsCurrencyAmount;
+  final String transactionType;
+  final String? description;
+  final int company;
+  final int account;
+  final int? partner;
+  final int? partners;
+  final int? incomeExpenseReason;
 
   IncomeAndComeoutEntity({
+    required this.currency,
     required this.date,
+    required this.amount,
+    this.kgsCurrencyAmount,
+    required this.transactionType,
+    this.description,
+    required this.company,
     required this.account,
-    required this.summa,
-    required this.article,
-    required this.description,
+    this.partner,
+    this.partners,
+    this.incomeExpenseReason,
   });
 }
