@@ -1,19 +1,29 @@
-import 'package:aps_mobile/src/feature/feature.dart';
-
-class IncomeAndComeoutModel extends IncomeAndComeoutEntity {
+class IncomeAndComeoutModel {
   IncomeAndComeoutModel({
-    required super.currency,
-    required super.date,
-    required super.amount,
-    required super.transactionType,
-    required super.company,
-    required super.account,
-    super.description,
-    super.kgsCurrencyAmount,
-    super.incomeExpenseReason,
-    super.partner,
-    super.partners,
+    required this.currency,
+    required this.date,
+    required this.amount,
+    required this.kgsCurrencyAmount,
+    required this.transactionType,
+    required this.description,
+    required this.company,
+    required this.account,
+    required this.partner,
+    required this.partners,
+    required this.incomeExpenseReason,
   });
+
+  final String currency;
+  final String date;
+  final String amount;
+  final String? kgsCurrencyAmount;
+  final String transactionType;
+  final String? description;
+  final int? company;
+  final int account;
+  final int? partner;
+  final int? partners;
+  final int? incomeExpenseReason;
 
   factory IncomeAndComeoutModel.fromJson(Map<String, dynamic> json) {
     return IncomeAndComeoutModel(

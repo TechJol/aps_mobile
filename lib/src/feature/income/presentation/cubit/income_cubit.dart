@@ -8,7 +8,7 @@ class IncomeCubit extends Cubit<IncomeState> {
   final AddIncomeUsecase usecase;
   IncomeCubit({required this.usecase}) : super(IncomeInitial());
 
-  Future<void> addIncome(IncomeAndComeoutEntity income) async {
+  Future<void> addIncome(IncomeAndComeoutModel income) async {
     emit(IncomeLoading());
     final result = await usecase(income);
     result.fold(

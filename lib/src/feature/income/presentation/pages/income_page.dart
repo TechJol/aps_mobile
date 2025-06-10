@@ -211,14 +211,14 @@ class IncomePage {
                               }
                               return ElevatedButton(
                                 onPressed: () {
-                                  final income = IncomeAndComeoutEntity(
+                                  final income = IncomeAndComeoutModel(
                                     currency: 'kgs',
                                     date: '2025-06-09T19:46:04.884Z',
                                     amount: amountController.text,
                                     transactionType: transactionType,
                                     account: 1,
                                     description: descriptionController.text,
-                                    kgsCurrencyAmount: 1,
+                                    kgsCurrencyAmount: "1",
                                     incomeExpenseReason: 1,
                                     partner: 1,
                                     partners: 1,

@@ -7,7 +7,7 @@ class IncomeRepositoryImpl implements IncomeRepository {
   final RemoteIncomeDataSource remoteIncomeDataSource;
 
   @override
-  Future<Either> addIncome(IncomeAndComeoutEntity income) async {
+  Future<Either> addIncome(IncomeAndComeoutModel income) async {
     return await remoteIncomeDataSource.addIncome(income);
   }
 }

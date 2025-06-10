@@ -5,6 +5,6 @@ class AddIncomeUsecase {
   final IncomeRepository repository;
   AddIncomeUsecase({required this.repository});
 
-  Future<Either> call(IncomeAndComeoutEntity income) async =>
+  Future<Either> call(IncomeAndComeoutModel income) async =>
       await repository.addIncome(income);
 }
