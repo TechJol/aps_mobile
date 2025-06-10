@@ -15,6 +15,10 @@ class IncomePage {
     final TextEditingController amountController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
 
+    String? selectedAccountName;
+    int? selectedAccountId;
+    context.read<IncomeCubit>().getAccount();
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -42,6 +46,7 @@ class IncomePage {
                 maxChildSize: 0.9,
                 minChildSize: 0.4,
                 expand: false,
+
                 builder: (context, scrollController) {
                   return SingleChildScrollView(
                     controller: scrollController,
@@ -147,12 +152,39 @@ class IncomePage {
 
                           12.h,
 
-                          DropDownFormField(
-                            items: ['Пример 1', 'Пример 2'],
-                            label: 'Счет',
-                            value: 'Счет',
-                            onChanged: (val) {},
+                          BlocBuilder<IncomeCubit, IncomeState>(
+                            builder: (context, state) {
+                              if (state is AccountLoaded) {
+                                final accountItems = state.accounts;
+                                return DropDownFormField(
+                                  items:
+                                      accountItems.map((e) => e.name).toList(),
+                                  label: 'Счет',
+                                  value:
+                                      selectedAccountName, // локальная переменная
+                                  onChanged: (val) {
+                                    selectedAccountName = val;
+                                    selectedAccountId =
+                                        accountItems
+                                            .firstWhere(
+                                              (element) => element.name == val,
+                                            )
+                                            .id;
+                                  },
+                                );
+                              } else if (state is IncomeLoading) {
+                                return const CircularProgressIndicator();
+                              } else {
+                                return DropDownFormField(
+                                  items: [],
+                                  label: 'Счет',
+                                  value: 'Загрузка...',
+                                  onChanged: (_) {},
+                                );
+                              }
+                            },
                           ),
+
                           const SizedBox(height: 12),
 
                           TextFieldWid(
@@ -216,7 +248,7 @@ class IncomePage {
                                     date: '2025-06-09T19:46:04.884Z',
                                     amount: amountController.text,
                                     transactionType: transactionType,
-                                    account: 1,
+                                    account: selectedAccountId!,
                                     description: descriptionController.text,
                                     kgsCurrencyAmount: "1",
                                     incomeExpenseReason: 1,

@@ -6,4 +6,6 @@ class AppApi {
   static const register = '$domain/api/register/';
 
   static const postTransactions = '$domain/api/transactions/';
+
+  static const getAccount = '$domain/api/accounts/';
 }

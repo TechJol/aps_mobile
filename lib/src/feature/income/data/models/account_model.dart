@@ -11,7 +11,7 @@ class AccountModel {
   final String name;
   final String accountType;
   final String currency;
-  final String company;
+  final int company;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -29,7 +29,7 @@ class AccountModel {
       name: map['name'] as String,
       accountType: map['account_type'] as String,
       currency: map['currency'] as String,
-      company: map['company'] as String,
+      company: map['company'] as int,
     );
   }
 }

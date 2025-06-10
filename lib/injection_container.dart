@@ -20,7 +20,10 @@ Future<void> init() async {
 
   sl.registerFactory(() => AuthCubit(isLoggedInUsecase: sl.call()));
 
-  sl.registerFactory(() => IncomeCubit(usecase: sl.call()));
+  sl.registerFactory(
+    () =>
+        IncomeCubit(addIncomeUsecase: sl.call(), getAccountUsecase: sl.call()),
+  );
 
   //! UseCase
   sl.registerLazySingleton(() => LoginUsecase(authRepository: sl.call()));
@@ -28,6 +31,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LogoutUsecase(authRepository: sl.call()));
   sl.registerLazySingleton(() => IsLoggedInUsecase(authRepository: sl.call()));
   sl.registerLazySingleton(() => AddIncomeUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => GetAccountUsecase(repository: sl.call()));
 
   //! Repository
   sl.registerLazySingleton<AuthRepository>(

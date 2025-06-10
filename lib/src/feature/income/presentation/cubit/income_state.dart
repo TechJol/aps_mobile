@@ -21,3 +21,12 @@ final class IncomeError extends IncomeState {
   @override
   List<Object> get props => [message];
 }
+
+class AccountLoaded extends IncomeState {
+  const AccountLoaded({required this.accounts});
+
+  final List<AccountModel> accounts;
+
+  @override
+  List<Object> get props => [accounts];
+}
