@@ -11,7 +11,12 @@ class IncomePage {
     required String title,
     required String transactionType,
   }) {
-    DateTime selectedDateTime = DateTime.now();
+    final selectedDateNotifier = ValueNotifier<DateTime>(DateTime.now());
+
+    final TextEditingController dateController = TextEditingController(
+      text: DateFormat('dd.MM.yyyy – HH:mm').format(selectedDateNotifier.value),
+    );
+
     final TextEditingController amountController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
 
@@ -46,7 +51,6 @@ class IncomePage {
                 maxChildSize: 0.9,
                 minChildSize: 0.4,
                 expand: false,
-
                 builder: (context, scrollController) {
                   return SingleChildScrollView(
                     controller: scrollController,
@@ -71,7 +75,6 @@ class IncomePage {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               40.w,
-
                               Center(
                                 child: Text(
                                   title,
@@ -89,16 +92,10 @@ class IncomePage {
                               ),
                             ],
                           ),
-
                           16.h,
-
                           TextFormField(
                             readOnly: true,
-                            controller: TextEditingController(
-                              text: DateFormat(
-                                'dd.MM.yyyy – HH:mm',
-                              ).format(selectedDateTime),
-                            ),
+                            controller: dateController,
                             decoration: InputDecoration(
                               floatingLabelBehavior:
                                   FloatingLabelBehavior.never,
@@ -109,9 +106,12 @@ class IncomePage {
                                 onTap: () {
                                   _showCustomDateTimePicker(
                                     context,
-                                    selectedDateTime,
+                                    selectedDateNotifier.value,
                                     (picked) {
-                                      selectedDateTime = picked;
+                                      selectedDateNotifier.value = picked;
+                                      dateController.text = DateFormat(
+                                        'dd.MM.yyyy – HH:mm',
+                                      ).format(picked);
                                     },
                                   );
                                 },
@@ -144,14 +144,9 @@ class IncomePage {
                                   color: AppColors.backroundColor,
                                 ),
                               ),
-
-                              // hintText: formattedDate,
-                              // labelText: label,
                             ),
                           ),
-
                           12.h,
-
                           BlocBuilder<IncomeCubit, IncomeState>(
                             builder: (context, state) {
                               if (state is AccountLoaded) {
@@ -160,8 +155,7 @@ class IncomePage {
                                   items:
                                       accountItems.map((e) => e.name).toList(),
                                   label: 'Счет',
-                                  value:
-                                      selectedAccountName, // локальная переменная
+                                  value: selectedAccountName,
                                   onChanged: (val) {
                                     selectedAccountName = val;
                                     selectedAccountId =
@@ -184,25 +178,19 @@ class IncomePage {
                               }
                             },
                           ),
-
                           const SizedBox(height: 12),
-
                           TextFieldWid(
                             label: 'Сумма',
                             controller: amountController,
                           ),
-
                           const SizedBox(height: 12),
-
                           DropDownFormField(
                             items: ['Пример 1', 'Пример 2'],
                             label: 'Статья',
                             value: 'Статья',
                             onChanged: (val) {},
                           ),
-
                           12.h,
-
                           TextFormField(
                             maxLength: 160,
                             maxLines: 3,
@@ -230,12 +218,9 @@ class IncomePage {
                                 ),
                               ),
                               hintText: 'Описание',
-                              // labelText: 'Описание',
                             ),
                           ),
-
                           24.h,
-
                           BlocBuilder<IncomeCubit, IncomeState>(
                             builder: (context, state) {
                               if (state is IncomeLoading) {
@@ -245,7 +230,10 @@ class IncomePage {
                                 onPressed: () {
                                   final income = IncomeAndComeoutModel(
                                     currency: 'kgs',
-                                    date: '2025-06-09T19:46:04.884Z',
+                                    date:
+                                        selectedDateNotifier.value
+                                            .toUtc()
+                                            .toIso8601String(),
                                     amount: amountController.text,
                                     transactionType: transactionType,
                                     account: selectedAccountId!,
@@ -254,9 +242,7 @@ class IncomePage {
                                     incomeExpenseReason: 1,
                                     partner: 1,
                                     partners: 1,
-                                    // company: 1,
                                   );
-
                                   context.read<IncomeCubit>().addIncome(income);
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -331,32 +317,12 @@ class IncomePage {
                             });
                           }
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryColorLight,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 10,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Text(
-                          tempTime.format(context),
-                          style: const TextStyle(color: Colors.white),
-                        ),
+                        child: Text(tempTime.format(context)),
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary200Color,
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
                     onPressed: () {
                       final newDateTime = DateTime(
                         tempDate.year,
@@ -368,12 +334,7 @@ class IncomePage {
                       onDateTimeSelected(newDateTime);
                       Navigator.pop(context);
                     },
-                    child: Text(
-                      "Выбрать",
-                      style: AppTextStyles.f16w500.copyWith(
-                        color: AppColors.whiteColor,
-                      ),
-                    ),
+                    child: Text("Выбрать"),
                   ),
                 ],
               ),
