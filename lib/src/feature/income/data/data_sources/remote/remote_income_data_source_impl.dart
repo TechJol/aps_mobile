@@ -13,7 +13,7 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
   final Dio dio;
 
   @override
-  Future<Either> addIncome(IncomeAndComeoutModel income) async {
+  Future<Either> addIncomeExpense(IncomeAndComeoutModel income) async {
     SharedPreferences storage = await SharedPreferences.getInstance();
     var accessToken = storage.getString('accessToken');
     var companyId = storage.getInt('companyId');
@@ -30,7 +30,7 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
             'X-CSRFTOKEN': 'fi0b25V9IEeulV5AoTdUL3JSAaP4YZDP',
           },
         ),
-        data: income.toJson(),
+        data: income.toJson()..['company'] = companyId,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {

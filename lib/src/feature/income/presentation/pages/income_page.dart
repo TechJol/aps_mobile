@@ -222,7 +222,7 @@ class IncomePage {
                                     incomeExpenseReason: 1,
                                     partner: 1,
                                     partners: 1,
-                                    company: 1,
+                                    // company: 1,
                                   );
 
                                   context.read<IncomeCubit>().addIncome(income);

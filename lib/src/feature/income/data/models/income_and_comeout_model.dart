@@ -3,14 +3,14 @@ class IncomeAndComeoutModel {
     required this.currency,
     required this.date,
     required this.amount,
-    required this.kgsCurrencyAmount,
+    this.kgsCurrencyAmount,
     required this.transactionType,
-    required this.description,
-    required this.company,
+    this.description,
+    this.company,
     required this.account,
-    required this.partner,
-    required this.partners,
-    required this.incomeExpenseReason,
+    this.partner,
+    this.partners,
+    this.incomeExpenseReason,
   });
 
   final String currency;

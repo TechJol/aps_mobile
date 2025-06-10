@@ -3,4 +3,6 @@ import 'package:dartz/dartz.dart';
 
 abstract class IncomeRepository {
   Future<Either> addIncome(IncomeAndComeoutModel income);
+
+  Future<Either> getAccount();
 }
