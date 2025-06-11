@@ -199,9 +199,14 @@ class IncomePage {
                                 );
                               }
 
+                              final filteredReasons =
+                                  state.reasons
+                                      .where((e) => e.type == transactionType)
+                                      .toList();
+
                               return DropDownFormField(
                                 items:
-                                    state.reasons.map((e) => e.name).toList(),
+                                    filteredReasons.map((e) => e.name).toList(),
                                 label: 'Статья',
                                 value: selectedReasonName,
                                 onChanged: (val) {
