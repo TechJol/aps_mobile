@@ -22,7 +22,10 @@ class IncomePage {
 
     String? selectedAccountName;
     int? selectedAccountId;
+    String? selectedReasonName;
+    int? selectedReasonId;
     context.read<IncomeCubit>().getAccount();
+    context.read<IncomeCubit>().getIncomeExpenseReasons();
 
     showModalBottomSheet(
       context: context,
@@ -172,7 +175,7 @@ class IncomePage {
                                 return DropDownFormField(
                                   items: [],
                                   label: 'Счет',
-                                  value: 'Загрузка...',
+                                  value: 'Нет данных...',
                                   onChanged: (_) {},
                                 );
                               }
@@ -184,11 +187,35 @@ class IncomePage {
                             controller: amountController,
                           ),
                           const SizedBox(height: 12),
-                          DropDownFormField(
-                            items: ['Пример 1', 'Пример 2'],
-                            label: 'Статья',
-                            value: 'Статья',
-                            onChanged: (val) {},
+                          BlocBuilder<IncomeCubit, IncomeState>(
+                            builder: (context, state) {
+                              if (state is IncomeExpenseReasonsLoaded) {
+                                final reasons = state.reasons;
+                                return DropDownFormField(
+                                  items: reasons.map((e) => e.name).toList(),
+                                  label: 'Статья',
+                                  value: selectedReasonName,
+                                  onChanged: (val) {
+                                    selectedReasonName = val;
+                                    selectedReasonId =
+                                        reasons
+                                            .firstWhere(
+                                              (element) => element.name == val,
+                                            )
+                                            .id;
+                                  },
+                                );
+                              } else if (state is IncomeLoading) {
+                                return const CircularProgressIndicator();
+                              } else {
+                                return DropDownFormField(
+                                  items: [],
+                                  label: 'Статья',
+                                  value: 'Нет данных...',
+                                  onChanged: (_) {},
+                                );
+                              }
+                            },
                           ),
                           12.h,
                           TextFormField(
@@ -239,7 +266,7 @@ class IncomePage {
                                     account: selectedAccountId!,
                                     description: descriptionController.text,
                                     kgsCurrencyAmount: "1",
-                                    incomeExpenseReason: 1,
+                                    incomeExpenseReason: selectedReasonId!,
                                     partner: 1,
                                     partners: 1,
                                   );
