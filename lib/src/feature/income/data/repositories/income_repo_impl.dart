@@ -15,4 +15,9 @@ class IncomeRepositoryImpl implements IncomeRepository {
   Future<Either> getAccount() async {
     return await remoteIncomeDataSource.getAccount();
   }
+
+  @override
+  Future<Either> getIncomeExpenseReasons() async {
+    return await remoteIncomeDataSource.getIncomeExpenseReasons();
+  }
 }

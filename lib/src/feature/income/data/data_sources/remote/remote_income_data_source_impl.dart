@@ -73,4 +73,33 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
       return Left(Exception('Something went wrong: ${e.toString()}'));
     }
   }
+
+  @override
+  Future<Either> getIncomeExpenseReasons() async {
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    var accessToken = storage.getString('accessToken');
+    try {
+      final response = await sl<DioClient>().get(
+        AppApi.getIncomeExpenseReasons,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+            'X-CSRFTOKEN': 'fi0b25V9IEeulV5AoTdUL3JSAaP4YZDP',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Right(response.data);
+      } else {
+        throw Exception(
+          'Failed to get account. Status code: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      return Left(Exception('Something went wrong: ${e.toString()}'));
+    }
+  }
 }

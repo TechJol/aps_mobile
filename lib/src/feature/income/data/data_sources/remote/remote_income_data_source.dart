@@ -5,4 +5,6 @@ abstract class RemoteIncomeDataSource {
   Future<Either> addIncomeExpense(IncomeAndComeoutModel income);
 
   Future<Either> getAccount();
+
+  Future<Either> getIncomeExpenseReasons();
 }

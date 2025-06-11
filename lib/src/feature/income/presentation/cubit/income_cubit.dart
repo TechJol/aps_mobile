@@ -7,9 +7,13 @@ part 'income_state.dart';
 class IncomeCubit extends Cubit<IncomeState> {
   final AddIncomeUsecase addIncomeUsecase;
   final GetAccountUsecase getAccountUsecase;
+  final GetIncomeExpenseReasonUsecase getIncomeExpenseReasonUsecase;
 
-  IncomeCubit({required this.addIncomeUsecase, required this.getAccountUsecase})
-    : super(IncomeInitial());
+  IncomeCubit({
+    required this.addIncomeUsecase,
+    required this.getAccountUsecase,
+    required this.getIncomeExpenseReasonUsecase,
+  }) : super(IncomeInitial());
 
   Future<void> addIncome(IncomeAndComeoutModel income) async {
     emit(IncomeLoading());
@@ -29,6 +33,20 @@ class IncomeCubit extends Cubit<IncomeState> {
               .map((e) => AccountModel.fromMap(e as Map<String, dynamic>))
               .toList();
       emit(AccountLoaded(accounts: accounts));
+    });
+  }
+
+  Future<void> getIncomeExpenseReasons() async {
+    emit(IncomeLoading());
+    final result = await getIncomeExpenseReasonUsecase.call();
+    result.fold((l) => emit(IncomeError(message: l.message)), (r) {
+      final reasons =
+          (r as List)
+              .map(
+                (e) => IncomeExpenseReasons.fromMap(e as Map<String, dynamic>),
+              )
+              .toList();
+      emit(IncomeExpenseReasonsLoaded(reasons: reasons));
     });
   }
 }

@@ -30,3 +30,12 @@ class AccountLoaded extends IncomeState {
   @override
   List<Object> get props => [accounts];
 }
+
+class IncomeExpenseReasonsLoaded extends IncomeState {
+  const IncomeExpenseReasonsLoaded({required this.reasons});
+
+  final List<IncomeExpenseReasons> reasons;
+
+  @override
+  List<Object> get props => [reasons];
+}
