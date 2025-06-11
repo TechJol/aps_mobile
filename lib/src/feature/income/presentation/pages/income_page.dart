@@ -1,5 +1,6 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
+import 'package:aps_mobile/src/feature/income/presentation/cubit/income_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,11 +13,9 @@ class IncomePage {
     required String transactionType,
   }) {
     final selectedDateNotifier = ValueNotifier<DateTime>(DateTime.now());
-
     final TextEditingController dateController = TextEditingController(
       text: DateFormat('dd.MM.yyyy – HH:mm').format(selectedDateNotifier.value),
     );
-
     final TextEditingController amountController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
 
@@ -24,6 +23,7 @@ class IncomePage {
     int? selectedAccountId;
     String? selectedReasonName;
     int? selectedReasonId;
+
     context.read<IncomeCubit>().getAccount();
     context.read<IncomeCubit>().getIncomeExpenseReasons();
 
@@ -37,12 +37,13 @@ class IncomePage {
       builder:
           (context) => BlocListener<IncomeCubit, IncomeState>(
             listener: (context, state) {
-              if (state is IncomeSuccess) {
-                Navigator.pop(context);
+              if (state.error != null) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(state.error!)));
               }
-              if (state is IncomeError) {
-                var snackBar = SnackBar(content: Text(state.message));
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              if (state.incomeSaved) {
+                Navigator.pop(context);
               }
             },
             child: Padding(
@@ -60,8 +61,6 @@ class IncomePage {
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Center(
                             child: Container(
@@ -77,31 +76,27 @@ class IncomePage {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              40.w,
+                              const SizedBox(width: 40),
                               Center(
                                 child: Text(
                                   title,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
                               IconButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: Icon(Icons.close),
+                                onPressed: () => Navigator.pop(context),
+                                icon: const Icon(Icons.close),
                               ),
                             ],
                           ),
-                          16.h,
+                          const SizedBox(height: 16),
                           TextFormField(
                             readOnly: true,
                             controller: dateController,
                             decoration: InputDecoration(
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.never,
                               filled: true,
                               labelStyle: AppTextStyles.f16w500,
                               fillColor: AppColors.backroundColor,
@@ -143,42 +138,42 @@ class IncomePage {
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(25),
                                 borderSide: const BorderSide(
-                                  width: 1,
                                   color: AppColors.backroundColor,
                                 ),
                               ),
                             ),
                           ),
-                          12.h,
+                          const SizedBox(height: 12),
+
+                          /// Dropdown: Account
                           BlocBuilder<IncomeCubit, IncomeState>(
                             builder: (context, state) {
-                              if (state is AccountLoaded) {
-                                final accountItems = state.accounts;
-                                return DropDownFormField(
-                                  items:
-                                      accountItems.map((e) => e.name).toList(),
-                                  label: 'Счет',
-                                  value: selectedAccountName,
-                                  onChanged: (val) {
-                                    selectedAccountName = val;
-                                    selectedAccountId =
-                                        accountItems
-                                            .firstWhere(
-                                              (element) => element.name == val,
-                                            )
-                                            .id;
-                                  },
-                                );
-                              } else if (state is IncomeLoading) {
+                              if (state.isLoading && state.accounts.isEmpty) {
                                 return const CircularProgressIndicator();
-                              } else {
+                              }
+
+                              if (state.accounts.isEmpty) {
                                 return DropDownFormField(
-                                  items: [],
+                                  items: const [],
                                   label: 'Счет',
                                   value: 'Нет данных...',
                                   onChanged: (_) {},
                                 );
                               }
+
+                              return DropDownFormField(
+                                items:
+                                    state.accounts.map((e) => e.name).toList(),
+                                label: 'Счет',
+                                value: selectedAccountName,
+                                onChanged: (val) {
+                                  selectedAccountName = val;
+                                  selectedAccountId =
+                                      state.accounts
+                                          .firstWhere((e) => e.name == val)
+                                          .id;
+                                },
+                              );
                             },
                           ),
                           const SizedBox(height: 12),
@@ -187,74 +182,77 @@ class IncomePage {
                             controller: amountController,
                           ),
                           const SizedBox(height: 12),
+
+                          /// Dropdown: Reason
                           BlocBuilder<IncomeCubit, IncomeState>(
                             builder: (context, state) {
-                              if (state is IncomeExpenseReasonsLoaded) {
-                                final reasons = state.reasons;
-                                return DropDownFormField(
-                                  items: reasons.map((e) => e.name).toList(),
-                                  label: 'Статья',
-                                  value: selectedReasonName,
-                                  onChanged: (val) {
-                                    selectedReasonName = val;
-                                    selectedReasonId =
-                                        reasons
-                                            .firstWhere(
-                                              (element) => element.name == val,
-                                            )
-                                            .id;
-                                  },
-                                );
-                              } else if (state is IncomeLoading) {
+                              if (state.isLoading && state.reasons.isEmpty) {
                                 return const CircularProgressIndicator();
-                              } else {
+                              }
+
+                              if (state.reasons.isEmpty) {
                                 return DropDownFormField(
-                                  items: [],
+                                  items: const [],
                                   label: 'Статья',
                                   value: 'Нет данных...',
                                   onChanged: (_) {},
                                 );
                               }
+
+                              return DropDownFormField(
+                                items:
+                                    state.reasons.map((e) => e.name).toList(),
+                                label: 'Статья',
+                                value: selectedReasonName,
+                                onChanged: (val) {
+                                  selectedReasonName = val;
+                                  selectedReasonId =
+                                      state.reasons
+                                          .firstWhere((e) => e.name == val)
+                                          .id;
+                                },
+                              );
                             },
                           ),
-                          12.h,
+                          const SizedBox(height: 12),
                           TextFormField(
                             maxLength: 160,
                             maxLines: 3,
                             controller: descriptionController,
                             decoration: InputDecoration(
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.never,
                               filled: true,
                               labelStyle: AppTextStyles.f16w500,
                               fillColor: AppColors.backroundColor,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(25),
                               ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25),
-                                borderSide: const BorderSide(
-                                  color: AppColors.backroundColor,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25),
-                                borderSide: const BorderSide(
-                                  width: 1,
-                                  color: AppColors.backroundColor,
-                                ),
-                              ),
                               hintText: 'Описание',
                             ),
                           ),
-                          24.h,
+                          const SizedBox(height: 24),
+
+                          /// Save button
                           BlocBuilder<IncomeCubit, IncomeState>(
                             builder: (context, state) {
-                              if (state is IncomeLoading) {
+                              if (state.isLoading) {
                                 return const CircularProgressIndicator();
                               }
+
                               return ElevatedButton(
                                 onPressed: () {
+                                  if (selectedAccountId == null ||
+                                      selectedReasonId == null ||
+                                      amountController.text.isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Пожалуйста, заполните все поля.',
+                                        ),
+                                      ),
+                                    );
+                                    return;
+                                  }
+
                                   final income = IncomeAndComeoutModel(
                                     currency: 'kgs',
                                     date:

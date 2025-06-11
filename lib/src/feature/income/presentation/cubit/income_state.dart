@@ -1,41 +1,37 @@
-part of 'income_cubit.dart';
+import 'package:aps_mobile/src/feature/feature.dart';
+import 'package:equatable/equatable.dart';
 
-sealed class IncomeState extends Equatable {
-  const IncomeState();
-
-  @override
-  List<Object> get props => [];
-}
-
-final class IncomeInitial extends IncomeState {}
-
-final class IncomeLoading extends IncomeState {}
-
-final class IncomeSuccess extends IncomeState {}
-
-final class IncomeError extends IncomeState {
-  const IncomeError({required this.message});
-
-  final String message;
-
-  @override
-  List<Object> get props => [message];
-}
-
-class AccountLoaded extends IncomeState {
-  const AccountLoaded({required this.accounts});
-
+class IncomeState extends Equatable {
   final List<AccountModel> accounts;
-
-  @override
-  List<Object> get props => [accounts];
-}
-
-class IncomeExpenseReasonsLoaded extends IncomeState {
-  const IncomeExpenseReasonsLoaded({required this.reasons});
-
   final List<IncomeExpenseReasons> reasons;
+  final bool isLoading;
+  final bool incomeSaved;
+  final String? error;
+
+  const IncomeState({
+    this.accounts = const [],
+    this.reasons = const [],
+    this.isLoading = false,
+    this.incomeSaved = false,
+    this.error,
+  });
+
+  IncomeState copyWith({
+    List<AccountModel>? accounts,
+    List<IncomeExpenseReasons>? reasons,
+    bool? isLoading,
+    bool? incomeSaved,
+    String? error,
+  }) {
+    return IncomeState(
+      accounts: accounts ?? this.accounts,
+      reasons: reasons ?? this.reasons,
+      isLoading: isLoading ?? this.isLoading,
+      incomeSaved: incomeSaved ?? this.incomeSaved,
+      error: error,
+    );
+  }
 
   @override
-  List<Object> get props => [reasons];
+  List<Object?> get props => [accounts, reasons, isLoading, incomeSaved, error];
 }

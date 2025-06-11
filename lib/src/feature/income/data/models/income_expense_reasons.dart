@@ -2,7 +2,7 @@ class IncomeExpenseReasons {
   final int id;
   final String name;
   final String type;
-  final String company;
+  final int company;
 
   IncomeExpenseReasons({
     required this.id,
@@ -25,7 +25,7 @@ class IncomeExpenseReasons {
       id: map['id'] as int,
       name: map['name'] as String,
       type: map['type'] as String,
-      company: map['company'] as String,
+      company: map['company'] as int,
     );
   }
 }

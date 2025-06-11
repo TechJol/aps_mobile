@@ -1,52 +1,54 @@
 import 'package:aps_mobile/src/feature/feature.dart';
-import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-
-part 'income_state.dart';
+import 'package:aps_mobile/src/feature/income/presentation/cubit/income_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class IncomeCubit extends Cubit<IncomeState> {
-  final AddIncomeUsecase addIncomeUsecase;
-  final GetAccountUsecase getAccountUsecase;
-  final GetIncomeExpenseReasonUsecase getIncomeExpenseReasonUsecase;
-
   IncomeCubit({
     required this.addIncomeUsecase,
     required this.getAccountUsecase,
     required this.getIncomeExpenseReasonUsecase,
-  }) : super(IncomeInitial());
+  }) : super(const IncomeState());
+
+  final AddIncomeUsecase addIncomeUsecase;
+  final GetAccountUsecase getAccountUsecase;
+  final GetIncomeExpenseReasonUsecase getIncomeExpenseReasonUsecase;
 
   Future<void> addIncome(IncomeAndComeoutModel income) async {
-    emit(IncomeLoading());
+    emit(state.copyWith(isLoading: true, incomeSaved: false, error: null));
     final result = await addIncomeUsecase(income);
     result.fold(
-      (l) => emit(IncomeError(message: l.message)),
-      (r) => emit(IncomeSuccess()),
+      (l) => emit(state.copyWith(isLoading: false, error: l.message)),
+      (r) => emit(state.copyWith(isLoading: false, incomeSaved: true)),
     );
   }
 
   Future<void> getAccount() async {
-    emit(IncomeLoading());
-    final result = await getAccountUsecase.call();
-    result.fold((l) => emit(IncomeError(message: l.message)), (r) {
+    emit(state.copyWith(isLoading: true, error: null));
+    final res = await getAccountUsecase();
+    res.fold((l) => emit(state.copyWith(isLoading: false, error: l.message)), (
+      r,
+    ) {
       final accounts =
           (r as List)
               .map((e) => AccountModel.fromMap(e as Map<String, dynamic>))
               .toList();
-      emit(AccountLoaded(accounts: accounts));
+      emit(state.copyWith(isLoading: false, accounts: accounts));
     });
   }
 
   Future<void> getIncomeExpenseReasons() async {
-    emit(IncomeLoading());
-    final result = await getIncomeExpenseReasonUsecase.call();
-    result.fold((l) => emit(IncomeError(message: l.message)), (r) {
+    emit(state.copyWith(isLoading: true, error: null));
+    final res = await getIncomeExpenseReasonUsecase();
+    res.fold((l) => emit(state.copyWith(isLoading: false, error: l.message)), (
+      r,
+    ) {
       final reasons =
           (r as List)
               .map(
                 (e) => IncomeExpenseReasons.fromMap(e as Map<String, dynamic>),
               )
               .toList();
-      emit(IncomeExpenseReasonsLoaded(reasons: reasons));
+      emit(state.copyWith(isLoading: false, reasons: reasons));
     });
   }
 }
