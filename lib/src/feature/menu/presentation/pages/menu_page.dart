@@ -23,9 +23,9 @@ class _MenuPageState extends State<MenuPage> {
         title: 'Меню',
         backgroundColor: AppColors.whiteColor,
       ),
-      body: BlocListener<CredentialCubit, CredentialState>(
+      body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
-          if (state is CredentialSuccess) {
+          if (state is UnAuthenticated) {
             Navigator.pushReplacementNamed(context, AppRoutes.login);
           }
         },
@@ -113,7 +113,7 @@ class _MenuPageState extends State<MenuPage> {
             const SizedBox(height: 20),
             MenuItem(
               onTap: () {
-                context.read<CredentialCubit>().logout();
+                context.read<AuthCubit>().logout();
               },
               icon: 'assets/icons/folder3.svg',
               title: 'Выход',

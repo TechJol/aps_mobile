@@ -6,8 +6,10 @@ part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final IsLoggedInUsecase isLoggedInUsecase;
+  final LogoutUsecase logoutUsecase;
 
-  AuthCubit({required this.isLoggedInUsecase}) : super(AuthInitialState());
+  AuthCubit({required this.isLoggedInUsecase, required this.logoutUsecase})
+    : super(AuthInitialState());
 
   void appStarted() async {
     var isLoggedIn = await isLoggedInUsecase.call();
@@ -16,5 +18,10 @@ class AuthCubit extends Cubit<AuthState> {
     } else {
       emit(UnAuthenticated());
     }
+  }
+
+  void logout() async {
+    await logoutUsecase.call();
+    emit(UnAuthenticated());
   }
 }

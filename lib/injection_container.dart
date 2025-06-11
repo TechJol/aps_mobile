@@ -18,7 +18,9 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(() => AuthCubit(isLoggedInUsecase: sl.call()));
+  sl.registerFactory(
+    () => AuthCubit(isLoggedInUsecase: sl.call(), logoutUsecase: sl.call()),
+  );
 
   sl.registerFactory(
     () => IncomeCubit(
