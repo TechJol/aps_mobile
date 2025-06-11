@@ -30,6 +30,8 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerFactory(() => MenuCubit(getTransactionsUsecase: sl.call()));
+
   //! UseCase
   sl.registerLazySingleton(() => LoginUsecase(authRepository: sl.call()));
   sl.registerLazySingleton(() => RegisterUsecase(authRepository: sl.call()));
@@ -40,6 +42,8 @@ Future<void> init() async {
   sl.registerLazySingleton(
     () => GetIncomeExpenseReasonUsecase(repository: sl.call()),
   );
+
+  sl.registerLazySingleton(() => GetTransactionsUsecase(repository: sl.call()));
 
   //! Repository
   sl.registerLazySingleton<AuthRepository>(
@@ -53,6 +57,10 @@ Future<void> init() async {
     () => IncomeRepositoryImpl(remoteIncomeDataSource: sl.call()),
   );
 
+  sl.registerLazySingleton<MenuRepository>(
+    () => MenuRepositoryImpl(remoteMenuDataSource: sl.call()),
+  );
+
   //! Data Source
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(dio: sl.call()),
@@ -64,6 +72,10 @@ Future<void> init() async {
 
   sl.registerLazySingleton<RemoteIncomeDataSource>(
     () => RemoteIncomeDataSourceImpl(dio: sl.call()),
+  );
+
+  sl.registerLazySingleton<RemoteMenuDataSource>(
+    () => RemoteMenuDataSourceImpl(dio: sl.call()),
   );
 
   //! Network

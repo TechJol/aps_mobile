@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.sl<CredentialCubit>()),
         BlocProvider(create: (context) => di.sl<AuthCubit>()..appStarted()),
         BlocProvider(create: (context) => di.sl<IncomeCubit>()),
+        BlocProvider(create: (context) => di.sl<MenuCubit>()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
