@@ -21,7 +21,7 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
     log(companyId.toString());
     try {
       final response = await sl<DioClient>().post(
-        AppApi.postTransactions,
+        AppApi.transactions,
         options: Options(
           headers: {
             'Content-Type': 'application/json',
