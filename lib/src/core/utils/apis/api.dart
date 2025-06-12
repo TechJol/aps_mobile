@@ -9,5 +9,7 @@ class AppApi {
 
   static const getAccount = '$domain/api/accounts/';
 
-  static const getIncomeExpenseReasons = '$domain/api/income-expense-reasons/';
+  static const incomeExpenseReasons = '$domain/api/income-expense-reasons/';
+
+  static const partners = '$domain/api/partners/';
 }

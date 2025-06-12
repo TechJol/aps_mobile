@@ -80,7 +80,7 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
     var accessToken = storage.getString('accessToken');
     try {
       final response = await sl<DioClient>().get(
-        AppApi.getIncomeExpenseReasons,
+        AppApi.incomeExpenseReasons,
         options: Options(
           headers: {
             'Content-Type': 'application/json',

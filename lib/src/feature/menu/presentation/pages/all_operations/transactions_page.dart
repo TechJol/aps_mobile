@@ -40,7 +40,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Транзакции',
+        title: 'Все транзакции',
         backgroundColor: AppColors.whiteColor,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
@@ -78,14 +78,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
         children: [
           Row(
             children: [
-              OutlinedButtonWidget(text: 'Транзакции', onPressed: () {}),
+              OutlinedButtonWidget(text: 'Распечатать', onPressed: () {}),
               12.w,
-              OutlinedButtonWidget(
-                text: 'Скачать в Excel',
-                onPressed: () {
-                  // TODO: реализовать экспорт
-                },
-              ),
+              OutlinedButtonWidget(text: 'Скачать в Excel', onPressed: () {}),
             ],
           ),
           20.h,
@@ -106,28 +101,36 @@ class _TransactionsPageState extends State<TransactionsPage> {
                 DataColumn(label: Text('№')),
                 DataColumn(label: Text('Сумма')),
                 DataColumn(label: Text('Вл')),
-                // DataColumn(label: Text('Дата')),
+                DataColumn(label: Text('Дата')),
                 DataColumn(label: Text('Тип')),
-                // DataColumn(label: Text('Счет')),
-                // DataColumn(label: Text('Статьи')),
-                // DataColumn(label: Text('Контрагент')),
-                // DataColumn(label: Text('Комментарий')),
+                DataColumn(label: Text('Счет')),
+                DataColumn(label: Text('Статьи')),
+                DataColumn(label: Text('Контрагент')),
+                DataColumn(label: Text('Комментарий')),
               ],
               rows:
                   paginatedData.asMap().entries.map((entry) {
-                    final index = entry.key;
+                    // final index = entry.key;
                     final tx = entry.value;
                     return DataRow(
                       cells: [
                         DataCell(Text(tx.id.toString())),
                         DataCell(Text(tx.amount.toString())),
                         DataCell(Text(tx.currency ?? '')),
-                        // DataCell(Text(tx.date != null ? DateFormat('dd.MM.yyyy').format(tx.date!) : '')),
+                        DataCell(
+                          Text(
+                            tx.date != null
+                                ? DateFormat(
+                                  'dd.MM.yyyy',
+                                ).format(DateTime.parse(tx.date!))
+                                : '',
+                          ),
+                        ),
                         DataCell(Text(tx.transactionType ?? '')),
-                        // DataCell(Text(tx.account ?? '')),
-                        // DataCell(Text(tx. ?? '')),
-                        // DataCell(Text(tx.counterpartyName ?? '')),
-                        // DataCell(Text(tx.comment ?? '')),
+                        DataCell(Text('${tx.account}')),
+                        DataCell(Text('${tx.incomeExpenseReason}')),
+                        DataCell(Text('${tx.partners}')),
+                        DataCell(Text('${tx.description}')),
                       ],
                     );
                   }).toList(),
@@ -142,9 +145,15 @@ class _TransactionsPageState extends State<TransactionsPage> {
   }
 
   Widget _buildPagination(int pageCount) {
-    // вычисляем диапазон кнопок (не более 10)
-    int startPage = (currentPage - 5).clamp(1, pageCount - 9);
-    int endPage = (startPage + 9).clamp(1, pageCount);
+    if (pageCount <= 1)
+      return const SizedBox.shrink(); // не показываем пагинацию если одна страница
+
+    int startPage = (currentPage - 5).clamp(1, pageCount);
+    int endPage = (startPage + 9).clamp(
+      startPage,
+      pageCount,
+    ); // гарантируем, что end >= start
+
     if (endPage - startPage < 9) {
       startPage = (endPage - 9).clamp(1, pageCount);
     }
@@ -161,24 +170,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                     ? () => goToPage(currentPage - 1, pageCount)
                     : null,
           ),
-          if (currentPage > 4) ...[
-            _pageButton(1, pageCount),
-            _pageButton(2, pageCount),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4),
-              child: Text('...'),
-            ),
-          ],
-          for (int i = currentPage - 2; i <= currentPage + 2; i++)
-            if (i >= 1 && i <= pageCount) _pageButton(i, pageCount),
-          if (currentPage < pageCount - 3) ...[
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4),
-              child: Text('...'),
-            ),
-            _pageButton(pageCount - 1, pageCount),
-            _pageButton(pageCount, pageCount),
-          ],
+          for (int i = startPage; i <= endPage; i++) _pageButton(i, pageCount),
           IconButton(
             icon: const Icon(Icons.chevron_right),
             onPressed:
