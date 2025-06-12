@@ -13,22 +13,13 @@ class ForCounterpartiesPage extends StatefulWidget {
 class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
   int currentPage = 1;
   final int rowsPerPage = 10;
-  String activeCategory = 'Клиент aps';
+  int activeType = 1; // 1 - Клиент, 2 - Поставщик, 3 - Сотрудник
 
   @override
   void initState() {
     context.read<MenuCubit>().getPartners();
     super.initState();
   }
-
-  final List<Map<String, String>> data = List.generate(223, (index) {
-    return {
-      '№': '${index + 1}',
-      'Имя': 'ИП Игор',
-      'Баланс': '12100',
-      'Контакты': '0700861212',
-    };
-  });
 
   void goToPage(int page, int pageCount) {
     if (page >= 1 && page <= pageCount) {
@@ -55,7 +46,8 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
             return Center(child: Text('Ошибка: ${state.message}'));
           }
           if (state is MenuPartnerSuccess) {
-            final partners = state.partners;
+            final partners =
+                state.partners.where((e) => e.type == activeType).toList();
             if (partners.isEmpty) {
               return const Center(child: Text('Нет контрагентов'));
             }
@@ -82,17 +74,32 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
               children: [
                 categoryButton(
                   label: 'Клиент aps',
-                  isActive: activeCategory == 'Клиент aps',
+                  isActive: activeType == 1,
+                  onTap:
+                      () => setState(() {
+                        activeType = 1;
+                        currentPage = 1;
+                      }),
                 ),
                 8.w,
                 categoryButton(
                   label: 'Поставщик aps',
-                  isActive: activeCategory == 'Поставщик aps',
+                  isActive: activeType == 2,
+                  onTap:
+                      () => setState(() {
+                        activeType = 2;
+                        currentPage = 1;
+                      }),
                 ),
                 8.w,
                 categoryButton(
                   label: 'Сотрудник aps',
-                  isActive: activeCategory == 'Сотрудник aps',
+                  isActive: activeType == 3,
+                  onTap:
+                      () => setState(() {
+                        activeType = 3;
+                        currentPage = 1;
+                      }),
                 ),
               ],
             ),
@@ -133,7 +140,11 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
     );
   }
 
-  Widget categoryButton({required String label, required bool isActive}) {
+  Widget categoryButton({
+    required String label,
+    required bool isActive,
+    required VoidCallback onTap,
+  }) {
     return OutlinedButton(
       style: OutlinedButton.styleFrom(
         backgroundColor: isActive ? Colors.black : Colors.white,
@@ -142,26 +153,18 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       ),
-      onPressed: () {
-        setState(() {
-          activeCategory = label;
-        });
-      },
+      onPressed: onTap,
       child: Text(label),
     );
   }
 
   Widget _buildPagination(int pageCount) {
     if (pageCount <= 1) {
-      return const SizedBox.shrink(); // не показываем пагинацию если одна страница
+      return const SizedBox.shrink();
     }
 
     int startPage = (currentPage - 5).clamp(1, pageCount);
-    int endPage = (startPage + 9).clamp(
-      startPage,
-      pageCount,
-    ); // гарантируем, что end >= start
-
+    int endPage = (startPage + 9).clamp(startPage, pageCount);
     if (endPage - startPage < 9) {
       startPage = (endPage - 9).clamp(1, pageCount);
     }
