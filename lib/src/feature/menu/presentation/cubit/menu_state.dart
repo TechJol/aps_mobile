@@ -28,3 +28,12 @@ final class MenuError extends MenuState {
   @override
   List<Object> get props => [message];
 }
+
+final class MenuPartnerSuccess extends MenuState {
+  const MenuPartnerSuccess({required this.partners});
+
+  final List<PartnersModel> partners;
+
+  @override
+  List<Object> get props => [partners];
+}

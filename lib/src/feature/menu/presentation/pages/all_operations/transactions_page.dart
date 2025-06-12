@@ -1,6 +1,5 @@
 import 'package:aps_mobile/src/core/core.dart';
-import 'package:aps_mobile/src/feature/menu/presentation/cubit/menu_cubit.dart';
-import 'package:aps_mobile/src/feature/menu/data/models/all_transactions_model.dart';
+import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -145,8 +144,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
   }
 
   Widget _buildPagination(int pageCount) {
-    if (pageCount <= 1)
+    if (pageCount <= 1) {
       return const SizedBox.shrink(); // не показываем пагинацию если одна страница
+    }
 
     int startPage = (currentPage - 5).clamp(1, pageCount);
     int endPage = (startPage + 9).clamp(

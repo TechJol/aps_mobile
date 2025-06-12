@@ -10,4 +10,9 @@ class MenuRepositoryImpl implements MenuRepository {
   Future<Either> getTransactions() async {
     return await remoteMenuDataSource.getTransactions();
   }
+
+  @override
+  Future<Either> getPartners() async {
+    return await remoteMenuDataSource.getPartners();
+  }
 }
