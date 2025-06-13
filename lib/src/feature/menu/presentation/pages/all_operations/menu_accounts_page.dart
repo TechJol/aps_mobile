@@ -21,14 +21,14 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
     context.read<IncomeCubit>().getAccount();
   }
 
-  final List<Map<String, String>> data = List.generate(223, (index) {
-    return {
-      '№': '${index + 1}',
-      'Название': '1455',
-      'Баланс': 'kgs',
-      'Тип счета': '12.01.2025',
-    };
-  });
+  // final List<Map<String, String>> data = List.generate(223, (index) {
+  //   return {
+  //     '№': '${index + 1}',
+  //     'Название': '1455',
+  //     'Баланс': 'kgs',
+  //     'Тип счета': '12.01.2025',
+  //   };
+  // });
 
   @override
   Widget build(BuildContext context) {
