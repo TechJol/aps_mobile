@@ -4,8 +4,6 @@ import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../feature.dart';
-
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
@@ -95,10 +93,7 @@ class ProfilePage extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => const HomePage()),
-                      );
+                      Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF661EFB),
