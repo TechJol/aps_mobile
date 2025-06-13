@@ -1,6 +1,10 @@
+import 'dart:io'; // for exit(0)
+
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../feature.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -13,13 +17,12 @@ class ProfilePage extends StatelessWidget {
         children: [
           const SizedBox(height: 120),
 
-          // Аватар
+          // Avatar and white background
           Center(
             child: Stack(
               alignment: Alignment.center,
               clipBehavior: Clip.none,
               children: [
-                // Белый контейнер
                 Positioned(
                   top: 90,
                   child: Container(
@@ -33,8 +36,6 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
                 ),
-
-                // Аватар
                 Container(
                   width: 140,
                   height: 140,
@@ -50,23 +51,88 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 120),
+          const SizedBox(height: 40),
 
           _buildTextField(label: 'Dezlab Studio'),
-
-          const SizedBox(height: 16),
+          const SizedBox(height: 30),
           _buildTextField(label: 'Ayana-aps@gmail.com'),
+          const SizedBox(height: 32),
+
+          SizedBox(height: 290),
+
+          // Buttons
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: [
+                // Exit button
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => exit(0),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: AppColors.blackColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: const BorderSide(
+                          color: AppColors.transparentColor,
+                        ),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    child: const Text(
+                      'Выйти',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+
+                // Next button
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (_) => const HomePage()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF661EFB),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    child: const Text(
+                      'Далее',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 
-  _buildTextField({required String label, TextEditingController? controller}) {
+  Widget _buildTextField({
+    required String label,
+    TextEditingController? controller,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: TextFormField(
         controller: controller,
-
         decoration: InputDecoration(
           floatingLabelBehavior: FloatingLabelBehavior.never,
           filled: true,
