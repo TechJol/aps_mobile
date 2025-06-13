@@ -13,13 +13,7 @@ class ForCounterpartiesPage extends StatefulWidget {
 class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
   int currentPage = 1;
   final int rowsPerPage = 10;
-  int activeType = 1; // 1 - Клиент, 2 - Поставщик, 3 - Сотрудник
-
-  @override
-  void initState() {
-    context.read<MenuCubit>().getPartners();
-    super.initState();
-  }
+  int activeType = 1;
 
   void goToPage(int page, int pageCount) {
     if (page >= 1 && page <= pageCount) {
@@ -27,6 +21,12 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
         currentPage = page;
       });
     }
+  }
+
+  @override
+  void initState() {
+    context.read<MenuCubit>().getPartners();
+    super.initState();
   }
 
   @override
