@@ -4,6 +4,7 @@ class AccountModel {
     required this.name,
     required this.accountType,
     required this.currency,
+    this.currentBalance,
     required this.company,
   });
 
@@ -11,6 +12,7 @@ class AccountModel {
   final String name;
   final String accountType;
   final String currency;
+  final String? currentBalance;
   final int company;
 
   Map<String, dynamic> toMap() {
@@ -19,6 +21,7 @@ class AccountModel {
       'name': name,
       'account_type': accountType,
       'currency': currency,
+      'current_balance': currentBalance,
       'company': company,
     };
   }
@@ -29,6 +32,10 @@ class AccountModel {
       name: map['name'] as String,
       accountType: map['account_type'] as String,
       currency: map['currency'] as String,
+      currentBalance:
+          map['current_balance'] != null
+              ? map['current_balance'] as String
+              : null,
       company: map['company'] as int,
     );
   }
