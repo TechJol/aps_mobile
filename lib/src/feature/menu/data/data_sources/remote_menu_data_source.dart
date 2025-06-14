@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class RemoteMenuDataSource {
@@ -6,4 +7,6 @@ abstract class RemoteMenuDataSource {
   Future<Either> getPartners();
 
   Future<Either> deletePartner(int id);
+
+  Future<Either> postPartner(PartnersModel partner);
 }

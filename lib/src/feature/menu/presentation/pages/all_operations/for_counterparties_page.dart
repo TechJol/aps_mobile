@@ -128,7 +128,7 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
                       DataCell(Text(tx.id.toString())),
                       DataCell(Text(tx.name)),
                       DataCell(Text('1000')),
-                      DataCell(Text(tx.contactInfo)),
+                      DataCell(Text(tx.contactInfo ?? '')),
                     ],
                   );
                 }).toList(),

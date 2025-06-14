@@ -147,7 +147,7 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                               onConfirm: () {
                                 log('Удаляем: ${partner.type}');
                                 context.read<MenuCubit>().deletePartner(
-                                  partner.id,
+                                  partner.id!,
                                 );
                               },
                               title: 'Удалить счет',

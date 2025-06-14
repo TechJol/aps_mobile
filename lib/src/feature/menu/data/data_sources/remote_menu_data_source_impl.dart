@@ -98,4 +98,35 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
       return Left(Exception('Delete failed: ${e.toString()}'));
     }
   }
+
+  @override
+  Future<Either> postPartner(PartnersModel partner) async {
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    var accessToken = storage.getString('accessToken');
+
+    try {
+      final response = await sl<DioClient>().post(
+        AppApi.partners,
+
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+          },
+        ),
+        data: partner.toMap(),
+      );
+
+      if (response.statusCode == 201) {
+        return Right(response.data);
+      } else {
+        throw Exception(
+          'Failed to post partner. Status code: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      return Left(Exception('Something went wrong: ${e.toString()}'));
+    }
+  }
 }
