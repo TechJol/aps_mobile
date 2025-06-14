@@ -34,6 +34,7 @@ Future<void> init() async {
     () => MenuCubit(
       getTransactionsUsecase: sl.call(),
       getPartnersUsecase: sl.call(),
+      deletePartnerUsecase: sl.call(),
     ),
   );
 
@@ -49,6 +50,7 @@ Future<void> init() async {
   );
   sl.registerLazySingleton(() => GetTransactionsUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => GetPartnersUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => DeletePartnerUsecase(repository: sl.call()));
 
   //! Repository
   sl.registerLazySingleton<AuthRepository>(

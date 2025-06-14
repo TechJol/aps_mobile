@@ -15,4 +15,9 @@ class MenuRepositoryImpl implements MenuRepository {
   Future<Either> getPartners() async {
     return await remoteMenuDataSource.getPartners();
   }
+
+  @override
+  Future<Either> deletePartner(int id) async {
+    return await remoteMenuDataSource.deletePartner(id);
+  }
 }

@@ -7,9 +7,11 @@ part 'menu_state.dart';
 class MenuCubit extends Cubit<MenuState> {
   final GetTransactionsUsecase getTransactionsUsecase;
   final GetPartnersUsecase getPartnersUsecase;
+  final DeletePartnerUsecase deletePartnerUsecase;
   MenuCubit({
     required this.getTransactionsUsecase,
     required this.getPartnersUsecase,
+    required this.deletePartnerUsecase,
   }) : super(MenuInitial());
 
   Future<void> getTransactions() async {
@@ -30,5 +32,15 @@ class MenuCubit extends Cubit<MenuState> {
           (r as List).map((e) => PartnersModel.fromMap(e)).toList();
       emit(MenuPartnerSuccess(partners: partners));
     });
+  }
+
+  Future<void> deletePartner(int id) async {
+    final result = await deletePartnerUsecase.call(id);
+    result.fold(
+      (l) => emit(MenuError(message: 'Ошибка при удалении: ${l.toString()}')),
+      (r) {
+        getPartners(); // перезагружаем список после удаления
+      },
+    );
   }
 }
