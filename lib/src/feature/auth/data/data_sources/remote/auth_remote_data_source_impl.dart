@@ -18,7 +18,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            // 'X-CSRFTOKEN': 'fi0b25V9IEeulV5AoTdUL3JSAaP4YZDP',
+            'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
           },
         ),
         data: {'username': username, 'password': password},
@@ -27,8 +27,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       if (response.statusCode == 200 || response.statusCode == 201) {
         final accessToken = response.data['access'];
         final refreshToken = response.data['refresh'];
+        // Проверка наличия токенов
+        if (accessToken == null || refreshToken == null) {
+          throw Exception(
+            'Access token or refresh token is missing in the response',
+          );
+        }
 
-        // Логируем токены перед сохранением
         print(
           "Saving access token: $accessToken, refresh token: $refreshToken",
         );
@@ -57,7 +62,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            // 'X-CSRFTOKEN': 'fi0b25V9IEeulV5AoTdUL3JSAaP4YZDP',
+            'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
           },
         ),
         data: (user as AuthModel).toJson(),

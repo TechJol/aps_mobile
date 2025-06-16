@@ -13,6 +13,8 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
   Future<Either> getTransactions() async {
     final accessToken = await AuthTokenStorage().getAccessToken();
 
+    print("Access token used: $accessToken");
+
     try {
       final response = await sl<DioClient>().get(
         AppApi.transactions,
@@ -21,7 +23,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
             'Authorization': 'Bearer $accessToken',
-            'X-CSRFTOKEN': 'fi0b25V9IEeulV5AoTdUL3JSAaP4YZDP',
+            'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
           },
         ),
       );
@@ -54,7 +56,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
             'Authorization': 'Bearer $accessToken',
-            'X-CSRFTOKEN': 'fi0b25V9IEeulV5AoTdUL3JSAaP4YZDP',
+            'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
           },
         ),
       );
@@ -87,6 +89,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
             'Authorization': 'Bearer $accessToken',
+            'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
           },
         ),
       );
@@ -120,6 +123,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
             'Authorization': 'Bearer $accessToken',
+            'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
           },
         ),
         data: partner.toMap(),

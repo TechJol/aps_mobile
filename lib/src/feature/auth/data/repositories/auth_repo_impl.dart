@@ -25,10 +25,11 @@ class AuthRepositoryImpl implements AuthRepository {
         Map<String, dynamic> response = r;
 
         SharedPreferences storage = await SharedPreferences.getInstance();
-        storage.setString('accessToken', response['access']);
+        // storage.setString('accessToken', response['access']);
+        // storage.setString('refreshToken', response['refresh']);
         storage.setInt('companyId', response['company_id']);
 
-        log("Bul ${response['company_id']}");
+        log("Bul company id ${response['company_id']}");
         return Right(response);
       },
     );

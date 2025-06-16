@@ -1,3 +1,4 @@
+import 'package:aps_mobile/injection_container.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:dio/dio.dart';
 
@@ -30,13 +31,14 @@ class AuthInterceptor extends Interceptor {
       if (refreshToken != null) {
         print("Refresh token used: $refreshToken");
         try {
-          final refreshResponse = await dio.post(
+          final refreshResponse = await sl<DioClient>().post(
             AppApi.refreshToken,
             options: Options(
               headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
                 'Authorization': 'Bearer $refreshToken',
+                'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
               },
             ),
           );

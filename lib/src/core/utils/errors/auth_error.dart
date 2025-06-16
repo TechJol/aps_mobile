@@ -14,6 +14,7 @@ class AuthError {
       final refreshToken = await AuthTokenStorage().getRefreshToken();
 
       if (refreshToken == null) {
+        print("No refresh token available!");
         return Left(Exception('No refresh token available.'));
       }
 

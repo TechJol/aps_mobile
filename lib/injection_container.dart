@@ -1,6 +1,7 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -92,10 +93,12 @@ Future<void> init() async {
 
   //! External
   final dio = Dio();
+  final storage = FlutterSecureStorage();
   final authTokenStorage = AuthTokenStorage();
   final sharedPreferences = await SharedPreferences.getInstance();
 
   sl.registerLazySingleton(() => dio);
+  sl.registerLazySingleton(() => storage);
   sl.registerLazySingleton(() => authTokenStorage);
   sl.registerLazySingleton(() => sharedPreferences);
 }
