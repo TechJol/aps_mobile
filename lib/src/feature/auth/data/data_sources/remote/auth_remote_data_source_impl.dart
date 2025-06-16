@@ -18,7 +18,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'X-CSRFTOKEN': 'fi0b25V9IEeulV5AoTdUL3JSAaP4YZDP',
+            // 'X-CSRFTOKEN': 'fi0b25V9IEeulV5AoTdUL3JSAaP4YZDP',
           },
         ),
         data: {'username': username, 'password': password},
@@ -57,7 +57,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'X-CSRFTOKEN': 'fi0b25V9IEeulV5AoTdUL3JSAaP4YZDP',
+            // 'X-CSRFTOKEN': 'fi0b25V9IEeulV5AoTdUL3JSAaP4YZDP',
           },
         ),
         data: (user as AuthModel).toJson(),

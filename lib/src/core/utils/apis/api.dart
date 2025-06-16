@@ -15,5 +15,5 @@ class AppApi {
 
   static const token = '$domain/api/token/';
 
-  static const refreshToken = '$domain/api/refresh/';
+  static const refreshToken = '$domain/api/token/refresh/';
 }

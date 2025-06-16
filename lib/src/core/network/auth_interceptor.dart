@@ -12,13 +12,13 @@ class AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    await Future.delayed(Duration(seconds: 1));
-    final token = await tokenStorage.getAccessToken();
-    if (token != null) {
-      print("Access token used: $token");
-      options.headers['Authorization'] = 'Bearer $token';
-    } else {
+    final accessToken = await AuthTokenStorage().getAccessToken();
+    if (accessToken == null) {
+      // Если access_token не найден, обрабатываем
       print("No access token found!");
+    } else {
+      print("Access token used: $accessToken");
+      // Далее выполняем запрос с токеном
     }
     handler.next(options);
   }
