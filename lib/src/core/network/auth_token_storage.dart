@@ -4,14 +4,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthTokenStorage {
   // final _storage = const FlutterSecureStorage();
-  final sheredPref = SharedPreferences.getInstance();
+  // final sheredPref = SharedPreferences.getInstance();
 
   // Сохраняем токены
-  Future<void> saveTokens(String access, String refresh) async {
+  Future<void> saveTokens(String accessToken, String refreshToken) async {
     SharedPreferences storage = await SharedPreferences.getInstance();
-    log("Saving tokens----- Access Token: $access, Refresh Token: $refresh");
-    await storage.setString('accessToken', access);
-    await storage.setString('refreshToken', refresh);
+    log(
+      "Saving tokens----- Access Token: $accessToken, Refresh Token: $refreshToken",
+    );
+    await storage.setString('accessToken', accessToken);
+    await storage.setString('refreshToken', refreshToken);
   }
 
   // Получаем токен доступа
