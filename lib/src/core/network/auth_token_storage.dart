@@ -1,20 +1,35 @@
-// auth_token_storage.dart
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthTokenStorage {
   final _storage = const FlutterSecureStorage();
 
-  Future<void> saveTokens(String accessToken, String refreshToken) async {
-    await _storage.write(key: 'access_token', value: accessToken);
-    await _storage.write(key: 'refresh_token', value: refreshToken);
+  // Сохраняем токены
+  Future<void> saveTokens(String access, String refresh) async {
+    print("Saving tokens: Access Token: $access, Refresh Token: $refresh");
+    await _storage.write(key: 'access', value: access);
+    await _storage.write(key: 'refresh', value: refresh);
   }
 
-  Future<String?> getAccessToken() => _storage.read(key: 'access_token');
+  // Получаем токен доступа
+  Future<String?> getAccessToken() async {
+    final token = await _storage.read(key: 'access');
+    print("Retrieved access token: $token"); // Логируем извлечённый токен
+    return token;
+  }
 
-  Future<String?> getRefreshToken() => _storage.read(key: 'refresh_token');
+  // Получаем refresh токен
+  Future<String?> getRefreshToken() async {
+    final token = await _storage.read(key: 'refresh');
+    print(
+      "Retrieved refresh token: $token",
+    ); // Логируем извлечённый refresh токен
+    return token;
+  }
 
+  // Очищаем токены
   Future<void> clearTokens() async {
-    await _storage.delete(key: 'access_token');
-    await _storage.delete(key: 'refresh_token');
+    await _storage.delete(key: 'access');
+    await _storage.delete(key: 'refresh');
+    print("Tokens cleared!"); // Логируем очистку токенов
   }
 }

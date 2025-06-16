@@ -25,6 +25,18 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        final accessToken = response.data['access'];
+        final refreshToken = response.data['refresh'];
+
+        // Логируем токены перед сохранением
+        print(
+          "Saving access token: $accessToken, refresh token: $refreshToken",
+        );
+
+        // Сохраняем токены в хранилище и ждём завершения операции
+        await AuthTokenStorage().saveTokens(accessToken, refreshToken);
+
+        // Возвращаем успешный результат
         return Right(response.data);
       } else {
         throw Exception(
