@@ -15,7 +15,7 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
   @override
   Future<Either> addIncomeExpense(IncomeAndComeoutModel income) async {
     SharedPreferences storage = await SharedPreferences.getInstance();
-    var accessToken = storage.getString('accessToken');
+    final accessToken = await AuthTokenStorage().getAccessToken();
     var companyId = storage.getInt('companyId');
 
     log(companyId.toString());
@@ -47,8 +47,7 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
 
   @override
   Future<Either> getAccount() async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    var accessToken = storage.getString('accessToken');
+    final accessToken = await AuthTokenStorage().getAccessToken();
     try {
       final response = await sl<DioClient>().get(
         AppApi.getAccount,
@@ -76,8 +75,7 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
 
   @override
   Future<Either> getIncomeExpenseReasons() async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    var accessToken = storage.getString('accessToken');
+    final accessToken = await AuthTokenStorage().getAccessToken();
     try {
       final response = await sl<DioClient>().get(
         AppApi.incomeExpenseReasons,

@@ -3,7 +3,6 @@ import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
   RemoteMenuDataSourceImpl({required this.dio});
@@ -12,8 +11,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
 
   @override
   Future<Either> getTransactions() async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    var accessToken = storage.getString('accessToken');
+    final accessToken = await AuthTokenStorage().getAccessToken();
 
     try {
       final response = await sl<DioClient>().get(
@@ -36,14 +34,17 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
         );
       }
     } catch (e) {
+      // Обработка ошибки 401 (неверный или истёкший токен)
+      if (e is DioException && e.response?.statusCode == 401) {
+        return await AuthError(dio: dio).handleUnauthorized();
+      }
       return Left(Exception('Something went wrong: ${e.toString()}'));
     }
   }
 
   @override
   Future<Either> getPartners() async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    var accessToken = storage.getString('accessToken');
+    final accessToken = await AuthTokenStorage().getAccessToken();
 
     try {
       final response = await sl<DioClient>().get(
@@ -66,14 +67,17 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
         );
       }
     } catch (e) {
+      // Обработка ошибки 401 (неверный или истёкший токен)
+      if (e is DioException && e.response?.statusCode == 401) {
+        return await AuthError(dio: dio).handleUnauthorized();
+      }
       return Left(Exception('Something went wrong: ${e.toString()}'));
     }
   }
 
   @override
   Future<Either> deletePartner(int id) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    var accessToken = storage.getString('accessToken');
+    final accessToken = await AuthTokenStorage().getAccessToken();
 
     try {
       final response = await sl<DioClient>().delete(
@@ -95,14 +99,17 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
         );
       }
     } catch (e) {
-      return Left(Exception('Delete failed: ${e.toString()}'));
+      // Обработка ошибки 401 (неверный или истёкший токен)
+      if (e is DioException && e.response?.statusCode == 401) {
+        return await AuthError(dio: dio).handleUnauthorized();
+      }
+      return Left(Exception('Something went wrong: ${e.toString()}'));
     }
   }
 
   @override
   Future<Either> postPartner(PartnersModel partner) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    var accessToken = storage.getString('accessToken');
+    final accessToken = await AuthTokenStorage().getAccessToken();
 
     try {
       final response = await sl<DioClient>().post(
@@ -126,6 +133,10 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
         );
       }
     } catch (e) {
+      // Обработка ошибки 401 (неверный или истёкший токен)
+      if (e is DioException && e.response?.statusCode == 401) {
+        return await AuthError(dio: dio).handleUnauthorized();
+      }
       return Left(Exception('Something went wrong: ${e.toString()}'));
     }
   }

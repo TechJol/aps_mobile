@@ -92,8 +92,10 @@ Future<void> init() async {
 
   //! External
   final dio = Dio();
+  final authTokenStorage = AuthTokenStorage();
   final sharedPreferences = await SharedPreferences.getInstance();
 
   sl.registerLazySingleton(() => dio);
+  sl.registerLazySingleton(() => authTokenStorage);
   sl.registerLazySingleton(() => sharedPreferences);
 }

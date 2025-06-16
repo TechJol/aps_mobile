@@ -12,7 +12,7 @@ class AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    // await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 1));
     final token = await tokenStorage.getAccessToken();
     if (token != null) {
       print("Access token used: $token");
