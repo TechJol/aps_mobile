@@ -1,4 +1,6 @@
 // Метод для обработки ошибки 401
+import 'dart:developer';
+
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -14,7 +16,7 @@ class AuthError {
       final refreshToken = await AuthTokenStorage().getRefreshToken();
 
       if (refreshToken == null) {
-        print("No refresh token available!");
+        log("No refresh token available!");
         return Left(Exception('No refresh token available.'));
       }
 

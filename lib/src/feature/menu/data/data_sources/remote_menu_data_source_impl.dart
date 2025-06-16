@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:aps_mobile/injection_container.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
@@ -13,7 +15,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
   Future<Either> getTransactions() async {
     final accessToken = await AuthTokenStorage().getAccessToken();
 
-    print("Access token used: $accessToken");
+    log("Access token used: $accessToken");
 
     try {
       final response = await sl<DioClient>().get(

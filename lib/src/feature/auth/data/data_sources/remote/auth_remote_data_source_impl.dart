@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:aps_mobile/injection_container.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
@@ -34,9 +36,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           );
         }
 
-        print(
-          "Saving access token: $accessToken, refresh token: $refreshToken",
-        );
+        log("Saving access token: $accessToken, refresh token: $refreshToken");
 
         // Сохраняем токены в хранилище и ждём завершения операции
         await AuthTokenStorage().saveTokens(accessToken, refreshToken);

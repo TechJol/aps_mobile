@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthTokenStorage {
@@ -7,7 +9,7 @@ class AuthTokenStorage {
   // Сохраняем токены
   Future<void> saveTokens(String access, String refresh) async {
     SharedPreferences storage = await SharedPreferences.getInstance();
-    print("Saving tokens----- Access Token: $access, Refresh Token: $refresh");
+    log("Saving tokens----- Access Token: $access, Refresh Token: $refresh");
     await storage.setString('accessToken', access);
     await storage.setString('refreshToken', refresh);
   }
@@ -26,11 +28,10 @@ class AuthTokenStorage {
     return refreshToken;
   }
 
-  // Очищаем токены
   Future<void> clearTokens() async {
     SharedPreferences storage = await SharedPreferences.getInstance();
     await storage.remove('accessToken');
     await storage.remove('refreshToken');
-    print("Tokens cleared!"); // Логируем очистку токенов
+    log("Tokens cleared!"); // Логируем очистку токенов
   }
 }
