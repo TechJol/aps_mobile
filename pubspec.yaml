@@ -54,6 +54,7 @@ dependencies:
   # -- Packages -- #
   aps_ci_keys:
     path: ./packages/aps_ci_keys
+  flutter_secure_storage: ^4.2.1
 
 
 dev_dependencies:

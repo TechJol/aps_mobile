@@ -12,4 +12,8 @@ class AppApi {
   static const incomeExpenseReasons = '$domain/api/income-expense-reasons/';
 
   static const partners = '$domain/api/partners/';
+
+  static const token = '$domain/api/token/';
+
+  static const refreshToken = '$domain/api/refresh/';
 }
