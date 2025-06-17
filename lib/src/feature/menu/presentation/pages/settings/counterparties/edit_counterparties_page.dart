@@ -22,20 +22,25 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
 
   bool isFormValid = false;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
 
-    if (widget.partner != null) {
-      nameController.text = widget.partner!.name;
-      contactInfoController.text = widget.partner?.contactInfo ?? '';
-      selectedType = types[widget.partner!.type - 1];
-    }
-  }
+  //   if (widget.partner != null) {
+  //     nameController.text = widget.partner!.name;
+  //     contactInfoController.text = widget.partner?.contactInfo ?? '';
+  //     selectedType = types[widget.partner!.type - 1];
+  //   }
+  // }
 
   @override
   void initState() {
     super.initState();
+
+    // Инициализация контроллеров
+    nameController.text = widget.partner?.name ?? '';
+    contactInfoController.text = widget.partner?.contactInfo ?? '';
+    selectedType = types[widget.partner?.type ?? 0];
 
     nameController.addListener(checkFormValidity);
     contactInfoController.addListener(checkFormValidity);

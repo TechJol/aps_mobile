@@ -84,6 +84,7 @@ class MenuCubit extends Cubit<MenuState> {
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
       (r) {
         getPartners();
+        emit(MenuPartnerSuccess(partners: r));
       },
     );
   }
