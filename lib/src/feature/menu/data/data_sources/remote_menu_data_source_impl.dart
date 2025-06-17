@@ -148,12 +148,12 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
   }
 
   @override
-  Future<Either> updatePartner(PartnersModel partner) async {
+  Future<Either> updatePartner(PartnersModel partner, int id) async {
     final accessToken = await AuthTokenStorage().getAccessToken();
 
     try {
       final response = await sl<DioClient>().put(
-        '${AppApi.partners}${partner.id}/',
+        '${AppApi.partners}$id/',
         options: Options(
           headers: {
             'Content-Type': 'application/json',

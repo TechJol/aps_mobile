@@ -2,7 +2,6 @@ import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class EditCounterpartiesPage extends StatefulWidget {
   const EditCounterpartiesPage({super.key, this.partner});
@@ -71,9 +70,12 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
       ),
       body: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {
-          if (state is MenuSuccess) {
+          if (state is MenuLoading) {
+            Center(child: CircularProgressIndicator());
+          }
+          if (state is MenuPartnerSuccess) {
             Navigator.pop(context);
-            context.read<MenuCubit>().getPartners(); // Перезагружаем список
+            context.read<MenuCubit>().getPartners();
           }
           if (state is MenuError) {
             var snackBar = SnackBar(content: Text(state.message));
@@ -117,6 +119,7 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
                     controller: contactInfoController,
                   ),
                   24.h,
+
                   BlocBuilder<MenuCubit, MenuState>(
                     builder: (context, state) {
                       if (state is MenuLoading) {
@@ -126,23 +129,17 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
                         onPressed:
                             isFormValid
                                 ? () async {
-                                  SharedPreferences prefs =
-                                      await SharedPreferences.getInstance();
-                                  final companyId = prefs.getInt('companyId');
+                                  final id = widget.partner!.id;
                                   final updated = PartnersModel(
-                                    id: widget.partner?.id, // Обязательно
                                     name: nameController.text,
                                     contactInfo: contactInfoController.text,
                                     type: types.indexOf(selectedType!) + 1,
-                                    company: companyId,
                                   );
 
-                                  // Используем mounted для проверки, что контекст все еще активен
-                                  if (mounted) {
-                                    context.read<MenuCubit>().updatePartner(
-                                      updated,
-                                    );
-                                  }
+                                  context.read<MenuCubit>().updatePartner(
+                                    updated,
+                                    id!,
+                                  );
                                 }
                                 : null,
                         style: ElevatedButton.styleFrom(

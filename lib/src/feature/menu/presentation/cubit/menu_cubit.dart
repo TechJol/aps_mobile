@@ -45,7 +45,7 @@ class MenuCubit extends Cubit<MenuState> {
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при удалении: ${l.toString()}')),
       (r) {
-        getPartners(); // Перезагружаем список после удаления
+        getPartners();
       },
     );
   }
@@ -64,17 +64,26 @@ class MenuCubit extends Cubit<MenuState> {
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
       (r) {
-        getPartners(); // Перезагружаем список после добавления
+        getPartners();
       },
     );
   }
 
-  Future<void> updatePartner(PartnersModel partner) async {
-    final result = await updatePartnerUsecase.call(partner);
+  Future<void> updatePartner(PartnersModel partner, int id) async {
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    final companyId = storage.getInt('companyId');
+    final part = PartnersModel(
+      name: partner.name,
+      contactInfo: partner.contactInfo,
+      type: partner.type,
+      company: companyId,
+    );
+
+    final result = await updatePartnerUsecase.call(part, id);
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
       (r) {
-        getPartners(); // Перезагружаем список после обновления
+        getPartners();
       },
     );
   }

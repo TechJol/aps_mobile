@@ -6,7 +6,7 @@ class UpdatePartnerUsecase {
 
   final MenuRepository repository;
 
-  Future<Either> call(PartnersModel partner) async {
-    return await repository.updatePartner(partner);
+  Future<Either> call(PartnersModel partner, int id) async {
+    return await repository.updatePartner(partner, id);
   }
 }

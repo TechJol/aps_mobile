@@ -27,7 +27,7 @@ class MenuRepositoryImpl implements MenuRepository {
   }
 
   @override
-  Future<Either> updatePartner(PartnersModel partner) async {
-    return await remoteMenuDataSource.updatePartner(partner);
+  Future<Either> updatePartner(PartnersModel partner, int id) async {
+    return await remoteMenuDataSource.updatePartner(partner, id);
   }
 }
