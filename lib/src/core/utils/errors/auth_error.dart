@@ -25,16 +25,18 @@ class AuthError {
 
       // Запрос на обновление токенов
       final response = await sl<DioClient>().post(
-        AppApi.refreshToken,
-        data: {
-          'refresh': refreshToken, // Передаем refresh token в теле запроса
-        },
+        AppApi.refresh,
+
         options: Options(
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
+            'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
           },
         ),
+        data: {
+          'refresh': refreshToken, // Передаем refresh token в теле запроса
+        },
       );
 
       // Логируем ответ от сервера

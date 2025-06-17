@@ -34,12 +34,13 @@ class AuthInterceptor extends Interceptor {
         log("Refresh token used: $refreshToken");
         try {
           final refreshResponse = await sl<DioClient>().post(
-            AppApi.refreshToken,
+            AppApi.refresh,
 
             options: Options(
               headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
+                'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
               },
             ),
             data: {'refresh': refreshToken},
@@ -56,6 +57,9 @@ class AuthInterceptor extends Interceptor {
 
           final clone = err.requestOptions;
           clone.headers['Authorization'] = 'Bearer $newAccess';
+          clone.headers['Accept'] = 'application/json';
+          clone.headers['Content-Type'] = 'application/json';
+          clone.headers['X-CSRFTOKEN'] = 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE';
 
           log("Retrying request with new access token");
 

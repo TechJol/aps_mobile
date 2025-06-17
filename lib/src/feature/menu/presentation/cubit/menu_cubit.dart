@@ -1,6 +1,7 @@
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'menu_state.dart';
 
@@ -47,7 +48,16 @@ class MenuCubit extends Cubit<MenuState> {
   }
 
   Future<void> postPartner(PartnersModel partner) async {
-    final result = await postPartnerUsecase.call(partner);
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    final companyId = storage.getInt('companyId');
+    final part = PartnersModel(
+      name: partner.name,
+      contactInfo: partner.contactInfo,
+      type: partner.type,
+      company: companyId,
+    );
+
+    final result = await postPartnerUsecase.call(part);
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
       (r) {

@@ -131,7 +131,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
         data: partner.toMap(),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 204 || response.statusCode == 201) {
         return Right(response.data);
       } else {
         throw Exception(

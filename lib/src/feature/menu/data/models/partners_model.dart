@@ -17,7 +17,7 @@ class PartnersModel {
     return <String, dynamic>{
       'id': id,
       'name': name,
-      'contactInfo': contactInfo,
+      'contact_info': contactInfo,
       'company': company,
       'type': type,
     };
@@ -28,7 +28,7 @@ class PartnersModel {
       id: map['id'] != null ? map['id'] as int : null,
       name: map['name'] as String,
       contactInfo:
-          map['contactInfo'] != null ? map['contactInfo'] as String : null,
+          map['contact_info'] != null ? map['contact_info'] as String : null,
       company: map['company'] != null ? map['company'] as int : null,
       type: map['type'] as int,
     );
