@@ -14,8 +14,6 @@ class EditCounterpartiesPage extends StatefulWidget {
 }
 
 class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
-  // PartnersModel? partner;
-
   final List<String> types = ['Клиент', 'Сотрудник', 'Поставщик'];
 
   final nameController = TextEditingController();
@@ -29,12 +27,10 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final args = ModalRoute.of(context)?.settings.arguments;
-    if (args is PartnersModel) {
+    if (widget.partner != null) {
       nameController.text = widget.partner!.name;
       contactInfoController.text = widget.partner?.contactInfo ?? '';
-      selectedType =
-          types[widget.partner!.type - 1]; // Преобразуй `1` или `2` в текст
+      selectedType = types[widget.partner!.type - 1];
     }
   }
 
@@ -42,7 +38,6 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
   void initState() {
     super.initState();
 
-    // Подписываемся на изменения текста
     nameController.addListener(checkFormValidity);
     contactInfoController.addListener(checkFormValidity);
   }
@@ -78,7 +73,7 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
         listener: (context, state) {
           if (state is MenuSuccess) {
             Navigator.pop(context);
-            context.read<MenuCubit>().getPartners();
+            context.read<MenuCubit>().getPartners(); // Перезагружаем список
           }
           if (state is MenuError) {
             var snackBar = SnackBar(content: Text(state.message));
@@ -121,15 +116,12 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
                     label: 'Контактная информация',
                     controller: contactInfoController,
                   ),
-
                   24.h,
-
                   BlocBuilder<MenuCubit, MenuState>(
                     builder: (context, state) {
                       if (state is MenuLoading) {
                         return const Center(child: CircularProgressIndicator());
                       }
-
                       return ElevatedButton(
                         onPressed:
                             isFormValid
@@ -137,18 +129,20 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
                                   SharedPreferences prefs =
                                       await SharedPreferences.getInstance();
                                   final companyId = prefs.getInt('companyId');
-
                                   final updated = PartnersModel(
-                                    id: widget.partner?.id, // Очень важно!
+                                    id: widget.partner?.id, // Обязательно
                                     name: nameController.text,
                                     contactInfo: contactInfoController.text,
                                     type: types.indexOf(selectedType!) + 1,
                                     company: companyId,
                                   );
 
-                                  context.read<MenuCubit>().updatePartner(
-                                    updated,
-                                  );
+                                  // Используем mounted для проверки, что контекст все еще активен
+                                  if (mounted) {
+                                    context.read<MenuCubit>().updatePartner(
+                                      updated,
+                                    );
+                                  }
                                 }
                                 : null,
                         style: ElevatedButton.styleFrom(

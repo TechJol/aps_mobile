@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +12,7 @@ class CounterpartiesPage extends StatefulWidget {
 
 class _CounterpartiesPageState extends State<CounterpartiesPage> {
   @override
-  initState() {
+  void initState() {
     super.initState();
     context.read<MenuCubit>().getPartners();
   }
@@ -135,7 +133,6 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                       DataCell(
                         Text('${partner.type}', style: AppTextStyles.f16w500),
                       ),
-
                       DataCell(
                         PopupMenuWid(
                           context: context,
@@ -143,14 +140,12 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                             ShowSheet().showDeleteDialog(
                               context,
                               accountName: partner.name,
-
                               onConfirm: () {
-                                log('Удаляем: ${partner.type}');
                                 context.read<MenuCubit>().deletePartner(
                                   partner.id!,
                                 );
                               },
-                              title: 'Удалить счет',
+                              title: 'Удалить контрагента',
                             );
                           },
                           tapEdit: () {

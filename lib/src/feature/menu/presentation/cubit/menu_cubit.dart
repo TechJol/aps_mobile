@@ -11,6 +11,7 @@ class MenuCubit extends Cubit<MenuState> {
   final DeletePartnerUsecase deletePartnerUsecase;
   final PostPartnerUsecase postPartnerUsecase;
   final UpdatePartnerUsecase updatePartnerUsecase;
+
   MenuCubit({
     required this.getTransactionsUsecase,
     required this.getPartnersUsecase,
@@ -44,7 +45,7 @@ class MenuCubit extends Cubit<MenuState> {
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при удалении: ${l.toString()}')),
       (r) {
-        getPartners(); // перезагружаем список после удаления
+        getPartners(); // Перезагружаем список после удаления
       },
     );
   }
@@ -63,7 +64,7 @@ class MenuCubit extends Cubit<MenuState> {
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
       (r) {
-        getPartners(); // перезагружаем список после добавления
+        getPartners(); // Перезагружаем список после добавления
       },
     );
   }
@@ -73,7 +74,7 @@ class MenuCubit extends Cubit<MenuState> {
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
       (r) {
-        getPartners(); // перезагружаем список после обновления
+        getPartners(); // Перезагружаем список после обновления
       },
     );
   }
