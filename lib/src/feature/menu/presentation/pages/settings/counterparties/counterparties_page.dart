@@ -157,6 +157,7 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                             Navigator.pushNamed(
                               context,
                               AppRoutes.editCounterparties,
+                              arguments: partner, // Передача объекта партнера
                             );
                           },
                         ),

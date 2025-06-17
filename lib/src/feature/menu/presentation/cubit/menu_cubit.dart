@@ -10,11 +10,13 @@ class MenuCubit extends Cubit<MenuState> {
   final GetPartnersUsecase getPartnersUsecase;
   final DeletePartnerUsecase deletePartnerUsecase;
   final PostPartnerUsecase postPartnerUsecase;
+  final UpdatePartnerUsecase updatePartnerUsecase;
   MenuCubit({
     required this.getTransactionsUsecase,
     required this.getPartnersUsecase,
     required this.deletePartnerUsecase,
     required this.postPartnerUsecase,
+    required this.updatePartnerUsecase,
   }) : super(MenuInitial());
 
   Future<void> getTransactions() async {
@@ -62,6 +64,16 @@ class MenuCubit extends Cubit<MenuState> {
       (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
       (r) {
         getPartners(); // перезагружаем список после добавления
+      },
+    );
+  }
+
+  Future<void> updatePartner(PartnersModel partner) async {
+    final result = await updatePartnerUsecase.call(partner);
+    result.fold(
+      (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
+      (r) {
+        getPartners(); // перезагружаем список после обновления
       },
     );
   }

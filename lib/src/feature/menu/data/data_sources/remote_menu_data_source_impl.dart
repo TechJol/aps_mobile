@@ -146,4 +146,38 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
       return Left(Exception('Something went wrong: ${e.toString()}'));
     }
   }
+
+  @override
+  Future<Either> updatePartner(PartnersModel partner) async {
+    final accessToken = await AuthTokenStorage().getAccessToken();
+
+    try {
+      final response = await sl<DioClient>().put(
+        '${AppApi.partners}${partner.id}/',
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+            'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
+          },
+        ),
+        data: partner.toMap(),
+      );
+
+      if (response.statusCode == 204 || response.statusCode == 201) {
+        return Right(response.data);
+      } else {
+        throw Exception(
+          'Failed to update partner. Status code: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      // Обработка ошибки 401 (неверный или истёкший токен)
+      if (e is DioException && e.response?.statusCode == 401) {
+        return await AuthError(dio: dio).handleUnauthorized();
+      }
+      return Left(Exception('Something went wrong: ${e.toString()}'));
+    }
+  }
 }

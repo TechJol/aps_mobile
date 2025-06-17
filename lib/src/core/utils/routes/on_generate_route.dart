@@ -94,7 +94,12 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => AddCounterpartiesPage());
 
       case AppRoutes.editCounterparties:
-        return CupertinoPageRoute(builder: (_) => EditCounterpartiesPage());
+        final partner =
+            settings.arguments
+                as PartnersModel?; // Преобразование данных в PartnersModel
+        return CupertinoPageRoute(
+          builder: (_) => EditCounterpartiesPage(partner: partner),
+        );
 
       case AppRoutes.addType:
         return CupertinoPageRoute(builder: (_) => AddTypePage());
