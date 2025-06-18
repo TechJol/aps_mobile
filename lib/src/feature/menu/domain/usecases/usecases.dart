@@ -4,3 +4,6 @@ export 'delete_partner_usecase.dart';
 export 'post_partner_usecase.dart';
 export 'update_partner_usecase.dart';
 export 'get_partner_types_usecase.dart';
+export 'post_partner_type_usecase.dart';
+export 'delete_partner_type_usecase.dart';
+export 'update_partner_type_usecase.dart';

@@ -13,4 +13,10 @@ abstract class RemoteMenuDataSource {
   Future<Either> updatePartner(PartnersModel partner, int id);
 
   Future<Either> getPartnerTypes();
+
+  Future<Either> postPartnerType(PartnerTypesModel partner);
+
+  Future<Either> deletePartnerType(int id);
+
+  Future<Either> updatePartnerType(PartnerTypesModel partner, int id);
 }

@@ -6,13 +6,17 @@ abstract class MenuRepository {
 
   Future<Either> getPartners();
 
-  Future<Either> deletePartner(int id);
-
   Future<Either> postPartner(PartnersModel partner);
+
+  Future<Either> deletePartner(int id);
 
   Future<Either> updatePartner(PartnersModel partner, int id);
 
   Future<Either> getPartnerTypes();
 
   Future<Either> postPartnerType(PartnerTypesModel partner);
+
+  Future<Either> deletePartnerType(int id);
+
+  Future<Either> updatePartnerType(PartnerTypesModel partner, int id);
 }

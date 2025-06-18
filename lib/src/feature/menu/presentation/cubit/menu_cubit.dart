@@ -12,6 +12,9 @@ class MenuCubit extends Cubit<MenuState> {
   final PostPartnerUsecase postPartnerUsecase;
   final UpdatePartnerUsecase updatePartnerUsecase;
   final GetPartnerTypesUsecase getPartnerTypesUsecase;
+  final PostPartnerTypeUsecase postPartnerTypeUsecase;
+  final DeletePartnerTypeUsecase deletePartnerTypeUsecase;
+  final UpdatePartnerTypeUsecase updatePartnerTypeUsecase;
 
   MenuCubit({
     required this.getTransactionsUsecase,
@@ -20,6 +23,9 @@ class MenuCubit extends Cubit<MenuState> {
     required this.postPartnerUsecase,
     required this.updatePartnerUsecase,
     required this.getPartnerTypesUsecase,
+    required this.postPartnerTypeUsecase,
+    required this.deletePartnerTypeUsecase,
+    required this.updatePartnerTypeUsecase,
   }) : super(MenuInitial());
 
   Future<void> getTransactions() async {
@@ -103,5 +109,40 @@ class MenuCubit extends Cubit<MenuState> {
           (r as List).map((e) => PartnerTypesModel.fromMap(e)).toList();
       emit(MenuPartnerTypesSuccess(types: types));
     });
+  }
+
+  Future<void> postPartnerType(PartnerTypesModel partner) async {
+    final result = await postPartnerTypeUsecase.call(partner);
+    result.fold(
+      (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
+      (r) {
+        getPartnerTypes();
+      },
+    );
+  }
+
+  Future<void> deletePartnerType(int id) async {
+    final result = await deletePartnerTypeUsecase.call(id);
+
+    result.fold(
+      (l) {
+        emit(DeleteError(error: l));
+      },
+      (r) {
+        getPartnerTypes();
+      },
+    );
+  }
+
+  Future<void> updatePartnerType(PartnerTypesModel partner, int id) async {
+    final result = await updatePartnerTypeUsecase.call(partner, id);
+    result.fold(
+      (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
+      (r) {
+        getPartnerTypes();
+        final updatedType = PartnerTypesModel.fromMap(r);
+        emit(MenuPartnerTypesSuccess(types: [updatedType]));
+      },
+    );
   }
 }
