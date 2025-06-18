@@ -1,5 +1,6 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,27 +33,44 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
           }
 
           if (state is MenuError) {
-            return Center(child: Text('Ошибка: ${state.message}'));
+            return Center(child: Text('Ошибка: ${state.message.toString()}'));
+          }
+
+          if (state is DeleteError) {
+            String message;
+
+            if (state.error is DioException) {
+              final err = state.error as DioException;
+              final status = err.response?.statusCode;
+              final detail = err.response?.data?.toString() ?? err.message;
+              message = 'Ошибка удаления [$status]: $detail';
+            } else {
+              message = 'Ошибка при удалении: ${state.error.toString()}';
+            }
+
+            return Center(child: Text(message));
           }
 
           if (state is MenuPartnerTypesSuccess) {
             final types = state.types;
             return _buildTableSection(context, types);
           }
+
           return const SizedBox.shrink();
         },
       ),
     );
   }
 
-  Column _buildTableSection(
+  Widget _buildTableSection(
     BuildContext context,
     List<PartnerTypesModel> types,
   ) {
-    final hasPartnertypes = types.isNotEmpty;
+    final hasTypes = types.isNotEmpty;
 
     return Column(
       children: [
+        // Верхняя панель с кнопками
         DecoratedBox(
           decoration: BoxDecoration(
             color: AppColors.backroundColor,
@@ -89,16 +107,20 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
                   ],
                 ),
                 12.h,
-                Row(
-                  children: [
-                    OutlinedButtonWidget(onPressed: () {}, text: 'Распечатать'),
-                    12.w,
-                    OutlinedButtonWidget(
-                      onPressed: () {},
-                      text: 'Скачать в Excel',
-                    ),
-                  ],
-                ),
+                if (hasTypes)
+                  Row(
+                    children: [
+                      OutlinedButtonWidget(
+                        onPressed: () {},
+                        text: 'Распечатать',
+                      ),
+                      12.w,
+                      OutlinedButtonWidget(
+                        onPressed: () {},
+                        text: 'Скачать в Excel',
+                      ),
+                    ],
+                  ),
                 20.h,
               ],
             ),
@@ -106,85 +128,83 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
         ),
         12.h,
 
-        if (hasPartnertypes)
+        if (hasTypes)
           Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: SizedBox(
+            padding: const EdgeInsets.all(20),
+            child: Container(
               width: double.infinity,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black, width: 0.1),
-                  borderRadius: BorderRadius.circular(4),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black, width: 0.1),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: DataTable(
+                showCheckboxColumn: true,
+                showBottomBorder: true,
+                headingRowColor: WidgetStateProperty.all(Colors.black),
+                headingTextStyle: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
-                child: DataTable(
-                  showCheckboxColumn: true,
-                  showBottomBorder: true,
-                  headingRowColor: WidgetStateProperty.all(Colors.black),
-                  headingTextStyle: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                columns: const [
+                  DataColumn(
+                    label: Text('Название', style: AppTextStyles.f16w500),
                   ),
-                  columns: const [
-                    DataColumn(
-                      label: Text('Название', style: AppTextStyles.f16w500),
-                    ),
-                    DataColumn(label: Text('')),
-                  ],
-                  rows:
-                      types.map((type) {
-                        return DataRow(
-                          cells: [
-                            DataCell(
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  type.name,
-                                  style: AppTextStyles.f16w500,
-                                ),
+                  DataColumn(label: Text('')),
+                ],
+                rows:
+                    types.map((type) {
+                      return DataRow(
+                        cells: [
+                          DataCell(
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                type.name,
+                                style: AppTextStyles.f16w500,
                               ),
                             ),
-                            DataCell(
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: PopupMenuWid(
-                                  context: context,
-                                  tapDelete: () {
-                                    ShowSheet().showDeleteDialog(
-                                      context,
-                                      accountName: type.name,
-                                      onConfirm: () {
-                                        context
-                                            .read<MenuCubit>()
-                                            .deletePartnerType(type.id!);
-                                        Navigator.pop(context);
-                                      },
-                                      title: 'Удалить счет',
-                                    );
-                                  },
-                                  tapEdit: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      AppRoutes.editType,
-                                      arguments: type,
-                                    );
-                                  },
-                                ),
+                          ),
+                          DataCell(
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: PopupMenuWid(
+                                context: context,
+                                tapDelete: () {
+                                  ShowSheet().showDeleteDialog(
+                                    context,
+                                    accountName: type.name,
+                                    onConfirm: () {
+                                      context
+                                          .read<MenuCubit>()
+                                          .deletePartnerType(type.id!);
+                                      Navigator.pop(context);
+                                    },
+                                    title: 'Удалить тип',
+                                  );
+                                },
+                                tapEdit: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.editType,
+                                    arguments: type,
+                                  );
+                                },
                               ),
                             ),
-                          ],
-                        );
-                      }).toList(),
-                ),
+                          ),
+                        ],
+                      );
+                    }).toList(),
               ),
             ),
+          )
+        else
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.only(top: 50),
+              child: Text('Нет контрагентов', style: AppTextStyles.f16w500),
+            ),
           ),
-        // else
-        // const Center(
-        //   child: Padding(
-        //     padding: EdgeInsets.only(top: 50),
-        //     child: Text('Нет контрагентов', style: AppTextStyles.f16w500),
-        //   ),
-        // ),
       ],
     );
   }
