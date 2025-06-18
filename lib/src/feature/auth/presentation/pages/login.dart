@@ -6,8 +6,16 @@ import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoginPage extends StatefulWidget {
+/*class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}*/
+class LoginPage extends StatefulWidget {
+  final void Function(int pageIndex)? onNavigate;
+
+  const LoginPage({super.key, this.onNavigate});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -159,6 +167,7 @@ class _LoginPageState extends State<LoginPage> {
                       // Войти
                       GestureDetector(
                         onTap: () => setState(() => isLoginSelected = true),
+                        //widget.onNavigate?.call(1),
                         child: Container(
                           color:
                               Colors
@@ -193,6 +202,7 @@ class _LoginPageState extends State<LoginPage> {
                       // Регистрация
                       GestureDetector(
                         onTap: () async {
+                          //widget.onNavigate?.call(1);
                           setState(() => isLoginSelected = false);
                           await Navigator.pushNamed(
                             context,
@@ -293,7 +303,8 @@ class _LoginPageState extends State<LoginPage> {
                     padding: EdgeInsets.only(left: 150.0),
                     child: TextButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, AppRoutes.forgotPassword);
+                        widget.onNavigate?.call(2);
+                        //Navigator.pushNamed(context, AppRoutes.forgotPassword);
                       },
                       child: const Text(
                         "Забыли пароль?",
