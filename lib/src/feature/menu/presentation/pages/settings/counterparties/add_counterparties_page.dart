@@ -148,9 +148,9 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
     switch (name) {
       case 'Клиент':
         return 1;
-      case 'Поставщик':
-        return 2;
       case 'Сотрудник':
+        return 2;
+      case 'Поставщик':
         return 3;
       default:
         return 0;

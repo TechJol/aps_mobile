@@ -42,8 +42,11 @@ class MenuCubit extends Cubit<MenuState> {
 
   Future<void> deletePartner(int id) async {
     final result = await deletePartnerUsecase.call(id);
+
     result.fold(
-      (l) => emit(MenuError(message: 'Ошибка при удалении: ${l.toString()}')),
+      (l) {
+        emit(DeleteError(error: l));
+      },
       (r) {
         getPartners();
       },
@@ -84,7 +87,8 @@ class MenuCubit extends Cubit<MenuState> {
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
       (r) {
         getPartners();
-        emit(MenuPartnerSuccess(partners: r));
+        final updatedPartner = PartnersModel.fromMap(r);
+        emit(MenuPartnerSuccess(partners: [updatedPartner]));
       },
     );
   }

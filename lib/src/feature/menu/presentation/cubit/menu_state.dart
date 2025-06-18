@@ -37,3 +37,12 @@ final class MenuPartnerSuccess extends MenuState {
   @override
   List<Object> get props => [partners];
 }
+
+final class DeleteError extends MenuState {
+  const DeleteError({required this.error});
+
+  final Object error;
+
+  @override
+  List<Object> get props => [error];
+}

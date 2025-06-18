@@ -104,11 +104,10 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
         );
       }
     } catch (e) {
-      // Обработка ошибки 401 (неверный или истёкший токен)
       if (e is DioException && e.response?.statusCode == 401) {
         return await AuthError(dio: dio).handleUnauthorized();
       }
-      return Left(Exception('Something went wrong: ${e.toString()}'));
+      return Left(e); // <<< хорошо, оставляем
     }
   }
 
@@ -165,7 +164,9 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
         data: partner.toMap(),
       );
 
-      if (response.statusCode == 204 || response.statusCode == 201) {
+      if (response.statusCode == 200 ||
+          response.statusCode == 204 ||
+          response.statusCode == 201) {
         return Right(response.data);
       } else {
         throw Exception(

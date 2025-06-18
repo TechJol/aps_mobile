@@ -22,17 +22,6 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
 
   bool isFormValid = false;
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-
-  //   if (widget.partner != null) {
-  //     nameController.text = widget.partner!.name;
-  //     contactInfoController.text = widget.partner?.contactInfo ?? '';
-  //     selectedType = types[widget.partner!.type - 1];
-  //   }
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -40,7 +29,10 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
     // Инициализация контроллеров
     nameController.text = widget.partner?.name ?? '';
     contactInfoController.text = widget.partner?.contactInfo ?? '';
-    selectedType = types[widget.partner?.type ?? 0];
+    final typeIndex = (widget.partner?.type ?? 1) - 1;
+    if (typeIndex >= 0 && typeIndex < types.length) {
+      selectedType = types[typeIndex];
+    }
 
     nameController.addListener(checkFormValidity);
     contactInfoController.addListener(checkFormValidity);
@@ -80,7 +72,6 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
           }
           if (state is MenuPartnerSuccess) {
             Navigator.pop(context);
-            context.read<MenuCubit>().getPartners();
           }
           if (state is MenuError) {
             var snackBar = SnackBar(content: Text(state.message));
