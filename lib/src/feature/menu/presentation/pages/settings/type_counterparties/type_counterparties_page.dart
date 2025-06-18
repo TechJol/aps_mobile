@@ -49,6 +49,8 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
     BuildContext context,
     List<PartnerTypesModel> types,
   ) {
+    final hasPartnertypes = types.isNotEmpty;
+
     return Column(
       children: [
         DecoratedBox(
@@ -104,77 +106,85 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
         ),
         12.h,
 
-        Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: SizedBox(
-            width: double.infinity,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black, width: 0.1),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: DataTable(
-                showCheckboxColumn: true,
-                showBottomBorder: true,
-                headingRowColor: WidgetStateProperty.all(Colors.black),
-                headingTextStyle: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+        if (hasPartnertypes)
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black, width: 0.1),
+                  borderRadius: BorderRadius.circular(4),
                 ),
-                columns: const [
-                  DataColumn(
-                    label: Text('Название', style: AppTextStyles.f16w500),
+                child: DataTable(
+                  showCheckboxColumn: true,
+                  showBottomBorder: true,
+                  headingRowColor: WidgetStateProperty.all(Colors.black),
+                  headingTextStyle: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
                   ),
-                  DataColumn(label: Text('')),
-                ],
-                rows:
-                    types.map((type) {
-                      return DataRow(
-                        cells: [
-                          DataCell(
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                type.name,
-                                style: AppTextStyles.f16w500,
+                  columns: const [
+                    DataColumn(
+                      label: Text('Название', style: AppTextStyles.f16w500),
+                    ),
+                    DataColumn(label: Text('')),
+                  ],
+                  rows:
+                      types.map((type) {
+                        return DataRow(
+                          cells: [
+                            DataCell(
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  type.name,
+                                  style: AppTextStyles.f16w500,
+                                ),
                               ),
                             ),
-                          ),
-                          DataCell(
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: PopupMenuWid(
-                                context: context,
-                                tapDelete: () {
-                                  ShowSheet().showDeleteDialog(
-                                    context,
-                                    accountName: type.name,
-                                    onConfirm: () {
-                                      context
-                                          .read<MenuCubit>()
-                                          .deletePartnerType(type.id!);
-                                      Navigator.pop(context);
-                                    },
-                                    title: 'Удалить счет',
-                                  );
-                                },
-                                tapEdit: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    AppRoutes.editType,
-                                    arguments: type,
-                                  );
-                                },
+                            DataCell(
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: PopupMenuWid(
+                                  context: context,
+                                  tapDelete: () {
+                                    ShowSheet().showDeleteDialog(
+                                      context,
+                                      accountName: type.name,
+                                      onConfirm: () {
+                                        context
+                                            .read<MenuCubit>()
+                                            .deletePartnerType(type.id!);
+                                        Navigator.pop(context);
+                                      },
+                                      title: 'Удалить счет',
+                                    );
+                                  },
+                                  tapEdit: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      AppRoutes.editType,
+                                      arguments: type,
+                                    );
+                                  },
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      );
-                    }).toList(),
+                          ],
+                        );
+                      }).toList(),
+                ),
               ),
             ),
           ),
-        ),
+        // else
+        // const Center(
+        //   child: Padding(
+        //     padding: EdgeInsets.only(top: 50),
+        //     child: Text('Нет контрагентов', style: AppTextStyles.f16w500),
+        //   ),
+        // ),
       ],
     );
   }

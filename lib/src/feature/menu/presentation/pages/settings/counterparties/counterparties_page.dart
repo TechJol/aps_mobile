@@ -132,64 +132,75 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
         12.h,
 
         if (hasPartners)
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: 0.1),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: DataTable(
-              showCheckboxColumn: true,
-              showBottomBorder: true,
-              headingRowColor: WidgetStateProperty.all(Colors.black),
-              headingTextStyle: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-              columns: const [
-                DataColumn(
-                  label: Text('Название', style: AppTextStyles.f16w500),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black, width: 0.1),
+                  borderRadius: BorderRadius.circular(4),
                 ),
-                DataColumn(label: Text('Тип', style: AppTextStyles.f16w500)),
-                DataColumn(label: Text('')),
-              ],
-              rows:
-                  partners.map((partner) {
-                    return DataRow(
-                      cells: [
-                        DataCell(
-                          Text(partner.name, style: AppTextStyles.f16w500),
-                        ),
-                        DataCell(
-                          Text('${partner.type}', style: AppTextStyles.f16w500),
-                        ),
-                        DataCell(
-                          PopupMenuWid(
-                            context: context,
-                            tapDelete: () {
-                              ShowSheet().showDeleteDialog(
-                                context,
-                                accountName: partner.name,
-                                onConfirm: () {
-                                  context.read<MenuCubit>().deletePartner(
-                                    partner.id!,
+                child: DataTable(
+                  showCheckboxColumn: true,
+                  showBottomBorder: true,
+                  headingRowColor: WidgetStateProperty.all(Colors.black),
+                  headingTextStyle: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  columns: const [
+                    DataColumn(
+                      label: Text('Название', style: AppTextStyles.f16w500),
+                    ),
+                    DataColumn(
+                      label: Text('Тип', style: AppTextStyles.f16w500),
+                    ),
+                    DataColumn(label: Text('')),
+                  ],
+                  rows:
+                      partners.map((partner) {
+                        return DataRow(
+                          cells: [
+                            DataCell(
+                              Text(partner.name, style: AppTextStyles.f16w500),
+                            ),
+                            DataCell(
+                              Text(
+                                '${partner.type}',
+                                style: AppTextStyles.f16w500,
+                              ),
+                            ),
+                            DataCell(
+                              PopupMenuWid(
+                                context: context,
+                                tapDelete: () {
+                                  ShowSheet().showDeleteDialog(
+                                    context,
+                                    accountName: partner.name,
+                                    onConfirm: () {
+                                      context.read<MenuCubit>().deletePartner(
+                                        partner.id!,
+                                      );
+                                      Navigator.pop(context);
+                                    },
+                                    title: 'Удалить контрагента',
                                   );
-                                  Navigator.pop(context);
                                 },
-                                title: 'Удалить контрагента',
-                              );
-                            },
-                            tapEdit: () {
-                              Navigator.pushNamed(
-                                context,
-                                AppRoutes.editCounterparties,
-                                arguments: partner,
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
+                                tapEdit: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.editCounterparties,
+                                    arguments: partner,
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                ),
+              ),
             ),
           )
         else
