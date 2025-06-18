@@ -82,7 +82,6 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
   @override
   Future<Either> deletePartner(int id) async {
     final accessToken = await AuthTokenStorage().getAccessToken();
-
     try {
       final response = await sl<DioClient>().delete(
         '${AppApi.partners}$id/',
@@ -96,18 +95,19 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
         ),
       );
 
-      if (response.statusCode == 204) {
-        return const Right(true);
+      if (response.statusCode == 204 || response.statusCode == 200) {
+        return Right(response.data);
       } else {
         throw Exception(
-          'Failed to delete partner. Status code: ${response.statusCode}',
+          'Failed to delete partner type. Status code: ${response.statusCode}',
         );
       }
     } catch (e) {
+      // Обработка ошибки 401 (неверный или истёкший токен)
       if (e is DioException && e.response?.statusCode == 401) {
         return await AuthError(dio: dio).handleUnauthorized();
       }
-      return Left(e); // <<< хорошо, оставляем
+      return Left(Exception('Something went wrong: ${e.toString()}'));
     }
   }
 

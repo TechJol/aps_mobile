@@ -53,7 +53,7 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
 
           if (state is MenuPartnerSuccess) {
             final partners = state.partners;
-            return _buildTableSection(partners);
+            return _buildTableSection(context, partners);
           }
           return const SizedBox.shrink();
         },
@@ -61,7 +61,10 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
     );
   }
 
-  Widget _buildTableSection(List<PartnersModel> partners) {
+  Widget _buildTableSection(
+    BuildContext context,
+    List<PartnersModel> partners,
+  ) {
     final hasPartners = partners.isNotEmpty;
 
     return Column(
@@ -170,6 +173,7 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                                   context.read<MenuCubit>().deletePartner(
                                     partner.id!,
                                   );
+                                  Navigator.pop(context);
                                 },
                                 title: 'Удалить контрагента',
                               );

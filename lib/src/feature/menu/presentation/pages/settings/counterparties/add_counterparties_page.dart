@@ -58,9 +58,6 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
       ),
       body: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {
-          if (state is MenuLoading) {
-            Center(child: CircularProgressIndicator());
-          }
           if (state is MenuPartnerSuccess) {
             Navigator.pop(context);
           }
@@ -108,32 +105,41 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
 
                   24.h,
 
-                  ElevatedButton(
-                    onPressed:
-                        isFormValid
-                            ? () {
-                              final newPartner = PartnersModel(
-                                name: nameController.text,
-                                type: _mapTypeNameToId(selectedType!),
-                                contactInfo: contactInfoController.text,
-                              );
+                  BlocBuilder<MenuCubit, MenuState>(
+                    builder: (context, state) {
+                      if (state is MenuLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      return ElevatedButton(
+                        onPressed:
+                            isFormValid
+                                ? () {
+                                  final newPartner = PartnersModel(
+                                    name: nameController.text,
+                                    type: _mapTypeNameToId(selectedType!),
+                                    contactInfo: contactInfoController.text,
+                                  );
 
-                              context.read<MenuCubit>().postPartner(newPartner);
-                            }
-                            : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary200Color,
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    child: Text(
-                      'Сохранить',
-                      style: AppTextStyles.f16w500.copyWith(
-                        color: AppColors.whiteColor,
-                      ),
-                    ),
+                                  context.read<MenuCubit>().postPartner(
+                                    newPartner,
+                                  );
+                                }
+                                : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary200Color,
+                          minimumSize: const Size(double.infinity, 50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: Text(
+                          'Сохранить',
+                          style: AppTextStyles.f16w500.copyWith(
+                            color: AppColors.whiteColor,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
