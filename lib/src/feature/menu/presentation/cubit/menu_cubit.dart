@@ -11,6 +11,7 @@ class MenuCubit extends Cubit<MenuState> {
   final DeletePartnerUsecase deletePartnerUsecase;
   final PostPartnerUsecase postPartnerUsecase;
   final UpdatePartnerUsecase updatePartnerUsecase;
+  final GetPartnerTypesUsecase getPartnerTypesUsecase;
 
   MenuCubit({
     required this.getTransactionsUsecase,
@@ -18,6 +19,7 @@ class MenuCubit extends Cubit<MenuState> {
     required this.deletePartnerUsecase,
     required this.postPartnerUsecase,
     required this.updatePartnerUsecase,
+    required this.getPartnerTypesUsecase,
   }) : super(MenuInitial());
 
   Future<void> getTransactions() async {
@@ -91,5 +93,15 @@ class MenuCubit extends Cubit<MenuState> {
         emit(MenuPartnerSuccess(partners: [updatedPartner]));
       },
     );
+  }
+
+  Future<void> getPartnerTypes() async {
+    emit(MenuLoading());
+    final result = await getPartnerTypesUsecase();
+    result.fold((l) => emit(MenuError(message: l.message)), (r) {
+      final types =
+          (r as List).map((e) => PartnerTypesModel.fromMap(e)).toList();
+      emit(MenuPartnerTypesSuccess(types: types));
+    });
   }
 }

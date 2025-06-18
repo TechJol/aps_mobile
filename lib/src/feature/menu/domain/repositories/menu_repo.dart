@@ -11,4 +11,8 @@ abstract class MenuRepository {
   Future<Either> postPartner(PartnersModel partner);
 
   Future<Either> updatePartner(PartnersModel partner, int id);
+
+  Future<Either> getPartnerTypes();
+
+  Future<Either> postPartnerType(PartnerTypesModel partner);
 }

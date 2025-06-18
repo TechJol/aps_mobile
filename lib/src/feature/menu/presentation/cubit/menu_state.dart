@@ -46,3 +46,12 @@ final class DeleteError extends MenuState {
   @override
   List<Object> get props => [error];
 }
+
+final class MenuPartnerTypesSuccess extends MenuState {
+  const MenuPartnerTypesSuccess({required this.types});
+
+  final List<PartnerTypesModel> types;
+
+  @override
+  List<Object> get props => [types];
+}

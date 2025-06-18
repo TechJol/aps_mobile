@@ -13,6 +13,8 @@ class AppApi {
 
   static const partners = '$domain/api/partners/';
 
+  static const partnerTypes = '$domain/api/partner-types/';
+
   static const token = '$domain/api/token/';
 
   static const refresh = '$domain/api/token/refresh/';
