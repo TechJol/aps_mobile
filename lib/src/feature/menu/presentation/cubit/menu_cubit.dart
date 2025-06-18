@@ -94,7 +94,7 @@ class MenuCubit extends Cubit<MenuState> {
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
       (r) {
-        getPartners();
+        // getPartners();
         final updatedPartner = PartnersModel.fromMap(r);
         emit(MenuPartnerSuccess(partners: [updatedPartner]));
       },
@@ -111,8 +111,11 @@ class MenuCubit extends Cubit<MenuState> {
     });
   }
 
-  Future<void> postPartnerType(PartnerTypesModel partner) async {
-    final result = await postPartnerTypeUsecase.call(partner);
+  Future<void> postPartnerType(PartnerTypesModel partnerType) async {
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    final companyId = storage.getInt('companyId');
+    final part = PartnerTypesModel(name: partnerType.name, company: companyId);
+    final result = await postPartnerTypeUsecase.call(part);
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
       (r) {
@@ -134,12 +137,15 @@ class MenuCubit extends Cubit<MenuState> {
     );
   }
 
-  Future<void> updatePartnerType(PartnerTypesModel partner, int id) async {
-    final result = await updatePartnerTypeUsecase.call(partner, id);
+  Future<void> updatePartnerType(PartnerTypesModel partnerType, int id) async {
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    final companyId = storage.getInt('companyId');
+    final part = PartnerTypesModel(name: partnerType.name, company: companyId);
+    final result = await updatePartnerTypeUsecase.call(part, id);
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
       (r) {
-        getPartnerTypes();
+        // getPartnerTypes();
         final updatedType = PartnerTypesModel.fromMap(r);
         emit(MenuPartnerTypesSuccess(types: [updatedType]));
       },

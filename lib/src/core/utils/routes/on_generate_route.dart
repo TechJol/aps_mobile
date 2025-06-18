@@ -105,7 +105,8 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => AddTypePage());
 
       case AppRoutes.editType:
-        return CupertinoPageRoute(builder: (_) => EditTypePage());
+        final type = settings.arguments as PartnerTypesModel?;
+        return CupertinoPageRoute(builder: (_) => EditTypePage(type: type));
 
       case AppRoutes.addSettingAccount:
         return CupertinoPageRoute(builder: (_) => AddSettingAccountsPage());

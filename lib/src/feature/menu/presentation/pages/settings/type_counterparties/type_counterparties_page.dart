@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -152,7 +150,10 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
                                     context,
                                     accountName: type.name,
                                     onConfirm: () {
-                                      log('Удаляем: ${type.name}');
+                                      context
+                                          .read<MenuCubit>()
+                                          .deletePartnerType(type.id!);
+                                      Navigator.pop(context);
                                     },
                                     title: 'Удалить счет',
                                   );
@@ -161,6 +162,7 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
                                   Navigator.pushNamed(
                                     context,
                                     AppRoutes.editType,
+                                    arguments: type,
                                   );
                                 },
                               ),

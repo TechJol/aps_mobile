@@ -1,5 +1,7 @@
 import 'package:aps_mobile/src/core/core.dart';
+import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddTypePage extends StatefulWidget {
   const AddTypePage({super.key});
@@ -40,53 +42,76 @@ class _AddTypePageState extends State<AddTypePage> {
         title: 'Добавить тип',
         backgroundColor: AppColors.backroundColor,
       ),
-      body: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 50,
-            decoration: BoxDecoration(
-              color: AppColors.backroundColor,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(12),
-                bottomRight: Radius.circular(12),
+      body: BlocListener<MenuCubit, MenuState>(
+        listener: (context, state) {
+          if (state is MenuPartnerTypesSuccess) {
+            Navigator.pop(context);
+          }
+          if (state is MenuError) {
+            var snackBar = SnackBar(content: Text(state.message));
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+        },
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              height: 50,
+              decoration: BoxDecoration(
+                color: AppColors.backroundColor,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(12),
+                  bottomRight: Radius.circular(12),
+                ),
               ),
             ),
-          ),
-          24.h,
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: [
-                TextFieldWid(label: 'Название', controller: nameController),
+            24.h,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  TextFieldWid(label: 'Название', controller: nameController),
 
-                24.h,
+                  24.h,
 
-                ElevatedButton(
-                  onPressed:
-                      isFormValid
-                          ? () {
-                            Navigator.pop(context);
-                          }
-                          : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary200Color,
-                    minimumSize: const Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
+                  BlocBuilder<MenuCubit, MenuState>(
+                    builder: (context, state) {
+                      if (state is MenuLoading) {
+                        return CircularProgressIndicator();
+                      }
+                      return ElevatedButton(
+                        onPressed:
+                            isFormValid
+                                ? () {
+                                  final partnerType = PartnerTypesModel(
+                                    name: nameController.text.trim(),
+                                  );
+                                  context.read<MenuCubit>().postPartnerType(
+                                    partnerType,
+                                  );
+                                }
+                                : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary200Color,
+                          minimumSize: const Size(double.infinity, 50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: Text(
+                          'Сохранить',
+                          style: AppTextStyles.f16w500.copyWith(
+                            color: AppColors.whiteColor,
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                  child: Text(
-                    'Сохранить',
-                    style: AppTextStyles.f16w500.copyWith(
-                      color: AppColors.whiteColor,
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

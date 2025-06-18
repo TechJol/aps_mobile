@@ -1,9 +1,9 @@
 class PartnerTypesModel {
-  PartnerTypesModel({this.id, required this.name, required this.company});
+  PartnerTypesModel({this.id, required this.name, this.company});
 
   final int? id;
   final String name;
-  final int company;
+  final int? company;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{'id': id, 'name': name, 'company': company};
@@ -13,7 +13,7 @@ class PartnerTypesModel {
     return PartnerTypesModel(
       id: map['id'] != null ? map['id'] as int : null,
       name: map['name'] as String,
-      company: map['company'] as int,
+      company: map['company'] != null ? map['company'] as int : null,
     );
   }
 }

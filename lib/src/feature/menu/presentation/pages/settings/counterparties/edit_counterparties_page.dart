@@ -67,9 +67,6 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
       ),
       body: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {
-          if (state is MenuLoading) {
-            Center(child: CircularProgressIndicator());
-          }
           if (state is MenuPartnerSuccess) {
             Navigator.pop(context);
           }
