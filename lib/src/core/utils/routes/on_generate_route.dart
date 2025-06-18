@@ -1,3 +1,5 @@
+import 'package:aps_mobile/src/feature/auth/presentation/pages/auth_page_view.dart'
+    show AuthPageView;
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/cupertino.dart';
 import 'app_routes.dart';
@@ -13,6 +15,9 @@ class RouteGenerator {
       //! Registration
       case AppRoutes.login:
         return CupertinoPageRoute(builder: (_) => LoginPage());
+
+      case AppRoutes.auth:
+        return CupertinoPageRoute(builder: (_) => const AuthPageView());
 
       case AppRoutes.registration:
         return CupertinoPageRoute(builder: (_) => Registration());

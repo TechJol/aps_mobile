@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Registration extends StatefulWidget {
-  const Registration({super.key});
+  final void Function(int pageIndex)? onNavigate;
+  const Registration({super.key, this.onNavigate});
+
+  //const Registration({super.key});
 
   @override
   _RegistrationState createState() => _RegistrationState();
@@ -149,10 +152,7 @@ class _RegistrationState extends State<Registration> {
                         // Войти tab
                         GestureDetector(
                           onTap: () {
-                            Navigator.pop(
-                              context,
-                              AppRoutes.login,
-                            ); // Go back to LoginPage
+                            widget.onNavigate?.call(0); // Go back to LoginPage
                           },
                           child: Column(
                             children: [
@@ -178,7 +178,10 @@ class _RegistrationState extends State<Registration> {
 
                         // Регистрация tab
                         GestureDetector(
-                          onTap: () {}, // Already here
+                          onTap: () {
+                            print("Navigating to page 1");
+                            widget.onNavigate?.call(1);
+                          }, // Already here
                           child: Column(
                             children: [
                               Text(

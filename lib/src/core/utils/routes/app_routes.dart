@@ -5,6 +5,7 @@ class AppRoutes {
 
   /* <---- Login, Signup -----> */
   static const login = '/';
+  static const auth = 'auth';
   static const registration = 'registration';
   static const forgotPassword = 'forgotPassword';
   static const languageSelection = 'languageSelection';

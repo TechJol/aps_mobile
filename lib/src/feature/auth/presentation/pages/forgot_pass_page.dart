@@ -3,7 +3,10 @@ import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPassPage extends StatefulWidget {
-  const ForgotPassPage({super.key});
+  final void Function(int pageIndex)? onNavigate;
+
+  const ForgotPassPage({super.key, this.onNavigate});
+  //const ForgotPassPage({super.key});
 
   @override
   State<ForgotPassPage> createState() => _ForgotPassPageState();
@@ -77,7 +80,8 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
               children: [
                 IconButton(
                   icon: Icon(Icons.arrow_back_ios, size: 20),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => widget.onNavigate?.call(0),
+                  //onPressed: () => Navigator.pop(context),
                 ),
                 SizedBox(width: 8, height: 20),
                 Text(
