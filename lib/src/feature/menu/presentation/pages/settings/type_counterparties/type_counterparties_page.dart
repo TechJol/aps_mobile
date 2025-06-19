@@ -182,12 +182,16 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
                                     title: 'Удалить тип',
                                   );
                                 },
-                                tapEdit: () {
-                                  Navigator.pushNamed(
+                                tapEdit: () async {
+                                  final result = await Navigator.pushNamed(
                                     context,
                                     AppRoutes.editType,
                                     arguments: type,
                                   );
+
+                                  if (result == true) {
+                                    context.read<MenuCubit>().getPartnerTypes();
+                                  }
                                 },
                               ),
                             ),

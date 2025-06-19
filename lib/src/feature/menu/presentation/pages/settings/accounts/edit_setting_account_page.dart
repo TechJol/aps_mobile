@@ -74,9 +74,6 @@ class _EditSettingAccountPageState extends State<EditSettingAccountPage> {
       ),
       body: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {
-          if (state is MenuAccountsSuccess) {
-            Navigator.pop(context);
-          }
           if (state is MenuError) {
             var snackBar = SnackBar(content: Text(state.message));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -149,7 +146,7 @@ class _EditSettingAccountPageState extends State<EditSettingAccountPage> {
                                 account,
                                 id!,
                               );
-                              // Navigator.pop(context);
+                              Navigator.pop(context, true);
                             }
                             : null,
                     style: ElevatedButton.styleFrom(

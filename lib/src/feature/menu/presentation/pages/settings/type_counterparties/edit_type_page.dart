@@ -13,7 +13,6 @@ class EditTypePage extends StatefulWidget {
 
 class _EditTypePageState extends State<EditTypePage> {
   final nameController = TextEditingController();
-
   bool isFormValid = false;
 
   @override
@@ -46,11 +45,8 @@ class _EditTypePageState extends State<EditTypePage> {
       ),
       body: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {
-          if (state is MenuPartnerTypesSuccess) {
-            Navigator.pop(context);
-          }
           if (state is MenuError) {
-            var snackBar = SnackBar(content: Text(state.message));
+            final snackBar = SnackBar(content: Text(state.message));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
         },
@@ -73,21 +69,21 @@ class _EditTypePageState extends State<EditTypePage> {
               child: Column(
                 children: [
                   TextFieldWid(label: 'Название', controller: nameController),
-
                   24.h,
-
                   ElevatedButton(
                     onPressed:
                         isFormValid
-                            ? () {
+                            ? () async {
                               final id = widget.type?.id;
                               final partnerType = PartnerTypesModel(
                                 name: nameController.text,
                               );
-                              context.read<MenuCubit>().updatePartnerType(
+                              await context.read<MenuCubit>().updatePartnerType(
                                 partnerType,
                                 id!,
                               );
+
+                              Navigator.pop(context, true); // <-- ВАЖНО
                             }
                             : null,
                     style: ElevatedButton.styleFrom(

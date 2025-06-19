@@ -174,12 +174,16 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
                               title: 'Удалить счет',
                             );
                           },
-                          tapEdit: () {
-                            Navigator.pushNamed(
+                          tapEdit: () async {
+                            final result = await Navigator.pushNamed(
                               context,
                               AppRoutes.editSettingAccount,
                               arguments: account,
                             );
+
+                            if (result == true) {
+                              context.read<MenuCubit>().getAccounts();
+                            }
                           },
                         ),
                       ),

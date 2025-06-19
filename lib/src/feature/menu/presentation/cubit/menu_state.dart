@@ -4,7 +4,7 @@ sealed class MenuState extends Equatable {
   const MenuState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 final class MenuInitial extends MenuState {}
@@ -12,54 +12,48 @@ final class MenuInitial extends MenuState {}
 final class MenuLoading extends MenuState {}
 
 final class MenuSuccess extends MenuState {
-  const MenuSuccess({required this.transactions});
-
   final List<AllTransactionsModel> transactions;
+  const MenuSuccess({required this.transactions});
 
   @override
   List<Object> get props => [transactions];
 }
 
 final class MenuError extends MenuState {
-  const MenuError({required this.message});
-
   final String message;
+  const MenuError({required this.message});
 
   @override
   List<Object> get props => [message];
 }
 
-final class MenuPartnerSuccess extends MenuState {
-  const MenuPartnerSuccess({required this.partners});
-
-  final List<PartnersModel> partners;
-
-  @override
-  List<Object> get props => [partners];
-}
-
 final class DeleteError extends MenuState {
-  const DeleteError({required this.error});
-
   final Object error;
+  const DeleteError({required this.error});
 
   @override
   List<Object> get props => [error];
 }
 
-final class MenuPartnerTypesSuccess extends MenuState {
-  const MenuPartnerTypesSuccess({required this.types});
+final class MenuPartnerSuccess extends MenuState {
+  final List<PartnersModel> partners;
+  const MenuPartnerSuccess({required this.partners});
 
+  @override
+  List<Object> get props => [partners];
+}
+
+final class MenuPartnerTypesSuccess extends MenuState {
   final List<PartnerTypesModel> types;
+  const MenuPartnerTypesSuccess({required this.types});
 
   @override
   List<Object> get props => [types];
 }
 
 final class MenuAccountsSuccess extends MenuState {
-  const MenuAccountsSuccess({required this.accounts});
-
   final List<AccountModel> accounts;
+  const MenuAccountsSuccess({required this.accounts});
 
   @override
   List<Object> get props => [accounts];
