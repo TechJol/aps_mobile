@@ -153,7 +153,7 @@ class MenuCubit extends Cubit<MenuState> {
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
       (r) {
-        // getPartnerTypes();
+        getPartnerTypes();
         final updatedType = PartnerTypesModel.fromMap(r);
         emit(MenuPartnerTypesSuccess(types: [updatedType]));
       },
@@ -203,7 +203,16 @@ class MenuCubit extends Cubit<MenuState> {
   }
 
   Future<void> updateAccount(AccountModel account, int id) async {
-    final result = await updateAccountUsecase.call(account, id);
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    final companyId = storage.getInt('companyId');
+    final acc = AccountModel(
+      name: account.name,
+      accountType: account.accountType,
+      currency: account.currency,
+      company: companyId,
+      // currentBalance: '220',
+    );
+    final result = await updateAccountUsecase.call(acc, id);
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
       (r) {
