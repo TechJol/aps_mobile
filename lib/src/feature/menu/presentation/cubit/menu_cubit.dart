@@ -19,6 +19,10 @@ class MenuCubit extends Cubit<MenuState> {
   final DeleteAccountUsecase deleteAccountUsecase;
   final UpdateAccountUsecase updateAccountUsecase;
   final GetAccountsUsecase getAccountsUsecase;
+  final GetReasonsUsecase getReasonsUsecase;
+  final PostReasonUsecase postReasonUsecase;
+  final UpdateReasonUsecase updateReasonUsecase;
+  final DeleteReasonUsecase deleteReasonUsecase;
 
   MenuCubit({
     required this.getTransactionsUsecase,
@@ -34,6 +38,10 @@ class MenuCubit extends Cubit<MenuState> {
     required this.deleteAccountUsecase,
     required this.updateAccountUsecase,
     required this.getAccountsUsecase,
+    required this.getReasonsUsecase,
+    required this.postReasonUsecase,
+    required this.updateReasonUsecase,
+    required this.deleteReasonUsecase,
   }) : super(MenuInitial());
 
   Future<void> getTransactions() async {
@@ -214,6 +222,47 @@ class MenuCubit extends Cubit<MenuState> {
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
       (r) {},
+    );
+  }
+
+  Future<void> getReasons() async {
+    emit(MenuLoading());
+    final result = await getReasonsUsecase();
+    result.fold((l) => emit(MenuError(message: l.message)), (r) {
+      final reasons =
+          (r as List).map((e) => IncomeExpenseReasons.fromMap(e)).toList();
+      emit(MenuReasonsSuccess(reasons: reasons));
+    });
+  }
+
+  Future<void> postReason(IncomeExpenseReasons reasons) async {
+    final result = await postReasonUsecase.call(reasons);
+    result.fold(
+      (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
+      (r) {
+        getReasons();
+      },
+    );
+  }
+
+  Future<void> updateReason(IncomeExpenseReasons reasons, int id) async {
+    final result = await updateReasonUsecase.call(reasons, id);
+    result.fold(
+      (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
+      (r) {},
+    );
+  }
+
+  Future<void> deleteReason(int id) async {
+    final result = await deleteReasonUsecase.call(id);
+
+    result.fold(
+      (l) {
+        emit(DeleteError(error: l));
+      },
+      (r) {
+        getReasons();
+      },
     );
   }
 }

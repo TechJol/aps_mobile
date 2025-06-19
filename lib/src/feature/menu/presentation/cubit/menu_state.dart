@@ -58,3 +58,11 @@ final class MenuAccountsSuccess extends MenuState {
   @override
   List<Object> get props => [accounts];
 }
+
+final class MenuReasonsSuccess extends MenuState {
+  final List<IncomeExpenseReasons> reasons;
+  const MenuReasonsSuccess({required this.reasons});
+
+  @override
+  List<Object> get props => [reasons];
+}

@@ -78,7 +78,7 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
     final accessToken = await AuthTokenStorage().getAccessToken();
     try {
       final response = await sl<DioClient>().get(
-        AppApi.incomeExpenseReasons,
+        AppApi.reason,
         options: Options(
           headers: {
             'Content-Type': 'application/json',

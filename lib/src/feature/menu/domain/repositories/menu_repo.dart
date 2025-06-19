@@ -27,4 +27,12 @@ abstract class MenuRepository {
   Future<Either> deleteAccount(int id);
 
   Future<Either> updateAccount(AccountModel account, int id);
+
+  Future<Either> getReasons();
+
+  Future<Either> postReason(IncomeExpenseReasons reasons);
+
+  Future<Either> deleteReason(int id);
+
+  Future<Either> updateReason(IncomeExpenseReasons reasons, int id);
 }

@@ -70,4 +70,24 @@ class MenuRepositoryImpl implements MenuRepository {
   Future<Either> getAccounts() async {
     return await remoteMenuDataSource.getAccounts();
   }
+
+  @override
+  Future<Either> deleteReason(int id) async {
+    return await remoteMenuDataSource.deleteReason(id);
+  }
+
+  @override
+  Future<Either> getReasons() async {
+    return await remoteMenuDataSource.getReasons();
+  }
+
+  @override
+  Future<Either> postReason(IncomeExpenseReasons reasons) async {
+    return await remoteMenuDataSource.postReason(reasons);
+  }
+
+  @override
+  Future<Either> updateReason(IncomeExpenseReasons reasons, int id) async {
+    return await remoteMenuDataSource.updateReason(reasons, id);
+  }
 }
