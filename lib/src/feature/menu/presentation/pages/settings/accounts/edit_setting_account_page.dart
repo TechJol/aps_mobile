@@ -149,7 +149,7 @@ class _EditSettingAccountPageState extends State<EditSettingAccountPage> {
                                 account,
                                 id!,
                               );
-                              Navigator.pop(context);
+                              // Navigator.pop(context);
                             }
                             : null,
                     style: ElevatedButton.styleFrom(
