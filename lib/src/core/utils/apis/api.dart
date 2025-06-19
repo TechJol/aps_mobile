@@ -7,7 +7,7 @@ class AppApi {
 
   static const transactions = '$domain/api/transactions/';
 
-  static const getAccount = '$domain/api/accounts/';
+  static const account = '$domain/api/accounts/';
 
   static const incomeExpenseReasons = '$domain/api/income-expense-reasons/';
 

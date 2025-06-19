@@ -42,6 +42,10 @@ Future<void> init() async {
       deletePartnerTypeUsecase: sl.call(),
       postPartnerTypeUsecase: sl.call(),
       updatePartnerTypeUsecase: sl.call(),
+      getAccountsUsecase: sl.call(),
+      deleteAccountUsecase: sl.call(),
+      updateAccountUsecase: sl.call(),
+      postAccountUsecase: sl.call(),
     ),
   );
 
@@ -68,6 +72,10 @@ Future<void> init() async {
   sl.registerLazySingleton(
     () => UpdatePartnerTypeUsecase(repository: sl.call()),
   );
+  sl.registerLazySingleton(() => GetAccountsUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => DeleteAccountUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => UpdateAccountUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => PostAccountUsecase(repository: sl.call()));
 
   //! Repository
   sl.registerLazySingleton<AuthRepository>(

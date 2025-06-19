@@ -315,4 +315,138 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
       return Left(Exception('Something went wrong: ${e.toString()}'));
     }
   }
+
+  @override
+  Future<Either> deleteAccount(int id) async {
+    final accessToken = await AuthTokenStorage().getAccessToken();
+    try {
+      final response = await sl<DioClient>().delete(
+        '${AppApi.account}$id/',
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+            'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
+          },
+        ),
+      );
+
+      if (response.statusCode == 204 || response.statusCode == 200) {
+        return Right(response.data);
+      } else {
+        throw Exception(
+          'Failed to delete account. Status code: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      // Обработка ошибки 401 (неверный или истёкший токен)
+      if (e is DioException && e.response?.statusCode == 401) {
+        return await AuthError(dio: dio).handleUnauthorized();
+      }
+      return Left(Exception('Something went wrong: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either> postAccount(AccountModel account) async {
+    final accessToken = await AuthTokenStorage().getAccessToken();
+    try {
+      final response = await sl<DioClient>().post(
+        AppApi.account,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+            'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
+          },
+        ),
+        data: account.toMap(),
+      );
+
+      if (response.statusCode == 200 ||
+          response.statusCode == 204 ||
+          response.statusCode == 201) {
+        return Right(response.data);
+      } else {
+        throw Exception(
+          'Failed to post account. Status code: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      // Обработка ошибки 401 (неверный или истёкший токен)
+      if (e is DioException && e.response?.statusCode == 401) {
+        return await AuthError(dio: dio).handleUnauthorized();
+      }
+      return Left(Exception('Something went wrong: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either> updateAccount(AccountModel account, int id) async {
+    final accessToken = await AuthTokenStorage().getAccessToken();
+    try {
+      final response = await sl<DioClient>().put(
+        '${AppApi.account}$id/',
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+            'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
+          },
+        ),
+        data: account.toMap(),
+      );
+
+      if (response.statusCode == 200 ||
+          response.statusCode == 204 ||
+          response.statusCode == 201) {
+        return Right(response.data);
+      } else {
+        throw Exception(
+          'Failed to update account. Status code: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      // Обработка ошибки 401 (неверный или истёкший токен)
+      if (e is DioException && e.response?.statusCode == 401) {
+        return await AuthError(dio: dio).handleUnauthorized();
+      }
+      return Left(Exception('Something went wrong: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either> getAccounts() async {
+    final accessToken = await AuthTokenStorage().getAccessToken();
+    try {
+      final response = await sl<DioClient>().get(
+        AppApi.account,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+            'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Right(response.data);
+      } else {
+        throw Exception(
+          'Failed to get account. Status code: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      // Обработка ошибки 401 (неверный или истёкший токен)
+      if (e is DioException && e.response?.statusCode == 401) {
+        return await AuthError(dio: dio).handleUnauthorized();
+      }
+      return Left(Exception('Something went wrong: ${e.toString()}'));
+    }
+  }
 }

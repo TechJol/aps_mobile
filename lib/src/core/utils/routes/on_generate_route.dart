@@ -112,7 +112,10 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => AddSettingAccountsPage());
 
       case AppRoutes.editSettingAccount:
-        return CupertinoPageRoute(builder: (_) => EditSettingAccountPage());
+        final account = settings.arguments as AccountModel;
+        return CupertinoPageRoute(
+          builder: (_) => EditSettingAccountPage(account: account),
+        );
 
       case AppRoutes.addArticles:
         return CupertinoPageRoute(builder: (_) => AddArticlesPage());

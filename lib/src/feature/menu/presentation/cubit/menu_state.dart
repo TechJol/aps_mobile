@@ -55,3 +55,12 @@ final class MenuPartnerTypesSuccess extends MenuState {
   @override
   List<Object> get props => [types];
 }
+
+final class MenuAccountsSuccess extends MenuState {
+  const MenuAccountsSuccess({required this.accounts});
+
+  final List<AccountModel> accounts;
+
+  @override
+  List<Object> get props => [accounts];
+}

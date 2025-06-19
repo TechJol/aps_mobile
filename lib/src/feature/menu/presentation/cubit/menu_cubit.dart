@@ -15,6 +15,10 @@ class MenuCubit extends Cubit<MenuState> {
   final PostPartnerTypeUsecase postPartnerTypeUsecase;
   final DeletePartnerTypeUsecase deletePartnerTypeUsecase;
   final UpdatePartnerTypeUsecase updatePartnerTypeUsecase;
+  final PostAccountUsecase postAccountUsecase;
+  final DeleteAccountUsecase deleteAccountUsecase;
+  final UpdateAccountUsecase updateAccountUsecase;
+  final GetAccountsUsecase getAccountsUsecase;
 
   MenuCubit({
     required this.getTransactionsUsecase,
@@ -26,6 +30,10 @@ class MenuCubit extends Cubit<MenuState> {
     required this.postPartnerTypeUsecase,
     required this.deletePartnerTypeUsecase,
     required this.updatePartnerTypeUsecase,
+    required this.postAccountUsecase,
+    required this.deleteAccountUsecase,
+    required this.updateAccountUsecase,
+    required this.getAccountsUsecase,
   }) : super(MenuInitial());
 
   Future<void> getTransactions() async {
@@ -148,6 +156,60 @@ class MenuCubit extends Cubit<MenuState> {
         // getPartnerTypes();
         final updatedType = PartnerTypesModel.fromMap(r);
         emit(MenuPartnerTypesSuccess(types: [updatedType]));
+      },
+    );
+  }
+
+  Future<void> getAccounts() async {
+    emit(MenuLoading());
+    final result = await getAccountsUsecase();
+    result.fold((l) => emit(MenuError(message: l.message)), (r) {
+      final accounts = (r as List).map((e) => AccountModel.fromMap(e)).toList();
+      emit(MenuAccountsSuccess(accounts: accounts));
+    });
+  }
+
+  Future<void> postAccount(AccountModel account) async {
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    final companyId = storage.getInt('companyId');
+    final acc = AccountModel(
+      name: account.name,
+      accountType: account.accountType,
+      currency: account.currency,
+      company: companyId,
+      // currentBalance: '220',
+    );
+
+    final result = await postAccountUsecase.call(acc);
+    result.fold(
+      (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
+      (r) {
+        getAccounts();
+      },
+    );
+  }
+
+  Future<void> deleteAccount(int id) async {
+    final result = await deleteAccountUsecase.call(id);
+
+    result.fold(
+      (l) {
+        emit(DeleteError(error: l));
+      },
+      (r) {
+        getAccounts();
+      },
+    );
+  }
+
+  Future<void> updateAccount(AccountModel account, int id) async {
+    final result = await updateAccountUsecase.call(account, id);
+    result.fold(
+      (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
+      (r) {
+        // getAccounts();
+        final updatedAccount = AccountModel.fromMap(r);
+        emit(MenuAccountsSuccess(accounts: [updatedAccount]));
       },
     );
   }

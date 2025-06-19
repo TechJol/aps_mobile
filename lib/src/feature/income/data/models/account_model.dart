@@ -1,19 +1,19 @@
 class AccountModel {
   AccountModel({
-    required this.id,
+    this.id,
     required this.name,
     required this.accountType,
-    required this.currency,
+    this.currency,
     this.currentBalance,
-    required this.company,
+    this.company,
   });
 
-  final int id;
+  final int? id;
   final String name;
   final String accountType;
-  final String currency;
+  final String? currency;
   final String? currentBalance;
-  final int company;
+  final int? company;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -28,15 +28,15 @@ class AccountModel {
 
   factory AccountModel.fromMap(Map<String, dynamic> map) {
     return AccountModel(
-      id: map['id'] as int,
+      id: map['id'] != null ? map['id'] as int : null,
       name: map['name'] as String,
       accountType: map['account_type'] as String,
-      currency: map['currency'] as String,
+      currency: map['currency'] != null ? map['currency'] as String : null,
       currentBalance:
           map['current_balance'] != null
               ? map['current_balance'] as String
               : null,
-      company: map['company'] as int,
+      company: map['company'] != null ? map['company'] as int : null,
     );
   }
 }
