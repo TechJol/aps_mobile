@@ -121,7 +121,10 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => AddArticlesPage());
 
       case AppRoutes.editArticles:
-        return CupertinoPageRoute(builder: (_) => EditArticlesPage());
+        final reason = settings.arguments as IncomeExpenseReasons;
+        return CupertinoPageRoute(
+          builder: (_) => EditArticlesPage(reason: reason),
+        );
 
       case AppRoutes.profile:
         return CupertinoPageRoute(builder: (_) => ProfilePage());

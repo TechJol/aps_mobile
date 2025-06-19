@@ -236,7 +236,14 @@ class MenuCubit extends Cubit<MenuState> {
   }
 
   Future<void> postReason(IncomeExpenseReasons reasons) async {
-    final result = await postReasonUsecase.call(reasons);
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    final companyId = storage.getInt('companyId');
+    final part = IncomeExpenseReasons(
+      name: reasons.name,
+      type: reasons.type,
+      company: companyId,
+    );
+    final result = await postReasonUsecase.call(part);
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
       (r) {
@@ -246,7 +253,14 @@ class MenuCubit extends Cubit<MenuState> {
   }
 
   Future<void> updateReason(IncomeExpenseReasons reasons, int id) async {
-    final result = await updateReasonUsecase.call(reasons, id);
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    final companyId = storage.getInt('companyId');
+    final part = IncomeExpenseReasons(
+      name: reasons.name,
+      type: reasons.type,
+      company: companyId,
+    );
+    final result = await updateReasonUsecase.call(part, id);
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
       (r) {},

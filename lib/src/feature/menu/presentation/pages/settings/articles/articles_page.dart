@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dio/dio.dart';
@@ -70,6 +68,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
   ) {
     return Column(
       children: [
+        // Верхняя панель с кнопками
         DecoratedBox(
           decoration: BoxDecoration(
             color: AppColors.backroundColor,
@@ -123,77 +122,88 @@ class _ArticlesPageState extends State<ArticlesPage> {
         ),
         12.h,
 
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black, width: 0.1),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: DataTable(
-            showCheckboxColumn: true,
-            showBottomBorder: true,
-            headingRowColor: WidgetStateProperty.all(Colors.black),
-            headingTextStyle: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black, width: 0.1),
+              borderRadius: BorderRadius.circular(4),
             ),
-            columns: const [
-              DataColumn(label: Text('Название', style: AppTextStyles.f16w500)),
-              DataColumn(
-                label: Text('Тип счета', style: AppTextStyles.f16w500),
+            child: DataTable(
+              showCheckboxColumn: true,
+              showBottomBorder: true,
+              headingRowColor: WidgetStateProperty.all(Colors.black),
+              headingTextStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
-              DataColumn(label: Text('')), // для меню с тремя точками
-            ],
-            rows:
-                reasons.map((reason) {
-                  return DataRow(
-                    cells: [
-                      DataCell(
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            reason.name,
-                            style: AppTextStyles.f16w500,
+              columns: const [
+                DataColumn(
+                  label: Text('Название', style: AppTextStyles.f16w500),
+                ),
+                DataColumn(
+                  label: Text('Тип счета', style: AppTextStyles.f16w500),
+                ),
+                DataColumn(label: Text('')), // для меню с тремя точками
+              ],
+              rows:
+                  reasons.map((reason) {
+                    return DataRow(
+                      cells: [
+                        DataCell(
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              reason.name,
+                              style: AppTextStyles.f16w500,
+                            ),
                           ),
                         ),
-                      ),
-                      DataCell(
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            reason.type,
-                            style: AppTextStyles.f16w500,
+                        DataCell(
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              reason.type,
+                              style: AppTextStyles.f16w500,
+                            ),
                           ),
                         ),
-                      ),
+                        DataCell(
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: PopupMenuWid(
+                              context: context,
+                              tapDelete: () {
+                                ShowSheet().showDeleteDialog(
+                                  context,
+                                  accountName: reason.name,
+                                  onConfirm: () {
+                                    context.read<MenuCubit>().deleteReason(
+                                      reason.id!,
+                                    );
+                                    Navigator.pop(context);
+                                  },
+                                  title: 'Удалить счет',
+                                );
+                              },
+                              tapEdit: () async {
+                                final reasons = await Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.editArticles,
+                                  arguments: reason,
+                                );
 
-                      DataCell(
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: PopupMenuWid(
-                            context: context,
-                            tapDelete: () {
-                              ShowSheet().showDeleteDialog(
-                                context,
-                                accountName: reason.name,
-
-                                onConfirm: () {
-                                  log('Удаляем: ${reason.name}');
-                                },
-                                title: 'Удалить счет',
-                              );
-                            },
-                            tapEdit: () {
-                              Navigator.pushNamed(
-                                context,
-                                AppRoutes.editArticles,
-                              );
-                            },
+                                if (reasons == true) {
+                                  context.read<MenuCubit>().getReasons();
+                                }
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  );
-                }).toList(),
+                      ],
+                    );
+                  }).toList(),
+            ),
           ),
         ),
       ],

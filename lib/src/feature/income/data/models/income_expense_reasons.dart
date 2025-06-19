@@ -1,14 +1,14 @@
 class IncomeExpenseReasons {
-  final int id;
+  final int? id;
   final String name;
   final String type;
-  final int company;
+  final int? company;
 
   IncomeExpenseReasons({
-    required this.id,
+    this.id,
     required this.name,
     required this.type,
-    required this.company,
+    this.company,
   });
 
   Map<String, dynamic> toMap() {
@@ -22,7 +22,7 @@ class IncomeExpenseReasons {
 
   factory IncomeExpenseReasons.fromMap(Map<String, dynamic> map) {
     return IncomeExpenseReasons(
-      id: map['id'] as int,
+      id: map['id'] != null ? map['id'] as int : null,
       name: map['name'] as String,
       type: map['type'] as String,
       company: map['company'] as int,
