@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dartz/dartz.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,22 +18,24 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either> login(String username, String password) async {
     Either result = await authRemoteDataSource.login(username, password);
 
-    return result.fold(
-      (l) {
-        return Left(l);
-      },
-      (r) async {
-        Map<String, dynamic> response = r;
+    return result.fold((l) => Left(l), (r) async {
+      Map<String, dynamic> response = r;
 
-        SharedPreferences storage = await SharedPreferences.getInstance();
-        // storage.setString('accessToken', response['access']);
-        // storage.setString('refreshToken', response['refresh']);
-        storage.setInt('companyId', response['company_id']);
+      final access = response['access'];
+      final refresh = response['refresh'];
 
-        log("Bul company id ${response['company_id']}");
-        return Right(response);
-      },
-    );
+      if (access != null && refresh != null) {
+        await AuthTokenStorage().saveTokens(access, refresh);
+      } else {
+        log('⚠️ access/refresh token missing in response!');
+      }
+
+      SharedPreferences storage = await SharedPreferences.getInstance();
+      storage.setInt('companyId', response['company_id']);
+
+      log("✅ Saved company id: ${response['company_id']}");
+      return Right(response);
+    });
   }
 
   @override
@@ -46,8 +49,11 @@ class AuthRepositoryImpl implements AuthRepository {
         Map<String, dynamic> response = r;
 
         SharedPreferences storage = await SharedPreferences.getInstance();
-        storage.setString('accessToken', response['access']);
+        // storage.setString('accessToken', response['access']);
+        // storage.setString('refreshToken', response['refresh']);
+        storage.setInt('companyId', response['company_id']);
 
+        log("Bul company id ${response['company_id']}");
         return Right(response);
       },
     );

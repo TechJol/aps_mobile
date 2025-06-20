@@ -16,12 +16,8 @@ class AuthInterceptor extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     final accessToken = await AuthTokenStorage().getAccessToken();
-    if (accessToken == null) {
-      // Если access_token не найден, обрабатываем
-      log("No access token found!");
-    } else {
-      log("Access token used: $accessToken");
-      // Далее выполняем запрос с токеном
+    if (accessToken != null) {
+      options.headers['Authorization'] = 'Bearer $accessToken'; // ✅ ЭТО ГЛАВНОЕ
     }
     handler.next(options);
   }
@@ -31,11 +27,10 @@ class AuthInterceptor extends Interceptor {
     if (err.response?.statusCode == 401) {
       final refreshToken = await tokenStorage.getRefreshToken();
       if (refreshToken != null) {
-        log("Refresh token used: $refreshToken");
+        log("♻️ Refresh token used: $refreshToken");
         try {
           final refreshResponse = await sl<DioClient>().post(
             AppApi.refresh,
-
             options: Options(
               headers: {
                 'Content-Type': 'application/json',
@@ -46,29 +41,23 @@ class AuthInterceptor extends Interceptor {
             data: {'refresh': refreshToken},
           );
 
-          log("Server response: ${refreshResponse.data}");
-
           final newAccess = refreshResponse.data['access'];
-          final newRefresh = refreshResponse.data['refresh'];
+          final newRefresh = refreshResponse.data['refresh'] ?? refreshToken;
 
-          log("New tokens received: Access: $newAccess, Refresh: $newRefresh");
-
+          log("✅ New tokens received");
           await tokenStorage.saveTokens(newAccess, newRefresh);
 
           final clone = err.requestOptions;
           clone.headers['Authorization'] = 'Bearer $newAccess';
-          clone.headers['Accept'] = 'application/json';
-          clone.headers['Content-Type'] = 'application/json';
-          clone.headers['X-CSRFTOKEN'] = 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE';
-
-          log("Retrying request with new access token");
 
           final retryResponse = await dio.fetch(clone);
           return handler.resolve(retryResponse);
         } catch (e) {
-          log("Error while refreshing token: $e");
+          log("❌ Refresh failed: $e");
           await tokenStorage.clearTokens();
         }
+      } else {
+        log("🚫 No refresh token available");
       }
     }
 

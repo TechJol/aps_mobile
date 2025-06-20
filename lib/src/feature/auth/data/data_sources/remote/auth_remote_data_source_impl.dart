@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:aps_mobile/injection_container.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
@@ -27,29 +25,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final accessToken = response.data['access'];
-        final refreshToken = response.data['refresh'];
-        // Проверка наличия токенов
-        if (accessToken == null || refreshToken == null) {
-          throw Exception(
-            'Access token or refresh token is missing in the response',
-          );
-        }
-
-        log("Saving access token: $accessToken, refresh token: $refreshToken");
-
-        // Сохраняем токены в хранилище и ждём завершения операции
-        await AuthTokenStorage().saveTokens(accessToken, refreshToken);
-
-        // Возвращаем успешный результат
         return Right(response.data);
       } else {
-        throw Exception(
-          'Failed to sign up. Status code: ${response.statusCode}',
-        );
+        throw Exception('Failed to login. Status code: ${response.statusCode}');
       }
     } on DioException catch (e) {
-      throw Exception('Something went wrong with login: ${e.response?.data}');
+      throw Exception('Login failed: ${e.response?.data}');
     }
   }
 
@@ -72,11 +53,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         return Right(response.data);
       } else {
         throw Exception(
-          'Failed to sign up. Status code: ${response.statusCode}',
+          'Failed to register. Status code: ${response.statusCode}',
         );
       }
     } on DioException catch (e) {
-      throw Exception('Something went wrong with login: ${e.response?.data}');
+      throw Exception('Registration failed: ${e.response?.data}');
     }
   }
 }
