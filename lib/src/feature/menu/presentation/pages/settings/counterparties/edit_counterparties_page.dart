@@ -13,12 +13,11 @@ class EditCounterpartiesPage extends StatefulWidget {
 }
 
 class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
-  final List<String> types = ['Клиент', 'Сотрудник', 'Поставщик'];
-
   final nameController = TextEditingController();
   final contactInfoController = TextEditingController();
 
-  String? selectedType;
+  int? selectedTypeId;
+  String? selectedTypeName;
 
   bool isFormValid = false;
 
@@ -26,16 +25,23 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
   void initState() {
     super.initState();
 
-    // Инициализация контроллеров
     nameController.text = widget.partner?.name ?? '';
     contactInfoController.text = widget.partner?.contactInfo ?? '';
-    final typeIndex = (widget.partner?.type ?? 1) - 1;
-    if (typeIndex >= 0 && typeIndex < types.length) {
-      selectedType = types[typeIndex];
-    }
+
+    // загружаем типы контрагентов
+    context.read<MenuCubit>().getPartnerTypes();
 
     nameController.addListener(checkFormValidity);
     contactInfoController.addListener(checkFormValidity);
+  }
+
+  void checkFormValidity() {
+    setState(() {
+      isFormValid =
+          selectedTypeId != null &&
+          nameController.text.isNotEmpty &&
+          contactInfoController.text.isNotEmpty;
+    });
   }
 
   @override
@@ -45,16 +51,6 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
     nameController.dispose();
     contactInfoController.dispose();
     super.dispose();
-  }
-
-  void checkFormValidity() {
-    setState(() {
-      isFormValid =
-          selectedType != null &&
-          selectedType!.isNotEmpty &&
-          nameController.text.isNotEmpty &&
-          contactInfoController.text.isNotEmpty;
-    });
   }
 
   @override
@@ -82,7 +78,7 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
               height: 50,
               decoration: BoxDecoration(
                 color: AppColors.backroundColor,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(12),
                   bottomRight: Radius.circular(12),
                 ),
@@ -95,15 +91,41 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
                 children: [
                   TextFieldWid(label: 'Название', controller: nameController),
                   12.h,
-                  DropDownFormField(
-                    items: types,
-                    label: 'Тип',
-                    value: selectedType,
-                    onChanged: (val) {
-                      setState(() {
-                        selectedType = val;
-                      });
-                      checkFormValidity();
+                  BlocBuilder<MenuCubit, MenuState>(
+                    builder: (context, state) {
+                      if (state is MenuPartnerTypesSuccess) {
+                        final types = state.types;
+
+                        // Автоматическая инициализация выбора при первом построении
+                        if (selectedTypeId == null && widget.partner != null) {
+                          final matched = types.firstWhere(
+                            (e) => e.id == widget.partner!.type,
+                            orElse: () => types.first,
+                          );
+                          selectedTypeId = matched.id;
+                          selectedTypeName = matched.name;
+                        }
+
+                        return DropDownFormField(
+                          label: 'Тип',
+                          items: types.map((e) => e.name).toList(),
+                          value: selectedTypeName,
+                          onChanged: (val) {
+                            final selected = types.firstWhere(
+                              (e) => e.name == val,
+                            );
+                            setState(() {
+                              selectedTypeId = selected.id;
+                              selectedTypeName = selected.name;
+                            });
+                            checkFormValidity();
+                          },
+                        );
+                      } else if (state is MenuLoading) {
+                        return const CircularProgressIndicator();
+                      } else {
+                        return const SizedBox.shrink();
+                      }
                     },
                   ),
                   12.h,
@@ -112,23 +134,18 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
                     controller: contactInfoController,
                   ),
                   24.h,
-
                   BlocBuilder<MenuCubit, MenuState>(
                     builder: (context, state) {
-                      if (state is MenuLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
                       return ElevatedButton(
                         onPressed:
                             isFormValid
-                                ? () async {
+                                ? () {
                                   final id = widget.partner!.id;
                                   final updated = PartnersModel(
                                     name: nameController.text,
                                     contactInfo: contactInfoController.text,
-                                    type: types.indexOf(selectedType!) + 1,
+                                    type: selectedTypeId!,
                                   );
-
                                   context.read<MenuCubit>().updatePartner(
                                     updated,
                                     id!,

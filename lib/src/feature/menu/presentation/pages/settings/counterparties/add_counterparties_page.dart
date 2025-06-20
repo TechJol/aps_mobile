@@ -11,22 +11,21 @@ class AddCounterpartiesPage extends StatefulWidget {
 }
 
 class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
-  final List<String> types = ['Клиент', 'Сотрудник', 'Поставщик'];
-
   final nameController = TextEditingController();
   final contactInfoController = TextEditingController();
 
-  String? selectedType;
+  int? selectedTypeId;
+  String? selectedTypeName;
 
   bool isFormValid = false;
 
   @override
   void initState() {
     super.initState();
-
-    // Подписываемся на изменения текста
     nameController.addListener(checkFormValidity);
     contactInfoController.addListener(checkFormValidity);
+
+    context.read<MenuCubit>().getPartnerTypes(); // Запрашиваем типы
   }
 
   @override
@@ -41,8 +40,7 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
   void checkFormValidity() {
     setState(() {
       isFormValid =
-          selectedType != null &&
-          selectedType!.isNotEmpty &&
+          selectedTypeId != null &&
           nameController.text.isNotEmpty &&
           contactInfoController.text.isNotEmpty;
     });
@@ -73,7 +71,7 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
               height: 50,
               decoration: BoxDecoration(
                 color: AppColors.backroundColor,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(12),
                   bottomRight: Radius.circular(12),
                 ),
@@ -86,15 +84,31 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
                 children: [
                   TextFieldWid(label: 'Название', controller: nameController),
                   12.h,
-                  DropDownFormField(
-                    items: types,
-                    label: 'Тип',
-                    value: selectedType,
-                    onChanged: (val) {
-                      setState(() {
-                        selectedType = val;
-                      });
-                      checkFormValidity();
+                  BlocBuilder<MenuCubit, MenuState>(
+                    builder: (context, state) {
+                      if (state is MenuPartnerTypesSuccess) {
+                        final types = state.types;
+
+                        return DropDownFormField(
+                          label: 'Тип',
+                          items: types.map((e) => e.name).toList(),
+                          value: selectedTypeName,
+                          onChanged: (val) {
+                            final selected = types.firstWhere(
+                              (e) => e.name == val,
+                            );
+                            setState(() {
+                              selectedTypeId = selected.id;
+                              selectedTypeName = selected.name;
+                            });
+                            checkFormValidity();
+                          },
+                        );
+                      } else if (state is MenuLoading) {
+                        return const CircularProgressIndicator();
+                      } else {
+                        return const SizedBox.shrink();
+                      }
                     },
                   ),
                   12.h,
@@ -102,24 +116,18 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
                     label: 'Контактная информация',
                     controller: contactInfoController,
                   ),
-
                   24.h,
-
                   BlocBuilder<MenuCubit, MenuState>(
                     builder: (context, state) {
-                      if (state is MenuLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
                       return ElevatedButton(
                         onPressed:
                             isFormValid
                                 ? () {
                                   final newPartner = PartnersModel(
                                     name: nameController.text,
-                                    type: _mapTypeNameToId(selectedType!),
+                                    type: selectedTypeId!,
                                     contactInfo: contactInfoController.text,
                                   );
-
                                   context.read<MenuCubit>().postPartner(
                                     newPartner,
                                   );
@@ -148,18 +156,5 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
         ),
       ),
     );
-  }
-
-  int _mapTypeNameToId(String name) {
-    switch (name) {
-      case 'Клиент':
-        return 1;
-      case 'Сотрудник':
-        return 2;
-      case 'Поставщик':
-        return 3;
-      default:
-        return 0;
-    }
   }
 }
