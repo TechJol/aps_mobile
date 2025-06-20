@@ -6,12 +6,6 @@ import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-/*class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}*/
 class LoginPage extends StatefulWidget {
   final void Function(int pageIndex)? onNavigate;
 
@@ -164,7 +158,6 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       // Войти
-                      // Войти
                       GestureDetector(
                         onTap: () => setState(() => isLoginSelected = true),
                         //widget.onNavigate?.call(1),
@@ -201,7 +194,12 @@ class _LoginPageState extends State<LoginPage> {
                       SizedBox(width: 15),
                       // Регистрация
                       GestureDetector(
-                        onTap: () async {
+                        onTap: () {
+                          setState(() => isLoginSelected = false);
+                          widget.onNavigate?.call(1);
+                        },
+
+                        /* onTap: () async {
                           //widget.onNavigate?.call(1);
                           setState(() => isLoginSelected = false);
                           await Navigator.pushNamed(
@@ -209,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
                             AppRoutes.registration,
                           );
                           setState(() => isLoginSelected = true);
-                        },
+                        },*/
                         child: Column(
                           children: [
                             Text(

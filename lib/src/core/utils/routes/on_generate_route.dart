@@ -13,17 +13,17 @@ class RouteGenerator {
 
     switch (route) {
       //! Registration
-      case AppRoutes.login:
-        return CupertinoPageRoute(builder: (_) => LoginPage());
+      /*case AppRoutes.login:
+        return CupertinoPageRoute(builder: (_) => LoginPage());*/
 
       case AppRoutes.auth:
         return CupertinoPageRoute(builder: (_) => const AuthPageView());
 
-      case AppRoutes.registration:
+      /*case AppRoutes.registration:
         return CupertinoPageRoute(builder: (_) => Registration());
 
       case AppRoutes.forgotPassword:
-        return CupertinoPageRoute(builder: (_) => ForgotPassPage());
+        return CupertinoPageRoute(builder: (_) => ForgotPassPage());*/
 
       case AppRoutes.languageSelection:
         return CupertinoPageRoute(builder: (_) => LanguageSelection());
