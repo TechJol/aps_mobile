@@ -12,23 +12,13 @@ class EditArticlesPage extends StatefulWidget {
 }
 
 class _EditArticlesPageState extends State<EditArticlesPage> {
-  final List<String> types = ['Доход', 'Расход'];
-  final List<String> names = ['Аренда', 'Выручка'];
-  final List<String> typesCode = ['income', 'expense'];
-
   String? selectedName;
   String? selectedType;
-  String? selectedTypeCode;
-
   bool isFormValid = false;
 
   void checkFormValidity() {
     setState(() {
-      isFormValid =
-          selectedName != null &&
-          selectedType != null &&
-          selectedName!.isNotEmpty &&
-          selectedType!.isNotEmpty;
+      isFormValid = selectedName != null && selectedType != null;
     });
   }
 
@@ -36,7 +26,6 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
   void initState() {
     selectedName = widget.reason.name;
     selectedType = widget.reason.type;
-    selectedTypeCode = typesCode[names.indexOf(selectedName ?? '')];
     checkFormValidity();
     super.initState();
   }
@@ -49,39 +38,30 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
         title: 'Редактировать статью',
         backgroundColor: AppColors.backroundColor,
       ),
-      body: BlocListener<MenuCubit, MenuState>(
-        listener: (context, state) {
-          if (state is MenuError) {
-            var snackBar = SnackBar(content: Text(state.message));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      body: BlocBuilder<MenuCubit, MenuState>(
+        builder: (context, state) {
+          if (state is MenuLoading) {
+            return const Center(child: CircularProgressIndicator());
           }
-        },
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              height: 50,
-              decoration: BoxDecoration(
-                color: AppColors.backroundColor,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(12),
-                  bottomRight: Radius.circular(12),
-                ),
-              ),
-            ),
-            24.h,
-            Padding(
+
+          if (state is MenuReasonsSuccess) {
+            final reasons = state.reasons;
+
+            // Собираем уникальные названия
+            final uniqueNames = reasons.map((e) => e.name).toSet().toList();
+            final types = ['income', 'expense'];
+
+            return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
+                  24.h,
                   DropDownFormField(
-                    items: names,
+                    items: uniqueNames,
                     label: 'Название',
                     value: selectedName,
                     onChanged: (val) {
-                      setState(() {
-                        selectedName = val;
-                      });
+                      setState(() => selectedName = val);
                       checkFormValidity();
                     },
                   ),
@@ -91,31 +71,24 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
                     label: 'Тип',
                     value: selectedType,
                     onChanged: (val) {
-                      setState(() {
-                        selectedType = val;
-                        final index = types.indexOf(val ?? '');
-                        selectedTypeCode = typesCode[index];
-                      });
+                      setState(() => selectedType = val);
                       checkFormValidity();
                     },
                   ),
-
                   const SizedBox(height: 24),
-
                   ElevatedButton(
                     onPressed:
                         isFormValid
                             ? () {
-                              final id = widget.reason.id;
-                              final reason = IncomeExpenseReasons(
+                              final id = widget.reason.id!;
+                              final updated = IncomeExpenseReasons(
                                 name: selectedName!,
-                                type: selectedTypeCode ?? '',
+                                type: selectedType!,
                               );
                               context.read<MenuCubit>().updateReason(
-                                reason,
-                                id!,
+                                updated,
+                                id,
                               );
-
                               Navigator.pop(context, true);
                             }
                             : null,
@@ -135,9 +108,15 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
+            );
+          }
+
+          if (state is MenuError) {
+            return Center(child: Text('Ошибка: ${state.message}'));
+          }
+
+          return const Center(child: CircularProgressIndicator());
+        },
       ),
     );
   }
