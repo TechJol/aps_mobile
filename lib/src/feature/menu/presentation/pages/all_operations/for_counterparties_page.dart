@@ -25,7 +25,7 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
 
   @override
   void initState() {
-    context.read<MenuCubit>().getPartners();
+    context.read<MenuCubit>().getPartnerData();
     super.initState();
   }
 
@@ -45,9 +45,9 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
           if (state is MenuError) {
             return Center(child: Text('Ошибка: ${state.message}'));
           }
-          if (state is MenuPartnerSuccess) {
+          if (state is MenuPartnerDataSuccess) {
             final partners =
-                state.partners.where((e) => e.type == activeType).toList();
+                state.partners!.where((e) => e.type == activeType).toList();
             if (partners.isEmpty) {
               return const Center(child: Text('Нет контрагентов'));
             }

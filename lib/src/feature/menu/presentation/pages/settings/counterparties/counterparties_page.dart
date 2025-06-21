@@ -15,7 +15,7 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
   @override
   void initState() {
     super.initState();
-    context.read<MenuCubit>().getPartners();
+    context.read<MenuCubit>().getPartnerData();
   }
 
   @override
@@ -37,24 +37,22 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
           }
 
           if (state is DeleteError) {
-            String message;
-
-            if (state.error is DioException) {
-              final err = state.error as DioException;
-              final status = err.response?.statusCode;
-              final detail = err.response?.data?.toString() ?? err.message;
-              message = 'Ошибка удаления [$status]: $detail';
-            } else {
-              message = 'Ошибка при удалении: ${state.error.toString()}';
-            }
-
+            final error = state.error;
+            String message =
+                error is DioException
+                    ? 'Ошибка удаления [${error.response?.statusCode}]: ${error.response?.data ?? error.message}'
+                    : 'Ошибка при удалении: $error';
             return Center(child: Text(message));
           }
 
-          if (state is MenuPartnerSuccess) {
-            final partners = state.partners;
-            return _buildTableSection(context, partners);
+          if (state is MenuPartnerDataSuccess) {
+            return _buildTableSection(
+              context,
+              state.partners!,
+              state.partnerTypes!,
+            );
           }
+
           return const SizedBox.shrink();
         },
       ),
@@ -64,12 +62,19 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
   Widget _buildTableSection(
     BuildContext context,
     List<PartnersModel> partners,
+    List<PartnerTypesModel> types,
   ) {
-    final hasPartners = partners.isNotEmpty;
+    String getTypeName(int typeId) {
+      return types
+          .firstWhere(
+            (t) => t.id == typeId,
+            orElse: () => PartnerTypesModel(id: typeId, name: 'Неизвестно'),
+          )
+          .name;
+    }
 
     return Column(
       children: [
-        // Заголовок и кнопка "Добавить"
         DecoratedBox(
           decoration: BoxDecoration(
             color: AppColors.backroundColor,
@@ -109,7 +114,7 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                   ],
                 ),
                 12.h,
-                if (hasPartners)
+                if (partners.isNotEmpty)
                   Row(
                     children: [
                       OutlinedButtonWidget(
@@ -128,10 +133,8 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
             ),
           ),
         ),
-
         12.h,
-
-        if (hasPartners)
+        if (partners.isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: SizedBox(
@@ -167,7 +170,7 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                             ),
                             DataCell(
                               Text(
-                                '${partner.type}',
+                                getTypeName(partner.type),
                                 style: AppTextStyles.f16w500,
                               ),
                             ),
@@ -187,12 +190,15 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                                     title: 'Удалить контрагента',
                                   );
                                 },
-                                tapEdit: () {
-                                  Navigator.pushNamed(
+                                tapEdit: () async {
+                                  final result = await Navigator.pushNamed(
                                     context,
                                     AppRoutes.editCounterparties,
                                     arguments: partner,
                                   );
+                                  if (result == true) {
+                                    context.read<MenuCubit>().getPartnerData();
+                                  }
                                 },
                               ),
                             ),

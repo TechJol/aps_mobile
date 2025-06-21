@@ -29,7 +29,7 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
     contactInfoController.text = widget.partner?.contactInfo ?? '';
 
     // загружаем типы контрагентов
-    context.read<MenuCubit>().getPartnerTypes();
+    context.read<MenuCubit>().getPartnerData();
 
     nameController.addListener(checkFormValidity);
     contactInfoController.addListener(checkFormValidity);
@@ -63,7 +63,7 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
       ),
       body: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {
-          if (state is MenuPartnerSuccess) {
+          if (state is PartnerUpdated) {
             Navigator.pop(context);
           }
           if (state is MenuError) {
@@ -93,12 +93,12 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
                   12.h,
                   BlocBuilder<MenuCubit, MenuState>(
                     builder: (context, state) {
-                      if (state is MenuPartnerTypesSuccess) {
-                        final types = state.types;
+                      if (state is MenuPartnerDataSuccess) {
+                        final types = state.partnerTypes;
 
                         // Автоматическая инициализация выбора при первом построении
                         if (selectedTypeId == null && widget.partner != null) {
-                          final matched = types.firstWhere(
+                          final matched = types!.firstWhere(
                             (e) => e.id == widget.partner!.type,
                             orElse: () => types.first,
                           );
@@ -108,7 +108,7 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
 
                         return DropDownFormField(
                           label: 'Тип',
-                          items: types.map((e) => e.name).toList(),
+                          items: types!.map((e) => e.name).toList(),
                           value: selectedTypeName,
                           onChanged: (val) {
                             final selected = types.firstWhere(

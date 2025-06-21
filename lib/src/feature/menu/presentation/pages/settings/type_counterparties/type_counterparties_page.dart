@@ -15,7 +15,7 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
   @override
   void initState() {
     super.initState();
-    context.read<MenuCubit>().getPartnerTypes();
+    context.read<MenuCubit>().getPartnerData();
   }
 
   @override
@@ -51,9 +51,9 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
             return Center(child: Text(message));
           }
 
-          if (state is MenuPartnerTypesSuccess) {
-            final types = state.types;
-            return _buildTableSection(context, types);
+          if (state is MenuPartnerDataSuccess) {
+            final types = state.partnerTypes;
+            return _buildTableSection(context, types!);
           }
 
           return const SizedBox.shrink();
@@ -190,7 +190,7 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
                                   );
 
                                   if (result == true) {
-                                    context.read<MenuCubit>().getPartnerTypes();
+                                    context.read<MenuCubit>().getPartnerData();
                                   }
                                 },
                               ),

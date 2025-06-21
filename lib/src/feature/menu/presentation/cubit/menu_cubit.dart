@@ -54,15 +54,15 @@ class MenuCubit extends Cubit<MenuState> {
     });
   }
 
-  Future<void> getPartners() async {
-    emit(MenuLoading());
-    final result = await getPartnersUsecase();
-    result.fold((l) => emit(MenuError(message: l.message)), (r) {
-      final partners =
-          (r as List).map((e) => PartnersModel.fromMap(e)).toList();
-      emit(MenuPartnerSuccess(partners: partners));
-    });
-  }
+  // Future<void> getPartners() async {
+  //   emit(MenuLoading());
+  //   final result = await getPartnersUsecase();
+  //   result.fold((l) => emit(MenuError(message: l.message)), (r) {
+  //     final partners =
+  //         (r as List).map((e) => PartnersModel.fromMap(e)).toList();
+  //     emit(MenuPartnerSuccess(partners: partners));
+  //   });
+  // }
 
   Future<void> deletePartner(int id) async {
     final result = await deletePartnerUsecase.call(id);
@@ -72,7 +72,7 @@ class MenuCubit extends Cubit<MenuState> {
         emit(DeleteError(error: l));
       },
       (r) {
-        getPartners();
+        getPartnerData();
       },
     );
   }
@@ -91,7 +91,7 @@ class MenuCubit extends Cubit<MenuState> {
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
       (r) {
-        getPartners();
+        getPartnerData();
       },
     );
   }
@@ -111,20 +111,10 @@ class MenuCubit extends Cubit<MenuState> {
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
       (r) {
         // getPartners();
-        final updatedPartner = PartnersModel.fromMap(r);
-        emit(MenuPartnerSuccess(partners: [updatedPartner]));
+        emit(PartnerUpdated()); // <- добавить это
+        getPartnerData();
       },
     );
-  }
-
-  Future<void> getPartnerTypes() async {
-    emit(MenuLoading());
-    final result = await getPartnerTypesUsecase();
-    result.fold((l) => emit(MenuError(message: l.message)), (r) {
-      final types =
-          (r as List).map((e) => PartnerTypesModel.fromMap(e)).toList();
-      emit(MenuPartnerTypesSuccess(types: types));
-    });
   }
 
   Future<void> postPartnerType(PartnerTypesModel partnerType) async {
@@ -135,7 +125,7 @@ class MenuCubit extends Cubit<MenuState> {
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
       (r) {
-        getPartnerTypes();
+        getPartnerData();
       },
     );
   }
@@ -148,7 +138,7 @@ class MenuCubit extends Cubit<MenuState> {
         emit(DeleteError(error: l));
       },
       (r) {
-        getPartnerTypes();
+        getPartnerData();
       },
     );
   }
@@ -278,5 +268,34 @@ class MenuCubit extends Cubit<MenuState> {
         getReasons();
       },
     );
+  }
+
+  Future<void> getPartnerData() async {
+    emit(MenuLoading());
+
+    final partnersResult = await getPartnersUsecase();
+    final typesResult = await getPartnerTypesUsecase();
+
+    if (partnersResult.isLeft()) {
+      partnersResult.fold((l) => emit(MenuError(message: l.message)), (_) {});
+      return;
+    }
+
+    if (typesResult.isLeft()) {
+      typesResult.fold((l) => emit(MenuError(message: l.message)), (_) {});
+      return;
+    }
+
+    final partners =
+        (partnersResult.getOrElse(() => []) as List)
+            .map((e) => PartnersModel.fromMap(e))
+            .toList();
+
+    final types =
+        (typesResult.getOrElse(() => []) as List)
+            .map((e) => PartnerTypesModel.fromMap(e))
+            .toList();
+
+    emit(MenuPartnerDataSuccess(partners: partners, partnerTypes: types));
   }
 }

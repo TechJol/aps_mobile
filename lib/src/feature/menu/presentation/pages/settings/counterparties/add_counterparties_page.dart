@@ -25,7 +25,7 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
     nameController.addListener(checkFormValidity);
     contactInfoController.addListener(checkFormValidity);
 
-    context.read<MenuCubit>().getPartnerTypes(); // Запрашиваем типы
+    context.read<MenuCubit>().getPartnerData(); // Запрашиваем типы
   }
 
   @override
@@ -56,7 +56,7 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
       ),
       body: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {
-          if (state is MenuPartnerSuccess) {
+          if (state is MenuPartnerDataSuccess) {
             Navigator.pop(context);
           }
           if (state is MenuError) {
