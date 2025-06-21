@@ -130,6 +130,7 @@ class MenuCubit extends Cubit<MenuState> {
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
       (r) {
+        emit(PartnerUpdated()); // <- добавить это
         getPartnerData();
       },
     );

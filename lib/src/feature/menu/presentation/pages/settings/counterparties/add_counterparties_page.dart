@@ -25,7 +25,7 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
     nameController.addListener(checkFormValidity);
     contactInfoController.addListener(checkFormValidity);
 
-    context.read<MenuCubit>().getPartnerData(); // Запрашиваем типы
+    context.read<MenuCubit>().getPartnerData();
   }
 
   @override
@@ -56,7 +56,7 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
       ),
       body: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {
-          if (state is MenuPartnerDataSuccess) {
+          if (state is PartnerUpdated) {
             Navigator.pop(context);
           }
           if (state is MenuError) {
@@ -86,8 +86,8 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
                   12.h,
                   BlocBuilder<MenuCubit, MenuState>(
                     builder: (context, state) {
-                      if (state is MenuPartnerTypesSuccess) {
-                        final types = state.types;
+                      if (state is MenuPartnerDataSuccess) {
+                        final types = state.partnerTypes ?? [];
 
                         return DropDownFormField(
                           label: 'Тип',
