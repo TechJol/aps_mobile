@@ -13,7 +13,7 @@ class ForCounterpartiesPage extends StatefulWidget {
 class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
   int currentPage = 1;
   final int rowsPerPage = 10;
-  int activeType = 1;
+  int? activeType;
 
   void goToPage(int page, int pageCount) {
     if (page >= 1 && page <= pageCount) {
@@ -46,12 +46,61 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
             return Center(child: Text('Ошибка: ${state.message}'));
           }
           if (state is MenuPartnerDataSuccess) {
-            final partners =
-                state.partners!.where((e) => e.type == activeType).toList();
-            if (partners.isEmpty) {
-              return const Center(child: Text('Нет контрагентов'));
+            final partners = state.partners ?? [];
+            final partnerTypes = state.partnerTypes ?? [];
+
+            if (partnerTypes.isEmpty) {
+              return const Center(child: Text('Нет доступных категорий'));
             }
-            return _buildTableWithPagination(partners);
+
+            // Если тип не выбран — выбираем первый
+            if (activeType == null ||
+                !partnerTypes.any((e) => e.id == activeType)) {
+              activeType = partnerTypes.first.id!;
+            }
+
+            final filteredPartners =
+                partners.where((e) => e.type == activeType).toList();
+
+            return Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  // Всегда показываем кнопки категорий
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children:
+                          partnerTypes.map((type) {
+                            return categoryButton(
+                              label: type.name,
+                              isActive: activeType == type.id,
+                              onTap: () {
+                                setState(() {
+                                  activeType = type.id!;
+                                  currentPage = 1;
+                                });
+                              },
+                            );
+                          }).toList(),
+                    ),
+                  ),
+                  20.h,
+                  // Если нет контрагентов — заглушка
+                  filteredPartners.isEmpty
+                      ? const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 60),
+                        child: Center(
+                          child: Text('Нет контрагентов в этой категории'),
+                        ),
+                      )
+                      : _buildTableWithPagination(
+                        filteredPartners,
+                        partnerTypes,
+                      ),
+                ],
+              ),
+            );
           }
           return const SizedBox.shrink();
         },
@@ -59,52 +108,19 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
     );
   }
 
-  Padding _buildTableWithPagination(List<PartnersModel> data) {
+  Padding _buildTableWithPagination(
+    List<PartnersModel> data,
+    List<PartnerTypesModel> types,
+  ) {
     final pageCount = (data.length / rowsPerPage).ceil();
     final start = (currentPage - 1) * rowsPerPage;
     final end = (start + rowsPerPage).clamp(0, data.length);
     final paginatedData = data.sublist(start, end);
+
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.only(top: 12),
       child: Column(
         children: [
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                categoryButton(
-                  label: 'Клиент aps',
-                  isActive: activeType == 1,
-                  onTap:
-                      () => setState(() {
-                        activeType = 1;
-                        currentPage = 1;
-                      }),
-                ),
-                8.w,
-                categoryButton(
-                  label: 'Поставщик aps',
-                  isActive: activeType == 2,
-                  onTap:
-                      () => setState(() {
-                        activeType = 2;
-                        currentPage = 1;
-                      }),
-                ),
-                8.w,
-                categoryButton(
-                  label: 'Сотрудник aps',
-                  isActive: activeType == 3,
-                  onTap:
-                      () => setState(() {
-                        activeType = 3;
-                        currentPage = 1;
-                      }),
-                ),
-              ],
-            ),
-          ),
-          20.h,
           DataTable(
             headingRowColor: WidgetStateProperty.all(
               AppColors.primaryColorLight,
@@ -127,7 +143,9 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
                     cells: [
                       DataCell(Text(tx.id.toString())),
                       DataCell(Text(tx.name)),
-                      DataCell(Text('1000')),
+                      DataCell(
+                        Text('-'),
+                      ), // Заменить на реальный баланс, если есть
                       DataCell(Text(tx.contactInfo ?? '')),
                     ],
                   );
@@ -145,16 +163,23 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
     required bool isActive,
     required VoidCallback onTap,
   }) {
-    return OutlinedButton(
-      style: OutlinedButton.styleFrom(
-        backgroundColor: isActive ? Colors.black : Colors.white,
-        foregroundColor: isActive ? Colors.white : Colors.black,
-        side: BorderSide(color: isActive ? Colors.black : Colors.grey.shade300),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          backgroundColor: isActive ? Colors.black : Colors.white,
+          foregroundColor: isActive ? Colors.white : Colors.black,
+          side: BorderSide(
+            color: isActive ? Colors.black : Colors.grey.shade300,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        ),
+        onPressed: onTap,
+        child: Text(label),
       ),
-      onPressed: onTap,
-      child: Text(label),
     );
   }
 
