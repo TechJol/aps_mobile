@@ -1,11 +1,8 @@
-import 'dart:developer';
-
 import 'package:aps_mobile/injection_container.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
   RemoteIncomeDataSourceImpl({required this.dio});
@@ -14,11 +11,8 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
 
   @override
   Future<Either> addIncomeExpense(IncomeAndComeoutModel income) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
     final accessToken = await AuthTokenStorage().getAccessToken();
-    var companyId = storage.getInt('companyId');
 
-    log(companyId.toString());
     try {
       final response = await sl<DioClient>().post(
         AppApi.transactions,
@@ -30,17 +24,21 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
             'X-CSRFTOKEN': 'fi0b25V9IEeulV5AoTdUL3JSAaP4YZDP',
           },
         ),
-        data: income.toJson()..['company'] = companyId,
+        data: income.toJson(),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Right(response.data);
       } else {
         throw Exception(
-          'Failed to post income. Status code: ${response.statusCode}',
+          'Failed to get transactions. Status code: ${response.statusCode}',
         );
       }
     } catch (e) {
+      // Обработка ошибки 401 (неверный или истёкший токен)
+      if (e is DioException && e.response?.statusCode == 401) {
+        return await AuthError(dio: dio).handleUnauthorized();
+      }
       return Left(Exception('Something went wrong: ${e.toString()}'));
     }
   }
@@ -65,10 +63,14 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
         return Right(response.data);
       } else {
         throw Exception(
-          'Failed to get account. Status code: ${response.statusCode}',
+          'Failed to get transactions. Status code: ${response.statusCode}',
         );
       }
     } catch (e) {
+      // Обработка ошибки 401 (неверный или истёкший токен)
+      if (e is DioException && e.response?.statusCode == 401) {
+        return await AuthError(dio: dio).handleUnauthorized();
+      }
       return Left(Exception('Something went wrong: ${e.toString()}'));
     }
   }
@@ -93,10 +95,14 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
         return Right(response.data);
       } else {
         throw Exception(
-          'Failed to get account. Status code: ${response.statusCode}',
+          'Failed to get transactions. Status code: ${response.statusCode}',
         );
       }
     } catch (e) {
+      // Обработка ошибки 401 (неверный или истёкший токен)
+      if (e is DioException && e.response?.statusCode == 401) {
+        return await AuthError(dio: dio).handleUnauthorized();
+      }
       return Left(Exception('Something went wrong: ${e.toString()}'));
     }
   }

@@ -270,8 +270,6 @@ class IncomePage {
                                     description: descriptionController.text,
                                     kgsCurrencyAmount: "1",
                                     incomeExpenseReason: selectedReasonId!,
-                                    partner: 1,
-                                    partners: 1,
                                   );
                                   context.read<IncomeCubit>().addIncome(income);
                                 },

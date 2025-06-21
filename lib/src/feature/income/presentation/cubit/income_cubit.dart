@@ -1,6 +1,7 @@
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:aps_mobile/src/feature/income/presentation/cubit/income_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class IncomeCubit extends Cubit<IncomeState> {
   IncomeCubit({
@@ -14,8 +15,22 @@ class IncomeCubit extends Cubit<IncomeState> {
   final GetIncomeExpenseReasonUsecase getIncomeExpenseReasonUsecase;
 
   Future<void> addIncome(IncomeAndComeoutModel income) async {
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    var companyId = storage.getInt('companyId');
+
+    final inc = IncomeAndComeoutModel(
+      account: income.account,
+      amount: income.amount,
+      date: income.date,
+      currency: income.currency,
+      company: companyId,
+      transactionType: income.transactionType,
+      description: income.description,
+      kgsCurrencyAmount: income.kgsCurrencyAmount,
+      incomeExpenseReason: income.incomeExpenseReason,
+    );
     emit(state.copyWith(isLoading: true, incomeSaved: false, error: null));
-    final result = await addIncomeUsecase(income);
+    final result = await addIncomeUsecase(inc);
     result.fold(
       (l) => emit(state.copyWith(isLoading: false, error: l.message)),
       (r) => emit(state.copyWith(isLoading: false, incomeSaved: true)),
