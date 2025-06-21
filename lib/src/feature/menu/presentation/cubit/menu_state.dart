@@ -81,3 +81,18 @@ final class MenuReasonsSuccess extends MenuState {
 }
 
 final class PartnerUpdated extends MenuState {}
+
+final class MenuTransactionsWithAccountsSuccess extends MenuState {
+  final List<AllTransactionsModel> transactions;
+  final List<AccountModel> accounts;
+  final List<IncomeExpenseReasons> reasons;
+
+  const MenuTransactionsWithAccountsSuccess({
+    required this.transactions,
+    required this.accounts,
+    required this.reasons,
+  });
+
+  @override
+  List<Object> get props => [transactions, accounts, reasons];
+}

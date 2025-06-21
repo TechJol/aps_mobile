@@ -22,7 +22,8 @@ class _TransactionsPageState extends State<TransactionsPage> {
   void initState() {
     super.initState();
     // загружаем реальные данные
-    context.read<MenuCubit>().getTransactions();
+    // context.read<MenuCubit>().getTransactions();
+    context.read<MenuCubit>().getTransactionsWithAccounts();
   }
 
   /// перейти на страницу [page]
@@ -50,13 +51,17 @@ class _TransactionsPageState extends State<TransactionsPage> {
           if (state is MenuError) {
             return Center(child: Text('Ошибка: ${state.message}'));
           }
-          if (state is MenuSuccess) {
+          if (state is MenuTransactionsWithAccountsSuccess) {
             final transactions = state.transactions;
+            final accounts = state.accounts;
+            final reasons = state.reasons;
+
             if (transactions.isEmpty) {
               return const Center(child: Text('Нет транзакций'));
             }
-            return _buildTableWithPagination(transactions);
+            return _buildTableWithPagination(transactions, accounts, reasons);
           }
+
           // MenuInitial
           return const SizedBox.shrink();
         },
@@ -65,7 +70,39 @@ class _TransactionsPageState extends State<TransactionsPage> {
   }
 
   /// Таблица + пагинация
-  Widget _buildTableWithPagination(List<AllTransactionsModel> data) {
+  Widget _buildTableWithPagination(
+    List<AllTransactionsModel> data,
+    List<AccountModel> accounts,
+    List<IncomeExpenseReasons> reasons,
+  ) {
+    String getAccountName(int id) {
+      return accounts
+          .firstWhere(
+            (acc) => acc.id == id,
+            orElse:
+                () => AccountModel(
+                  name: 'Неизвестно',
+                  accountType: '',
+                  company: 0,
+                ),
+          )
+          .name;
+    }
+
+    String getReasonName(int id) {
+      return reasons
+          .firstWhere(
+            (reason) => reason.id == id,
+            orElse:
+                () => IncomeExpenseReasons(
+                  name: 'Неизвестно',
+                  type: '',
+                  company: 0,
+                ),
+          )
+          .name;
+    }
+
     final start = (currentPage - 1) * rowsPerPage;
     final end = (start + rowsPerPage).clamp(0, data.length);
     final paginatedData = data.sublist(start, end);
@@ -126,8 +163,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
                           ),
                         ),
                         DataCell(Text(tx.transactionType ?? '')),
-                        DataCell(Text('${tx.account}')),
-                        DataCell(Text('${tx.incomeExpenseReason}')),
+                        DataCell(Text(getAccountName(tx.account ?? 0))),
+                        DataCell(
+                          Text(getReasonName(tx.incomeExpenseReason ?? 0)),
+                        ),
                         DataCell(Text('${tx.partners}')),
                         DataCell(Text('${tx.description}')),
                       ],

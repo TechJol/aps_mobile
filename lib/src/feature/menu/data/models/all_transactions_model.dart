@@ -33,14 +33,14 @@ class AllTransactionsModel {
       'currency': currency,
       'date': date,
       'amount': amount,
-      'kgsCurrencyAmount': kgsCurrencyAmount,
-      'transactionType': transactionType,
+      'kgs_currency_amount': kgsCurrencyAmount,
+      'transaction_type': transactionType,
       'description': description,
       'company': company,
       'account': account,
       'partner': partner,
       'partners': partners,
-      'incomeExpenseReason': incomeExpenseReason,
+      'income_expense_reason': incomeExpenseReason,
     };
   }
 
@@ -51,12 +51,12 @@ class AllTransactionsModel {
       date: map['date'] != null ? map['date'] as String : null,
       amount: map['amount'] != null ? map['amount'] as String : null,
       kgsCurrencyAmount:
-          map['kgsCurrencyAmount'] != null
-              ? map['kgsCurrencyAmount'] as String
+          map['kgs_currency_amount'] != null
+              ? map['kgs_currency_amount'] as String
               : null,
       transactionType:
-          map['transactionType'] != null
-              ? map['transactionType'] as String
+          map['transaction_type'] != null
+              ? map['transaction_type'] as String
               : null,
       description:
           map['description'] != null ? map['description'] as String : null,
@@ -65,8 +65,8 @@ class AllTransactionsModel {
       partner: map['partner'] != null ? map['partner'] as int : null,
       partners: map['partners'] != null ? map['partners'] as int : null,
       incomeExpenseReason:
-          map['incomeExpenseReason'] != null
-              ? map['incomeExpenseReason'] as int
+          map['income_expense_reason'] != null
+              ? map['income_expense_reason'] as int
               : null,
     );
   }

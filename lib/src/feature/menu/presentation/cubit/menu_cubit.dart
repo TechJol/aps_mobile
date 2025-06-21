@@ -44,15 +44,64 @@ class MenuCubit extends Cubit<MenuState> {
     required this.deleteReasonUsecase,
   }) : super(MenuInitial());
 
-  Future<void> getTransactions() async {
+  Future<void> getTransactionsWithAccounts() async {
     emit(MenuLoading());
-    final result = await getTransactionsUsecase();
-    result.fold((l) => emit(MenuError(message: l.message)), (r) {
-      final transactions =
-          (r as List).map((e) => AllTransactionsModel.fromMap(e)).toList();
-      emit(MenuSuccess(transactions: transactions));
-    });
+
+    final transactionsResult = await getTransactionsUsecase();
+    final accountsResult = await getAccountsUsecase();
+    final reasonsResult = await getReasonsUsecase();
+
+    if (transactionsResult.isLeft()) {
+      transactionsResult.fold(
+        (l) => emit(MenuError(message: l.message)),
+        (_) {},
+      );
+      return;
+    }
+
+    if (accountsResult.isLeft()) {
+      accountsResult.fold((l) => emit(MenuError(message: l.message)), (_) {});
+      return;
+    }
+
+    if (reasonsResult.isLeft()) {
+      reasonsResult.fold((l) => emit(MenuError(message: l.message)), (_) {});
+      return;
+    }
+
+    final transactions =
+        (transactionsResult.getOrElse(() => []) as List)
+            .map((e) => AllTransactionsModel.fromMap(e))
+            .toList();
+
+    final accounts =
+        (accountsResult.getOrElse(() => []) as List)
+            .map((e) => AccountModel.fromMap(e))
+            .toList();
+
+    final reasons =
+        (reasonsResult.getOrElse(() => []) as List)
+            .map((e) => IncomeExpenseReasons.fromMap(e))
+            .toList();
+
+    emit(
+      MenuTransactionsWithAccountsSuccess(
+        transactions: transactions,
+        accounts: accounts,
+        reasons: reasons,
+      ),
+    );
   }
+
+  // Future<void> getTransactions() async {
+  //   emit(MenuLoading());
+  //   final result = await getTransactionsUsecase();
+  //   result.fold((l) => emit(MenuError(message: l.message)), (r) {
+  //     final transactions =
+  //         (r as List).map((e) => AllTransactionsModel.fromMap(e)).toList();
+  //     emit(MenuSuccess(transactions: transactions));
+  //   });
+  // }
 
   Future<void> deletePartner(int id) async {
     final result = await deletePartnerUsecase.call(id);
