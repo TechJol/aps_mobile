@@ -54,16 +54,6 @@ class MenuCubit extends Cubit<MenuState> {
     });
   }
 
-  // Future<void> getPartners() async {
-  //   emit(MenuLoading());
-  //   final result = await getPartnersUsecase();
-  //   result.fold((l) => emit(MenuError(message: l.message)), (r) {
-  //     final partners =
-  //         (r as List).map((e) => PartnersModel.fromMap(e)).toList();
-  //     emit(MenuPartnerSuccess(partners: partners));
-  //   });
-  // }
-
   Future<void> deletePartner(int id) async {
     final result = await deletePartnerUsecase.call(id);
 
