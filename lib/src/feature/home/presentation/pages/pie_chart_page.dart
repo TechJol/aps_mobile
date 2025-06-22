@@ -195,94 +195,94 @@ class _HomePageState extends State<HomePage> {
         BlocBuilder<MenuCubit, MenuState>(
           builder: (context, state) {
             if (state is MenuTransactionsWithAccountsSuccess) {
-              final txList = [...state.transactions];
-
-              // Сортировка по убыванию даты
-              txList.sort((a, b) {
-                final aDate = DateTime.tryParse(a.date ?? '') ?? DateTime.now();
-                final bDate = DateTime.tryParse(b.date ?? '') ?? DateTime.now();
-                return bDate.compareTo(aDate);
-              });
-
-              final recentTx = txList.take(3).toList();
+              final txList = state.transactions.take(3).toList();
               final partners = state.partners;
 
               return Column(
-                children:
-                    recentTx.map((tx) {
-                      final isIncome = tx.transactionType == 'income';
-                      final amountText = '${tx.amount} с';
+                children: List.generate(txList.length, (index) {
+                  final tx = txList[index];
+                  final isIncome = tx.transactionType == 'income';
+                  final amountText = '${tx.amount} с';
 
-                      final DateTime date =
-                          DateTime.tryParse(tx.date ?? '') ?? DateTime.now();
-                      final formattedDate =
-                          '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year} - ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
+                  final DateTime date =
+                      DateTime.tryParse(tx.date ?? '') ?? DateTime.now();
+                  final formattedDate =
+                      '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year} - ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
 
-                      final partnerName =
-                          partners
-                              .firstWhere(
-                                (p) => p.id == tx.partners,
-                                orElse: () => PartnersModel(name: 'Неизвестно'),
-                              )
-                              .name;
+                  final partnerName =
+                      partners
+                          .firstWhere(
+                            (p) => p.id == tx.partners,
+                            orElse: () => PartnersModel(name: 'Неизвестно'),
+                          )
+                          .name;
 
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color:
-                                    isIncome
-                                        ? const Color(0xFFDFF7E2)
-                                        : const Color(0xFFF9DCDC),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                isIncome
-                                    ? Icons.call_received
-                                    : Icons.north_west,
-                                color:
-                                    isIncome
-                                        ? const Color(0xFF56BC60)
-                                        : const Color(0xFFE85445),
-                                size: 20,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    partnerName,
-                                    style: AppTextStyles.f14w500,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    formattedDate,
-                                    style: AppTextStyles.f12w400.copyWith(
-                                      color: AppColors.smallTextGreyColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              '${isIncome ? '' : '-'}$amountText',
-                              style: AppTextStyles.f16w600.copyWith(
-                                color:
-                                    isIncome
-                                        ? const Color(0xFF56BC60)
-                                        : const Color(0xFFE85445),
-                              ),
-                            ),
-                          ],
-                        ),
+                  return TweenAnimationBuilder(
+                    duration: Duration(milliseconds: 400 + index * 100),
+                    tween: Tween<Offset>(
+                      begin: Offset(0, 0.2),
+                      end: Offset.zero,
+                    ),
+                    curve: Curves.easeOut,
+                    builder: (context, Offset offset, child) {
+                      return Transform.translate(
+                        offset: offset * 30,
+                        child: Opacity(opacity: 1.0 - offset.dy, child: child),
                       );
-                    }).toList(),
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color:
+                                  isIncome
+                                      ? const Color(0xFFDFF7E2)
+                                      : const Color(0xFFF9DCDC),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              isIncome ? Icons.call_received : Icons.north_west,
+                              color:
+                                  isIncome
+                                      ? const Color(0xFF56BC60)
+                                      : const Color(0xFFE85445),
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(partnerName, style: AppTextStyles.f14w500),
+                                const SizedBox(height: 4),
+                                Text(
+                                  formattedDate,
+                                  style: AppTextStyles.f12w400.copyWith(
+                                    color: AppColors.smallTextGreyColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text(
+                            '${isIncome ? '' : '-'}$amountText',
+                            style: AppTextStyles.f16w600.copyWith(
+                              color:
+                                  isIncome
+                                      ? const Color(0xFF56BC60)
+                                      : const Color(0xFFE85445),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
               );
             }
 

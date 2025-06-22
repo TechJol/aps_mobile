@@ -11,11 +11,24 @@ class OperationPage extends StatefulWidget {
   State<OperationPage> createState() => _OperationPageState();
 }
 
-class _OperationPageState extends State<OperationPage> {
+class _OperationPageState extends State<OperationPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
   @override
   void initState() {
     context.read<MenuCubit>().getTransactionsWithAccounts();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -23,7 +36,7 @@ class _OperationPageState extends State<OperationPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
-        backgroundColor: Color(0xFFF3F4F7),
+        backgroundColor: const Color(0xFFF3F4F7),
         title: const Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.0),
           child: Text('Привет, Aяна', style: AppTextStyles.f24w600),
@@ -110,6 +123,7 @@ class _OperationPageState extends State<OperationPage> {
                 }
 
                 final grouped = _groupTransactionsByDate(transactions);
+                _controller.forward();
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -118,19 +132,24 @@ class _OperationPageState extends State<OperationPage> {
                     children: [
                       Text('Операции', style: AppTextStyles.f20w600),
                       12.h,
-                      ...grouped.entries.map((entry) {
+                      ...grouped.entries.expand((entry) {
                         final dailyTxs = entry.value;
-
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Дата удалена по твоему запросу
-                            ...dailyTxs.map(
-                              (tx) => _buildTransactionItem(tx, state.partners),
+                        return List.generate(dailyTxs.length, (index) {
+                          return FadeTransition(
+                            opacity: CurvedAnimation(
+                              parent: _controller,
+                              curve: Interval(
+                                index * 0.1,
+                                1.0,
+                                curve: Curves.easeOut,
+                              ),
                             ),
-                            12.h,
-                          ],
-                        );
+                            child: _buildTransactionItem(
+                              dailyTxs[index],
+                              state.partners,
+                            ),
+                          );
+                        });
                       }).toList(),
                     ],
                   ),
@@ -155,7 +174,7 @@ class _OperationPageState extends State<OperationPage> {
     transactions.sort((a, b) {
       final aDate = DateTime.tryParse(a.date ?? '') ?? DateTime.now();
       final bDate = DateTime.tryParse(b.date ?? '') ?? DateTime.now();
-      return bDate.compareTo(aDate); // Сортировка по убыванию
+      return bDate.compareTo(aDate);
     });
 
     Map<String, List<AllTransactionsModel>> grouped = {};
@@ -177,7 +196,6 @@ class _OperationPageState extends State<OperationPage> {
     List<PartnersModel> partners,
   ) {
     final bool isIncome = tx.transactionType == 'income';
-
     final DateTime date = DateTime.tryParse(tx.date ?? '') ?? DateTime.now();
     final formattedDate =
         '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year} - ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
