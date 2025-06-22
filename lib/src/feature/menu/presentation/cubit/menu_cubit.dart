@@ -50,6 +50,7 @@ class MenuCubit extends Cubit<MenuState> {
     final transactionsResult = await getTransactionsUsecase();
     final accountsResult = await getAccountsUsecase();
     final reasonsResult = await getReasonsUsecase();
+    final partnersResult = await getPartnersUsecase();
 
     if (transactionsResult.isLeft()) {
       transactionsResult.fold(
@@ -84,11 +85,22 @@ class MenuCubit extends Cubit<MenuState> {
             .map((e) => IncomeExpenseReasons.fromMap(e))
             .toList();
 
+    if (partnersResult.isLeft()) {
+      partnersResult.fold((l) => emit(MenuError(message: l.message)), (_) {});
+      return;
+    }
+
+    final partners =
+        (partnersResult.getOrElse(() => []) as List)
+            .map((e) => PartnersModel.fromMap(e))
+            .toList();
+
     emit(
       MenuTransactionsWithAccountsSuccess(
         transactions: transactions,
         accounts: accounts,
         reasons: reasons,
+        partners: partners,
       ),
     );
   }

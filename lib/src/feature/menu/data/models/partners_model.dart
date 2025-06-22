@@ -2,16 +2,16 @@ class PartnersModel {
   PartnersModel({
     this.id,
     required this.name,
-    required this.contactInfo,
+    this.contactInfo,
     this.company,
-    required this.type,
+    this.type,
   });
 
   final int? id;
   final String name;
   final String? contactInfo;
   final int? company;
-  final int type;
+  final int? type;
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{

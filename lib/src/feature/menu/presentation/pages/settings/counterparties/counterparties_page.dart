@@ -170,7 +170,7 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                             ),
                             DataCell(
                               Text(
-                                getTypeName(partner.type),
+                                getTypeName(partner.type ?? 0),
                                 style: AppTextStyles.f16w500,
                               ),
                             ),

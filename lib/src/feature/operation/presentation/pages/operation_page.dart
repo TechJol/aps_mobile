@@ -1,40 +1,25 @@
 import 'package:aps_mobile/src/core/core.dart';
+import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
-class OperationPage extends StatelessWidget {
+class OperationPage extends StatefulWidget {
   const OperationPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> operations = const [
-      {
-        'title': 'ОсОО Кашгар',
-        'datetime': '29.05.2025 - 13:13',
-        'amount': -1200,
-        'isIncome': false,
-      },
-      {
-        'title': 'ОсОО Кашгар',
-        'datetime': '29.05.2025 - 13:13',
-        'amount': 1200,
-        'isIncome': true,
-      },
-      {
-        'title': 'ОсОО Кашгар',
-        'datetime': '29.05.2025 - 13:13',
-        'amount': 1200,
-        'isIncome': true,
-      },
-      {
-        'title': 'ОсОО Кашгар',
-        'datetime': '29.05.2025 - 13:13',
-        'amount': -1200,
-        'isIncome': false,
-      },
-      // Добавь остальные операции сюда
-    ];
+  State<OperationPage> createState() => _OperationPageState();
+}
 
+class _OperationPageState extends State<OperationPage> {
+  @override
+  void initState() {
+    context.read<MenuCubit>().getTransactionsWithAccounts();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
@@ -114,51 +99,90 @@ class OperationPage extends StatelessWidget {
             ),
           ),
           30.h,
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Операции', style: AppTextStyles.f20w600),
-                12.h,
-                Row(
-                  children: [
-                    Text(
-                      'Сегодня',
-                      style: AppTextStyles.f14w500.copyWith(
-                        color: AppColors.smallTextGreyColor,
+          BlocBuilder<MenuCubit, MenuState>(
+            builder: (context, state) {
+              if (state is MenuLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (state is MenuTransactionsWithAccountsSuccess) {
+                final transactions = state.transactions;
+
+                if (transactions.isEmpty) {
+                  return const Center(child: Text('Нет операций'));
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Операции', style: AppTextStyles.f20w600),
+                      12.h,
+                      Row(
+                        children: [
+                          Text(
+                            'Сегодня',
+                            style: AppTextStyles.f14w500.copyWith(
+                              color: AppColors.smallTextGreyColor,
+                            ),
+                          ),
+                          8.w,
+                          Expanded(
+                            child: Divider(
+                              thickness: 0.3,
+                              color: AppColors.smallTextGreyColor,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    8.w,
-                    Expanded(
-                      child: Divider(
-                        thickness: 0.3,
-                        color: AppColors.smallTextGreyColor,
+                      12.h,
+                      ...transactions.map(
+                        (tx) => _buildTransactionItem(tx, state.partners),
                       ),
-                    ),
-                  ],
-                ),
-                12.h,
-                ...operations.map((op) => _buildOperationItem(op)),
-              ],
-            ),
+                    ],
+                  ),
+                );
+              }
+
+              if (state is MenuError) {
+                return Center(child: Text('Ошибка: ${state.message}'));
+              }
+
+              return const SizedBox.shrink();
+            },
           ),
         ],
       ),
     );
   }
 
-  Widget _buildOperationItem(Map<String, dynamic> operation) {
-    final bool isIncome = operation['isIncome'] ?? false;
-    final Color bgColor =
-        isIncome ? const Color(0xFFDFF7E2) : const Color(0xFFF9DCDC);
-    final Color arrowColor =
-        isIncome ? const Color(0xFF56BC60) : const Color(0xFFE85445);
+  Widget _buildTransactionItem(
+    AllTransactionsModel tx,
+    List<PartnersModel> partners,
+  ) {
+    final bool isIncome = tx.transactionType == 'income';
+
+    final DateTime date = DateTime.tryParse(tx.date ?? '') ?? DateTime.now();
+    final formattedDate =
+        '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year} - ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
+
+    final String amount = tx.amount ?? '';
+    final String amountText = '$amount с';
+
+    final Color bgColor = isIncome ? Color(0xFFDFF7E2) : Color(0xFFF9DCDC);
+    final Color arrowColor = isIncome ? Color(0xFF56BC60) : Color(0xFFE85445);
     final IconData arrowIcon =
         isIncome ? Icons.call_received : Icons.north_west;
-    final int amount = operation['amount'] ?? 0;
-    final String amountText = '${amount.abs()} с';
+
+    // Найти имя партнёра по partnerId
+    final partnerName =
+        partners
+            .firstWhere(
+              (p) => p.id == tx.partners,
+              orElse: () => PartnersModel(name: 'Неизвестно'),
+            )
+            .name;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -175,10 +199,10 @@ class OperationPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(operation['title'] ?? '', style: AppTextStyles.f14w500),
+                Text(partnerName, style: AppTextStyles.f14w500),
                 4.h,
                 Text(
-                  operation['datetime'] ?? '',
+                  formattedDate,
                   style: AppTextStyles.f12w400.copyWith(
                     color: AppColors.smallTextGreyColor,
                   ),
@@ -189,8 +213,7 @@ class OperationPage extends StatelessWidget {
           Text(
             '${isIncome ? '' : '-'}$amountText',
             style: AppTextStyles.f16w600.copyWith(
-              color:
-                  isIncome ? const Color(0xFF56BC60) : const Color(0xFFE85445),
+              color: isIncome ? Color(0xFF56BC60) : Color(0xFFE85445),
             ),
           ),
         ],
