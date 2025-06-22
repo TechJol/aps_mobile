@@ -1,59 +1,41 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:aps_mobile/src/core/core.dart';
+import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   int selectedIndex = 0;
-  String selectedView = 'Spending';
+  String selectedView = 'Общий';
   String selectedPeriod = 'Аналитика';
 
   final viewOptions = ['Расходы', 'Доходы', 'Общий'];
-
   final periodOptions = ['День', 'Неделя', 'Месяц', 'Год'];
+
+  @override
+  void initState() {
+    context.read<MenuCubit>().getTransactionsWithAccounts();
+    super.initState();
+  }
 
   void updateState<T>(T value, void Function(T) updater) =>
       setState(() => updater(value));
-
-  final List<Map<String, dynamic>> operations = const [
-    {
-      'title': 'ОсОО Кашгар',
-      'datetime': '29.05.2025 - 13:13',
-      'amount': -1200,
-      'isIncome': false,
-    },
-    {
-      'title': 'ОсОО Кашгар',
-      'datetime': '29.05.2025 - 13:13',
-      'amount': 1200,
-      'isIncome': true,
-    },
-    {
-      'title': 'ОсОО Кашгар',
-      'datetime': '29.05.2025 - 13:13',
-      'amount': 1200,
-      'isIncome': true,
-    },
-
-    // Добавь остальные операции сюда
-  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
-        backgroundColor: Color(0xFFF3F4F7),
-        title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: const Text('Привет, Aяна', style: AppTextStyles.f24w600),
+        backgroundColor: const Color(0xFFF3F4F7),
+        title: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.0),
+          child: Text('Привет, Aяна', style: AppTextStyles.f24w600),
         ),
         centerTitle: false,
         actions: [
@@ -76,126 +58,35 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-
-      body: Column(
+      body: ListView(
         children: [
-          Container(
-            padding: EdgeInsets.all(20),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Color(0xFFF3F4F7),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
-            ),
-            child: Column(
-              children: [
-                _buildTopSection(),
-                const SizedBox(height: 15),
-                _buildOperationFilters(),
-              ],
-            ),
-          ),
-          30.h,
+          _buildHeader(),
+          const SizedBox(height: 30),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Операции', style: AppTextStyles.f20w600),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'смотреть все',
-                          style: AppTextStyles.f14w500.copyWith(
-                            color: AppColors.smallTextGreyColor,
-                          ),
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 12,
-                          color: AppColors.smallTextGreyColor,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                12.h,
-                Row(
-                  children: [
-                    Text(
-                      'Сегодня',
-                      style: AppTextStyles.f14w500.copyWith(
-                        color: AppColors.smallTextGreyColor,
-                      ),
-                    ),
-                    8.w,
-                    Expanded(
-                      child: Divider(
-                        thickness: 0.3,
-                        color: AppColors.smallTextGreyColor,
-                      ),
-                    ),
-                  ],
-                ),
-                12.h,
-                ...operations.map((op) => _buildOperationItem(op)),
-              ],
-            ),
+            child: _buildRecentOperationsSection(),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildOperationItem(Map<String, dynamic> operation) {
-    final bool isIncome = operation['isIncome'] ?? false;
-    final Color bgColor =
-        isIncome ? const Color(0xFFDFF7E2) : const Color(0xFFF9DCDC);
-    final Color arrowColor =
-        isIncome ? const Color(0xFF56BC60) : const Color(0xFFE85445);
-    final IconData arrowIcon =
-        isIncome ? Icons.call_received : Icons.north_west;
-    final int amount = operation['amount'] ?? 0;
-    final String amountText = '${amount.abs()} с';
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
+  Widget _buildHeader() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        color: Color(0xFFF3F4F7),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20),
+        ),
+      ),
+      child: Column(
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
-            child: Icon(arrowIcon, color: arrowColor, size: 20),
-          ),
-          12.w,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(operation['title'] ?? '', style: AppTextStyles.f14w500),
-                4.h,
-                Text(
-                  operation['datetime'] ?? '',
-                  style: AppTextStyles.f12w400.copyWith(
-                    color: AppColors.smallTextGreyColor,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Text(
-            '${isIncome ? '' : '-'}$amountText',
-            style: AppTextStyles.f16w600.copyWith(
-              color:
-                  isIncome ? const Color(0xFF56BC60) : const Color(0xFFE85445),
-            ),
-          ),
+          _buildTopSection(),
+          const SizedBox(height: 15),
+          _buildOperationFilters(),
         ],
       ),
     );
@@ -216,7 +107,7 @@ class _HomePageState extends State<HomePage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _circleIcon(Icons.arrow_back_ios_rounded, Offset(-22, 70)),
+              _circleIcon(Icons.arrow_back_ios_rounded, const Offset(-22, 70)),
               Transform.translate(
                 offset: const Offset(-130, -13),
                 child: Text(
@@ -228,7 +119,10 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              _circleIcon(Icons.arrow_forward_ios_rounded, Offset(22, 70)),
+              _circleIcon(
+                Icons.arrow_forward_ios_rounded,
+                const Offset(22, 70),
+              ),
             ],
           ),
           Row(
@@ -254,17 +148,158 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _circleIcon(IconData icon, Offset offset) => Transform.translate(
-    offset: offset,
-    child: Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.grey.shade200,
-      ),
-      padding: const EdgeInsets.all(5),
-      child: Icon(icon, size: 20),
-    ),
-  );
+  Widget _buildRecentOperationsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text('Операции', style: AppTextStyles.f20w600),
+            Row(
+              children: [
+                Text(
+                  'смотреть все',
+                  style: AppTextStyles.f14w500.copyWith(
+                    color: AppColors.smallTextGreyColor,
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 12,
+                  color: AppColors.smallTextGreyColor,
+                ),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Text(
+              'Сегодня',
+              style: AppTextStyles.f14w500.copyWith(
+                color: AppColors.smallTextGreyColor,
+              ),
+            ),
+            const SizedBox(width: 8),
+            const Expanded(
+              child: Divider(
+                thickness: 0.3,
+                color: AppColors.smallTextGreyColor,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        BlocBuilder<MenuCubit, MenuState>(
+          builder: (context, state) {
+            if (state is MenuTransactionsWithAccountsSuccess) {
+              final txList = [...state.transactions];
+
+              // Сортировка по убыванию даты
+              txList.sort((a, b) {
+                final aDate = DateTime.tryParse(a.date ?? '') ?? DateTime.now();
+                final bDate = DateTime.tryParse(b.date ?? '') ?? DateTime.now();
+                return bDate.compareTo(aDate);
+              });
+
+              final recentTx = txList.take(3).toList();
+              final partners = state.partners;
+
+              return Column(
+                children:
+                    recentTx.map((tx) {
+                      final isIncome = tx.transactionType == 'income';
+                      final amountText = '${tx.amount} с';
+
+                      final DateTime date =
+                          DateTime.tryParse(tx.date ?? '') ?? DateTime.now();
+                      final formattedDate =
+                          '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year} - ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
+
+                      final partnerName =
+                          partners
+                              .firstWhere(
+                                (p) => p.id == tx.partners,
+                                orElse: () => PartnersModel(name: 'Неизвестно'),
+                              )
+                              .name;
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color:
+                                    isIncome
+                                        ? const Color(0xFFDFF7E2)
+                                        : const Color(0xFFF9DCDC),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                isIncome
+                                    ? Icons.call_received
+                                    : Icons.north_west,
+                                color:
+                                    isIncome
+                                        ? const Color(0xFF56BC60)
+                                        : const Color(0xFFE85445),
+                                size: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    partnerName,
+                                    style: AppTextStyles.f14w500,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    formattedDate,
+                                    style: AppTextStyles.f12w400.copyWith(
+                                      color: AppColors.smallTextGreyColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              '${isIncome ? '' : '-'}$amountText',
+                              style: AppTextStyles.f16w600.copyWith(
+                                color:
+                                    isIncome
+                                        ? const Color(0xFF56BC60)
+                                        : const Color(0xFFE85445),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+              );
+            }
+
+            if (state is MenuLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state is MenuError) {
+              return Center(child: Text('Ошибка: ${state.message}'));
+            }
+
+            return const SizedBox.shrink();
+          },
+        ),
+      ],
+    );
+  }
 
   Widget _legend() {
     const items = [
@@ -298,65 +333,84 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _periodButton(String period) => GestureDetector(
-    onTap: () => updateState(period, (val) => selectedPeriod = val),
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-      child: Text(
-        period,
-        style: TextStyle(
-          fontWeight: FontWeight.w400,
-          fontFamily: 'Inter',
-          fontSize: 13,
-          color: selectedPeriod == period ? Colors.black : Colors.grey,
+  Widget _circleIcon(IconData icon, Offset offset) {
+    return Transform.translate(
+      offset: offset,
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.grey.shade200,
+        ),
+        padding: const EdgeInsets.all(5),
+        child: Icon(icon, size: 20),
+      ),
+    );
+  }
+
+  Widget _periodButton(String period) {
+    final isSelected = selectedPeriod == period;
+    return GestureDetector(
+      onTap: () => updateState(period, (val) => selectedPeriod = val),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15.0),
+        child: Text(
+          period,
+          style: TextStyle(
+            fontWeight: FontWeight.w400,
+            fontFamily: 'Inter',
+            fontSize: 13,
+            color: isSelected ? Colors.black : Colors.grey,
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 
-  Widget _buildOperationFilters() => Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children:
-        viewOptions.map((view) {
-          final isSelected = selectedView == view;
-          final icon =
-              view == 'Общий'
-                  ? 'assets/icons/V.png'
-                  : view == 'Доход'
-                  ? 'assets/icons/V_down.png'
-                  : 'assets/icons/V_up.png';
-          return Column(
-            children: [
-              GestureDetector(
-                onTap: () => updateState(view, (val) => selectedView = val),
-                child: Container(
-                  width: 120,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: isSelected ? Colors.black : Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: Image.asset(
-                    icon,
-                    width: 40,
-                    height: 40,
-                    color: isSelected ? Colors.white : Colors.black,
+  Widget _buildOperationFilters() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children:
+          viewOptions.map((view) {
+            final isSelected = selectedView == view;
+            final icon =
+                view == 'Общий'
+                    ? 'assets/icons/V.png'
+                    : view == 'Доходы'
+                    ? 'assets/icons/V_down.png'
+                    : 'assets/icons/V_up.png';
+            return Column(
+              children: [
+                GestureDetector(
+                  onTap: () => updateState(view, (val) => selectedView = val),
+                  child: Container(
+                    width: 120,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: isSelected ? Colors.black : Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: Image.asset(
+                      icon,
+                      width: 40,
+                      height: 40,
+                      color: isSelected ? Colors.white : Colors.black,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 3),
-              Text(
-                view,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'Inter',
-                  fontSize: 16,
+                const SizedBox(height: 3),
+                Text(
+                  view,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Inter',
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-            ],
-          );
-        }).toList(),
-  );
+              ],
+            );
+          }).toList(),
+    );
+  }
 }
 
 class PieChartPainter extends CustomPainter {

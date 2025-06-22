@@ -2,7 +2,7 @@ import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class OperationPage extends StatefulWidget {
   const OperationPage({super.key});
@@ -24,9 +24,9 @@ class _OperationPageState extends State<OperationPage> {
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
         backgroundColor: Color(0xFFF3F4F7),
-        title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: const Text('Привет, Aяна', style: AppTextStyles.f24w600),
+        title: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.0),
+          child: Text('Привет, Aяна', style: AppTextStyles.f24w600),
         ),
         centerTitle: false,
         actions: [
@@ -54,7 +54,7 @@ class _OperationPageState extends State<OperationPage> {
           Container(
             width: double.infinity,
             height: 100,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Color(0xFFF3F4F7),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(16),
@@ -63,18 +63,16 @@ class _OperationPageState extends State<OperationPage> {
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-              // child: TextFieldWid(label: 'Выбрать период'),
               child: TextFormField(
                 onTap: () {
                   _showPeriodPickerBottomSheet(context);
                 },
                 readOnly: true,
-                // controller: controller,
                 decoration: InputDecoration(
                   floatingLabelBehavior: FloatingLabelBehavior.never,
                   filled: true,
                   labelStyle: AppTextStyles.f16w500,
-                  suffixIcon: Icon(Icons.keyboard_arrow_down_outlined),
+                  suffixIcon: const Icon(Icons.keyboard_arrow_down_outlined),
                   fillColor: AppColors.backroundColor,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(25),
@@ -93,7 +91,6 @@ class _OperationPageState extends State<OperationPage> {
                     ),
                   ),
                   hintText: 'Выбрать период',
-                  // labelText: label,
                 ),
               ),
             ),
@@ -112,6 +109,8 @@ class _OperationPageState extends State<OperationPage> {
                   return const Center(child: Text('Нет операций'));
                 }
 
+                final grouped = _groupTransactionsByDate(transactions);
+
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
@@ -119,27 +118,20 @@ class _OperationPageState extends State<OperationPage> {
                     children: [
                       Text('Операции', style: AppTextStyles.f20w600),
                       12.h,
-                      Row(
-                        children: [
-                          Text(
-                            'Сегодня',
-                            style: AppTextStyles.f14w500.copyWith(
-                              color: AppColors.smallTextGreyColor,
+                      ...grouped.entries.map((entry) {
+                        final dailyTxs = entry.value;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Дата удалена по твоему запросу
+                            ...dailyTxs.map(
+                              (tx) => _buildTransactionItem(tx, state.partners),
                             ),
-                          ),
-                          8.w,
-                          Expanded(
-                            child: Divider(
-                              thickness: 0.3,
-                              color: AppColors.smallTextGreyColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                      12.h,
-                      ...transactions.map(
-                        (tx) => _buildTransactionItem(tx, state.partners),
-                      ),
+                            12.h,
+                          ],
+                        );
+                      }).toList(),
                     ],
                   ),
                 );
@@ -155,6 +147,29 @@ class _OperationPageState extends State<OperationPage> {
         ],
       ),
     );
+  }
+
+  Map<String, List<AllTransactionsModel>> _groupTransactionsByDate(
+    List<AllTransactionsModel> transactions,
+  ) {
+    transactions.sort((a, b) {
+      final aDate = DateTime.tryParse(a.date ?? '') ?? DateTime.now();
+      final bDate = DateTime.tryParse(b.date ?? '') ?? DateTime.now();
+      return bDate.compareTo(aDate); // Сортировка по убыванию
+    });
+
+    Map<String, List<AllTransactionsModel>> grouped = {};
+
+    for (var tx in transactions) {
+      final date = DateTime.tryParse(tx.date ?? '') ?? DateTime.now();
+      final label =
+          '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}';
+
+      grouped.putIfAbsent(label, () => []);
+      grouped[label]!.add(tx);
+    }
+
+    return grouped;
   }
 
   Widget _buildTransactionItem(
@@ -175,7 +190,6 @@ class _OperationPageState extends State<OperationPage> {
     final IconData arrowIcon =
         isIncome ? Icons.call_received : Icons.north_west;
 
-    // Найти имя партнёра по partnerId
     final partnerName =
         partners
             .firstWhere(
@@ -398,11 +412,8 @@ class _OperationPageState extends State<OperationPage> {
                 unselectedWidgetColor: Colors.grey.shade400,
                 checkboxTheme: CheckboxThemeData(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      6,
-                    ), // 👈 вместо CircleBorder
+                    borderRadius: BorderRadius.circular(6),
                   ),
-
                   side: BorderSide(color: Colors.grey.shade300, width: 1),
                   fillColor: WidgetStateProperty.resolveWith((states) {
                     return isSelected ? AppColors.primaryColor : Colors.white;
