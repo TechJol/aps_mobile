@@ -14,6 +14,9 @@ class OperationPage extends StatefulWidget {
 class _OperationPageState extends State<OperationPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  DateTime? _customStartDate;
+  DateTime? _customEndDate;
+  String? _selectedPeriod;
 
   @override
   void initState() {
@@ -31,8 +34,26 @@ class _OperationPageState extends State<OperationPage>
     super.dispose();
   }
 
+  void _applyFilter(String? period, DateTime? startDate, DateTime? endDate) {
+    setState(() {
+      _selectedPeriod = period;
+      _customStartDate = period == null ? startDate : null;
+      _customEndDate = period == null ? endDate : null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    String filterLabel = '';
+    if (_selectedPeriod != null) {
+      filterLabel = _selectedPeriod!;
+    } else if (_customStartDate != null && _customEndDate != null) {
+      filterLabel =
+          '${_customStartDate!.day.toString().padLeft(2, '0')}.${_customStartDate!.month.toString().padLeft(2, '0')}.${_customStartDate!.year}'
+          ' - '
+          '${_customEndDate!.day.toString().padLeft(2, '0')}.${_customEndDate!.month.toString().padLeft(2, '0')}.${_customEndDate!.year}';
+    }
+
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
@@ -103,11 +124,28 @@ class _OperationPageState extends State<OperationPage>
                       color: AppColors.backroundColor,
                     ),
                   ),
-                  hintText: 'Выбрать период',
+                  hintText:
+                      filterLabel.isEmpty ? 'Выбрать период' : filterLabel,
                 ),
               ),
             ),
           ),
+          if (filterLabel.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 12, left: 30, right: 30),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Фильтр: $filterLabel', style: AppTextStyles.f14w500),
+                  TextButton(
+                    onPressed: () {
+                      _applyFilter(null, null, null);
+                    },
+                    child: const Text('Сбросить'),
+                  ),
+                ],
+              ),
+            ),
           30.h,
           BlocBuilder<MenuCubit, MenuState>(
             builder: (context, state) {
@@ -116,13 +154,13 @@ class _OperationPageState extends State<OperationPage>
               }
 
               if (state is MenuTransactionsWithAccountsSuccess) {
-                final transactions = state.transactions;
+                final filtered = _filterTransactions(state.transactions);
 
-                if (transactions.isEmpty) {
+                if (filtered.isEmpty) {
                   return const Center(child: Text('Нет операций'));
                 }
 
-                final grouped = _groupTransactionsByDate(transactions);
+                final grouped = _groupTransactionsByDate(filtered);
                 _controller.forward();
 
                 return Padding(
@@ -150,7 +188,7 @@ class _OperationPageState extends State<OperationPage>
                             ),
                           );
                         });
-                      }).toList(),
+                      }),
                     ],
                   ),
                 );
@@ -166,6 +204,44 @@ class _OperationPageState extends State<OperationPage>
         ],
       ),
     );
+  }
+
+  List<AllTransactionsModel> _filterTransactions(
+    List<AllTransactionsModel> txs,
+  ) {
+    DateTime now = DateTime.now();
+    DateTime? start, end;
+
+    if (_selectedPeriod != null) {
+      switch (_selectedPeriod) {
+        case 'Неделя':
+          start = now.subtract(const Duration(days: 7));
+          end = now;
+          break;
+        case 'За месяц':
+          start = DateTime(now.year, now.month - 1, now.day);
+          end = now;
+          break;
+        case 'Три месяца':
+          start = DateTime(now.year, now.month - 3, now.day);
+          end = now;
+          break;
+      }
+    }
+
+    if (_customStartDate != null && _customEndDate != null) {
+      start = _customStartDate;
+      end = _customEndDate;
+    }
+
+    if (start == null || end == null) return txs;
+
+    return txs.where((tx) {
+      final date = DateTime.tryParse(tx.date ?? '');
+      if (date == null) return false;
+      return date.isAfter(start!.subtract(const Duration(days: 1))) &&
+          date.isBefore(end!.add(const Duration(days: 1)));
+    }).toList();
   }
 
   Map<String, List<AllTransactionsModel>> _groupTransactionsByDate(
@@ -253,21 +329,21 @@ class _OperationPageState extends State<OperationPage>
     );
   }
 
-  void _showPeriodPickerBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      backgroundColor: AppColors.whiteColor,
+  Future<void> _showPeriodPickerBottomSheet(BuildContext context) async {
+    final result = await showModalBottomSheet<Map<String, dynamic>>(
       context: context,
       isScrollControlled: true,
+      backgroundColor: AppColors.whiteColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
-        DateTime startDate = DateTime.now().subtract(const Duration(days: 7));
-        DateTime endDate = DateTime.now();
-        String selectedPeriod = 'Неделя';
+        DateTime startDate = _customStartDate ?? DateTime.now();
+        DateTime endDate = _customEndDate ?? DateTime.now();
+        String? selectedPeriod = _selectedPeriod;
 
         return StatefulBuilder(
-          builder: (context, setState) {
+          builder: (context, setStateModal) {
             return Padding(
               padding: MediaQuery.of(context).viewInsets,
               child: Padding(
@@ -299,7 +375,7 @@ class _OperationPageState extends State<OperationPage>
                               lastDate: DateTime(2100),
                             );
                             if (picked != null) {
-                              setState(() => startDate = picked);
+                              setStateModal(() => startDate = picked);
                             }
                           },
                         ),
@@ -315,7 +391,7 @@ class _OperationPageState extends State<OperationPage>
                               lastDate: DateTime(2100),
                             );
                             if (picked != null) {
-                              setState(() => endDate = picked);
+                              setStateModal(() => endDate = picked);
                             }
                           },
                         ),
@@ -325,22 +401,26 @@ class _OperationPageState extends State<OperationPage>
                     _periodOption(
                       'Неделя',
                       selectedPeriod,
-                      (val) => setState(() => selectedPeriod = val!),
+                      (val) => setStateModal(() => selectedPeriod = val!),
                     ),
                     _periodOption(
                       'За месяц',
                       selectedPeriod,
-                      (val) => setState(() => selectedPeriod = val!),
+                      (val) => setStateModal(() => selectedPeriod = val!),
                     ),
                     _periodOption(
                       'Три месяца',
                       selectedPeriod,
-                      (val) => setState(() => selectedPeriod = val!),
+                      (val) => setStateModal(() => selectedPeriod = val!),
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.pop(context, {
+                          'period': selectedPeriod,
+                          'start': selectedPeriod == null ? startDate : null,
+                          'end': selectedPeriod == null ? endDate : null,
+                        });
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primaryColorLight,
@@ -361,6 +441,14 @@ class _OperationPageState extends State<OperationPage>
         );
       },
     );
+
+    if (result != null) {
+      setState(() {
+        _selectedPeriod = result['period'];
+        _customStartDate = result['start'];
+        _customEndDate = result['end'];
+      });
+    }
   }
 
   Widget _dateField({
@@ -402,7 +490,7 @@ class _OperationPageState extends State<OperationPage>
 
   Widget _periodOption(
     String label,
-    String selected,
+    String? selected,
     ValueChanged<String?> onChanged,
   ) {
     final bool isSelected = label == selected;
