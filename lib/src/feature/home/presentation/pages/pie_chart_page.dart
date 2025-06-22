@@ -195,8 +195,15 @@ class _HomePageState extends State<HomePage> {
         BlocBuilder<MenuCubit, MenuState>(
           builder: (context, state) {
             if (state is MenuTransactionsWithAccountsSuccess) {
-              final txList = state.transactions.take(3).toList();
+              final txList = _filterByViewType(
+                state.transactions,
+                selectedView,
+              );
               final partners = state.partners;
+
+              if (txList.isEmpty) {
+                return const Center(child: Text('Нет операций'));
+              }
 
               return Column(
                 children: List.generate(txList.length, (index) {
@@ -299,6 +306,24 @@ class _HomePageState extends State<HomePage> {
         ),
       ],
     );
+  }
+
+  List<AllTransactionsModel> _filterByViewType(
+    List<AllTransactionsModel> transactions,
+    String selectedView,
+  ) {
+    final sorted = [...transactions]..sort((a, b) {
+      final dateA = DateTime.tryParse(a.date ?? '') ?? DateTime.now();
+      final dateB = DateTime.tryParse(b.date ?? '') ?? DateTime.now();
+      return dateB.compareTo(dateA);
+    });
+
+    if (selectedView == 'Общий') {
+      return sorted.take(3).toList();
+    } else {
+      final type = selectedView == 'Доходы' ? 'income' : 'expense';
+      return sorted.where((tx) => tx.transactionType == type).take(3).toList();
+    }
   }
 
   Widget _legend() {
