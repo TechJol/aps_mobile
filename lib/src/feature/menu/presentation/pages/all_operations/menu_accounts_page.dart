@@ -1,6 +1,6 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
-import 'package:aps_mobile/src/feature/income/presentation/cubit/income_state.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,17 +18,8 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
   @override
   void initState() {
     super.initState();
-    context.read<IncomeCubit>().getAccount();
+    context.read<MenuCubit>().getTransactionsWithAccounts();
   }
-
-  // final List<Map<String, String>> data = List.generate(223, (index) {
-  //   return {
-  //     '№': '${index + 1}',
-  //     'Название': '1455',
-  //     'Баланс': 'kgs',
-  //     'Тип счета': '12.01.2025',
-  //   };
-  // });
 
   @override
   Widget build(BuildContext context) {
@@ -38,28 +29,30 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
         backgroundColor: AppColors.whiteColor,
         title: 'По счетам',
       ),
-      body: BlocBuilder<IncomeCubit, IncomeState>(
+      body: BlocBuilder<MenuCubit, MenuState>(
         builder: (context, state) {
-          if (state.isLoading) {
+          if (state is MenuLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (state.error != null) {
-            return Center(child: Text('Ошибка: }'));
-          }
-          if (state.accounts.isNotEmpty) {
-            final transactions = state.accounts;
 
-            // final totalBalance = transactions.fold<double>(
-            //   0,
-            //   (sum, item) => sum + (item.currentBalance ?? 0),
-            // );
-
-            if (transactions.isEmpty) {
-              return const Center(child: Text('Нет транзакций'));
-            }
-            return _buildTableWithPagination(transactions, 0);
+          if (state is MenuError) {
+            return Center(child: Text('Ошибка: ${state.message}'));
           }
-          // MenuInitial
+
+          if (state is MenuTransactionsWithAccountsSuccess) {
+            final transactions = state.transactions;
+            final accounts = state.accounts;
+
+            final totalBalance = calculateTotalBalance(transactions);
+
+            return _buildTableWithPagination(
+              context,
+              accounts,
+              totalBalance,
+              transactions,
+            );
+          }
+
           return const SizedBox.shrink();
         },
       ),
@@ -67,24 +60,21 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
   }
 
   Padding _buildTableWithPagination(
+    BuildContext context,
     List<AccountModel> data,
-    double totalBalance,
+    Decimal total,
+    List<AllTransactionsModel> transactions,
   ) {
     final start = (currentPage - 1) * rowsPerPage;
     final end = (start + rowsPerPage).clamp(0, data.length);
     final paginatedData = data.sublist(start, end);
-    // final pageCount = (data.length / rowsPerPage).ceil();
+
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('96 512 с', style: AppTextStyles.f24w600),
-          // Text(
-          //   '${totalBalance.toStringAsFixed(0)} с',
-          //   style: AppTextStyles.f24w600,
-          // ),
+          Text('$total с', style: AppTextStyles.f24w600),
           Text(
             'общий баланс',
             style: AppTextStyles.f14w500.copyWith(color: AppColors.greyColor),
@@ -119,11 +109,15 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
               rows:
                   paginatedData.asMap().entries.map((entry) {
                     final tx = entry.value;
+                    final balance = calculateAccountBalance(
+                      accountId: tx.id!,
+                      transactions: transactions,
+                    );
                     return DataRow(
                       cells: [
                         DataCell(Text(tx.id.toString())),
                         DataCell(Text(tx.name)),
-                        DataCell(Text(tx.currentBalance?.toString() ?? '—')),
+                        DataCell(Text('$balance с')),
                         DataCell(Text(tx.accountType)),
                       ],
                     );
@@ -133,5 +127,42 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
         ],
       ),
     );
+  }
+
+  Decimal calculateTotalBalance(List<AllTransactionsModel> transactions) {
+    Decimal total = Decimal.zero;
+
+    for (var tx in transactions) {
+      final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
+
+      if (tx.transactionType == 'income') {
+        total += amount;
+      } else if (tx.transactionType == 'expense') {
+        total -= amount;
+      }
+    }
+
+    return total;
+  }
+
+  Decimal calculateAccountBalance({
+    required int accountId,
+    required List<AllTransactionsModel> transactions,
+  }) {
+    Decimal total = Decimal.zero;
+
+    for (var tx in transactions) {
+      if (tx.account == accountId) {
+        final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
+
+        if (tx.transactionType == 'income') {
+          total += amount;
+        } else if (tx.transactionType == 'expense') {
+          total -= amount;
+        }
+      }
+    }
+
+    return total;
   }
 }

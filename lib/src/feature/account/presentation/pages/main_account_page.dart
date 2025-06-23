@@ -1,7 +1,7 @@
-import 'package:aps_mobile/src/feature/feature.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:aps_mobile/src/core/core.dart';
+import 'package:aps_mobile/src/feature/feature.dart';
+import 'package:decimal/decimal.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MainAccountPage extends StatefulWidget {
@@ -13,8 +13,8 @@ class MainAccountPage extends StatefulWidget {
 
 class _MainAccountPageState extends State<MainAccountPage> {
   @override
-  initState() {
-    context.read<MenuCubit>().getAccounts();
+  void initState() {
+    context.read<MenuCubit>().getTransactionsWithAccounts();
     super.initState();
   }
 
@@ -46,7 +46,7 @@ class _MainAccountPageState extends State<MainAccountPage> {
                 onPressed: () {
                   Navigator.pushNamed(context, AppRoutes.menu);
                 },
-                icon: Icon(Icons.more_vert_outlined),
+                icon: const Icon(Icons.more_vert_outlined),
               ),
             ),
           ),
@@ -59,27 +59,21 @@ class _MainAccountPageState extends State<MainAccountPage> {
           }
 
           if (state is MenuError) {
-            return Center(child: Text('Ошибка: ${state.message.toString()}'));
+            return Center(child: Text('Ошибка: ${state.message}'));
           }
 
-          if (state is DeleteError) {
-            String message;
+          if (state is MenuTransactionsWithAccountsSuccess) {
+            final transactions = state.transactions;
+            final accounts = state.accounts;
 
-            if (state.error is DioException) {
-              final err = state.error as DioException;
-              final status = err.response?.statusCode;
-              final detail = err.response?.data?.toString() ?? err.message;
-              message = 'Ошибка удаления [$status]: $detail';
-            } else {
-              message = 'Ошибка при удалении: ${state.error.toString()}';
-            }
+            final totalBalance = calculateTotalBalance(transactions);
 
-            return Center(child: Text(message));
-          }
-
-          if (state is MenuAccountsSuccess) {
-            final account = state.accounts;
-            return _buildAccountSection(context, account);
+            return _buildAccountSection(
+              context,
+              accounts,
+              totalBalance,
+              transactions,
+            );
           }
 
           return const SizedBox.shrink();
@@ -88,7 +82,12 @@ class _MainAccountPageState extends State<MainAccountPage> {
     );
   }
 
-  Padding _buildAccountSection(BuildContext context, List<AccountModel> data) {
+  Padding _buildAccountSection(
+    BuildContext context,
+    List<AccountModel> data,
+    Decimal total,
+    List<AllTransactionsModel> transactions,
+  ) {
     final hasAccount = data.isNotEmpty;
 
     return Padding(
@@ -104,7 +103,7 @@ class _MainAccountPageState extends State<MainAccountPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'с',
+                      '$total с',
                       style: AppTextStyles.f24w600.copyWith(
                         fontFamily: 'Inter',
                       ),
@@ -132,15 +131,10 @@ class _MainAccountPageState extends State<MainAccountPage> {
                       'Добавить счет',
                       style: AppTextStyles.f16w500.copyWith(
                         color: AppColors.blackColor,
-                        fontFamily: 'Inter',
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    const Icon(
-                      Icons.add,
-                      size: 20,
-                      color: AppColors.blackColor,
-                    ),
+                    SizedBox(width: 10),
+                    Icon(Icons.add, size: 20, color: AppColors.blackColor),
                   ],
                 ),
               ),
@@ -157,10 +151,16 @@ class _MainAccountPageState extends State<MainAccountPage> {
                 final account = data[index];
                 final color =
                     index.isEven ? AppColors.redColor : AppColors.blueColor;
+                final balance = calculateAccountBalance(
+                  accountId: account.id!,
+                  transactions: transactions,
+                );
 
                 return CardWidget(
-                  onTap: () {},
-                  price: ' c',
+                  onTap: () {
+                    // переход в подробности счета
+                  },
+                  price: '$balance с', // 🟢 Здесь баланс
                   office: account.name,
                   cardColor: color,
                 );
@@ -169,5 +169,42 @@ class _MainAccountPageState extends State<MainAccountPage> {
         ],
       ),
     );
+  }
+
+  Decimal calculateTotalBalance(List<AllTransactionsModel> transactions) {
+    Decimal total = Decimal.zero;
+
+    for (var tx in transactions) {
+      final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
+
+      if (tx.transactionType == 'income') {
+        total += amount;
+      } else if (tx.transactionType == 'expense') {
+        total -= amount;
+      }
+    }
+
+    return total;
+  }
+
+  Decimal calculateAccountBalance({
+    required int accountId,
+    required List<AllTransactionsModel> transactions,
+  }) {
+    Decimal total = Decimal.zero;
+
+    for (var tx in transactions) {
+      if (tx.account == accountId) {
+        final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
+
+        if (tx.transactionType == 'income') {
+          total += amount;
+        } else if (tx.transactionType == 'expense') {
+          total -= amount;
+        }
+      }
+    }
+
+    return total;
   }
 }
