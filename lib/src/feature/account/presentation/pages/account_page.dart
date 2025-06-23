@@ -1,6 +1,6 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
-import 'package:aps_mobile/src/feature/income/presentation/cubit/income_state.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,28 +26,36 @@ class _AccountPageState extends State<AccountPage> {
         title: 'Счета',
         backgroundColor: AppColors.backroundColor,
       ),
-      body: BlocBuilder<IncomeCubit, IncomeState>(
+      body: BlocBuilder<MenuCubit, MenuState>(
         builder: (context, state) {
-          if (state.isLoading) {
+          if (state is MenuLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (state.error != null) {
-            return Center(child: Text('Ошибка: }'));
+
+          if (state is MenuError) {
+            return Center(child: Text('Ошибка: ${state.message.toString()}'));
           }
-          if (state.accounts.isNotEmpty) {
-            final accounts = state.accounts;
 
-            // final totalBalance = transactions.fold<double>(
-            //   0,
-            //   (sum, item) => sum + (item.currentBalance ?? 0),
-            // );
+          if (state is DeleteError) {
+            String message;
 
-            if (accounts.isEmpty) {
-              return const Center(child: Text('Нет транзакций'));
+            if (state.error is DioException) {
+              final err = state.error as DioException;
+              final status = err.response?.statusCode;
+              final detail = err.response?.data?.toString() ?? err.message;
+              message = 'Ошибка удаления [$status]: $detail';
+            } else {
+              message = 'Ошибка при удалении: ${state.error.toString()}';
             }
-            return _buildTableSection(context, accounts);
+
+            return Center(child: Text(message));
           }
-          // MenuInitial
+
+          if (state is MenuAccountsSuccess) {
+            final account = state.accounts;
+            return _buildTableSection(context, account);
+          }
+
           return const SizedBox.shrink();
         },
       ),

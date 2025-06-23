@@ -1,5 +1,5 @@
 import 'package:aps_mobile/src/feature/feature.dart';
-import 'package:aps_mobile/src/feature/income/presentation/cubit/income_state.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +14,7 @@ class MainAccountPage extends StatefulWidget {
 class _MainAccountPageState extends State<MainAccountPage> {
   @override
   initState() {
-    context.read<IncomeCubit>().getAccount();
+    context.read<MenuCubit>().getAccounts();
     super.initState();
   }
 
@@ -52,28 +52,36 @@ class _MainAccountPageState extends State<MainAccountPage> {
           ),
         ],
       ),
-      body: BlocBuilder<IncomeCubit, IncomeState>(
+      body: BlocBuilder<MenuCubit, MenuState>(
         builder: (context, state) {
-          if (state.isLoading) {
+          if (state is MenuLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (state.error != null) {
-            return Center(child: Text('Ошибка: }'));
+
+          if (state is MenuError) {
+            return Center(child: Text('Ошибка: ${state.message.toString()}'));
           }
-          if (state.accounts.isNotEmpty) {
-            final accounts = state.accounts;
 
-            // final totalBalance = transactions.fold<double>(
-            //   0,
-            //   (sum, item) => sum + (item.currentBalance ?? 0),
-            // );
+          if (state is DeleteError) {
+            String message;
 
-            if (accounts.isEmpty) {
-              return const Center(child: Text('Нет счетов'));
+            if (state.error is DioException) {
+              final err = state.error as DioException;
+              final status = err.response?.statusCode;
+              final detail = err.response?.data?.toString() ?? err.message;
+              message = 'Ошибка удаления [$status]: $detail';
+            } else {
+              message = 'Ошибка при удалении: ${state.error.toString()}';
             }
-            return _buildAccountSection(context, accounts);
+
+            return Center(child: Text(message));
           }
-          // MenuInitial
+
+          if (state is MenuAccountsSuccess) {
+            final account = state.accounts;
+            return _buildAccountSection(context, account);
+          }
+
           return const SizedBox.shrink();
         },
       ),
@@ -81,30 +89,35 @@ class _MainAccountPageState extends State<MainAccountPage> {
   }
 
   Padding _buildAccountSection(BuildContext context, List<AccountModel> data) {
+    final hasAccount = data.isNotEmpty;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: Column(
+      child: ListView(
         children: [
           const SizedBox(height: 30),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'с',
-                    style: AppTextStyles.f24w600.copyWith(fontFamily: 'Inter'),
-                  ),
-                  Text(
-                    'общий баланс',
-                    style: AppTextStyles.f14w500.copyWith(
-                      color: AppColors.greyColor,
-                      fontFamily: 'Inter',
+              if (hasAccount)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'с',
+                      style: AppTextStyles.f24w600.copyWith(
+                        fontFamily: 'Inter',
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                    Text(
+                      'общий баланс',
+                      style: AppTextStyles.f14w500.copyWith(
+                        color: AppColors.greyColor,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                  ],
+                ),
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size(140, 48),
@@ -134,24 +147,25 @@ class _MainAccountPageState extends State<MainAccountPage> {
             ],
           ),
           const SizedBox(height: 30),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: data.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 20),
-            itemBuilder: (context, index) {
-              final account = data[index];
-              final color =
-                  index.isEven ? AppColors.redColor : AppColors.blueColor;
+          if (hasAccount)
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: data.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 20),
+              itemBuilder: (context, index) {
+                final account = data[index];
+                final color =
+                    index.isEven ? AppColors.redColor : AppColors.blueColor;
 
-              return CardWidget(
-                onTap: () {},
-                price: ' c',
-                office: account.name,
-                cardColor: color,
-              );
-            },
-          ),
+                return CardWidget(
+                  onTap: () {},
+                  price: ' c',
+                  office: account.name,
+                  cardColor: color,
+                );
+              },
+            ),
         ],
       ),
     );

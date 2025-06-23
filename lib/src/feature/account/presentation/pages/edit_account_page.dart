@@ -136,14 +136,14 @@ class _EditAccountPageState extends State<EditAccountPage> {
                   ElevatedButton(
                     onPressed:
                         isFormValid
-                            ? () {
+                            ? () async {
                               final id = widget.account.id;
                               final account = AccountModel(
                                 name: nameController.text,
                                 currency: selectedCurrencyCode,
                                 accountType: selectedTypeCode ?? '',
                               );
-                              context.read<MenuCubit>().updateAccount(
+                              await context.read<MenuCubit>().updateAccount(
                                 account,
                                 id!,
                               );
