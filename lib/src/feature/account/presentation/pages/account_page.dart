@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:aps_mobile/src/feature/income/presentation/cubit/income_state.dart';
@@ -164,16 +162,24 @@ class _AccountPageState extends State<AccountPage> {
                                 accountName: account.name,
 
                                 onConfirm: () {
-                                  log('Удаляем: ${account.name}}');
+                                  context.read<MenuCubit>().deleteAccount(
+                                    account.id!,
+                                  );
+                                  Navigator.pop(context);
                                 },
                                 title: 'Удалить счет',
                               );
                             },
-                            tapEdit: () {
-                              Navigator.pushNamed(
+                            tapEdit: () async {
+                              final result = await Navigator.pushNamed(
                                 context,
                                 AppRoutes.editAccount,
+                                arguments: account,
                               );
+
+                              if (result == true) {
+                                context.read<MenuCubit>().getAccounts();
+                              }
                             },
                           ),
                         ),

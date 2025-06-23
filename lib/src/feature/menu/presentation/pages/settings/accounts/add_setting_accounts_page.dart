@@ -17,7 +17,7 @@ class _AddSettingAccountsPageState extends State<AddSettingAccountsPage> {
   final List<String> types = ['Банк', 'Касса'];
   final List<String> typesCodes = ['bank', 'cash'];
 
-  final List<String> names = ['Бакай банк', 'Мбанк', 'Офис касса'];
+  final List<String> names = ['Бакай банк', 'Офис касса'];
 
   String? selectedName;
   String? selectedType;

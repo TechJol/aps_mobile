@@ -47,7 +47,10 @@ class RouteGenerator {
         return CupertinoPageRoute(builder: (_) => AddAccountPage());
 
       case AppRoutes.editAccount:
-        return CupertinoPageRoute(builder: (_) => EditAccountPage());
+        final account = settings.arguments as AccountModel;
+        return CupertinoPageRoute(
+          builder: (_) => EditAccountPage(account: account),
+        );
 
       //! Menu
       case AppRoutes.menu:
