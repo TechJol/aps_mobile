@@ -173,7 +173,7 @@ class _AccountPageState extends State<AccountPage> {
                                   context.read<MenuCubit>().deleteAccount(
                                     account.id!,
                                   );
-                                  Navigator.pop(context);
+                                  Navigator.pop(context, true);
                                 },
                                 title: 'Удалить счет',
                               );

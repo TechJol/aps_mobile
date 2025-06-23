@@ -74,8 +74,15 @@ class _OperationPageState extends State<OperationPage>
                 borderRadius: BorderRadius.circular(100),
               ),
               child: IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.menu);
+                onPressed: () async {
+                  final resul = await Navigator.pushNamed(
+                    context,
+                    AppRoutes.menu,
+                  );
+
+                  if (resul == true) {
+                    context.read<MenuCubit>().getTransactionsWithAccounts();
+                  }
                 },
                 icon: const Icon(Icons.more_vert_outlined),
               ),

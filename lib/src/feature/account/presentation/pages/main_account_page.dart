@@ -121,8 +121,14 @@ class _MainAccountPageState extends State<MainAccountPage> {
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size(140, 48),
                 ),
-                onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.account);
+                onPressed: () async {
+                  final result = await Navigator.pushNamed(
+                    context,
+                    AppRoutes.account,
+                  );
+                  if (result == true) {
+                    context.read<MenuCubit>().getTransactionsWithAccounts();
+                  }
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -160,9 +166,10 @@ class _MainAccountPageState extends State<MainAccountPage> {
                   onTap: () {
                     // переход в подробности счета
                   },
-                  price: '$balance с', // 🟢 Здесь баланс
+                  price: '$balance с',
                   office: account.name,
                   cardColor: color,
+                  currency: account.currency,
                 );
               },
             ),

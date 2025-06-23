@@ -22,7 +22,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             borderRadius: BorderRadius.circular(40),
           ),
           child: IconButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () async {
+              Navigator.pop(context, true);
+            },
             icon: const Icon(
               Icons.arrow_back_ios,
               color: Colors.black,
