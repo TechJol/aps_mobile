@@ -22,6 +22,18 @@ class IncomeExpenseSummaryPage extends StatelessWidget {
   }
 }
 
+//  final sorted =
+//           totals.entries
+//               .toList()
+//               .cast<MapEntry<int, Decimal>>() // 👈 уточняем тип
+//             ..sort((a, b) => b.value.compareTo(a.value));
+
+//       return {
+//         'name': reason.name,
+//         'amount': entry.value.toString(),
+//         'percent': sorted.indexOf(entry) / sorted.length * hundred.toDouble(),
+//       };
+
 // Таблица с данными
 class DataTableSectionA extends StatelessWidget {
   const DataTableSectionA({super.key});

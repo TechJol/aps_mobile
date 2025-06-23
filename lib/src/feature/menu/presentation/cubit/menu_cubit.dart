@@ -70,6 +70,11 @@ class MenuCubit extends Cubit<MenuState> {
       return;
     }
 
+    if (partnersResult.isLeft()) {
+      partnersResult.fold((l) => emit(MenuError(message: l.message)), (_) {});
+      return;
+    }
+
     final transactions =
         (transactionsResult.getOrElse(() => []) as List)
             .map((e) => AllTransactionsModel.fromMap(e))
@@ -84,11 +89,6 @@ class MenuCubit extends Cubit<MenuState> {
         (reasonsResult.getOrElse(() => []) as List)
             .map((e) => IncomeExpenseReasons.fromMap(e))
             .toList();
-
-    if (partnersResult.isLeft()) {
-      partnersResult.fold((l) => emit(MenuError(message: l.message)), (_) {});
-      return;
-    }
 
     final partners =
         (partnersResult.getOrElse(() => []) as List)
@@ -105,109 +105,6 @@ class MenuCubit extends Cubit<MenuState> {
     );
   }
 
-  // Future<void> getTransactions() async {
-  //   emit(MenuLoading());
-  //   final result = await getTransactionsUsecase();
-  //   result.fold((l) => emit(MenuError(message: l.message)), (r) {
-  //     final transactions =
-  //         (r as List).map((e) => AllTransactionsModel.fromMap(e)).toList();
-  //     emit(MenuSuccess(transactions: transactions));
-  //   });
-  // }
-
-  Future<void> deletePartner(int id) async {
-    final result = await deletePartnerUsecase.call(id);
-
-    result.fold(
-      (l) {
-        emit(DeleteError(error: l));
-      },
-      (r) {
-        getPartnerData();
-      },
-    );
-  }
-
-  Future<void> postPartner(PartnersModel partner) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    final companyId = storage.getInt('companyId');
-    final part = PartnersModel(
-      name: partner.name,
-      contactInfo: partner.contactInfo,
-      type: partner.type,
-      company: companyId,
-    );
-
-    final result = await postPartnerUsecase.call(part);
-    result.fold(
-      (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
-      (r) {
-        emit(PartnerUpdated()); // <- добавить это
-        getPartnerData();
-      },
-    );
-  }
-
-  Future<void> updatePartner(PartnersModel partner, int id) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    final companyId = storage.getInt('companyId');
-    final part = PartnersModel(
-      name: partner.name,
-      contactInfo: partner.contactInfo,
-      type: partner.type,
-      company: companyId,
-    );
-
-    final result = await updatePartnerUsecase.call(part, id);
-    result.fold(
-      (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
-      (r) {
-        // getPartners();
-        emit(PartnerUpdated()); // <- добавить это
-        getPartnerData();
-      },
-    );
-  }
-
-  Future<void> postPartnerType(PartnerTypesModel partnerType) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    final companyId = storage.getInt('companyId');
-    final part = PartnerTypesModel(name: partnerType.name, company: companyId);
-    final result = await postPartnerTypeUsecase.call(part);
-    result.fold(
-      (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
-      (r) {
-        getPartnerData();
-      },
-    );
-  }
-
-  Future<void> deletePartnerType(int id) async {
-    final result = await deletePartnerTypeUsecase.call(id);
-
-    result.fold(
-      (l) {
-        emit(DeleteError(error: l));
-      },
-      (r) {
-        getPartnerData();
-      },
-    );
-  }
-
-  Future<void> updatePartnerType(PartnerTypesModel partnerType, int id) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    final companyId = storage.getInt('companyId');
-
-    final part = PartnerTypesModel(name: partnerType.name, company: companyId);
-    final result = await updatePartnerTypeUsecase.call(part, id);
-
-    result.fold(
-      (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
-      (r) {},
-    );
-  }
-
   Future<void> getAccounts() async {
     emit(MenuLoading());
     final result = await getAccountsUsecase();
@@ -220,46 +117,37 @@ class MenuCubit extends Cubit<MenuState> {
   Future<void> postAccount(AccountModel account) async {
     SharedPreferences storage = await SharedPreferences.getInstance();
     final companyId = storage.getInt('companyId');
+
     final acc = AccountModel(
       name: account.name,
       accountType: account.accountType,
       currency: account.currency,
       company: companyId,
-      // currentBalance: '220',
     );
 
     final result = await postAccountUsecase.call(acc);
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
-      (r) {
-        getAccounts();
-      },
+      (r) => getAccounts(),
     );
   }
 
   Future<void> deleteAccount(int id) async {
     final result = await deleteAccountUsecase.call(id);
-
-    result.fold(
-      (l) {
-        emit(DeleteError(error: l));
-      },
-      (r) {
-        getAccounts();
-      },
-    );
+    result.fold((l) => emit(DeleteError(error: l)), (r) => getAccounts());
   }
 
   Future<void> updateAccount(AccountModel account, int id) async {
     SharedPreferences storage = await SharedPreferences.getInstance();
     final companyId = storage.getInt('companyId');
+
     final acc = AccountModel(
       name: account.name,
       accountType: account.accountType,
       currency: account.currency,
       company: companyId,
-      // currentBalance: '220',
     );
+
     final result = await updateAccountUsecase.call(acc, id);
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
@@ -280,28 +168,30 @@ class MenuCubit extends Cubit<MenuState> {
   Future<void> postReason(IncomeExpenseReasons reasons) async {
     SharedPreferences storage = await SharedPreferences.getInstance();
     final companyId = storage.getInt('companyId');
+
     final part = IncomeExpenseReasons(
       name: reasons.name,
       type: reasons.type,
       company: companyId,
     );
+
     final result = await postReasonUsecase.call(part);
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
-      (r) {
-        getReasons();
-      },
+      (r) => getReasons(),
     );
   }
 
   Future<void> updateReason(IncomeExpenseReasons reasons, int id) async {
     SharedPreferences storage = await SharedPreferences.getInstance();
     final companyId = storage.getInt('companyId');
+
     final part = IncomeExpenseReasons(
       name: reasons.name,
       type: reasons.type,
       company: companyId,
     );
+
     final result = await updateReasonUsecase.call(part, id);
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
@@ -311,15 +201,7 @@ class MenuCubit extends Cubit<MenuState> {
 
   Future<void> deleteReason(int id) async {
     final result = await deleteReasonUsecase.call(id);
-
-    result.fold(
-      (l) {
-        emit(DeleteError(error: l));
-      },
-      (r) {
-        getReasons();
-      },
-    );
+    result.fold((l) => emit(DeleteError(error: l)), (r) => getReasons());
   }
 
   Future<void> getPartnerData() async {
@@ -349,5 +231,83 @@ class MenuCubit extends Cubit<MenuState> {
             .toList();
 
     emit(MenuPartnerDataSuccess(partners: partners, partnerTypes: types));
+  }
+
+  Future<void> deletePartner(int id) async {
+    final result = await deletePartnerUsecase.call(id);
+    result.fold((l) => emit(DeleteError(error: l)), (r) => getPartnerData());
+  }
+
+  Future<void> postPartner(PartnersModel partner) async {
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    final companyId = storage.getInt('companyId');
+
+    final part = PartnersModel(
+      name: partner.name,
+      contactInfo: partner.contactInfo,
+      type: partner.type,
+      company: companyId,
+    );
+
+    final result = await postPartnerUsecase.call(part);
+    result.fold(
+      (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
+      (r) {
+        emit(PartnerUpdated());
+        getPartnerData();
+      },
+    );
+  }
+
+  Future<void> updatePartner(PartnersModel partner, int id) async {
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    final companyId = storage.getInt('companyId');
+
+    final part = PartnersModel(
+      name: partner.name,
+      contactInfo: partner.contactInfo,
+      type: partner.type,
+      company: companyId,
+    );
+
+    final result = await updatePartnerUsecase.call(part, id);
+    result.fold(
+      (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
+      (r) {
+        emit(PartnerUpdated());
+        getPartnerData();
+      },
+    );
+  }
+
+  Future<void> postPartnerType(PartnerTypesModel partnerType) async {
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    final companyId = storage.getInt('companyId');
+
+    final part = PartnerTypesModel(name: partnerType.name, company: companyId);
+
+    final result = await postPartnerTypeUsecase.call(part);
+    result.fold(
+      (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
+      (r) => getPartnerData(),
+    );
+  }
+
+  Future<void> deletePartnerType(int id) async {
+    final result = await deletePartnerTypeUsecase.call(id);
+    result.fold((l) => emit(DeleteError(error: l)), (r) => getPartnerData());
+  }
+
+  Future<void> updatePartnerType(PartnerTypesModel partnerType, int id) async {
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    final companyId = storage.getInt('companyId');
+
+    final part = PartnerTypesModel(name: partnerType.name, company: companyId);
+
+    final result = await updatePartnerTypeUsecase.call(part, id);
+    result.fold(
+      (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
+      (r) {},
+    );
   }
 }

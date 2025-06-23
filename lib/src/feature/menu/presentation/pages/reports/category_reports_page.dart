@@ -1,6 +1,9 @@
 import 'package:aps_mobile/src/core/core.dart';
+import 'package:aps_mobile/src/feature/feature.dart';
+import 'package:decimal/decimal.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CategoryReportsPage extends StatelessWidget {
   const CategoryReportsPage({super.key});
@@ -13,39 +16,107 @@ class CategoryReportsPage extends StatelessWidget {
         title: 'Отчеты по статьям',
         backgroundColor: AppColors.whiteColor,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: ListView(
-          children: [
-            20.h,
-            ButtonsRow(),
-            20.h,
-            MonthsTabs(),
-            20.h,
-            TitleSection(title: 'Основные статьи , доход'),
-            20.h,
-            PieChartSection(),
-            20.h,
-            LegendSection(),
-            40.h,
-            DataTableSection(),
+      body: BlocBuilder<MenuCubit, MenuState>(
+        builder: (context, state) {
+          if (state is MenuLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            40.h,
-            TitleSection(title: 'Основные статьи , расход'),
-            20.h,
-            PieChartSection(),
-            20.h,
-            LegendSection(),
-            40.h,
-            DataTableSection(),
-          ],
-        ),
+          if (state is MenuTransactionsWithAccountsSuccess) {
+            final incomeData = _calculateTop6Reasons(
+              state.transactions,
+              state.reasons,
+              type: 'income',
+            );
+
+            final expenseData = _calculateTop6Reasons(
+              state.transactions,
+              state.reasons,
+              type: 'expense',
+            );
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: ListView(
+                children: [
+                  20.h,
+                  ButtonsRow(),
+                  20.h,
+                  MonthsTabs(),
+                  20.h,
+                  TitleSection(title: 'Основные статьи , доход'),
+                  20.h,
+                  PieChartSection(data: incomeData),
+                  20.h,
+                  LegendSection(data: incomeData),
+                  40.h,
+                  DataTableSection(data: incomeData),
+                  40.h,
+                  TitleSection(title: 'Основные статьи , расход'),
+                  20.h,
+                  PieChartSection(data: expenseData),
+                  20.h,
+                  LegendSection(data: expenseData),
+                  40.h,
+                  DataTableSection(data: expenseData),
+                  40.h,
+                ],
+              ),
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
       ),
     );
   }
+
+  List<Map<String, dynamic>> _calculateTop6Reasons(
+    List<AllTransactionsModel> transactions,
+    List<IncomeExpenseReasons> reasons, {
+    required String type,
+  }) {
+    final Map<int, Decimal> totals = {};
+
+    for (var tx in transactions) {
+      if (tx.transactionType == type && tx.incomeExpenseReason != null) {
+        final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
+        totals[tx.incomeExpenseReason!] =
+            (totals[tx.incomeExpenseReason!] ?? Decimal.zero) + amount;
+      }
+    }
+
+    final sorted =
+        totals.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+
+    final totalAmount = sorted.fold<Decimal>(
+      Decimal.zero,
+      (prev, e) => prev + e.value,
+    );
+
+    // final Decimal hundred = Decimal.fromInt(100);
+
+    return sorted.take(6).map((entry) {
+      final reason = reasons.firstWhere(
+        (r) => r.id == entry.key,
+        orElse:
+            () => IncomeExpenseReasons(
+              id: entry.key,
+              name: 'Без названия',
+              type: type,
+              company: null,
+            ),
+      );
+
+      return {
+        'name': reason.name,
+        'amount': entry.value.toString(),
+        'percent': totalAmount.toDouble(),
+      };
+    }).toList();
+  }
 }
 
-// Виджет с кнопками
 class ButtonsRow extends StatelessWidget {
   const ButtonsRow({super.key});
 
@@ -61,83 +132,47 @@ class ButtonsRow extends StatelessWidget {
   }
 }
 
-// Виджет с вкладками месяцев
 class MonthsTabs extends StatelessWidget {
   const MonthsTabs({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const months = [
+      'Январь',
+      'Февраль',
+      'Март',
+      'Апрель',
+      'Май',
+      'Июнь',
+      'Июль',
+      'Август',
+      'Сентябрь',
+      'Октябрь',
+      'Ноябрь',
+      'Декабрь',
+    ];
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Январь',
-            style: AppTextStyles.f12w400.copyWith(color: AppColors.greyColor),
-          ),
-          20.w,
-          Text(
-            'Февраль',
-            style: AppTextStyles.f12w400.copyWith(color: AppColors.greyColor),
-          ),
-          20.w,
-          Text(
-            'Март',
-            style: AppTextStyles.f12w400.copyWith(color: AppColors.greyColor),
-          ),
-          20.w,
-          Text(
-            'Апрель',
-            style: AppTextStyles.f12w400.copyWith(color: AppColors.greyColor),
-          ),
-          20.w,
-          Text(
-            'Май',
-            style: AppTextStyles.f12w400.copyWith(color: AppColors.greyColor),
-          ),
-          20.w,
-          Text(
-            'Июнь',
-            style: AppTextStyles.f12w400.copyWith(color: AppColors.greyColor),
-          ),
-          20.w,
-          Text(
-            'Июль',
-            style: AppTextStyles.f12w400.copyWith(color: AppColors.greyColor),
-          ),
-          20.w,
-          Text(
-            'Август',
-            style: AppTextStyles.f12w400.copyWith(color: AppColors.greyColor),
-          ),
-          20.w,
-          Text(
-            'Сентябрь',
-            style: AppTextStyles.f12w400.copyWith(color: AppColors.greyColor),
-          ),
-          20.w,
-          Text(
-            'Октябрь',
-            style: AppTextStyles.f12w400.copyWith(color: AppColors.greyColor),
-          ),
-          20.w,
-          Text(
-            'Ноябрь',
-            style: AppTextStyles.f12w400.copyWith(color: AppColors.greyColor),
-          ),
-          20.w,
-          Text(
-            'Декабрь',
-            style: AppTextStyles.f12w400.copyWith(color: AppColors.greyColor),
-          ),
-        ],
+        children:
+            months
+                .map(
+                  (m) => Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: Text(
+                      m,
+                      style: AppTextStyles.f12w400.copyWith(
+                        color: AppColors.greyColor,
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
       ),
     );
   }
 }
 
-// Заголовок
 class TitleSection extends StatelessWidget {
   const TitleSection({super.key, required this.title});
   final String title;
@@ -148,10 +183,9 @@ class TitleSection extends StatelessWidget {
   }
 }
 
-// Заглушка для диаграммы
-
 class PieChartSection extends StatelessWidget {
-  const PieChartSection({super.key});
+  const PieChartSection({super.key, required this.data});
+  final List<Map<String, dynamic>> data;
 
   @override
   Widget build(BuildContext context) {
@@ -161,71 +195,36 @@ class PieChartSection extends StatelessWidget {
         PieChartData(
           sectionsSpace: 2,
           centerSpaceRadius: MediaQuery.of(context).size.width * 0.16,
-          sections: _showingSections(context),
+          sections:
+              data.asMap().entries.map((entry) {
+                final color = _chartColors[entry.key % _chartColors.length];
+                final percent = entry.value['percent'] ?? 0.0;
+                return PieChartSectionData(
+                  color: color,
+                  value: percent,
+                  title: '${percent.toStringAsFixed(0)}%',
+                  radius: MediaQuery.of(context).size.width * 0.2,
+                );
+              }).toList(),
         ),
       ),
     );
   }
-
-  List<PieChartSectionData> _showingSections(BuildContext context) {
-    const double value = 34;
-    return [
-      PieChartSectionData(
-        color: Color(0xFF7B37B5),
-        value: value,
-        title: '34%',
-        radius: MediaQuery.of(context).size.width * 0.2,
-      ),
-      PieChartSectionData(
-        color: Color(0xFFF219A2),
-        value: value,
-        title: '34%',
-        radius: MediaQuery.of(context).size.width * 0.2,
-      ),
-      PieChartSectionData(
-        color: Color(0xFF156CB1),
-        value: value,
-        title: '34%',
-        radius: MediaQuery.of(context).size.width * 0.25,
-      ),
-      PieChartSectionData(
-        color: Color(0xFFCCC9AA),
-        value: 50,
-        title: '34%',
-        radius: MediaQuery.of(context).size.width * 0.2,
-      ),
-      PieChartSectionData(
-        color: Color(0xFF1EBF93),
-        value: 50,
-        title: '34%',
-        radius: MediaQuery.of(context).size.width * 0.2,
-      ),
-      PieChartSectionData(
-        color: Color(0xFFFCA12C),
-        value: value,
-        title: '34%',
-        radius: MediaQuery.of(context).size.width * 0.2,
-      ),
-    ];
-  }
 }
 
-// Легенда
 class LegendSection extends StatelessWidget {
-  const LegendSection({super.key});
+  const LegendSection({super.key, required this.data});
+  final List<Map<String, dynamic>> data;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
-        LegendItem(color: Color(0xFF7B37B5), text: 'Открытие ИП'),
-        LegendItem(color: Color(0xFFF219A2), text: 'Открытие ОсОО'),
-        LegendItem(color: Color(0xFF156CB1), text: 'Доход от продажи'),
-        LegendItem(color: Color(0xFFCCC9AA), text: 'Гражданское дело'),
-        LegendItem(color: Color(0xFF1EBF93), text: 'Инвестиции'),
-        LegendItem(color: Color(0xFFFCA12C), text: 'Выручка'),
-      ],
+      children:
+          data.asMap().entries.map((entry) {
+            final color = _chartColors[entry.key % _chartColors.length];
+            return LegendItem(color: color, text: entry.value['name']);
+          }).toList(),
     );
   }
 }
@@ -251,27 +250,12 @@ class LegendItem extends StatelessWidget {
   }
 }
 
-// Таблица с данными
 class DataTableSection extends StatelessWidget {
-  const DataTableSection({super.key});
+  const DataTableSection({super.key, required this.data});
+  final List<Map<String, dynamic>> data;
 
   @override
   Widget build(BuildContext context) {
-    final int rowsPerPage = 5;
-    int currentPage = 1;
-    final List<Map<String, String>> data = List.generate(223, (index) {
-      return {
-        '№': '${index + 1}',
-        'Статья дохода': 'Доход от продажи',
-        'Сумма (сом)': '444544',
-        'Процент': '34%',
-      };
-    });
-
-    final start = (currentPage - 1) * rowsPerPage;
-    final end = (start + rowsPerPage).clamp(0, data.length);
-    final paginatedData = data.sublist(start, end);
-
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: DataTable(
@@ -284,18 +268,21 @@ class DataTableSection extends StatelessWidget {
         dataRowColor: WidgetStateProperty.all(Colors.white),
         columns: const [
           DataColumn(label: Text('№')),
-          DataColumn(label: Text('Статья дохода')),
+          DataColumn(label: Text('Статья')),
           DataColumn(label: Text('Сумма (сом)')),
           DataColumn(label: Text('Процент')),
         ],
         rows:
-            paginatedData.map((row) {
+            data.asMap().entries.map((entry) {
+              final row = entry.value;
               return DataRow(
                 cells: [
-                  DataCell(Text(row['№']!)),
-                  DataCell(Text(row['Статья дохода']!)),
-                  DataCell(Text(row['Сумма (сом)']!)),
-                  DataCell(Text(row['Процент']!)),
+                  DataCell(Text('${entry.key + 1}')),
+                  DataCell(Text(row['name'] ?? '')),
+                  DataCell(Text(row['amount'] ?? '')),
+                  DataCell(
+                    Text('${(row['percent'] ?? 0.0).toStringAsFixed(0)}%'),
+                  ),
                 ],
               );
             }).toList(),
@@ -303,3 +290,12 @@ class DataTableSection extends StatelessWidget {
     );
   }
 }
+
+const List<Color> _chartColors = [
+  Color(0xFF7B37B5),
+  Color(0xFFF219A2),
+  Color(0xFF156CB1),
+  Color(0xFFCCC9AA),
+  Color(0xFF1EBF93),
+  Color(0xFFFCA12C),
+];
