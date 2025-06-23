@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
+import 'package:aps_mobile/src/feature/income/presentation/cubit/income_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -12,16 +14,11 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  // bool showTable = false;
-
-  // Пример данных таблицы
-  final List<Map<String, String>> accounts = [
-    {'name': 'Бакaй банк', 'type': 'банк'},
-    {'name': 'Офис касса', 'type': 'касса'},
-    {'name': 'Офис касса', 'type': 'касса'},
-    {'name': 'Офис касса', 'type': 'касса'},
-    {'name': 'Офис касса', 'type': 'касса'},
-  ];
+  @override
+  void initState() {
+    context.read<MenuCubit>().getAccounts();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,44 +28,76 @@ class _AccountPageState extends State<AccountPage> {
         title: 'Счета',
         backgroundColor: AppColors.backroundColor,
       ),
-      body: Column(
-        children: [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: AppColors.backroundColor,
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
+      body: BlocBuilder<IncomeCubit, IncomeState>(
+        builder: (context, state) {
+          if (state.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state.error != null) {
+            return Center(child: Text('Ошибка: }'));
+          }
+          if (state.accounts.isNotEmpty) {
+            final accounts = state.accounts;
+
+            // final totalBalance = transactions.fold<double>(
+            //   0,
+            //   (sum, item) => sum + (item.currentBalance ?? 0),
+            // );
+
+            if (accounts.isEmpty) {
+              return const Center(child: Text('Нет транзакций'));
+            }
+            return _buildTableSection(context, accounts);
+          }
+          // MenuInitial
+          return const SizedBox.shrink();
+        },
+      ),
+    );
+  }
+
+  Column _buildTableSection(BuildContext context, List<AccountModel> account) {
+    final hasAccount = account.isNotEmpty;
+    return Column(
+      children: [
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.backroundColor,
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(20),
+              bottomRight: Radius.circular(20),
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                children: [
-                  20.h,
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.pushNamed(context, AppRoutes.addAccount);
-                          },
-                          label: const Text(
-                            'Добавить счет',
-                            style: AppTextStyles.f16w500,
-                          ),
-                          icon: const Icon(Icons.add, size: 20),
-                          iconAlignment: IconAlignment.end,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primaryColorLight,
-                            foregroundColor: Colors.white,
-                            fixedSize: const Size(double.infinity, 48),
-                          ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Column(
+              children: [
+                20.h,
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.pushNamed(context, AppRoutes.addAccount);
+                        },
+                        label: const Text(
+                          'Добавить счет',
+                          style: AppTextStyles.f16w500,
+                        ),
+                        icon: const Icon(Icons.add, size: 20),
+                        iconAlignment: IconAlignment.end,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryColorLight,
+                          foregroundColor: Colors.white,
+                          fixedSize: const Size(double.infinity, 48),
                         ),
                       ),
-                    ],
-                  ),
-                  12.h,
+                    ),
+                  ],
+                ),
+                12.h,
+
+                if (hasAccount)
                   Row(
                     children: [
                       OutlinedButtonWidget(
@@ -82,13 +111,14 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                     ],
                   ),
-                  20.h,
-                ],
-              ),
+                20.h,
+              ],
             ),
           ),
-          12.h,
+        ),
+        12.h,
 
+        if (hasAccount)
           Container(
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black, width: 0.1),
@@ -112,14 +142,17 @@ class _AccountPageState extends State<AccountPage> {
                 DataColumn(label: Text('')), // для меню с тремя точками
               ],
               rows:
-                  accounts.map((account) {
+                  account.map((account) {
                     return DataRow(
                       cells: [
                         DataCell(
-                          Text(account['name']!, style: AppTextStyles.f16w500),
+                          Text(account.name, style: AppTextStyles.f16w500),
                         ),
                         DataCell(
-                          Text(account['type']!, style: AppTextStyles.f16w500),
+                          Text(
+                            account.accountType,
+                            style: AppTextStyles.f16w500,
+                          ),
                         ),
 
                         DataCell(
@@ -128,10 +161,10 @@ class _AccountPageState extends State<AccountPage> {
                             tapDelete: () {
                               ShowSheet().showDeleteDialog(
                                 context,
-                                accountName: account['name']!,
+                                accountName: account.name,
 
                                 onConfirm: () {
-                                  log('Удаляем: ${account['name']}');
+                                  log('Удаляем: ${account.name}}');
                                 },
                                 title: 'Удалить счет',
                               );
@@ -148,9 +181,15 @@ class _AccountPageState extends State<AccountPage> {
                     );
                   }).toList(),
             ),
+          )
+        else
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.only(top: 50),
+              child: Text('Нет cчетов', style: AppTextStyles.f16w500),
+            ),
           ),
-        ],
-      ),
+      ],
     );
   }
 }

@@ -4,8 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class MainAccountPage extends StatelessWidget {
+class MainAccountPage extends StatefulWidget {
   const MainAccountPage({super.key});
+
+  @override
+  State<MainAccountPage> createState() => _MainAccountPageState();
+}
+
+class _MainAccountPageState extends State<MainAccountPage> {
+  @override
+  initState() {
+    context.read<IncomeCubit>().getAccount();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,12 +156,4 @@ class MainAccountPage extends StatelessWidget {
       ),
     );
   }
-
-  // String _calculateTotalBalance(List<AccountModel> accounts) {
-  //   final total = accounts.fold<double>(
-  //     0,
-  //     (sum, acc) => sum + (acc.balance ?? 0),
-  //   );
-  //   return '${total.toStringAsFixed(0)} c';
-  // }
 }
