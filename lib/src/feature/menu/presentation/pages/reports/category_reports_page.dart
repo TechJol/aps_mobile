@@ -5,8 +5,15 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CategoryReportsPage extends StatelessWidget {
+class CategoryReportsPage extends StatefulWidget {
   const CategoryReportsPage({super.key});
+
+  @override
+  _CategoryReportsPageState createState() => _CategoryReportsPageState();
+}
+
+class _CategoryReportsPageState extends State<CategoryReportsPage> {
+  String selectedMonth = '1'; // Месяц по умолчанию (январь)
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +34,19 @@ class CategoryReportsPage extends StatelessWidget {
               state.transactions,
               state.reasons,
               type: 'income',
+              month: selectedMonth, // Передаем выбранный месяц
             );
 
             final expenseData = _calculateTop6Reasons(
               state.transactions,
               state.reasons,
               type: 'expense',
+              month: selectedMonth, // Передаем выбранный месяц
             );
+
+            // Проверка наличия данных для дохода и расхода
+            bool hasIncomeData = incomeData.isNotEmpty;
+            bool hasExpenseData = expenseData.isNotEmpty;
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -42,24 +55,36 @@ class CategoryReportsPage extends StatelessWidget {
                   20.h,
                   ButtonsRow(),
                   20.h,
-                  MonthsTabs(),
+                  MonthsTabs(
+                    selectedMonth: selectedMonth,
+                    onMonthSelected: (month) {
+                      setState(() {
+                        selectedMonth = month;
+                      });
+                    },
+                  ),
                   20.h,
-                  TitleSection(title: 'Основные статьи , доход'),
-                  20.h,
-                  PieChartSection(data: incomeData),
-                  20.h,
-                  LegendSection(data: incomeData),
-                  40.h,
-                  DataTableSection(data: incomeData),
-                  40.h,
-                  TitleSection(title: 'Основные статьи , расход'),
-                  20.h,
-                  PieChartSection(data: expenseData),
-                  20.h,
-                  LegendSection(data: expenseData),
-                  40.h,
-                  DataTableSection(data: expenseData),
-                  40.h,
+
+                  hasIncomeData || hasExpenseData
+                      ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TitleSection(title: 'Основные статьи , доход'),
+                          PieChartSection(data: incomeData),
+                          20.h,
+                          LegendSection(data: incomeData),
+                          20.h,
+                          DataTableSection(data: incomeData),
+                          40.h,
+                          TitleSection(title: 'Основные статьи , расход'),
+                          PieChartSection(data: expenseData),
+                          20.h,
+                          LegendSection(data: expenseData),
+                          40.h,
+                          DataTableSection(data: expenseData),
+                        ],
+                      )
+                      : Center(child: Text("Нет данных за выбранный месяц")),
                 ],
               ),
             );
@@ -75,45 +100,127 @@ class CategoryReportsPage extends StatelessWidget {
     List<AllTransactionsModel> transactions,
     List<IncomeExpenseReasons> reasons, {
     required String type,
+    required String month,
   }) {
-    final Map<int, Decimal> totals = {};
+    final Map<String, Map<int, Decimal>> monthlyTotals = {};
 
     for (var tx in transactions) {
       if (tx.transactionType == type && tx.incomeExpenseReason != null) {
         final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
-        totals[tx.incomeExpenseReason!] =
-            (totals[tx.incomeExpenseReason!] ?? Decimal.zero) + amount;
+        final txMonth = DateTime.parse(tx.date!).month.toString();
+
+        if (txMonth == month) {
+          if (!monthlyTotals.containsKey(month)) {
+            monthlyTotals[month] = {};
+          }
+
+          monthlyTotals[month]?[tx.incomeExpenseReason!] =
+              (monthlyTotals[month]?[tx.incomeExpenseReason!] ?? Decimal.zero) +
+              amount;
+        }
       }
     }
 
-    final sorted =
-        totals.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+    // Если нет данных, возвращаем пустой список
+    if (monthlyTotals.isEmpty || monthlyTotals[month] == null) {
+      return [];
+    }
 
-    final totalAmount = sorted.fold<Decimal>(
-      Decimal.zero,
-      (prev, e) => prev + e.value,
-    );
+    final sortedMonths = monthlyTotals.keys.toList()..sort();
 
-    // final Decimal hundred = Decimal.fromInt(100);
+    return sortedMonths.expand((month) {
+      final monthlyData = monthlyTotals[month]!;
+      Decimal totalAmount = Decimal.zero;
 
-    return sorted.take(6).map((entry) {
-      final reason = reasons.firstWhere(
-        (r) => r.id == entry.key,
-        orElse:
-            () => IncomeExpenseReasons(
-              id: entry.key,
-              name: 'Без названия',
-              type: type,
-              company: null,
-            ),
-      );
+      monthlyData.forEach((key, value) {
+        totalAmount += value;
+      });
 
-      return {
-        'name': reason.name,
-        'amount': entry.value.toString(),
-        'percent': totalAmount.toDouble(),
-      };
+      final sorted =
+          monthlyData.entries.toList()
+            ..sort((a, b) => b.value.compareTo(a.value));
+
+      return sorted.take(6).map((entry) {
+        final reason = reasons.firstWhere(
+          (r) => r.id == entry.key,
+          orElse:
+              () => IncomeExpenseReasons(
+                id: entry.key,
+                name: 'Без названия',
+                type: type,
+                company: null,
+              ),
+        );
+
+        final Decimal value = entry.value;
+        final Decimal percent = (totalAmount / 100.toDecimal()).toDecimal();
+
+        return {
+          'month': month,
+          'name': reason.name,
+          'amount': type == 'expense' ? (-value).toString() : value.toString(),
+          'percent': percent,
+        };
+      }).toList();
     }).toList();
+  }
+}
+
+class MonthsTabs extends StatelessWidget {
+  const MonthsTabs({
+    super.key,
+    required this.onMonthSelected,
+    required this.selectedMonth,
+  });
+
+  final Function(String) onMonthSelected;
+  final String selectedMonth;
+
+  @override
+  Widget build(BuildContext context) {
+    const months = [
+      'Январь',
+      'Февраль',
+      'Март',
+      'Апрель',
+      'Май',
+      'Июнь',
+      'Июль',
+      'Август',
+      'Сентябрь',
+      'Октябрь',
+      'Ноябрь',
+      'Декабрь',
+    ];
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children:
+            months.asMap().entries.map((entry) {
+              String monthNumber = (entry.key + 1).toString();
+              bool isSelected = monthNumber == selectedMonth;
+
+              return Padding(
+                padding: const EdgeInsets.only(right: 20),
+                child: GestureDetector(
+                  onTap: () => onMonthSelected(monthNumber),
+                  child: Text(
+                    entry.value,
+                    style: AppTextStyles.f12w400.copyWith(
+                      color:
+                          isSelected
+                              ? AppColors.primaryColor
+                              : AppColors.greyColor,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.normal,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+      ),
+    );
   }
 }
 
@@ -132,57 +239,6 @@ class ButtonsRow extends StatelessWidget {
   }
 }
 
-class MonthsTabs extends StatelessWidget {
-  const MonthsTabs({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    const months = [
-      'Январь',
-      'Февраль',
-      'Март',
-      'Апрель',
-      'Май',
-      'Июнь',
-      'Июль',
-      'Август',
-      'Сентябрь',
-      'Октябрь',
-      'Ноябрь',
-      'Декабрь',
-    ];
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children:
-            months
-                .map(
-                  (m) => Padding(
-                    padding: const EdgeInsets.only(right: 20),
-                    child: Text(
-                      m,
-                      style: AppTextStyles.f12w400.copyWith(
-                        color: AppColors.greyColor,
-                      ),
-                    ),
-                  ),
-                )
-                .toList(),
-      ),
-    );
-  }
-}
-
-class TitleSection extends StatelessWidget {
-  const TitleSection({super.key, required this.title});
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(title, style: AppTextStyles.f16w500);
-  }
-}
-
 class PieChartSection extends StatelessWidget {
   const PieChartSection({super.key, required this.data});
   final List<Map<String, dynamic>> data;
@@ -198,11 +254,13 @@ class PieChartSection extends StatelessWidget {
           sections:
               data.asMap().entries.map((entry) {
                 final color = _chartColors[entry.key % _chartColors.length];
-                final percent = entry.value['percent'] ?? 0.0;
+                final percent =
+                    (entry.value['percent'] as Decimal)
+                        .toDouble(); // Преобразование в double
                 return PieChartSectionData(
                   color: color,
                   value: percent,
-                  title: '${percent.toStringAsFixed(0)}%',
+                  title: '${percent.toStringAsFixed(2)}%',
                   radius: MediaQuery.of(context).size.width * 0.2,
                 );
               }).toList(),
@@ -288,6 +346,16 @@ class DataTableSection extends StatelessWidget {
             }).toList(),
       ),
     );
+  }
+}
+
+class TitleSection extends StatelessWidget {
+  const TitleSection({super.key, required this.title});
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(title, style: AppTextStyles.f16w500);
   }
 }
 
