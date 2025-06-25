@@ -1,6 +1,9 @@
 import 'package:aps_mobile/src/core/core.dart';
+import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:decimal/decimal.dart';
 
 class MonthlyReportPage extends StatelessWidget {
   const MonthlyReportPage({super.key});
@@ -10,46 +13,114 @@ class MonthlyReportPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Meсячный отчет',
+        title: 'Месячный отчет',
         backgroundColor: AppColors.whiteColor,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: ListView(
-          children: [
-            20.h,
-            Row(
-              children: [
-                OutlinedButtonWidget(text: 'Распечатать', onPressed: () {}),
-                SizedBox(width: 12),
-                OutlinedButtonWidget(text: 'Скачать в Excel', onPressed: () {}),
-              ],
-            ),
-            20.h,
-            buildMonthsTabs(),
-            20.h,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: BlocBuilder<MenuCubit, MenuState>(
+          builder: (context, state) {
+            if (state is MenuLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state is MenuTransactionsWithAccountsSuccess) {
+              final transactions = state.transactions;
+              final reasons = state.reasons;
+
+              // Месячные агрегированные данные (доход, расход и чистый доход)
+              final Map<String, Map<String, Decimal>> monthlyData = {};
+
+              for (var tx in transactions) {
+                final month = DateTime.parse(
+                  tx.date!,
+                ).toString().substring(0, 7); // Формат YYYY-MM
+                final amount =
+                    Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
+                final type = tx.transactionType;
+
+                if (!monthlyData.containsKey(month)) {
+                  monthlyData[month] = {
+                    'income': Decimal.zero,
+                    'expense': Decimal.zero,
+                    'balance': Decimal.zero,
+                  };
+                }
+
+                if (type == 'income') {
+                  monthlyData[month]?['income'] =
+                      (monthlyData[month]?['income'] ?? Decimal.zero) + amount;
+                } else if (type == 'expense') {
+                  monthlyData[month]?['expense'] =
+                      (monthlyData[month]?['expense'] ?? Decimal.zero) + amount;
+                }
+              }
+
+              // Вычисляем чистый доход по каждому месяцу
+              monthlyData.forEach((month, data) {
+                data['balance'] = data['income']! - data['expense']!;
+              });
+
+              final data =
+                  monthlyData.entries.map((entry) {
+                    return {
+                      'month': entry.key,
+                      'income': entry.value['income'].toString(),
+                      'expense': entry.value['expense'].toString(),
+                      'balance': entry.value['balance'].toString(),
+                    };
+                  }).toList();
+
+              // Получаем данные для динамической легенды
+              final dynamicLegendData = _getLegendDataFromAPI(reasons);
+
+              return ListView(
                 children: [
-                  Text('Доход', style: AppTextStyles.f16w500),
                   20.h,
+                  Row(
+                    children: [
+                      OutlinedButtonWidget(
+                        text: 'Распечатать',
+                        onPressed: () {},
+                      ),
+                      SizedBox(width: 12),
+                      OutlinedButtonWidget(
+                        text: 'Скачать в Excel',
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
                   20.h,
-                  MonthlyReportChart(),
+                  buildMonthsTabs(),
                   20.h,
-                  _legendSection(),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Доход', style: AppTextStyles.f16w500),
+                        20.h,
+                        MonthlyReportChart(),
+                        20.h,
+                        // Динамическая легенда
+                        _dynamicLegendSection(dynamicLegendData),
+                      ],
+                    ),
+                  ),
+                  40.h,
+                  _dataTableSection(data),
                 ],
-              ),
-            ),
-            40.h,
-            _dataTableSection(),
-          ],
+              );
+            }
+
+            return const SizedBox.shrink();
+          },
         ),
       ),
     );
   }
 
+  // Месячные табы
   Widget buildMonthsTabs() {
     final months = [
       'Январь',
@@ -88,26 +159,23 @@ class MonthlyReportPage extends StatelessWidget {
     );
   }
 
-  _legendSection() {
+  // Динамическая легенда
+  _dynamicLegendSection(List<Map<String, String>> dynamicLegendData) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _legendItem(color: Color(0xFF7B37B5), text: 'Открытие ИП'),
-        _legendItem(color: Color(0xFFF219A2), text: 'Открытие ОсОО'),
-        _legendItem(color: Color(0xFF156CB1), text: 'Доход от продажи'),
-        _legendItem(color: Color(0xFFCCC9AA), text: 'Гражданское дело'),
-        _legendItem(color: Color(0xFF1EBF93), text: 'Инвестиции'),
-        _legendItem(color: Color(0xFFFCA12C), text: 'Выручка'),
-      ],
+      children:
+          dynamicLegendData.map<Widget>((item) {
+            return _legendItem(color: item['color']!, text: item['name']!);
+          }).toList(),
     );
   }
 
-  _legendItem({required Color color, required String text}) {
+  _legendItem({required String color, required String text}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Container(width: 16, height: 16, color: color),
+          Container(width: 16, height: 16, color: Color(int.parse(color))),
           const SizedBox(width: 8),
           Text(text, style: AppTextStyles.f14w500),
         ],
@@ -115,18 +183,37 @@ class MonthlyReportPage extends StatelessWidget {
     );
   }
 
-  _dataTableSection() {
+  // Получить данные для динамической легенды
+  List<Map<String, String>> _getLegendDataFromAPI(
+    List<IncomeExpenseReasons> reasons,
+  ) {
+    final List<Map<String, String>> legendData = [];
+
+    // Определение цветов, которые будут использованы в порядке
+    final List<String> colors = [
+      '0xFF7B37B5', // фиолетовый
+      '0xFFF219A2', // розовый
+      '0xFF156CB1', // синий
+      '0xFFCCC9AA', // бежевый
+      '0xFF1EBF93', // зеленый
+      '0xFFFCA12C', // оранжевый
+    ];
+
+    for (var i = 0; i < reasons.length; i++) {
+      // Применяем цвета по порядку для каждой статьи
+      legendData.add({
+        'name': reasons[i].name,
+        'color': colors[i % colors.length], // цикличное применение цветов
+      });
+    }
+
+    return legendData;
+  }
+
+  // Данные таблицы
+  _dataTableSection(List<Map<String, String>> data) {
     final int rowsPerPage = 10;
     int currentPage = 1;
-
-    final List<Map<String, String>> data = List.generate(223, (index) {
-      return {
-        'Месяц': '2024-10',
-        'Доход (KGZ)': '120037,00',
-        'Расход (KGZ)': '9999',
-        'Чистый доход (KGZ)': '156666',
-      };
-    });
 
     final start = (currentPage - 1) * rowsPerPage;
     final end = (start + rowsPerPage).clamp(0, data.length);
@@ -152,22 +239,22 @@ class MonthlyReportPage extends StatelessWidget {
             paginatedData.map((row) {
               return DataRow(
                 cells: [
-                  DataCell(Text(row['Месяц']!)),
+                  DataCell(Text(row['month']!)),
                   DataCell(
                     Text(
-                      row['Доход (KGZ)']!,
+                      row['income']!,
                       style: TextStyle(color: AppColors.greenColor),
                     ),
                   ),
                   DataCell(
                     Text(
-                      row['Расход (KGZ)']!,
+                      row['expense']!,
                       style: TextStyle(color: AppColors.redColor),
                     ),
                   ),
                   DataCell(
                     Text(
-                      row['Чистый доход (KGZ)']!,
+                      row['balance']!,
                       style: TextStyle(color: AppColors.greenColor),
                     ),
                   ),
@@ -252,7 +339,6 @@ class MonthlyReportChart extends StatelessWidget {
                     },
                   ),
                 ),
-
                 rightTitles: AxisTitles(
                   sideTitles: SideTitles(showTitles: false),
                 ),
@@ -272,7 +358,6 @@ class MonthlyReportChart extends StatelessWidget {
                   ),
                 ),
               ),
-
               barGroups: List.generate(days.length, (index) {
                 final vals = data[index];
                 double sum = 0;

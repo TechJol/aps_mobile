@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:decimal/decimal.dart';
@@ -338,9 +340,7 @@ class DataTableSection extends StatelessWidget {
                   DataCell(Text('${entry.key + 1}')),
                   DataCell(Text(row['name'] ?? '')),
                   DataCell(Text(row['amount'] ?? '')),
-                  DataCell(
-                    Text('${(row['percent'] ?? 0.0).toStringAsFixed(0)}%'),
-                  ),
+                  DataCell(Text('${(row['percent'] ?? 0.0)}%')),
                 ],
               );
             }).toList(),
