@@ -15,7 +15,10 @@ class IncomeExpenseSummaryPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: ListView(
-          children: [20.h, DataTableSectionA(), 40.h, DataTableSectionB()],
+          children: [
+            20.h, DataTableSectionA(), 40.h,
+            //DataTableSectionB(),
+          ],
         ),
       ),
     );
@@ -87,75 +90,75 @@ class DataTableSectionA extends StatelessWidget {
   }
 }
 
-class DataTableSectionB extends StatelessWidget {
-  const DataTableSectionB({super.key});
+// class DataTableSectionB extends StatelessWidget {
+//   const DataTableSectionB({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    final int rowsPerPage = 5;
-    int currentPage = 1;
-    final List<Map<String, String>> data = List.generate(223, (index) {
-      return {
-        'Валюта': 'USD',
-        'Курс к KGZ': '47,45',
-        'Дата обн.': '1 мая 2025',
-      };
-    });
+//   @override
+//   Widget build(BuildContext context) {
+//     final int rowsPerPage = 5;
+//     int currentPage = 1;
+//     final List<Map<String, String>> data = List.generate(223, (index) {
+//       return {
+//         'Валюта': 'USD',
+//         'Курс к KGZ': '47,45',
+//         'Дата обн.': '1 мая 2025',
+//       };
+//     });
 
-    final start = (currentPage - 1) * rowsPerPage;
-    final end = (start + rowsPerPage).clamp(0, data.length);
-    final paginatedData = data.sublist(start, end);
+//     final start = (currentPage - 1) * rowsPerPage;
+//     final end = (start + rowsPerPage).clamp(0, data.length);
+//     final paginatedData = data.sublist(start, end);
 
-    return SizedBox(
-      width: double.infinity,
-      child: DataTable(
-        headingRowColor: WidgetStateProperty.all(AppColors.blackColor),
-        headingTextStyle: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-        dataRowColor: WidgetStateProperty.all(Colors.white),
-        columns: [
-          DataColumn(label: const Text('Валюта', textAlign: TextAlign.center)),
-          DataColumn(
-            label: const Text('Курс к KGZ', textAlign: TextAlign.center),
-          ),
-          DataColumn(
-            label: const Text('Дата обн.', textAlign: TextAlign.center),
-          ),
-        ],
-        rows:
-            paginatedData.map((row) {
-              return DataRow(
-                cells: [
-                  DataCell(
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(row['Валюта']!, textAlign: TextAlign.center),
-                    ),
-                  ),
-                  DataCell(
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        row['Курс к KGZ']!,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        row['Дата обн.']!,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            }).toList(),
-      ),
-    );
-  }
-}
+//     return SizedBox(
+//       width: double.infinity,
+//       child: DataTable(
+//         headingRowColor: WidgetStateProperty.all(AppColors.blackColor),
+//         headingTextStyle: const TextStyle(
+//           color: Colors.white,
+//           fontWeight: FontWeight.bold,
+//         ),
+//         dataRowColor: WidgetStateProperty.all(Colors.white),
+//         columns: [
+//           DataColumn(label: const Text('Валюта', textAlign: TextAlign.center)),
+//           DataColumn(
+//             label: const Text('Курс к KGZ', textAlign: TextAlign.center),
+//           ),
+//           DataColumn(
+//             label: const Text('Дата обн.', textAlign: TextAlign.center),
+//           ),
+//         ],
+//         rows:
+//             paginatedData.map((row) {
+//               return DataRow(
+//                 cells: [
+//                   DataCell(
+//                     Align(
+//                       alignment: Alignment.centerLeft,
+//                       child: Text(row['Валюта']!, textAlign: TextAlign.center),
+//                     ),
+//                   ),
+//                   DataCell(
+//                     Align(
+//                       alignment: Alignment.centerLeft,
+//                       child: Text(
+//                         row['Курс к KGZ']!,
+//                         textAlign: TextAlign.center,
+//                       ),
+//                     ),
+//                   ),
+//                   DataCell(
+//                     Align(
+//                       alignment: Alignment.centerRight,
+//                       child: Text(
+//                         row['Дата обн.']!,
+//                         textAlign: TextAlign.center,
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               );
+//             }).toList(),
+//       ),
+//     );
+//   }
+// }
