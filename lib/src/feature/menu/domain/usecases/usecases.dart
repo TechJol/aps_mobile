@@ -15,3 +15,4 @@ export 'get_reasons_usecase.dart';
 export 'post_reason_usecase.dart';
 export 'delete_reason_usecase.dart';
 export 'update_reason_usecase.dart';
+export 'update_transaction_usecase.dart';

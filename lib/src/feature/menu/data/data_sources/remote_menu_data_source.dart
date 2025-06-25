@@ -4,6 +4,8 @@ import 'package:dartz/dartz.dart';
 abstract class RemoteMenuDataSource {
   Future<Either> getTransactions();
 
+  Future<Either> updateTransaction(AllTransactionsModel transaction, int id);
+
   Future<Either> getPartners();
 
   Future<Either> deletePartner(int id);

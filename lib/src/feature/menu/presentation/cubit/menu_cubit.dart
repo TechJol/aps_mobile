@@ -7,6 +7,7 @@ part 'menu_state.dart';
 
 class MenuCubit extends Cubit<MenuState> {
   final GetTransactionsUsecase getTransactionsUsecase;
+  final UpdateTransactionUsecase updateTransactionUsecase;
   final GetPartnersUsecase getPartnersUsecase;
   final DeletePartnerUsecase deletePartnerUsecase;
   final PostPartnerUsecase postPartnerUsecase;
@@ -26,6 +27,7 @@ class MenuCubit extends Cubit<MenuState> {
 
   MenuCubit({
     required this.getTransactionsUsecase,
+    required this.updateTransactionUsecase,
     required this.getPartnersUsecase,
     required this.deletePartnerUsecase,
     required this.postPartnerUsecase,
@@ -305,6 +307,33 @@ class MenuCubit extends Cubit<MenuState> {
     final part = PartnerTypesModel(name: partnerType.name, company: companyId);
 
     final result = await updatePartnerTypeUsecase.call(part, id);
+    result.fold(
+      (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
+      (r) {},
+    );
+  }
+
+  Future<void> updateTransaction(
+    AllTransactionsModel transaction,
+    int id,
+  ) async {
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    final companyId = storage.getInt('companyId');
+
+    final trans = AllTransactionsModel(
+      amount: transaction.amount,
+      date: transaction.date,
+      incomeExpenseReason: transaction.incomeExpenseReason,
+      kgsCurrencyAmount: transaction.kgsCurrencyAmount,
+      partner: transaction.partner,
+      transactionType: transaction.transactionType,
+      description: transaction.description,
+      company: companyId,
+      currency: transaction.currency,
+      account: transaction.account,
+      partners: transaction.partners,
+    );
+    final result = await updateTransactionUsecase.call(trans, id);
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
       (r) {},

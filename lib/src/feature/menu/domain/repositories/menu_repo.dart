@@ -4,6 +4,8 @@ import 'package:dartz/dartz.dart';
 abstract class MenuRepository {
   Future<Either> getTransactions();
 
+  Future<Either> updateTransaction(AllTransactionsModel transaction, int id);
+
   Future<Either> getPartners();
 
   Future<Either> postPartner(PartnersModel partner);

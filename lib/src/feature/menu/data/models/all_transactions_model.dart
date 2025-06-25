@@ -13,16 +13,16 @@ class AllTransactionsModel {
   final int? incomeExpenseReason;
 
   AllTransactionsModel({
-    required this.id, //
+    this.id, //
     required this.currency, //
     required this.date, //
     required this.amount, //
     this.kgsCurrencyAmount,
     required this.transactionType, //
-    required this.description, //
+    this.description, //
     this.company,
     required this.account, //
-    required this.partner, //
+    this.partner, //
     this.partners,
     required this.incomeExpenseReason, //
   });
