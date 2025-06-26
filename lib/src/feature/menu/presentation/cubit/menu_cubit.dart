@@ -25,6 +25,9 @@ class MenuCubit extends Cubit<MenuState> {
   final UpdateReasonUsecase updateReasonUsecase;
   final DeleteReasonUsecase deleteReasonUsecase;
 
+  List<PartnersModel> partners = [];
+  List<PartnerTypesModel> partnerTypes = [];
+
   MenuCubit({
     required this.getTransactionsUsecase,
     required this.updateTransactionUsecase,
@@ -206,6 +209,7 @@ class MenuCubit extends Cubit<MenuState> {
     result.fold((l) => emit(DeleteError(error: l)), (r) => getReasons());
   }
 
+  // Загрузка данных о партнерах и типах партнеров
   Future<void> getPartnerData() async {
     emit(MenuLoading());
 
@@ -232,7 +236,32 @@ class MenuCubit extends Cubit<MenuState> {
             .map((e) => PartnerTypesModel.fromMap(e))
             .toList();
 
+    this.partners = partners;
+    partnerTypes = types;
+
+    // Передаем данные о партнерах и типах
     emit(MenuPartnerDataSuccess(partners: partners, partnerTypes: types));
+  }
+
+  void filterPartnersByType(int selectedType) {
+    // Фильтруем партнеров по выбранному типу
+    final filtered =
+        partners
+            .where(
+              (partner) => partner.type == selectedType,
+            ) // Сравниваем строковые значения типа
+            .toList();
+
+    print('Filtered Partners: $filtered'); // Логируем отфильтрованные данные
+
+    // Эмитим успешное состояние с отфильтрованными партнерами
+    emit(
+      MenuPartnerDataSuccess(
+        partners: partners,
+        partnerTypes: partnerTypes,
+        filteredPartners: filtered,
+      ),
+    );
   }
 
   Future<void> deletePartner(int id) async {

@@ -54,14 +54,20 @@ final class MenuPartnerTypesSuccess extends MenuState {
 final class MenuPartnerDataSuccess extends MenuState {
   final List<PartnersModel>? partners;
   final List<PartnerTypesModel>? partnerTypes;
+  final List<PartnersModel>? filteredPartners;
 
   const MenuPartnerDataSuccess({
     required this.partners,
     required this.partnerTypes,
+    this.filteredPartners = const [],
   });
 
   @override
-  List<Object> get props => [partners ?? [], partnerTypes ?? []];
+  List<Object> get props => [
+    partners ?? [],
+    partnerTypes ?? [],
+    filteredPartners ?? [],
+  ];
 }
 
 final class MenuAccountsSuccess extends MenuState {

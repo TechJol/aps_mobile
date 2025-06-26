@@ -189,9 +189,19 @@ class _OperationPageState extends State<OperationPage>
                                 curve: Curves.easeOut,
                               ),
                             ),
-                            child: _buildTransactionItem(
-                              dailyTxs[index],
-                              state.partners,
+                            child: GestureDetector(
+                              onTap: () {
+                                // Проверяем, если партнер не установлен
+                                ShowSheet().showAddPartnerSheed(
+                                  context,
+                                  onConfirm: () {},
+                                  title: 'title',
+                                );
+                              },
+                              child: _buildTransactionItem(
+                                dailyTxs[index],
+                                state.partners,
+                              ),
                             ),
                           );
                         });

@@ -50,6 +50,7 @@ Future<void> init() async {
       deleteReasonUsecase: sl.call(),
       updateReasonUsecase: sl.call(),
       postReasonUsecase: sl.call(),
+      updateTransactionUsecase: sl.call(),
     ),
   );
 
@@ -64,6 +65,9 @@ Future<void> init() async {
     () => GetIncomeExpenseReasonUsecase(repository: sl.call()),
   );
   sl.registerLazySingleton(() => GetTransactionsUsecase(repository: sl.call()));
+  sl.registerLazySingleton(
+    () => UpdateTransactionUsecase(repository: sl.call()),
+  );
   sl.registerLazySingleton(() => GetPartnersUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => DeletePartnerUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => PostPartnerUsecase(repository: sl.call()));
