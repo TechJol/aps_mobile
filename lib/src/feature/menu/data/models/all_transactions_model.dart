@@ -13,22 +13,53 @@ class AllTransactionsModel {
   final int? incomeExpenseReason;
 
   AllTransactionsModel({
-    this.id, //
-    required this.currency, //
-    required this.date, //
-    required this.amount, //
+    this.id,
+    required this.currency,
+    required this.date,
+    required this.amount,
     this.kgsCurrencyAmount,
-    required this.transactionType, //
-    this.description, //
+    required this.transactionType,
+    this.description,
     this.company,
-    required this.account, //
-    this.partner, //
+    required this.account,
+    this.partner,
     this.partners,
-    required this.incomeExpenseReason, //
+    required this.incomeExpenseReason,
   });
 
+  // Метод copyWith
+  AllTransactionsModel copyWith({
+    int? id,
+    String? currency,
+    String? date,
+    String? amount,
+    String? kgsCurrencyAmount,
+    String? transactionType,
+    String? description,
+    int? company,
+    int? account,
+    int? partner,
+    int? partners,
+    int? incomeExpenseReason,
+  }) {
+    return AllTransactionsModel(
+      id: id ?? this.id,
+      currency: currency ?? this.currency,
+      date: date ?? this.date,
+      amount: amount ?? this.amount,
+      kgsCurrencyAmount: kgsCurrencyAmount ?? this.kgsCurrencyAmount,
+      transactionType: transactionType ?? this.transactionType,
+      description: description ?? this.description,
+      company: company ?? this.company,
+      account: account ?? this.account,
+      partner: partner ?? this.partner,
+      partners: partners ?? this.partners,
+      incomeExpenseReason: incomeExpenseReason ?? this.incomeExpenseReason,
+    );
+  }
+
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+    return {
       'id': id,
       'currency': currency,
       'date': date,
@@ -46,28 +77,18 @@ class AllTransactionsModel {
 
   factory AllTransactionsModel.fromMap(Map<String, dynamic> map) {
     return AllTransactionsModel(
-      id: map['id'] != null ? map['id'] as int : null,
-      currency: map['currency'] != null ? map['currency'] as String : null,
-      date: map['date'] != null ? map['date'] as String : null,
-      amount: map['amount'] != null ? map['amount'] as String : null,
-      kgsCurrencyAmount:
-          map['kgs_currency_amount'] != null
-              ? map['kgs_currency_amount'] as String
-              : null,
-      transactionType:
-          map['transaction_type'] != null
-              ? map['transaction_type'] as String
-              : null,
-      description:
-          map['description'] != null ? map['description'] as String : null,
-      company: map['company'] != null ? map['company'] as int : null,
-      account: map['account'] != null ? map['account'] as int : null,
-      partner: map['partner'] != null ? map['partner'] as int : null,
-      partners: map['partners'] != null ? map['partners'] as int : null,
-      incomeExpenseReason:
-          map['income_expense_reason'] != null
-              ? map['income_expense_reason'] as int
-              : null,
+      id: map['id'],
+      currency: map['currency'],
+      date: map['date'],
+      amount: map['amount'],
+      kgsCurrencyAmount: map['kgs_currency_amount'],
+      transactionType: map['transaction_type'],
+      description: map['description'],
+      company: map['company'],
+      account: map['account'],
+      partner: map['partner'],
+      partners: map['partners'],
+      incomeExpenseReason: map['income_expense_reason'],
     );
   }
 }

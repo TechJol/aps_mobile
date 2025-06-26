@@ -25,8 +25,7 @@ class MenuCubit extends Cubit<MenuState> {
   final UpdateReasonUsecase updateReasonUsecase;
   final DeleteReasonUsecase deleteReasonUsecase;
 
-  List<PartnersModel> partners = [];
-  List<PartnerTypesModel> partnerTypes = [];
+  List<PartnersModel> filteredPartners = [];
 
   MenuCubit({
     required this.getTransactionsUsecase,
@@ -49,6 +48,27 @@ class MenuCubit extends Cubit<MenuState> {
     required this.deleteReasonUsecase,
   }) : super(MenuInitial());
 
+  void filterPartnersByType(int selectedTypeId) {
+    // Получаем все партнеры из состояния
+    final allPartners = (state as MenuPartnerDataSuccess).partners;
+
+    // Фильтруем партнеров по типу
+    filteredPartners =
+        allPartners!.where((partner) {
+          return partner.type == selectedTypeId; // Сравниваем ID типа партнера
+        }).toList();
+
+    // Обновляем состояние с отфильтрованными партнерами
+    emit(
+      MenuPartnerDataSuccess(
+        partners: allPartners, // Все партнеры
+        partnerTypes:
+            (state as MenuPartnerDataSuccess).partnerTypes, // Все типы
+        filteredPartners: filteredPartners, // Отфильтрованные партнеры
+      ),
+    );
+  }
+
   Future<void> getTransactionsWithAccounts() async {
     emit(MenuLoading());
 
@@ -56,6 +76,7 @@ class MenuCubit extends Cubit<MenuState> {
     final accountsResult = await getAccountsUsecase();
     final reasonsResult = await getReasonsUsecase();
     final partnersResult = await getPartnersUsecase();
+    final partnerTypesResult = await getPartnerTypesUsecase();
 
     if (transactionsResult.isLeft()) {
       transactionsResult.fold(
@@ -80,6 +101,14 @@ class MenuCubit extends Cubit<MenuState> {
       return;
     }
 
+    if (partnerTypesResult.isLeft()) {
+      partnerTypesResult.fold(
+        (l) => emit(MenuError(message: l.message)),
+        (_) {},
+      );
+      return;
+    }
+
     final transactions =
         (transactionsResult.getOrElse(() => []) as List)
             .map((e) => AllTransactionsModel.fromMap(e))
@@ -100,14 +129,51 @@ class MenuCubit extends Cubit<MenuState> {
             .map((e) => PartnersModel.fromMap(e))
             .toList();
 
+    final partnerTypes =
+        (partnerTypesResult.getOrElse(() => []) as List)
+            .map((e) => PartnerTypesModel.fromMap(e))
+            .toList();
+
     emit(
       MenuTransactionsWithAccountsSuccess(
         transactions: transactions,
         accounts: accounts,
         reasons: reasons,
         partners: partners,
+        partnerTypes: partnerTypes,
       ),
     );
+  }
+
+  // Загрузка данных о партнерах и типах партнеров
+  Future<void> getPartnerData() async {
+    emit(MenuLoading());
+
+    final partnersResult = await getPartnersUsecase();
+    final typesResult = await getPartnerTypesUsecase();
+
+    if (partnersResult.isLeft()) {
+      partnersResult.fold((l) => emit(MenuError(message: l.message)), (_) {});
+      return;
+    }
+
+    if (typesResult.isLeft()) {
+      typesResult.fold((l) => emit(MenuError(message: l.message)), (_) {});
+      return;
+    }
+
+    final partners =
+        (partnersResult.getOrElse(() => []) as List)
+            .map((e) => PartnersModel.fromMap(e))
+            .toList();
+
+    final types =
+        (typesResult.getOrElse(() => []) as List)
+            .map((e) => PartnerTypesModel.fromMap(e))
+            .toList();
+
+    // Передаем данные о партнерах и типах
+    emit(MenuPartnerDataSuccess(partners: partners, partnerTypes: types));
   }
 
   Future<void> getAccounts() async {
@@ -207,61 +273,6 @@ class MenuCubit extends Cubit<MenuState> {
   Future<void> deleteReason(int id) async {
     final result = await deleteReasonUsecase.call(id);
     result.fold((l) => emit(DeleteError(error: l)), (r) => getReasons());
-  }
-
-  // Загрузка данных о партнерах и типах партнеров
-  Future<void> getPartnerData() async {
-    emit(MenuLoading());
-
-    final partnersResult = await getPartnersUsecase();
-    final typesResult = await getPartnerTypesUsecase();
-
-    if (partnersResult.isLeft()) {
-      partnersResult.fold((l) => emit(MenuError(message: l.message)), (_) {});
-      return;
-    }
-
-    if (typesResult.isLeft()) {
-      typesResult.fold((l) => emit(MenuError(message: l.message)), (_) {});
-      return;
-    }
-
-    final partners =
-        (partnersResult.getOrElse(() => []) as List)
-            .map((e) => PartnersModel.fromMap(e))
-            .toList();
-
-    final types =
-        (typesResult.getOrElse(() => []) as List)
-            .map((e) => PartnerTypesModel.fromMap(e))
-            .toList();
-
-    this.partners = partners;
-    partnerTypes = types;
-
-    // Передаем данные о партнерах и типах
-    emit(MenuPartnerDataSuccess(partners: partners, partnerTypes: types));
-  }
-
-  void filterPartnersByType(int selectedType) {
-    // Фильтруем партнеров по выбранному типу
-    final filtered =
-        partners
-            .where(
-              (partner) => partner.type == selectedType,
-            ) // Сравниваем строковые значения типа
-            .toList();
-
-    print('Filtered Partners: $filtered'); // Логируем отфильтрованные данные
-
-    // Эмитим успешное состояние с отфильтрованными партнерами
-    emit(
-      MenuPartnerDataSuccess(
-        partners: partners,
-        partnerTypes: partnerTypes,
-        filteredPartners: filtered,
-      ),
-    );
   }
 
   Future<void> deletePartner(int id) async {
@@ -367,5 +378,42 @@ class MenuCubit extends Cubit<MenuState> {
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
       (r) {},
     );
+  }
+
+  Future<void> updatePartnerInTransaction(
+    AllTransactionsModel transaction,
+    int? newPartnerId,
+  ) async {
+    if (newPartnerId == null) {
+      emit(MenuError(message: 'Партнер не выбран'));
+      return;
+    }
+
+    emit(MenuLoading());
+
+    try {
+      final updatedTransaction = transaction.copyWith(partners: newPartnerId);
+
+      final updateResult = await updateTransactionUsecase(
+        updatedTransaction,
+        transaction.id!,
+      );
+      updateResult.fold(
+        (l) => emit(
+          MenuError(
+            message: 'Ошибка при обновлении транзакции: \${l.toString()}',
+          ),
+        ),
+        (r) {
+          emit(
+            MenuTransactionUpdatedSuccess(
+              updatedTransaction: updatedTransaction,
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      emit(MenuError(message: 'Ошибка: \${e.toString()}'));
+    }
   }
 }

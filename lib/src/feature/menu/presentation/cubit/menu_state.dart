@@ -93,14 +93,34 @@ final class MenuTransactionsWithAccountsSuccess extends MenuState {
   final List<AccountModel> accounts;
   final List<IncomeExpenseReasons> reasons;
   final List<PartnersModel> partners;
+  final List<PartnerTypesModel>? partnerTypes;
+  final List<PartnersModel>? filteredPartners;
 
   const MenuTransactionsWithAccountsSuccess({
     required this.transactions,
     required this.accounts,
     required this.reasons,
     required this.partners,
+    this.partnerTypes,
+    this.filteredPartners = const [],
   });
 
   @override
-  List<Object> get props => [transactions, accounts, reasons, partners];
+  List<Object> get props => [
+    transactions,
+    accounts,
+    reasons,
+    partners,
+    partnerTypes ?? [],
+    filteredPartners ?? [],
+  ];
+}
+
+// Новое состояние для успешного обновления транзакции с новым партнером
+final class MenuTransactionUpdatedSuccess extends MenuState {
+  final AllTransactionsModel updatedTransaction;
+  const MenuTransactionUpdatedSuccess({required this.updatedTransaction});
+
+  @override
+  List<Object> get props => [updatedTransaction];
 }

@@ -75,12 +75,11 @@ class _OperationPageState extends State<OperationPage>
               ),
               child: IconButton(
                 onPressed: () async {
-                  final resul = await Navigator.pushNamed(
+                  final result = await Navigator.pushNamed(
                     context,
                     AppRoutes.menu,
                   );
-
-                  if (resul == true) {
+                  if (result == true) {
                     context.read<MenuCubit>().getTransactionsWithAccounts();
                   }
                 },
@@ -154,7 +153,21 @@ class _OperationPageState extends State<OperationPage>
               ),
             ),
           30.h,
-          BlocBuilder<MenuCubit, MenuState>(
+          BlocConsumer<MenuCubit, MenuState>(
+            listener: (context, state) {
+              if (state is MenuTransactionUpdatedSuccess) {
+                // Показываем уведомление об успешном обновлении партнера
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Партнер успешно обновлен!')),
+                );
+              }
+              if (state is MenuError) {
+                // Показываем ошибку, если обновление не удалось
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Ошибка: ${state.message}')),
+                );
+              }
+            },
             builder: (context, state) {
               if (state is MenuLoading) {
                 return const Center(child: CircularProgressIndicator());
@@ -191,12 +204,8 @@ class _OperationPageState extends State<OperationPage>
                             ),
                             child: GestureDetector(
                               onTap: () {
-                                // Проверяем, если партнер не установлен
-                                ShowSheet().showAddPartnerSheed(
-                                  context,
-                                  onConfirm: () {},
-                                  title: 'title',
-                                );
+                                // Откроем диалог с партнерами для этой транзакции
+                                showAddPartnerSheed(context, dailyTxs[index]);
                               },
                               child: _buildTransactionItem(
                                 dailyTxs[index],
@@ -215,7 +224,7 @@ class _OperationPageState extends State<OperationPage>
                 return Center(child: Text('Ошибка: ${state.message}'));
               }
 
-              return const SizedBox.shrink();
+              return const SizedBox.shrink(); // Показываем пустой контейнер, если состояние не найдено
             },
           ),
         ],
@@ -552,6 +561,169 @@ class _OperationPageState extends State<OperationPage>
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> showAddPartnerSheed(
+    BuildContext context,
+    AllTransactionsModel transaction,
+  ) async {
+    final cubit = context.read<MenuCubit>();
+    cubit.getPartnerData();
+
+    String? selectedPartnerType;
+    String? selectedPartnerName;
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return BlocBuilder<MenuCubit, MenuState>(
+          builder: (context, state) {
+            if (state is MenuLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state is MenuPartnerDataSuccess) {
+              return AlertDialog(
+                backgroundColor: AppColors.whiteColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                contentPadding: const EdgeInsets.all(20),
+                title: Text(
+                  'Добавить контрагента',
+                  style: AppTextStyles.f22w500,
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Выберите тип и партнера',
+                      style: AppTextStyles.f16w500.copyWith(
+                        color: AppColors.greyerColorLight,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    // Дропдаун для выбора типа контрагента
+                    DropDownFormField(
+                      label: 'Выберите тип',
+                      items:
+                          state.partnerTypes!.map((type) => type.name).toList(),
+                      value: selectedPartnerType ?? '',
+                      onChanged: (selectedType) {
+                        selectedPartnerType = selectedType;
+                        final selectedTypeId =
+                            state.partnerTypes!
+                                .firstWhere((type) => type.name == selectedType)
+                                .id;
+                        cubit.filterPartnersByType(selectedTypeId!);
+                      },
+                    ),
+                    const SizedBox(height: 8),
+                    // Дропдаун для выбора партнера
+                    DropDownFormField(
+                      label: 'Выберите партнера',
+                      items:
+                          state.filteredPartners
+                              ?.map((partner) => partner.name)
+                              .toList() ??
+                          [],
+                      value: selectedPartnerName ?? '',
+                      onChanged: (selectedPartner) {
+                        selectedPartnerName = selectedPartner;
+                      },
+                    ),
+                  ],
+                ),
+                actionsPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
+                actions: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: AppColors.backroundColor,
+                            side: BorderSide(color: AppColors.backroundColor),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text(
+                            'Отмена',
+                            style: AppTextStyles.f16w500.copyWith(
+                              color: AppColors.blackColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (selectedPartnerName == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Выберите партнера'),
+                                ),
+                              );
+                              return;
+                            }
+
+                            final selectedPartnerId =
+                                state.filteredPartners
+                                    ?.firstWhere(
+                                      (partner) =>
+                                          partner.name == selectedPartnerName,
+                                      orElse:
+                                          () =>
+                                              PartnersModel(id: null, name: ''),
+                                    )
+                                    .id;
+
+                            if (selectedPartnerId == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Партнер не найден'),
+                                ),
+                              );
+                              return;
+                            }
+
+                            cubit.updatePartnerInTransaction(
+                              transaction,
+                              selectedPartnerId,
+                            );
+                            Navigator.of(context).pop();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primaryColorLight,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text(
+                            'Да',
+                            style: AppTextStyles.f16w500.copyWith(
+                              color: AppColors.whiteColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            }
+
+            return const SizedBox.shrink();
+          },
+        );
+      },
     );
   }
 }
