@@ -156,7 +156,6 @@ class _OperationPageState extends State<OperationPage>
           BlocConsumer<MenuCubit, MenuState>(
             listener: (context, state) {
               if (state is MenuTransactionUpdatedSuccess) {
-                // Показываем уведомление об успешном обновлении партнера
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Партнер успешно обновлен!')),
                 );
@@ -204,8 +203,17 @@ class _OperationPageState extends State<OperationPage>
                             ),
                             child: GestureDetector(
                               onTap: () {
-                                // Откроем диалог с партнерами для этой транзакции
-                                showAddPartnerSheed(context, dailyTxs[index]);
+                                if (dailyTxs[index].partners == null) {
+                                  showAddPartnerSheed(context, dailyTxs[index]);
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Партнёр уже присвоен для этой операции',
+                                      ),
+                                    ),
+                                  );
+                                }
                               },
                               child: _buildTransactionItem(
                                 dailyTxs[index],
@@ -314,9 +322,17 @@ class _OperationPageState extends State<OperationPage>
         partners
             .firstWhere(
               (p) => p.id == tx.partners,
-              orElse: () => PartnersModel(name: 'Неизвестно'),
+              orElse: () => PartnersModel(name: '+ Контрагент'),
             )
             .name;
+
+    // Проверка, если имя партнера "Контрагент", то изменить цвет
+    final TextStyle partnerNameStyle =
+        partnerName == '+ Контрагент'
+            ? AppTextStyles.f14w500.copyWith(
+              color: AppColors.primaryColor,
+            ) // или любой другой цвет
+            : AppTextStyles.f14w500;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -333,7 +349,7 @@ class _OperationPageState extends State<OperationPage>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(partnerName, style: AppTextStyles.f14w500),
+                Text(partnerName, style: partnerNameStyle), // Применяем стиль
                 4.h,
                 Text(
                   formattedDate,
