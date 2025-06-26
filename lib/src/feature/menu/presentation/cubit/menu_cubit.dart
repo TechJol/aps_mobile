@@ -1,5 +1,6 @@
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:bloc/bloc.dart';
+import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -174,6 +175,31 @@ class MenuCubit extends Cubit<MenuState> {
 
     // Передаем данные о партнерах и типах
     emit(MenuPartnerDataSuccess(partners: partners, partnerTypes: types));
+  }
+
+  // Метод для вычисления баланса партнера
+  Future<void> calculatePartnerBalances(
+    List<AllTransactionsModel> transactions,
+  ) async {
+    Map<int, Decimal> partnerBalances = {};
+
+    // Итерируем все транзакции и вычисляем баланс для каждого партнера
+    for (var transaction in transactions) {
+      if (transaction.partner != null) {
+        final partnerId = transaction.partner!;
+        final amount = Decimal.parse(transaction.amount ?? '0');
+
+        // Если партнер уже есть в карте, обновляем его баланс
+        if (partnerBalances.containsKey(partnerId)) {
+          partnerBalances[partnerId] = partnerBalances[partnerId]! + amount;
+        } else {
+          partnerBalances[partnerId] = amount;
+        }
+      }
+    }
+
+    // Эмитируем новое состояние с вычисленными балансами
+    emit(MenuPartnerBalancesCalculated(partnerBalances: partnerBalances));
   }
 
   Future<void> getAccounts() async {

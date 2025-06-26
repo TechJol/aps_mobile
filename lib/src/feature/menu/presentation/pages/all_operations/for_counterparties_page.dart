@@ -2,6 +2,7 @@ import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:decimal/decimal.dart';
 
 class ForCounterpartiesPage extends StatefulWidget {
   const ForCounterpartiesPage({super.key});
@@ -15,18 +16,11 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
   final int rowsPerPage = 10;
   int? activeType;
 
-  void goToPage(int page, int pageCount) {
-    if (page >= 1 && page <= pageCount) {
-      setState(() {
-        currentPage = page;
-      });
-    }
-  }
-
   @override
   void initState() {
-    context.read<MenuCubit>().getPartnerData();
     super.initState();
+    context.read<MenuCubit>().getPartnerData();
+    context.read<MenuCubit>().getTransactionsWithAccounts();
   }
 
   @override
@@ -53,7 +47,6 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
               return const Center(child: Text('Нет доступных категорий'));
             }
 
-            // Если тип не выбран — выбираем первый
             if (activeType == null ||
                 !partnerTypes.any((e) => e.id == activeType)) {
               activeType = partnerTypes.first.id!;
@@ -66,7 +59,6 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  // Всегда показываем кнопки категорий
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
@@ -86,7 +78,6 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
                     ),
                   ),
                   20.h,
-                  // Если нет контрагентов — заглушка
                   filteredPartners.isEmpty
                       ? const Padding(
                         padding: EdgeInsets.symmetric(vertical: 60),
@@ -94,10 +85,7 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
                           child: Text('Нет контрагентов в этой категории'),
                         ),
                       )
-                      : _buildTableWithPagination(
-                        filteredPartners,
-                        partnerTypes,
-                      ),
+                      : _buildTableWithPagination(filteredPartners),
                 ],
               ),
             );
@@ -108,10 +96,7 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
     );
   }
 
-  Padding _buildTableWithPagination(
-    List<PartnersModel> data,
-    List<PartnerTypesModel> types,
-  ) {
+  Padding _buildTableWithPagination(List<PartnersModel> data) {
     final pageCount = (data.length / rowsPerPage).ceil();
     final start = (currentPage - 1) * rowsPerPage;
     final end = (start + rowsPerPage).clamp(0, data.length);
@@ -144,8 +129,27 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
                       DataCell(Text(tx.id.toString())),
                       DataCell(Text(tx.name)),
                       DataCell(
-                        Text('-'),
-                      ), // Заменить на реальный баланс, если есть
+                        FutureBuilder<Map<int, Decimal>>(
+                          future: _calculatePartnerBalance(tx.id!),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Text('-');
+                            }
+
+                            if (snapshot.hasError) {
+                              return Text('Ошибка');
+                            }
+
+                            final partnerBalance = snapshot.data?[tx.id];
+                            return Text(
+                              partnerBalance != null
+                                  ? partnerBalance.toStringAsFixed(2)
+                                  : '0',
+                            );
+                          },
+                        ),
+                      ),
                       DataCell(Text(tx.contactInfo ?? '')),
                     ],
                   );
@@ -156,6 +160,32 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
         ],
       ),
     );
+  }
+
+  Future<Map<int, Decimal>> _calculatePartnerBalance(int partnerId) async {
+    final cubit = context.read<MenuCubit>();
+    final state = cubit.state;
+
+    if (state is MenuTransactionsWithAccountsSuccess) {
+      final transactions = state.transactions;
+
+      Map<int, Decimal> partnerBalances = {};
+
+      for (var transaction in transactions) {
+        if (transaction.partners == partnerId) {
+          final amount = Decimal.parse(transaction.amount ?? '0');
+          if (partnerBalances.containsKey(partnerId)) {
+            partnerBalances[partnerId] = partnerBalances[partnerId]! + amount;
+          } else {
+            partnerBalances[partnerId] = amount;
+          }
+        }
+      }
+
+      return partnerBalances;
+    }
+
+    return {};
   }
 
   Widget categoryButton({
@@ -234,5 +264,13 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
         child: Text('$page'),
       ),
     );
+  }
+
+  void goToPage(int page, int pageCount) {
+    if (page >= 1 && page <= pageCount) {
+      setState(() {
+        currentPage = page;
+      });
+    }
   }
 }

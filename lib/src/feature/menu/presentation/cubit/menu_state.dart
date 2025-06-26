@@ -124,3 +124,12 @@ final class MenuTransactionUpdatedSuccess extends MenuState {
   @override
   List<Object> get props => [updatedTransaction];
 }
+
+final class MenuPartnerBalancesCalculated extends MenuState {
+  final Map<int, Decimal> partnerBalances;
+
+  const MenuPartnerBalancesCalculated({required this.partnerBalances});
+
+  @override
+  List<Object> get props => [partnerBalances];
+}
