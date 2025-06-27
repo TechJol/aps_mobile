@@ -158,10 +158,15 @@ class _HomePageState extends State<HomePage> {
             const Text('Операции', style: AppTextStyles.f20w600),
             Row(
               children: [
-                Text(
-                  'смотреть все',
-                  style: AppTextStyles.f14w500.copyWith(
-                    color: AppColors.smallTextGreyColor,
+                GestureDetector(
+                  onTap: () {
+                    context.read<MainCubit>().change(4);
+                  },
+                  child: Text(
+                    'смотреть все',
+                    style: AppTextStyles.f14w500.copyWith(
+                      color: AppColors.smallTextGreyColor,
+                    ),
                   ),
                 ),
                 Icon(
@@ -176,13 +181,13 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(height: 12),
         Row(
           children: [
-            Text(
-              'Сегодня',
-              style: AppTextStyles.f14w500.copyWith(
-                color: AppColors.smallTextGreyColor,
-              ),
-            ),
-            const SizedBox(width: 8),
+            // Text(
+            //   'Сегодня',
+            //   style: AppTextStyles.f14w500.copyWith(
+            //     color: AppColors.smallTextGreyColor,
+            //   ),
+            // ),
+            // const SizedBox(width: 8),
             const Expanded(
               child: Divider(
                 thickness: 0.3,
