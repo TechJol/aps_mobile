@@ -56,17 +56,17 @@ class IncomeExpenseSummaryPage extends StatelessWidget {
                 }
               }
 
-              // // Вычисляем баланс по каждой валюте
+              // Вычисляем баланс по каждой валюте
               aggregatedData.forEach((currency, data) {
                 data['balance'] = data['income']! - data['expense']!;
                 if (currency == 'USD') {
-                  data['rate'] = Decimal.parse('87.45'); // Пример для USD
+                  data['rate'] = Decimal.parse('87.45');
                 } else if (currency == 'EUR') {
-                  data['rate'] = Decimal.parse('99.46'); // Пример для EUR
+                  data['rate'] = Decimal.parse('99.46');
                 } else if (currency == 'RUB') {
                   data['rate'] = Decimal.parse('1.1');
                 } else {
-                  data['rate'] = Decimal.zero; // Например, для КГЗ
+                  data['rate'] = Decimal.zero;
                 }
               });
 
@@ -81,12 +81,7 @@ class IncomeExpenseSummaryPage extends StatelessWidget {
                     };
                   }).toList();
 
-              return ListView(
-                children: [
-                  20.h,
-                  DataTableSectionA(data: data), // Отображаем таблицу
-                ],
-              );
+              return ListView(children: [20.h, DataTableSectionA(data: data)]);
             }
 
             return const SizedBox.shrink();
@@ -130,9 +125,7 @@ class DataTableSectionA extends StatelessWidget {
                   DataCell(Text(row['income']!)),
                   DataCell(Text(row['expense']!)),
                   DataCell(Text(row['balance']!)),
-                  DataCell(
-                    Text(row['balance']!),
-                  ), // Для баланса в KGZ это то же значение, что и баланс
+                  DataCell(Text(row['balance']!)),
                   DataCell(Text(row['rate']!)),
                 ],
               );
