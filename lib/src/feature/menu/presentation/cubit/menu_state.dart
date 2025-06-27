@@ -119,7 +119,7 @@ final class MenuTransactionsWithAccountsSuccess extends MenuState {
   ];
 }
 
-// Новое состояние для успешного обновления транзакции с новым партнером
+// состояние для успешного обновления транзакции с новым партнером
 final class MenuTransactionUpdatedSuccess extends MenuState {
   final AllTransactionsModel updatedTransaction;
   const MenuTransactionUpdatedSuccess({required this.updatedTransaction});

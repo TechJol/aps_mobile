@@ -36,14 +36,14 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
               state.transactions,
               state.reasons,
               type: 'income',
-              month: selectedMonth, // Передаем выбранный месяц
+              month: selectedMonth,
             );
 
             final expenseData = _calculateTop6Reasons(
               state.transactions,
               state.reasons,
               type: 'expense',
-              month: selectedMonth, // Передаем выбранный месяц
+              month: selectedMonth,
             );
 
             // Проверка наличия данных для дохода и расхода

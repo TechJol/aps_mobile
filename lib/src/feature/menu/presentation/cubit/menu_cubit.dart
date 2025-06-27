@@ -51,22 +51,18 @@ class MenuCubit extends Cubit<MenuState> {
   }) : super(MenuInitial());
 
   void filterPartnersByType(int selectedTypeId) {
-    // Получаем все партнеры из состояния
     final allPartners = (state as MenuPartnerDataSuccess).partners;
 
-    // Фильтруем партнеров по типу
     filteredPartners =
         allPartners!.where((partner) {
-          return partner.type == selectedTypeId; // Сравниваем ID типа партнера
+          return partner.type == selectedTypeId;
         }).toList();
 
-    // Обновляем состояние с отфильтрованными партнерами
     emit(
       MenuPartnerDataSuccess(
-        partners: allPartners, // Все партнеры
-        partnerTypes:
-            (state as MenuPartnerDataSuccess).partnerTypes, // Все типы
-        filteredPartners: filteredPartners, // Отфильтрованные партнеры
+        partners: allPartners,
+        partnerTypes: (state as MenuPartnerDataSuccess).partnerTypes,
+        filteredPartners: filteredPartners,
       ),
     );
   }
@@ -152,7 +148,6 @@ class MenuCubit extends Cubit<MenuState> {
     );
   }
 
-  // Загрузка данных о партнерах и типах партнеров
   Future<void> getPartnerData() async {
     emit(MenuLoading());
 
@@ -179,7 +174,6 @@ class MenuCubit extends Cubit<MenuState> {
             .map((e) => PartnerTypesModel.fromMap(e))
             .toList();
 
-    // Передаем данные о партнерах и типах
     emit(MenuPartnerDataSuccess(partners: partners, partnerTypes: types));
   }
 

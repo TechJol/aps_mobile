@@ -260,12 +260,12 @@ class MonthlyReportChart extends StatelessWidget {
   ];
 
   final List<Color> colors = [
-    Color(0xFF7B37B5), // Открытие ИП — фиолетовый
-    Color(0xFFF219A2), // Открытие ОсОО — розовый
-    Color(0xFF156CB1), // Доход от продажи — синий
-    Color(0xFFCCC9AA), // Гражданское дело — бежевый
-    Color(0xFF1EBF93), // Инвестиции — зеленый
-    Color(0xFFFCA12C), // Выручка — оранжевый
+    Color(0xFF7B37B5), // фиолетовый
+    Color(0xFFF219A2), // розовый
+    Color(0xFF156CB1), // синий
+    Color(0xFFCCC9AA), // бежевый
+    Color(0xFF1EBF93), // зеленый
+    Color(0xFFFCA12C), // оранжевый
   ];
 
   @override
