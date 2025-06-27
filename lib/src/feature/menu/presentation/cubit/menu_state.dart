@@ -95,6 +95,7 @@ final class MenuTransactionsWithAccountsSuccess extends MenuState {
   final List<PartnersModel> partners;
   final List<PartnerTypesModel>? partnerTypes;
   final List<PartnersModel>? filteredPartners;
+  final Map<int, Decimal>? partnerBalances;
 
   const MenuTransactionsWithAccountsSuccess({
     required this.transactions,
@@ -103,6 +104,7 @@ final class MenuTransactionsWithAccountsSuccess extends MenuState {
     required this.partners,
     this.partnerTypes,
     this.filteredPartners = const [],
+    this.partnerBalances,
   });
 
   @override
@@ -113,6 +115,7 @@ final class MenuTransactionsWithAccountsSuccess extends MenuState {
     partners,
     partnerTypes ?? [],
     filteredPartners ?? [],
+    partnerBalances ?? {},
   ];
 }
 

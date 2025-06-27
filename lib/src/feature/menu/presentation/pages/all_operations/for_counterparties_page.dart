@@ -39,9 +39,10 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
           if (state is MenuError) {
             return Center(child: Text('Ошибка: ${state.message}'));
           }
-          if (state is MenuPartnerDataSuccess) {
-            final partners = state.partners ?? [];
+          if (state is MenuTransactionsWithAccountsSuccess) {
+            final partners = state.partners;
             final partnerTypes = state.partnerTypes ?? [];
+            final balances = state.partnerBalances;
 
             if (partnerTypes.isEmpty) {
               return const Center(child: Text('Нет доступных категорий'));
@@ -85,7 +86,10 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
                           child: Text('Нет контрагентов в этой категории'),
                         ),
                       )
-                      : _buildTableWithPagination(filteredPartners),
+                      : _buildTableWithPagination(
+                        filteredPartners,
+                        balances ?? {},
+                      ),
                 ],
               ),
             );
@@ -96,7 +100,10 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
     );
   }
 
-  Padding _buildTableWithPagination(List<PartnersModel> data) {
+  Padding _buildTableWithPagination(
+    List<PartnersModel> data,
+    Map<int, Decimal> balances,
+  ) {
     final pageCount = (data.length / rowsPerPage).ceil();
     final start = (currentPage - 1) * rowsPerPage;
     final end = (start + rowsPerPage).clamp(0, data.length);
@@ -129,26 +136,7 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
                       DataCell(Text(tx.id.toString())),
                       DataCell(Text(tx.name)),
                       DataCell(
-                        FutureBuilder<Map<int, Decimal>>(
-                          future: _calculatePartnerBalance(tx.id!),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Text('-');
-                            }
-
-                            if (snapshot.hasError) {
-                              return Text('Ошибка');
-                            }
-
-                            final partnerBalance = snapshot.data?[tx.id];
-                            return Text(
-                              partnerBalance != null
-                                  ? partnerBalance.toStringAsFixed(2)
-                                  : '0',
-                            );
-                          },
-                        ),
+                        Text(balances[tx.id]?.toStringAsFixed(2) ?? '0.00'),
                       ),
                       DataCell(Text(tx.contactInfo ?? '')),
                     ],
@@ -160,32 +148,6 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
         ],
       ),
     );
-  }
-
-  Future<Map<int, Decimal>> _calculatePartnerBalance(int partnerId) async {
-    final cubit = context.read<MenuCubit>();
-    final state = cubit.state;
-
-    if (state is MenuTransactionsWithAccountsSuccess) {
-      final transactions = state.transactions;
-
-      Map<int, Decimal> partnerBalances = {};
-
-      for (var transaction in transactions) {
-        if (transaction.partners == partnerId) {
-          final amount = Decimal.parse(transaction.amount ?? '0');
-          if (partnerBalances.containsKey(partnerId)) {
-            partnerBalances[partnerId] = partnerBalances[partnerId]! + amount;
-          } else {
-            partnerBalances[partnerId] = amount;
-          }
-        }
-      }
-
-      return partnerBalances;
-    }
-
-    return {};
   }
 
   Widget categoryButton({

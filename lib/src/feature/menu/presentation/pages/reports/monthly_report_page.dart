@@ -5,9 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:decimal/decimal.dart';
 
-class MonthlyReportPage extends StatelessWidget {
+class MonthlyReportPage extends StatefulWidget {
   const MonthlyReportPage({super.key});
 
+  @override
+  State<MonthlyReportPage> createState() => _MonthlyReportPageState();
+}
+
+class _MonthlyReportPageState extends State<MonthlyReportPage> {
+  String selectedMonth = '1';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,50 +34,10 @@ class MonthlyReportPage extends StatelessWidget {
               final transactions = state.transactions;
               final reasons = state.reasons;
 
-              // Месячные агрегированные данные (доход, расход и чистый доход)
-              final Map<String, Map<String, Decimal>> monthlyData = {};
+              final data = _calculateMonthlyData(transactions, selectedMonth);
 
-              for (var tx in transactions) {
-                final month = DateTime.parse(
-                  tx.date!,
-                ).toString().substring(0, 7); // Формат YYYY-MM
-                final amount =
-                    Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
-                final type = tx.transactionType;
+              final hasData = data.isNotEmpty;
 
-                if (!monthlyData.containsKey(month)) {
-                  monthlyData[month] = {
-                    'income': Decimal.zero,
-                    'expense': Decimal.zero,
-                    'balance': Decimal.zero,
-                  };
-                }
-
-                if (type == 'income') {
-                  monthlyData[month]?['income'] =
-                      (monthlyData[month]?['income'] ?? Decimal.zero) + amount;
-                } else if (type == 'expense') {
-                  monthlyData[month]?['expense'] =
-                      (monthlyData[month]?['expense'] ?? Decimal.zero) + amount;
-                }
-              }
-
-              // Вычисляем чистый доход по каждому месяцу
-              monthlyData.forEach((month, data) {
-                data['balance'] = data['income']! - data['expense']!;
-              });
-
-              final data =
-                  monthlyData.entries.map((entry) {
-                    return {
-                      'month': entry.key,
-                      'income': entry.value['income'].toString(),
-                      'expense': entry.value['expense'].toString(),
-                      'balance': entry.value['balance'].toString(),
-                    };
-                  }).toList();
-
-              // Получаем данные для динамической легенды
               final dynamicLegendData = _getLegendDataFromAPI(reasons);
 
               return ListView(
@@ -83,7 +49,7 @@ class MonthlyReportPage extends StatelessWidget {
                         text: 'Распечатать',
                         onPressed: () {},
                       ),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       OutlinedButtonWidget(
                         text: 'Скачать в Excel',
                         onPressed: () {},
@@ -91,24 +57,34 @@ class MonthlyReportPage extends StatelessWidget {
                     ],
                   ),
                   20.h,
-                  buildMonthsTabs(),
-                  20.h,
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Доход', style: AppTextStyles.f16w500),
-                        20.h,
-                        MonthlyReportChart(),
-                        20.h,
-                        // Динамическая легенда
-                        _dynamicLegendSection(dynamicLegendData),
-                      ],
-                    ),
+                  MonthsTabs(
+                    selectedMonth: selectedMonth,
+                    onMonthSelected: (month) {
+                      setState(() {
+                        selectedMonth = month;
+                      });
+                    },
                   ),
-                  40.h,
-                  _dataTableSection(data),
+                  20.h,
+                  hasData
+                      ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Доход', style: AppTextStyles.f16w500),
+                          20.h,
+                          MonthlyReportChart(),
+                          20.h,
+                          _dynamicLegendSection(dynamicLegendData),
+                          40.h,
+                          _dataTableSection(data),
+                        ],
+                      )
+                      : const Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 100),
+                          child: Text('Нет данных за выбранный месяц'),
+                        ),
+                      ),
                 ],
               );
             }
@@ -120,57 +96,55 @@ class MonthlyReportPage extends StatelessWidget {
     );
   }
 
-  // Месячные табы
-  Widget buildMonthsTabs() {
-    final months = [
-      'Январь',
-      'Февраль',
-      'Март',
-      'Апрель',
-      'Май',
-      'Июнь',
-      'Июль',
-      'Август',
-      'Сентябрь',
-      'Октябрь',
-      'Ноябрь',
-      'Декабрь',
-    ];
+  List<Map<String, String>> _calculateMonthlyData(
+    List<AllTransactionsModel> transactions,
+    String month,
+  ) {
+    Decimal income = Decimal.zero;
+    Decimal expense = Decimal.zero;
 
-    List<Widget> monthWidgets = [];
-    for (int i = 0; i < months.length; i++) {
-      monthWidgets.add(
-        Text(
-          months[i],
-          style: AppTextStyles.f12w400.copyWith(color: AppColors.greyColor),
-        ),
-      );
-      if (i != months.length - 1) {
-        monthWidgets.add(20.w);
+    for (var tx in transactions) {
+      if (tx.date != null &&
+          DateTime.parse(tx.date!).month.toString() == month) {
+        final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
+        if (tx.transactionType == 'income') {
+          income += amount;
+        } else if (tx.transactionType == 'expense') {
+          expense += amount;
+        }
       }
     }
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: monthWidgets,
-      ),
-    );
+    if (income == Decimal.zero && expense == Decimal.zero) {
+      return [];
+    }
+
+    final balance = income - expense;
+
+    return [
+      {
+        'month': '2025-$month',
+        'income': income.toString(),
+        'expense': expense.toString(),
+        'balance': balance.toString(),
+      },
+    ];
   }
 
-  // Динамическая легенда
-  _dynamicLegendSection(List<Map<String, String>> dynamicLegendData) {
+  Widget _dynamicLegendSection(List<Map<String, String>> dynamicLegendData) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children:
-          dynamicLegendData.map<Widget>((item) {
-            return _legendItem(color: item['color']!, text: item['name']!);
-          }).toList(),
+          dynamicLegendData
+              .map<Widget>(
+                (item) =>
+                    _legendItem(color: item['color']!, text: item['name']!),
+              )
+              .toList(),
     );
   }
 
-  _legendItem({required String color, required String text}) {
+  Widget _legendItem({required String color, required String text}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -183,42 +157,30 @@ class MonthlyReportPage extends StatelessWidget {
     );
   }
 
-  // Получить данные для динамической легенды
   List<Map<String, String>> _getLegendDataFromAPI(
     List<IncomeExpenseReasons> reasons,
   ) {
     final List<Map<String, String>> legendData = [];
-
-    // Определение цветов, которые будут использованы в порядке
     final List<String> colors = [
-      '0xFF7B37B5', // фиолетовый
-      '0xFFF219A2', // розовый
-      '0xFF156CB1', // синий
-      '0xFFCCC9AA', // бежевый
-      '0xFF1EBF93', // зеленый
-      '0xFFFCA12C', // оранжевый
+      '0xFF7B37B5',
+      '0xFFF219A2',
+      '0xFF156CB1',
+      '0xFFCCC9AA',
+      '0xFF1EBF93',
+      '0xFFFCA12C',
     ];
 
     for (var i = 0; i < reasons.length; i++) {
-      // Применяем цвета по порядку для каждой статьи
       legendData.add({
         'name': reasons[i].name,
-        'color': colors[i % colors.length], // цикличное применение цветов
+        'color': colors[i % colors.length],
       });
     }
 
     return legendData;
   }
 
-  // Данные таблицы
-  _dataTableSection(List<Map<String, String>> data) {
-    final int rowsPerPage = 10;
-    int currentPage = 1;
-
-    final start = (currentPage - 1) * rowsPerPage;
-    final end = (start + rowsPerPage).clamp(0, data.length);
-    final paginatedData = data.sublist(start, end);
-
+  Widget _dataTableSection(List<Map<String, String>> data) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: DataTable(
@@ -236,31 +198,33 @@ class MonthlyReportPage extends StatelessWidget {
           DataColumn(label: Text('Чистый доход (KGZ)')),
         ],
         rows:
-            paginatedData.map((row) {
-              return DataRow(
-                cells: [
-                  DataCell(Text(row['month']!)),
-                  DataCell(
-                    Text(
-                      row['income']!,
-                      style: TextStyle(color: AppColors.greenColor),
-                    ),
+            data
+                .map(
+                  (row) => DataRow(
+                    cells: [
+                      DataCell(Text(row['month']!)),
+                      DataCell(
+                        Text(
+                          row['income']!,
+                          style: TextStyle(color: AppColors.greenColor),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          row['expense']!,
+                          style: TextStyle(color: AppColors.redColor),
+                        ),
+                      ),
+                      DataCell(
+                        Text(
+                          row['balance']!,
+                          style: TextStyle(color: AppColors.greenColor),
+                        ),
+                      ),
+                    ],
                   ),
-                  DataCell(
-                    Text(
-                      row['expense']!,
-                      style: TextStyle(color: AppColors.redColor),
-                    ),
-                  ),
-                  DataCell(
-                    Text(
-                      row['balance']!,
-                      style: TextStyle(color: AppColors.greenColor),
-                    ),
-                  ),
-                ],
-              );
-            }).toList(),
+                )
+                .toList(),
       ),
     );
   }
@@ -381,6 +345,64 @@ class MonthlyReportChart extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class MonthsTab extends StatelessWidget {
+  const MonthsTab({
+    super.key,
+    required this.selectedMonth,
+    required this.onMonthSelected,
+  });
+
+  final String selectedMonth;
+  final Function(String) onMonthSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    const months = [
+      'Январь',
+      'Февраль',
+      'Март',
+      'Апрель',
+      'Май',
+      'Июнь',
+      'Июль',
+      'Август',
+      'Сентябрь',
+      'Октябрь',
+      'Ноябрь',
+      'Декабрь',
+    ];
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children:
+            months.asMap().entries.map((entry) {
+              final monthNumber = (entry.key + 1).toString();
+              final isSelected = monthNumber == selectedMonth;
+
+              return Padding(
+                padding: const EdgeInsets.only(right: 20),
+                child: GestureDetector(
+                  onTap: () => onMonthSelected(monthNumber),
+                  child: Text(
+                    entry.value,
+                    style: AppTextStyles.f12w400.copyWith(
+                      color:
+                          isSelected
+                              ? AppColors.primaryColor
+                              : AppColors.greyColor,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.normal,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+      ),
     );
   }
 }

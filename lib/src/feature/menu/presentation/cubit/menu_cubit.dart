@@ -27,6 +27,7 @@ class MenuCubit extends Cubit<MenuState> {
   final DeleteReasonUsecase deleteReasonUsecase;
 
   List<PartnersModel> filteredPartners = [];
+  Map<int, Decimal> partnerBalances = {};
 
   MenuCubit({
     required this.getTransactionsUsecase,
@@ -135,6 +136,10 @@ class MenuCubit extends Cubit<MenuState> {
             .map((e) => PartnerTypesModel.fromMap(e))
             .toList();
 
+    /// 👇 Вычисляем балансы партнёров
+    final balances = calculatePartnerBalances(transactions);
+    partnerBalances = balances;
+
     emit(
       MenuTransactionsWithAccountsSuccess(
         transactions: transactions,
@@ -142,6 +147,7 @@ class MenuCubit extends Cubit<MenuState> {
         reasons: reasons,
         partners: partners,
         partnerTypes: partnerTypes,
+        partnerBalances: balances,
       ),
     );
   }
@@ -177,29 +183,18 @@ class MenuCubit extends Cubit<MenuState> {
     emit(MenuPartnerDataSuccess(partners: partners, partnerTypes: types));
   }
 
-  // Метод для вычисления баланса партнера
-  Future<void> calculatePartnerBalances(
+  Map<int, Decimal> calculatePartnerBalances(
     List<AllTransactionsModel> transactions,
-  ) async {
-    Map<int, Decimal> partnerBalances = {};
-
-    // Итерируем все транзакции и вычисляем баланс для каждого партнера
-    for (var transaction in transactions) {
-      if (transaction.partner != null) {
-        final partnerId = transaction.partner!;
-        final amount = Decimal.parse(transaction.amount ?? '0');
-
-        // Если партнер уже есть в карте, обновляем его баланс
-        if (partnerBalances.containsKey(partnerId)) {
-          partnerBalances[partnerId] = partnerBalances[partnerId]! + amount;
-        } else {
-          partnerBalances[partnerId] = amount;
-        }
+  ) {
+    Map<int, Decimal> balances = {};
+    for (var tx in transactions) {
+      final partnerId = tx.partners;
+      if (partnerId != null) {
+        final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
+        balances[partnerId] = (balances[partnerId] ?? Decimal.zero) + amount;
       }
     }
-
-    // Эмитируем новое состояние с вычисленными балансами
-    emit(MenuPartnerBalancesCalculated(partnerBalances: partnerBalances));
+    return balances;
   }
 
   Future<void> getAccounts() async {
