@@ -1,11 +1,39 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:aps_mobile/src/core/core.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-class MetricsPage extends StatelessWidget {
+import 'package:aps_mobile/src/core/core.dart';
+import 'package:decimal/decimal.dart';
+import 'package:excel/excel.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:aps_mobile/src/feature/feature.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+class MetricsPage extends StatefulWidget {
   const MetricsPage({super.key});
+
+  @override
+  State<MetricsPage> createState() => _MetricsPageState();
+}
+
+class _MetricsPageState extends State<MetricsPage> {
+  List<Map<String, dynamic>> yearlyData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    final menuCubit = context.read<MenuCubit>();
+    if (menuCubit.state is! MenuTransactionsWithAccountsSuccess) {
+      menuCubit.getTransactionsWithAccounts();
+    } else {
+      _prepareData(
+        (menuCubit.state as MenuTransactionsWithAccountsSuccess).transactions,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,61 +43,58 @@ class MetricsPage extends StatelessWidget {
         title: 'Показатели',
         backgroundColor: AppColors.whiteColor,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: ListView(
-          children: [
-            20.h,
-            Row(
-              children: [
-                OutlinedButtonWidget(text: 'Транзакции', onPressed: () {}),
-                12.w,
-                OutlinedButtonWidget(text: 'Скачать в Excel', onPressed: () {}),
-              ],
-            ),
-            20.h,
-            DropDownFormField(
-              items: ['по годам'],
-              label: 'Выберите период',
-              value: '',
-              onChanged: (value) {},
-            ),
-            40.h,
-            Text(
-              'Таблица доходов и расходов по годам',
-              style: AppTextStyles.f16w500,
-            ),
-            20.h,
-            _buildMetrics(),
-            60.h,
-            Text(
-              'График доходов и расходов по годам',
-              style: AppTextStyles.f16w500,
-            ),
-            30.h,
-            _buildGraphic(),
-          ],
+      body: BlocListener<MenuCubit, MenuState>(
+        listener: (context, state) {
+          if (state is MenuTransactionsWithAccountsSuccess) {
+            _prepareData(state.transactions);
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: ListView(
+            children: [
+              20.h,
+              Row(
+                children: [
+                  OutlinedButtonWidget(text: 'Транзакции', onPressed: () {}),
+                  12.w,
+                  OutlinedButtonWidget(
+                    text: 'Скачать в Excel',
+                    onPressed: () {
+                      exportToExcel();
+                    },
+                  ),
+                ],
+              ),
+              20.h,
+              DropDownFormField(
+                items: ['по годам'],
+                label: 'Выберите период',
+                value: 'по годам',
+                onChanged: (value) {},
+              ),
+              40.h,
+              Text(
+                'Таблица доходов и расходов по годам',
+                style: AppTextStyles.f16w500,
+              ),
+              20.h,
+              _buildMetrics(),
+              60.h,
+              Text(
+                'График доходов и расходов по годам',
+                style: AppTextStyles.f16w500,
+              ),
+              30.h,
+              _buildGraphic(),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  _buildMetrics() {
-    final int rowsPerPage = 2;
-    int currentPage = 1;
-    final List<Map<String, String>> data = List.generate(223, (index) {
-      return {
-        'Год': '${index + 2024}',
-        'Доход (KGZ)': 'Доход от продажи',
-        'Расход (KGZ)': '444544',
-        'Чистый доход (KGZ)': '34%',
-      };
-    });
-
-    final start = (currentPage - 1) * rowsPerPage;
-    final end = (start + rowsPerPage).clamp(0, data.length);
-    final paginatedData = data.sublist(start, end);
-
+  Widget _buildMetrics() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: DataTable(
@@ -87,13 +112,13 @@ class MetricsPage extends StatelessWidget {
           DataColumn(label: Text('Чистый доход (KGZ)')),
         ],
         rows:
-            paginatedData.map((row) {
+            yearlyData.map((row) {
               return DataRow(
                 cells: [
-                  DataCell(Text(row['Год']!)),
+                  DataCell(Text(row['year'].toString())),
                   DataCell(
                     Text(
-                      row['Доход (KGZ)']!,
+                      row['income'].toString(),
                       style: AppTextStyles.f16w500.copyWith(
                         color: AppColors.greenColor,
                       ),
@@ -101,7 +126,7 @@ class MetricsPage extends StatelessWidget {
                   ),
                   DataCell(
                     Text(
-                      row['Расход (KGZ)']!,
+                      row['expense'].toString(),
                       style: AppTextStyles.f16w500.copyWith(
                         color: AppColors.redColor,
                       ),
@@ -109,7 +134,7 @@ class MetricsPage extends StatelessWidget {
                   ),
                   DataCell(
                     Text(
-                      row['Чистый доход (KGZ)']!,
+                      row['balance'].toString(),
                       style: AppTextStyles.f16w500.copyWith(
                         color: AppColors.greenColor,
                       ),
@@ -123,33 +148,29 @@ class MetricsPage extends StatelessWidget {
   }
 
   Widget _buildGraphic() {
-    final years = ['2024', '2025', '2026', '2027'];
-
-    final List<List<double>> data = [
-      [23000.0, 21000.0, 0, 0, 0, 0],
-      [0, 0, 40000.0, 25000.0, 5000.0, 0],
-      [0, 1000, 4000.0, 30000.0, 5000.0, 0],
-      [2000, 3000, 5000, 6000, 7000, 8000],
-    ];
-
-    final colors = [
-      Color(0xFF7B37B5),
-      Color(0xFFF219A2),
-      Color(0xFF156CB1),
-      Color(0xFFCCC9AA),
-      Color(0xFF1EBF93),
-      Color(0xFFFCA12C),
-    ];
-
     const double barWidth = 170;
     const double groupSpacing = 20;
 
-    double calculateChartWidth(int itemCount) {
-      if (itemCount == 0) return 0;
-      return itemCount * barWidth + (itemCount - 1) * groupSpacing + 40;
-    }
+    final List<String> years =
+        yearlyData.map((e) => e['year'].toString()).toList();
+    final List<double> values =
+        yearlyData.map((e) {
+          final income =
+              Decimal.tryParse(e['income'].toString()) ?? Decimal.zero;
+          return income.toDouble(); // Или сумма с expense, если хочешь
+        }).toList();
 
-    final chartWidth = calculateChartWidth(years.length);
+    final colors = [
+      const Color(0xFF7B37B5),
+      const Color(0xFFF219A2),
+      const Color(0xFF156CB1),
+      const Color(0xFFCCC9AA),
+      const Color(0xFF1EBF93),
+      const Color(0xFFFCA12C),
+    ];
+
+    double chartWidth =
+        years.length * barWidth + (years.length - 1) * groupSpacing + 40;
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -158,7 +179,23 @@ class MetricsPage extends StatelessWidget {
         height: 400,
         child: BarChart(
           BarChartData(
-            maxY: 90000,
+            maxY:
+                (values.isNotEmpty
+                    ? values.reduce((a, b) => a > b ? a : b) * 1.2
+                    : 1000),
+            barGroups: List.generate(years.length, (index) {
+              return BarChartGroupData(
+                x: index,
+                barRods: [
+                  BarChartRodData(
+                    toY: values[index],
+                    color: colors[index % colors.length],
+                    width: barWidth,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ],
+              );
+            }),
             borderData: FlBorderData(show: false),
             gridData: FlGridData(
               show: true,
@@ -171,59 +208,123 @@ class MetricsPage extends StatelessWidget {
                   ),
             ),
             titlesData: FlTitlesData(
-              leftTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  interval: 20000,
-                  getTitlesWidget: (value, _) {
-                    return Text(value.toInt().toString());
-                  },
-                  reservedSize: 70,
-                ),
-              ),
               bottomTitles: AxisTitles(
                 sideTitles: SideTitles(
                   showTitles: true,
-                  getTitlesWidget: (value, meta) {
+                  getTitlesWidget: (value, _) {
                     final index = value.toInt();
                     if (index >= 0 && index < years.length) {
                       return Text(years[index]);
                     }
                     return const SizedBox.shrink();
                   },
-                  reservedSize: 20,
+                ),
+              ),
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  interval: 20000,
+                  reservedSize: 70,
+                  getTitlesWidget: (value, _) => Text(value.toInt().toString()),
                 ),
               ),
               rightTitles: AxisTitles(
                 sideTitles: SideTitles(showTitles: false),
               ),
-              topTitles: AxisTitles(
-                sideTitles: SideTitles(showTitles: false, reservedSize: 30),
-              ),
+              topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
             ),
-            barGroups: List.generate(years.length, (index) {
-              final vals = data[index];
-              double sum = 0;
-              return BarChartGroupData(
-                x: index,
-                barRods: [
-                  BarChartRodData(
-                    toY: vals.reduce((a, b) => a + b).toDouble(),
-                    rodStackItems: List.generate(vals.length, (i) {
-                      final start = sum;
-                      sum += vals[i];
-                      return BarChartRodStackItem(start, sum, colors[i]);
-                    }),
-                    width: barWidth,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ],
-              );
-            }),
             groupsSpace: groupSpacing,
           ),
         ),
       ),
     );
+  }
+
+  void _prepareData(List<AllTransactionsModel> transactions) {
+    final Map<String, Map<String, Decimal>> grouped = {};
+
+    for (final tx in transactions) {
+      final date = tx.date;
+      final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
+      final type = tx.transactionType;
+      if (date == null || type == null) continue;
+
+      final year = date.substring(0, 4);
+
+      grouped.putIfAbsent(
+        year,
+        () => {'income': Decimal.zero, 'expense': Decimal.zero},
+      );
+
+      if (type == 'income') {
+        grouped[year]!['income'] = grouped[year]!['income']! + amount;
+      } else if (type == 'expense') {
+        grouped[year]!['expense'] = grouped[year]!['expense']! + amount;
+      }
+    }
+
+    final List<Map<String, dynamic>> result = [];
+    grouped.forEach((year, data) {
+      final income = data['income'] ?? Decimal.zero;
+      final expense = data['expense'] ?? Decimal.zero;
+      final balance = income - expense;
+
+      result.add({
+        'year': year,
+        'income': income,
+        'expense': expense,
+        'balance': balance,
+      });
+    });
+
+    setState(() {
+      yearlyData = result;
+    });
+  }
+
+  void exportToExcel() async {
+    final excel = Excel.createExcel();
+    final sheet = excel['Отчет'];
+
+    // Заголовок
+    sheet.appendRow([
+      TextCellValue('Год'),
+      TextCellValue('Доход (KGZ)'),
+      TextCellValue('Расход (KGZ)'),
+      TextCellValue('Чистый доход (KGZ)'),
+    ]);
+
+    // Данные
+    for (final row in yearlyData) {
+      sheet.appendRow([
+        TextCellValue(row['year'].toString()),
+        TextCellValue(row['income'].toString()),
+        TextCellValue(row['expense'].toString()),
+        TextCellValue(row['balance'].toString()),
+      ]);
+    }
+
+    // Сохранение
+    final fileBytes = excel.save();
+    if (fileBytes == null) return;
+
+    // Путь сохранения
+    final dir = await getApplicationDocumentsDirectory();
+    final file = File('${dir.path}/Отчет.xlsx');
+
+    await file.writeAsBytes(fileBytes, flush: true);
+
+    // iOS: готово
+    // Android: желательно запросить разрешение на доступ
+    if (Platform.isAndroid) {
+      final status = await Permission.storage.request();
+      if (!status.isGranted) {
+        print('Разрешение на запись не получено');
+        return;
+      }
+    }
+
+    // Уведомление (можно заменить SnackBar или что-то свое)
+    print('Файл сохранен: ${file.path}');
   }
 }
