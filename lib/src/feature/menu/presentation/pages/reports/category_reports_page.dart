@@ -15,7 +15,7 @@ class CategoryReportsPage extends StatefulWidget {
 }
 
 class _CategoryReportsPageState extends State<CategoryReportsPage> {
-  String selectedMonth = '1'; // Месяц по умолчанию (январь)
+  String selectedMonth = '6';
 
   @override
   Widget build(BuildContext context) {

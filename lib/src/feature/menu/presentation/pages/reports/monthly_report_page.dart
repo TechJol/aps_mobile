@@ -13,7 +13,7 @@ class MonthlyReportPage extends StatefulWidget {
 }
 
 class _MonthlyReportPageState extends State<MonthlyReportPage> {
-  String selectedMonth = '1';
+  String selectedMonth = '6';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
