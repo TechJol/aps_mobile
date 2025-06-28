@@ -13,10 +13,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int selectedIndex = 0;
   String selectedView = 'Общий';
-  String selectedPeriod = 'Аналитика';
+  String selectedPeriod = 'День';
 
   final viewOptions = ['Расходы', 'Доходы', 'Общий'];
   final periodOptions = ['День', 'Неделя', 'Месяц', 'Год'];
+
+  Map<String, double> groupedData = {};
 
   @override
   void initState() {
@@ -93,6 +95,18 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildTopSection() {
+    final state = context.watch<MenuCubit>().state;
+    if (state is! MenuTransactionsWithAccountsSuccess) {
+      return const SizedBox(height: 240);
+    }
+
+    // Если groupedData ещё не инициализирован — сделай это один раз
+    groupedData = getGroupedReasonData(
+      transactions: state.transactions,
+      reasons: state.reasons,
+      period: selectedPeriod,
+    );
+
     return Container(
       height: 240,
       width: double.infinity,
@@ -104,10 +118,15 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // стрелки и заголовок
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _circleIcon(Icons.arrow_back_ios_rounded, const Offset(-22, 70)),
+              _circleIcon(
+                Icons.arrow_back_ios_rounded,
+                const Offset(-22, 70),
+                onTap: () => _changePeriod(false),
+              ),
               Transform.translate(
                 offset: const Offset(-130, -13),
                 child: Text(
@@ -122,22 +141,28 @@ class _HomePageState extends State<HomePage> {
               _circleIcon(
                 Icons.arrow_forward_ios_rounded,
                 const Offset(22, 70),
+                onTap: () => _changePeriod(true),
               ),
             ],
           ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              const Spacer(),
               Transform.translate(
                 offset: const Offset(15, 3),
                 child: CustomPaint(
                   size: const Size(112, 112),
-                  painter: PieChartPainter(),
+                  painter: PieChartDynamicPainter(data: groupedData),
                 ),
               ),
-              _legend(),
+              const Spacer(flex: 5),
+              _legendFromData(groupedData),
+              const Spacer(),
             ],
           ),
+
           const SizedBox(height: 18),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -331,50 +356,81 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget _legend() {
-    const items = [
-      {'color': Color(0xFF4600D7), 'label': 'Аренда'},
-      {'color': Color(0xFFBC6FF8), 'label': 'Зарплата'},
-      {'color': Color(0xFF8385F2), 'label': 'Прочие расходы'},
+  Widget _legendFromData(Map<String, double> data) {
+    final colors = [
+      const Color(0xFF4600D7),
+      const Color(0xFFBC6FF8),
+      const Color(0xFF8385F2),
+      const Color(0xFFFCA12C),
+      const Color(0xFF1EBF93),
     ];
+
+    final entries = data.entries.toList();
+
     return Padding(
-      padding: const EdgeInsets.only(top: 22, right: 60),
+      padding: const EdgeInsets.only(top: 22, right: 30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children:
-            items
-                .map(
-                  (item) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: item['color'] as Color,
-                          radius: 5.5,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(item['label'] as String),
-                      ],
-                    ),
-                  ),
-                )
-                .toList(),
+        children: List.generate(entries.length, (i) {
+          final item = entries[i];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: colors[i % colors.length],
+                  radius: 5.5,
+                ),
+                const SizedBox(width: 6),
+                Text(item.key),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
 
-  Widget _circleIcon(IconData icon, Offset offset) {
+  Widget _circleIcon(
+    IconData icon,
+    Offset offset, {
+    required VoidCallback onTap,
+  }) {
     return Transform.translate(
       offset: offset,
-      child: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.grey.shade200,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.grey.shade200,
+          ),
+          padding: const EdgeInsets.all(5),
+          child: Icon(icon, size: 20),
         ),
-        padding: const EdgeInsets.all(5),
-        child: Icon(icon, size: 20),
       ),
     );
+  }
+
+  void _changePeriod(bool forward) {
+    final currentIndex = periodOptions.indexOf(selectedPeriod);
+    final nextIndex =
+        forward
+            ? (currentIndex + 1) % periodOptions.length
+            : (currentIndex - 1 + periodOptions.length) % periodOptions.length;
+
+    setState(() {
+      selectedPeriod = periodOptions[nextIndex];
+
+      final state = context.read<MenuCubit>().state;
+      if (state is MenuTransactionsWithAccountsSuccess) {
+        groupedData = getGroupedReasonData(
+          transactions: state.transactions,
+          reasons: state.reasons,
+          period: selectedPeriod,
+        );
+      }
+    });
   }
 
   Widget _periodButton(String period) {
@@ -441,6 +497,56 @@ class _HomePageState extends State<HomePage> {
           }).toList(),
     );
   }
+
+  Map<String, double> getGroupedReasonData({
+    required List<AllTransactionsModel> transactions,
+    required List<IncomeExpenseReasons> reasons,
+    required String period,
+  }) {
+    final now = DateTime.now();
+
+    bool isInPeriod(DateTime txDate) {
+      switch (period) {
+        case 'День':
+          return txDate.day == now.day &&
+              txDate.month == now.month &&
+              txDate.year == now.year;
+        case 'Неделя':
+          final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+          final endOfWeek = startOfWeek.add(const Duration(days: 6));
+          return txDate.isAfter(
+                startOfWeek.subtract(const Duration(days: 1)),
+              ) &&
+              txDate.isBefore(endOfWeek.add(const Duration(days: 1)));
+        case 'Месяц':
+          return txDate.month == now.month && txDate.year == now.year;
+        case 'Год':
+          return txDate.year == now.year;
+        default:
+          return true;
+      }
+    }
+
+    // Map<reasonId, reasonName>
+    final Map<int, String> reasonNames = {for (var r in reasons) r.id!: r.name};
+
+    // Итоговая группировка: Map<Название статьи, сумма>
+    final Map<String, double> grouped = {};
+
+    for (final tx in transactions) {
+      final date = DateTime.tryParse(tx.date ?? '');
+      if (date == null || tx.incomeExpenseReason == null) continue;
+      if (!isInPeriod(date)) continue;
+
+      final reasonId = tx.incomeExpenseReason!;
+      final reasonName = reasonNames[reasonId] ?? 'Другое';
+      final amount = double.tryParse(tx.amount ?? '0') ?? 0;
+
+      grouped[reasonName] = (grouped[reasonName] ?? 0) + amount;
+    }
+
+    return grouped;
+  }
 }
 
 class PieChartPainter extends CustomPainter {
@@ -471,4 +577,50 @@ class PieChartPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
+}
+
+class PieChartDynamicPainter extends CustomPainter {
+  final Map<String, double> data;
+
+  PieChartDynamicPainter({required this.data});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 9.5
+          ..strokeCap = StrokeCap.round;
+
+    final total = data.values.fold(0.0, (sum, value) => sum + value);
+    if (total == 0) return;
+
+    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
+
+    const gap = 0.27;
+    double startAngle = 0.0;
+
+    final colors = [
+      const Color(0xFF4600D7),
+      const Color(0xFFBC6FF8),
+      const Color(0xFF8385F2),
+      const Color(0xFFFCA12C),
+      const Color(0xFF1EBF93),
+    ];
+
+    final segments = data.entries.toList();
+
+    for (int i = 0; i < segments.length; i++) {
+      final value = segments[i].value;
+      final sweepAngle = (value / total) * 2 * 3.14159 - gap;
+
+      paint.color = colors[i % colors.length];
+      canvas.drawArc(rect, startAngle, sweepAngle, false, paint);
+
+      startAngle += (value / total) * 2 * 3.14159;
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
