@@ -12,6 +12,8 @@ class ArticlesPage extends StatefulWidget {
 }
 
 class _ArticlesPageState extends State<ArticlesPage> {
+  final LocalService _localService = LocalService();
+
   @override
   void initState() {
     context.read<MenuCubit>().getReasons();
@@ -110,7 +112,22 @@ class _ArticlesPageState extends State<ArticlesPage> {
                     OutlinedButtonWidget(onPressed: () {}, text: 'Распечатать'),
                     12.w,
                     OutlinedButtonWidget(
-                      onPressed: () {},
+                      onPressed: () {
+                        final headers = ['№', 'Название', 'Тип счета'];
+                        final rows =
+                            reasons.asMap().entries.map<List<String>>((entry) {
+                              final index = entry.key + 1;
+                              final reason = entry.value;
+                              return ['$index', reason.name, reason.type];
+                            }).toList();
+
+                        _localService.exportToExcelGeneric(
+                          fileName: 'Список_статей',
+                          headers: headers,
+                          rows: rows,
+                          context: context,
+                        );
+                      },
                       text: 'Скачать в Excel',
                     ),
                   ],

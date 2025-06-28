@@ -15,6 +15,7 @@ class CategoryReportsPage extends StatefulWidget {
 }
 
 class _CategoryReportsPageState extends State<CategoryReportsPage> {
+  final LocalService _localService = LocalService();
   String selectedMonth = '6';
 
   @override
@@ -55,7 +56,45 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
               child: ListView(
                 children: [
                   20.h,
-                  ButtonsRow(),
+                  ButtonsRow(
+                    onExport: () {
+                      final headers = ['№', 'Статья', 'Сумма (сом)', 'Процент'];
+                      final List<List<String>> incomeRows =
+                          incomeData.asMap().entries.map((e) {
+                            final row = e.value;
+                            return [
+                              '${e.key + 1}',
+                              '${row['name'] ?? ''}',
+                              '${row['amount'] ?? ''}',
+                              '${row['percent'] ?? ''}%',
+                            ];
+                          }).toList();
+
+                      final List<List<String>> expenseRows =
+                          expenseData.asMap().entries.map((e) {
+                            final row = e.value;
+                            return [
+                              '${e.key + 1}',
+                              '${row['name'] ?? ''}',
+                              '${row['amount'] ?? ''}',
+                              '${row['percent'] ?? ''}%',
+                            ];
+                          }).toList();
+
+                      _localService.exportToExcelGeneric(
+                        fileName: 'Отчет_по_статьям_месяц_$selectedMonth',
+                        headers: headers,
+                        rows: [
+                          ['--- ДОХОД ---'],
+                          ...incomeRows,
+                          [],
+                          ['--- РАСХОД ---'],
+                          ...expenseRows,
+                        ],
+                        context: context,
+                      );
+                    },
+                  ),
                   20.h,
                   MonthsTabs(
                     selectedMonth: selectedMonth,
@@ -227,7 +266,8 @@ class MonthsTabs extends StatelessWidget {
 }
 
 class ButtonsRow extends StatelessWidget {
-  const ButtonsRow({super.key});
+  final VoidCallback onExport;
+  const ButtonsRow({super.key, required this.onExport});
 
   @override
   Widget build(BuildContext context) {
@@ -235,7 +275,7 @@ class ButtonsRow extends StatelessWidget {
       children: [
         OutlinedButtonWidget(text: 'Распечатать', onPressed: () {}),
         SizedBox(width: 12),
-        OutlinedButtonWidget(text: 'Скачать в Excel', onPressed: () {}),
+        OutlinedButtonWidget(text: 'Скачать в Excel', onPressed: onExport),
       ],
     );
   }

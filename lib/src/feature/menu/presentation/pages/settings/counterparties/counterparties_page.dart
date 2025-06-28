@@ -12,6 +12,8 @@ class CounterpartiesPage extends StatefulWidget {
 }
 
 class _CounterpartiesPageState extends State<CounterpartiesPage> {
+  final LocalService _localService = LocalService();
+
   @override
   void initState() {
     super.initState();
@@ -123,7 +125,29 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                       ),
                       12.w,
                       OutlinedButtonWidget(
-                        onPressed: () {},
+                        onPressed: () {
+                          final headers = ['№', 'Название', 'Тип'];
+                          final rows =
+                              partners.asMap().entries.map<List<String>>((
+                                entry,
+                              ) {
+                                final index = entry.key + 1;
+                                final partner = entry.value;
+
+                                return [
+                                  '$index',
+                                  partner.name,
+                                  getTypeName(partner.type ?? 0),
+                                ];
+                              }).toList();
+
+                          _localService.exportToExcelGeneric(
+                            fileName: 'Контрагенты',
+                            headers: headers,
+                            rows: rows,
+                            context: context,
+                          );
+                        },
                         text: 'Скачать в Excel',
                       ),
                     ],

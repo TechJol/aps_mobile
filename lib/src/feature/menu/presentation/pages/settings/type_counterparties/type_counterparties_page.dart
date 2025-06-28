@@ -12,6 +12,8 @@ class TypeCounterpartiesPage extends StatefulWidget {
 }
 
 class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
+  final LocalService _localService = LocalService();
+
   @override
   void initState() {
     super.initState();
@@ -116,7 +118,23 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
                       ),
                       12.w,
                       OutlinedButtonWidget(
-                        onPressed: () {},
+                        onPressed: () {
+                          final headers = ['№', 'Название'];
+                          final rows =
+                              types.asMap().entries.map<List<String>>((entry) {
+                                final index = entry.key + 1;
+                                final type = entry.value;
+
+                                return ['$index', type.name];
+                              }).toList();
+
+                          _localService.exportToExcelGeneric(
+                            fileName: 'Типы_контрагентов',
+                            headers: headers,
+                            rows: rows,
+                            context: context,
+                          );
+                        },
                         text: 'Скачать в Excel',
                       ),
                     ],

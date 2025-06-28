@@ -12,6 +12,8 @@ class MenuAccountsPage extends StatefulWidget {
 }
 
 class _MenuAccountsPageState extends State<MenuAccountsPage> {
+  final LocalService _localService = LocalService();
+
   final int rowsPerPage = 10;
   int currentPage = 1;
 
@@ -82,9 +84,39 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
           20.h,
           Row(
             children: [
-              OutlinedButtonWidget(text: 'Транзакции', onPressed: () {}),
+              OutlinedButtonWidget(text: 'Распечатать', onPressed: () {}),
               12.w,
-              OutlinedButtonWidget(text: 'Скачать в Excel', onPressed: () {}),
+              OutlinedButtonWidget(
+                text: 'Скачать в Excel',
+                onPressed: () {
+                  final headers = ['№', 'Название', 'Баланс', 'Тип счета'];
+
+                  final rows =
+                      data.asMap().entries.map<List<String>>((entry) {
+                        final index = entry.key + 1;
+                        final acc = entry.value;
+
+                        final balance = calculateAccountBalance(
+                          accountId: acc.id!,
+                          transactions: transactions,
+                        );
+
+                        return [
+                          '$index',
+                          acc.name,
+                          balance.toString(),
+                          acc.accountType,
+                        ];
+                      }).toList();
+
+                  _localService.exportToExcelGeneric(
+                    fileName: 'По_счетам',
+                    headers: headers,
+                    rows: rows,
+                    context: context,
+                  );
+                },
+              ),
             ],
           ),
           20.h,

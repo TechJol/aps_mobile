@@ -1,16 +1,11 @@
 // ignore_for_file: deprecated_member_use
 
-import 'dart:io';
-
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:decimal/decimal.dart';
-import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class MetricsPage extends StatefulWidget {
   const MetricsPage({super.key});
@@ -56,12 +51,35 @@ class _MetricsPageState extends State<MetricsPage> {
               20.h,
               Row(
                 children: [
-                  OutlinedButtonWidget(text: 'Транзакции', onPressed: () {}),
+                  OutlinedButtonWidget(text: 'Распечатать', onPressed: () {}),
                   12.w,
                   OutlinedButtonWidget(
                     text: 'Скачать в Excel',
                     onPressed: () {
-                      exportToExcel();
+                      final headers = [
+                        'Год',
+                        'Доход (KGZ)',
+                        'Расход (KGZ)',
+                        'Чистый доход (KGZ)',
+                      ];
+                      final rows =
+                          yearlyData
+                              .map(
+                                (row) => [
+                                  row['year'].toString(),
+                                  row['income'].toString(),
+                                  row['expense'].toString(),
+                                  row['balance'].toString(),
+                                ],
+                              )
+                              .toList();
+
+                      LocalService().exportToExcelGeneric(
+                        fileName: 'Годовой_отчет',
+                        headers: headers,
+                        rows: rows,
+                        context: context,
+                      );
                     },
                   ),
                 ],
@@ -282,49 +300,55 @@ class _MetricsPageState extends State<MetricsPage> {
     });
   }
 
-  void exportToExcel() async {
-    final excel = Excel.createExcel();
-    final sheet = excel['Отчет'];
+  // void exportToExcel() async {
+  //   final excel = Excel.createExcel();
+  //   final sheet = excel['Отчет'];
 
-    // Заголовок
-    sheet.appendRow([
-      TextCellValue('Год'),
-      TextCellValue('Доход (KGZ)'),
-      TextCellValue('Расход (KGZ)'),
-      TextCellValue('Чистый доход (KGZ)'),
-    ]);
+  //   // Заголовки
+  //   sheet.appendRow([
+  //     TextCellValue('Год'),
+  //     TextCellValue('Доход (KGZ)'),
+  //     TextCellValue('Расход (KGZ)'),
+  //     TextCellValue('Чистый доход (KGZ)'),
+  //   ]);
 
-    // Данные
-    for (final row in yearlyData) {
-      sheet.appendRow([
-        TextCellValue(row['year'].toString()),
-        TextCellValue(row['income'].toString()),
-        TextCellValue(row['expense'].toString()),
-        TextCellValue(row['balance'].toString()),
-      ]);
-    }
+  //   // Данные
+  //   for (final row in yearlyData) {
+  //     sheet.appendRow([
+  //       TextCellValue(row['year'].toString()),
+  //       TextCellValue(row['income'].toString()),
+  //       TextCellValue(row['expense'].toString()),
+  //       TextCellValue(row['balance'].toString()),
+  //     ]);
+  //   }
 
-    // Сохранение
-    final fileBytes = excel.save();
-    if (fileBytes == null) return;
+  //   // Сохранение в байты
+  //   final fileBytes = excel.save();
+  //   if (fileBytes == null) return;
 
-    // Путь сохранения
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/Отчет.xlsx');
+  //   // Получение пути
+  //   final dir = await getApplicationDocumentsDirectory();
+  //   final file = File('${dir.path}/Отчет.xlsx');
 
-    await file.writeAsBytes(fileBytes, flush: true);
+  //   await file.writeAsBytes(fileBytes, flush: true);
 
-    // iOS: готово
-    // Android: желательно запросить разрешение на доступ
-    if (Platform.isAndroid) {
-      final status = await Permission.storage.request();
-      if (!status.isGranted) {
-        print('Разрешение на запись не получено');
-        return;
-      }
-    }
+  //   // Android: разрешения
+  //   if (Platform.isAndroid) {
+  //     final status = await Permission.storage.request();
+  //     if (!status.isGranted) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text('Нет разрешения на запись файла')),
+  //       );
+  //       return;
+  //     }
+  //   }
 
-    // Уведомление (можно заменить SnackBar или что-то свое)
-    print('Файл сохранен: ${file.path}');
-  }
+  //   // Показать SnackBar
+  //   ScaffoldMessenger.of(
+  //     context,
+  //   ).showSnackBar(const SnackBar(content: Text('Файл успешно сохранен!')));
+
+  //   // Поделиться файлом
+  //   await Share.shareXFiles([XFile(file.path)]);
+  // }
 }

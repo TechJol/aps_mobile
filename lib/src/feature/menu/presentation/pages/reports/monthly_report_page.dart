@@ -13,7 +13,9 @@ class MonthlyReportPage extends StatefulWidget {
 }
 
 class _MonthlyReportPageState extends State<MonthlyReportPage> {
+  final LocalService localService = LocalService();
   String selectedMonth = '6';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +54,32 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
                       const SizedBox(width: 12),
                       OutlinedButtonWidget(
                         text: 'Скачать в Excel',
-                        onPressed: () {},
+                        onPressed: () {
+                          final headers = [
+                            'Месяц',
+                            'Доход (KGZ)',
+                            'Расход (KGZ)',
+                            'Чистый доход (KGZ)',
+                          ];
+                          final rows =
+                              data
+                                  .map(
+                                    (row) => [
+                                      row['month']!,
+                                      row['income']!,
+                                      row['expense']!,
+                                      row['balance']!,
+                                    ],
+                                  )
+                                  .toList();
+
+                          localService.exportToExcelGeneric(
+                            fileName: 'Месячный_отчет_$selectedMonth',
+                            headers: headers,
+                            rows: rows,
+                            context: context,
+                          );
+                        },
                       ),
                     ],
                   ),

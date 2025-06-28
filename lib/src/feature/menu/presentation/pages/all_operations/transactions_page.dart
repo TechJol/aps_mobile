@@ -12,6 +12,8 @@ class TransactionsPage extends StatefulWidget {
 }
 
 class _TransactionsPageState extends State<TransactionsPage> {
+  final LocalService _localService = LocalService();
+
   /// сколько строк показываем на странице
   final int rowsPerPage = 10;
 
@@ -116,7 +118,50 @@ class _TransactionsPageState extends State<TransactionsPage> {
             children: [
               OutlinedButtonWidget(text: 'Распечатать', onPressed: () {}),
               12.w,
-              OutlinedButtonWidget(text: 'Скачать в Excel', onPressed: () {}),
+              OutlinedButtonWidget(
+                text: 'Скачать в Excel',
+                onPressed: () {
+                  final headers = [
+                    '№',
+                    'Сумма',
+                    'Валюта',
+                    'Дата',
+                    'Тип',
+                    'Счет',
+                    'Статья',
+                    'Контрагент',
+                    'Комментарий',
+                  ];
+
+                  final rows =
+                      data.asMap().entries.map<List<String>>((entry) {
+                        final tx = entry.value;
+                        final index = entry.key + 1;
+                        return [
+                          '$index',
+                          tx.amount?.toString() ?? '',
+                          tx.currency ?? '',
+                          tx.date != null
+                              ? DateFormat(
+                                'dd.MM.yyyy',
+                              ).format(DateTime.parse(tx.date!))
+                              : '',
+                          tx.transactionType ?? '',
+                          getAccountName(tx.account ?? 0),
+                          getReasonName(tx.incomeExpenseReason ?? 0),
+                          tx.partners.toString(),
+                          tx.description ?? '',
+                        ];
+                      }).toList();
+
+                  _localService.exportToExcelGeneric(
+                    fileName: 'Все_транзакции',
+                    headers: headers,
+                    rows: rows,
+                    context: context,
+                  );
+                },
+              ),
             ],
           ),
           20.h,

@@ -12,6 +12,8 @@ class SettingAccountPage extends StatefulWidget {
 }
 
 class _SettingAccountPageState extends State<SettingAccountPage> {
+  final LocalService _localService = LocalService();
+
   @override
   void initState() {
     context.read<MenuCubit>().getAccounts();
@@ -114,7 +116,24 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
                       ),
                       12.w,
                       OutlinedButtonWidget(
-                        onPressed: () {},
+                        onPressed: () {
+                          final headers = ['№', 'Название', 'Тип счета'];
+                          final rows =
+                              account.asMap().entries.map<List<String>>((
+                                entry,
+                              ) {
+                                final index = entry.key + 1;
+                                final acc = entry.value;
+                                return ['$index', acc.name, acc.accountType];
+                              }).toList();
+
+                          _localService.exportToExcelGeneric(
+                            fileName: 'Настройки_счетов',
+                            headers: headers,
+                            rows: rows,
+                            context: context,
+                          );
+                        },
                         text: 'Скачать в Excel',
                       ),
                     ],

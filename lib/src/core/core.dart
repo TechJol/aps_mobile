@@ -6,3 +6,4 @@ export 'network/dio_client.dart';
 export 'utils/apis/api.dart';
 export 'network/network.dart';
 export 'utils/errors/errors.dart';
+export 'utils/local_service.dart';
