@@ -118,7 +118,11 @@ class _ArticlesPageState extends State<ArticlesPage> {
                             reasons.asMap().entries.map<List<String>>((entry) {
                               final index = entry.key + 1;
                               final reason = entry.value;
-                              return ['$index', reason.name, reason.type];
+                              return [
+                                '$index',
+                                reason.name,
+                                reason.type == 'income' ? 'Доход' : 'Расход',
+                              ];
                             }).toList();
 
                         _localService.printReportAsPdf(
@@ -139,7 +143,11 @@ class _ArticlesPageState extends State<ArticlesPage> {
                             reasons.asMap().entries.map<List<String>>((entry) {
                               final index = entry.key + 1;
                               final reason = entry.value;
-                              return ['$index', reason.name, reason.type];
+                              return [
+                                '$index',
+                                reason.name,
+                                reason.type == 'income' ? 'Доход' : 'Расход',
+                              ];
                             }).toList();
 
                         _localService.exportToExcelGeneric(
@@ -201,7 +209,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              reason.type,
+                              reason.type == 'income' ? 'Доход' : 'Расход',
                               style: AppTextStyles.f16w500,
                             ),
                           ),

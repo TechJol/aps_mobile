@@ -16,6 +16,10 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
   String? selectedType;
   bool isFormValid = false;
 
+  final typeToLabel = {'income': 'Доход', 'expense': 'Расход'};
+
+  final labelToType = {'Доход': 'income', 'Расход': 'expense'};
+
   void checkFormValidity() {
     setState(() {
       isFormValid = selectedName != null && selectedType != null;
@@ -25,7 +29,7 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
   @override
   void initState() {
     selectedName = widget.reason.name;
-    selectedType = widget.reason.type;
+    selectedType = typeToLabel[widget.reason.type];
     checkFormValidity();
     super.initState();
   }
@@ -49,7 +53,6 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
 
             // Собираем уникальные названия
             final uniqueNames = reasons.map((e) => e.name).toSet().toList();
-            final types = ['income', 'expense'];
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -67,7 +70,7 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
                   ),
                   const SizedBox(height: 12),
                   DropDownFormField(
-                    items: types,
+                    items: typeToLabel.values.toList(),
                     label: 'Тип',
                     value: selectedType,
                     onChanged: (val) {
@@ -83,7 +86,7 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
                               final id = widget.reason.id!;
                               final updated = IncomeExpenseReasons(
                                 name: selectedName!,
-                                type: selectedType!,
+                                type: labelToType[selectedType]!,
                               );
                               context.read<MenuCubit>().updateReason(
                                 updated,
