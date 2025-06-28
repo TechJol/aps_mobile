@@ -49,8 +49,33 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
                     children: [
                       OutlinedButtonWidget(
                         text: 'Распечатать',
-                        onPressed: () {},
+                        onPressed: () {
+                          final headers = [
+                            'Месяц',
+                            'Доход (KGZ)',
+                            'Расход (KGZ)',
+                            'Чистый доход (KGZ)',
+                          ];
+
+                          final rows =
+                              data.map((row) {
+                                return [
+                                  row['month'] ?? '',
+                                  row['income'] ?? '',
+                                  row['expense'] ?? '',
+                                  row['balance'] ?? '',
+                                ];
+                              }).toList();
+
+                          localService.printReportAsPdf(
+                            context: context,
+                            title: 'Месячный отчет за месяц $selectedMonth',
+                            headers: headers,
+                            rows: rows,
+                          );
+                        },
                       ),
+
                       const SizedBox(width: 12),
                       OutlinedButtonWidget(
                         text: 'Скачать в Excel',

@@ -59,7 +59,8 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                   ButtonsRow(
                     onExport: () {
                       final headers = ['№', 'Статья', 'Сумма (сом)', 'Процент'];
-                      final List<List<String>> incomeRows =
+
+                      final incomeRows =
                           incomeData.asMap().entries.map((e) {
                             final row = e.value;
                             return [
@@ -70,7 +71,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                             ];
                           }).toList();
 
-                      final List<List<String>> expenseRows =
+                      final expenseRows =
                           expenseData.asMap().entries.map((e) {
                             final row = e.value;
                             return [
@@ -94,7 +95,46 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                         context: context,
                       );
                     },
+                    onPrint: () {
+                      final headers = ['№', 'Статья', 'Сумма (сом)', 'Процент'];
+
+                      final incomeRows =
+                          incomeData.asMap().entries.map((e) {
+                            final row = e.value;
+                            return [
+                              '${e.key + 1}',
+                              '${row['name'] ?? ''}',
+                              '${row['amount'] ?? ''}',
+                              '${row['percent'] ?? ''}%',
+                            ];
+                          }).toList();
+
+                      final expenseRows =
+                          expenseData.asMap().entries.map((e) {
+                            final row = e.value;
+                            return [
+                              '${e.key + 1}',
+                              '${row['name'] ?? ''}',
+                              '${row['amount'] ?? ''}',
+                              '${row['percent'] ?? ''}%',
+                            ];
+                          }).toList();
+
+                      _localService.printReportAsPdf(
+                        context: context,
+                        title: 'Отчет по статьям (месяц $selectedMonth)',
+                        headers: headers,
+                        rows: [
+                          ['--- ДОХОД ---'],
+                          ...incomeRows,
+                          [],
+                          ['--- РАСХОД ---'],
+                          ...expenseRows,
+                        ],
+                      );
+                    },
                   ),
+
                   20.h,
                   MonthsTabs(
                     selectedMonth: selectedMonth,
@@ -267,13 +307,14 @@ class MonthsTabs extends StatelessWidget {
 
 class ButtonsRow extends StatelessWidget {
   final VoidCallback onExport;
-  const ButtonsRow({super.key, required this.onExport});
+  final VoidCallback onPrint;
+  const ButtonsRow({super.key, required this.onExport, required this.onPrint});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        OutlinedButtonWidget(text: 'Распечатать', onPressed: () {}),
+        OutlinedButtonWidget(text: 'Распечатать', onPressed: onPrint),
         SizedBox(width: 12),
         OutlinedButtonWidget(text: 'Скачать в Excel', onPressed: onExport),
       ],

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dio/dio.dart';
@@ -113,9 +115,25 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
                   Row(
                     children: [
                       OutlinedButtonWidget(
-                        onPressed: () {},
+                        onPressed: () {
+                          final headers = ['№', 'Название'];
+                          final rows =
+                              types.asMap().entries.map<List<String>>((entry) {
+                                final index = entry.key + 1;
+                                final type = entry.value;
+                                return ['$index', type.name];
+                              }).toList();
+
+                          _localService.printReportAsPdf(
+                            context: context,
+                            title: 'Типы контрагентов',
+                            headers: headers,
+                            rows: rows,
+                          );
+                        },
                         text: 'Распечатать',
                       ),
+
                       12.w,
                       OutlinedButtonWidget(
                         onPressed: () {

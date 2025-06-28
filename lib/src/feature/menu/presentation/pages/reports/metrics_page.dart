@@ -51,7 +51,34 @@ class _MetricsPageState extends State<MetricsPage> {
               20.h,
               Row(
                 children: [
-                  OutlinedButtonWidget(text: 'Распечатать', onPressed: () {}),
+                  OutlinedButtonWidget(
+                    text: 'Распечатать',
+                    onPressed: () {
+                      final headers = [
+                        'Год',
+                        'Доход (KGZ)',
+                        'Расход (KGZ)',
+                        'Чистый доход (KGZ)',
+                      ];
+
+                      final rows =
+                          yearlyData.map((row) {
+                            return [
+                              row['year'].toString(),
+                              row['income'].toString(),
+                              row['expense'].toString(),
+                              row['balance'].toString(),
+                            ];
+                          }).toList();
+
+                      LocalService().printReportAsPdf(
+                        context: context,
+                        title: 'Годовой отчет',
+                        headers: headers,
+                        rows: rows,
+                      );
+                    },
+                  ),
                   12.w,
                   OutlinedButtonWidget(
                     text: 'Скачать в Excel',

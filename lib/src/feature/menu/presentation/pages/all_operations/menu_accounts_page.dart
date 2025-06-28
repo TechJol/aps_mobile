@@ -84,7 +84,37 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
           20.h,
           Row(
             children: [
-              OutlinedButtonWidget(text: 'Распечатать', onPressed: () {}),
+              OutlinedButtonWidget(
+                text: 'Распечатать',
+                onPressed: () {
+                  final headers = ['№', 'Название', 'Баланс', 'Тип счета'];
+
+                  final rows =
+                      data.asMap().entries.map<List<String>>((entry) {
+                        final index = entry.key + 1;
+                        final acc = entry.value;
+
+                        final balance = calculateAccountBalance(
+                          accountId: acc.id!,
+                          transactions: transactions,
+                        );
+
+                        return [
+                          '$index',
+                          acc.name,
+                          balance.toString(),
+                          acc.accountType,
+                        ];
+                      }).toList();
+
+                  _localService.printReportAsPdf(
+                    context: context,
+                    title: 'Отчет по счетам',
+                    headers: headers,
+                    rows: rows,
+                  );
+                },
+              ),
               12.w,
               OutlinedButtonWidget(
                 text: 'Скачать в Excel',
@@ -119,6 +149,7 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
               ),
             ],
           ),
+
           20.h,
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dio/dio.dart';
@@ -111,7 +113,25 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
                   Row(
                     children: [
                       OutlinedButtonWidget(
-                        onPressed: () {},
+                        onPressed: () {
+                          final headers = ['№', 'Название', 'Тип счета'];
+                          final rows =
+                              account.asMap().entries.map<List<String>>((
+                                entry,
+                              ) {
+                                final index = entry.key + 1;
+                                final acc = entry.value;
+                                return ['$index', acc.name, acc.accountType];
+                              }).toList();
+
+                          _localService.printReportAsPdf(
+                            context: context,
+                            title: 'Настройки счетов',
+                            headers: headers,
+                            rows: rows,
+                          );
+                        },
+
                         text: 'Распечатать',
                       ),
                       12.w,

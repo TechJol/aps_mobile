@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dio/dio.dart';
@@ -109,7 +111,26 @@ class _ArticlesPageState extends State<ArticlesPage> {
                 12.h,
                 Row(
                   children: [
-                    OutlinedButtonWidget(onPressed: () {}, text: 'Распечатать'),
+                    OutlinedButtonWidget(
+                      onPressed: () {
+                        final headers = ['№', 'Название', 'Тип счета'];
+                        final rows =
+                            reasons.asMap().entries.map<List<String>>((entry) {
+                              final index = entry.key + 1;
+                              final reason = entry.value;
+                              return ['$index', reason.name, reason.type];
+                            }).toList();
+
+                        _localService.printReportAsPdf(
+                          context: context,
+                          title: 'Список статей',
+                          headers: headers,
+                          rows: rows,
+                        );
+                      },
+                      text: 'Распечатать',
+                    ),
+
                     12.w,
                     OutlinedButtonWidget(
                       onPressed: () {
