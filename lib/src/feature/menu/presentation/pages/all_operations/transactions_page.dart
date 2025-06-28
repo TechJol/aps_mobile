@@ -131,7 +131,51 @@ class _TransactionsPageState extends State<TransactionsPage> {
         children: [
           Row(
             children: [
-              OutlinedButtonWidget(text: 'Распечатать', onPressed: () {}),
+              OutlinedButtonWidget(
+                text: 'Распечатать',
+                onPressed: () {
+                  final headers = [
+                    '№',
+                    'Сумма',
+                    'Валюта',
+                    'Дата',
+                    'Тип',
+                    'Счет',
+                    'Статья',
+                    'Контрагент',
+                    'Комментарий',
+                  ];
+
+                  final rows =
+                      data.asMap().entries.map<List<String>>((entry) {
+                        final tx = entry.value;
+                        final index = entry.key + 1;
+                        return [
+                          '$index',
+                          tx.amount?.toString() ?? '',
+                          tx.currency ?? '',
+                          tx.date != null
+                              ? DateFormat(
+                                'dd.MM.yyyy',
+                              ).format(DateTime.parse(tx.date!))
+                              : '',
+                          tx.transactionType ?? '',
+                          getAccountName(tx.account ?? 0),
+                          getReasonName(tx.incomeExpenseReason ?? 0),
+                          getPartnerName(tx.partners ?? 0),
+                          tx.description ?? '',
+                        ];
+                      }).toList();
+
+                  _localService.printReportAsPdf(
+                    context: context,
+                    title: 'Отчет по всем транзакциям',
+                    headers: headers,
+                    rows: rows,
+                  );
+                },
+              ),
+
               12.w,
               OutlinedButtonWidget(
                 text: 'Скачать в Excel',
