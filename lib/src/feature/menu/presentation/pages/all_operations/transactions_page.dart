@@ -61,7 +61,12 @@ class _TransactionsPageState extends State<TransactionsPage> {
             if (transactions.isEmpty) {
               return const Center(child: Text('Нет транзакций'));
             }
-            return _buildTableWithPagination(transactions, accounts, reasons);
+            return _buildTableWithPagination(
+              transactions,
+              accounts,
+              reasons,
+              state.partners,
+            );
           }
 
           // MenuInitial
@@ -76,6 +81,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
     List<AllTransactionsModel> data,
     List<AccountModel> accounts,
     List<IncomeExpenseReasons> reasons,
+    List<PartnersModel> partners,
   ) {
     String getAccountName(int id) {
       return accounts
@@ -101,6 +107,15 @@ class _TransactionsPageState extends State<TransactionsPage> {
                   type: '',
                   company: 0,
                 ),
+          )
+          .name;
+    }
+
+    String getPartnerName(int id) {
+      return partners
+          .firstWhere(
+            (p) => p.id == id,
+            orElse: () => PartnersModel(name: 'Неизвестно', company: 0),
           )
           .name;
     }
@@ -149,7 +164,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                           tx.transactionType ?? '',
                           getAccountName(tx.account ?? 0),
                           getReasonName(tx.incomeExpenseReason ?? 0),
-                          tx.partners.toString(),
+                          getPartnerName(tx.partners ?? 0),
                           tx.description ?? '',
                         ];
                       }).toList();
@@ -212,7 +227,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                         DataCell(
                           Text(getReasonName(tx.incomeExpenseReason ?? 0)),
                         ),
-                        DataCell(Text('${tx.partners}')),
+                        DataCell(Text(getPartnerName(tx.partners ?? 0))),
                         DataCell(Text('${tx.description}')),
                       ],
                     );
