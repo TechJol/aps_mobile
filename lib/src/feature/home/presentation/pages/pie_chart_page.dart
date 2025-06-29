@@ -23,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     context.read<MenuCubit>().getTransactionsWithAccounts();
+    context.read<CredentialCubit>().getUserById(); // <-- добавь это
     super.initState();
   }
 
@@ -35,10 +36,19 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
         backgroundColor: const Color(0xFFF3F4F7),
-        title: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0),
-          child: Text('Привет, Aяна', style: AppTextStyles.f24w600),
+        title: BlocBuilder<CredentialCubit, CredentialState>(
+          builder: (context, state) {
+            if (state is CredentialUserLoaded) {
+              return Text(
+                'Привет, ${state.user.username}',
+                style: AppTextStyles.f24w600,
+              );
+            } else {
+              return const Text('Привет', style: AppTextStyles.f24w600);
+            }
+          },
         ),
+
         centerTitle: false,
         actions: [
           Padding(

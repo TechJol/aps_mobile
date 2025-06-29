@@ -32,8 +32,10 @@ class AuthRepositoryImpl implements AuthRepository {
 
       SharedPreferences storage = await SharedPreferences.getInstance();
       storage.setInt('companyId', response['company_id']);
+      storage.setInt('userId', response['user_id']);
 
       log("✅ Saved company id: ${response['company_id']}");
+      log("✅ Saved user id: ${response['user_id']}");
       return Right(response);
     });
   }
@@ -52,8 +54,10 @@ class AuthRepositoryImpl implements AuthRepository {
         // storage.setString('accessToken', response['access']);
         // storage.setString('refreshToken', response['refresh']);
         storage.setInt('companyId', response['company_id']);
+        storage.setInt('userId', response['user_id']);
 
         log("Bul company id ${response['company_id']}");
+        log("Bul user id ${response['user_id']}");
         return Right(response);
       },
     );
@@ -64,4 +68,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either> logOut() async => await authLocalDataSource.logOut();
+
+  @override
+  Future<Either> getUserById(int id) async {
+    return await authRemoteDataSource.getUserById(id);
+  }
 }

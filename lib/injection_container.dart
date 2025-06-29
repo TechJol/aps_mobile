@@ -16,6 +16,7 @@ Future<void> init() async {
       loginUsecase: sl.call(),
       registerUsecase: sl.call(),
       logoutUsecase: sl.call(),
+      getUserByIdUsecase: sl.call(),
     ),
   );
 
@@ -57,6 +58,7 @@ Future<void> init() async {
   //! UseCase
   sl.registerLazySingleton(() => LoginUsecase(authRepository: sl.call()));
   sl.registerLazySingleton(() => RegisterUsecase(authRepository: sl.call()));
+  sl.registerLazySingleton(() => GetUserByIdUsecase(authRepository: sl.call()));
   sl.registerLazySingleton(() => LogoutUsecase(authRepository: sl.call()));
   sl.registerLazySingleton(() => IsLoggedInUsecase(authRepository: sl.call()));
   sl.registerLazySingleton(() => AddIncomeUsecase(repository: sl.call()));

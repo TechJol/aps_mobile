@@ -4,4 +4,5 @@ import 'package:dartz/dartz.dart';
 abstract class AuthRemoteDataSource {
   Future<Either> login(String username, String password);
   Future<Either> register(AuthEntity user);
+  Future<Either> getUserById(int id);
 }

@@ -21,3 +21,9 @@ final class CredentialFailure extends CredentialState {
   @override
   List<Object> get props => [errorMessage];
 }
+
+final class CredentialUserLoaded extends CredentialState {
+  const CredentialUserLoaded({required this.user});
+
+  final AuthEntity user;
+}

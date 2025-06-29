@@ -1,5 +1,6 @@
 class AuthEntity {
   const AuthEntity({
+    this.id,
     required this.username,
     required this.password,
     this.email,
@@ -8,6 +9,7 @@ class AuthEntity {
     this.companyName,
   });
 
+  final int? id;
   final String username;
   final String password;
   final String? email;

@@ -2,6 +2,7 @@ import 'package:aps_mobile/src/feature/auth/auth.dart';
 
 class AuthModel extends AuthEntity {
   const AuthModel({
+    super.id,
     required super.username,
     required super.password,
     super.email,
@@ -11,8 +12,9 @@ class AuthModel extends AuthEntity {
   });
 
   factory AuthModel.fromJson(Map<String, dynamic> json) => AuthModel(
+    id: json['id'],
     username: json['username'],
-    password: json['password'],
+    password: json['password'] ?? '',
     email: json['email'],
     firstName: json['first_name'],
     lastName: json['last_name'],
@@ -20,6 +22,7 @@ class AuthModel extends AuthEntity {
   );
 
   Map<String, dynamic> toJson() => {
+    'id': id,
     'username': username,
     'password': password,
     'email': email,

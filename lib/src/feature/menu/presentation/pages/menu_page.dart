@@ -16,6 +16,12 @@ class _MenuPageState extends State<MenuPage> {
   bool isSettingsExpanded = false;
 
   @override
+  void initState() {
+    context.read<CredentialCubit>().getUserById();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
@@ -119,12 +125,20 @@ class _MenuPageState extends State<MenuPage> {
               title: 'Выход',
             ),
             const SizedBox(height: 20),
-            MenuItem(
-              onTap: () {
-                Navigator.pushNamed(context, AppRoutes.profile);
+            BlocBuilder<CredentialCubit, CredentialState>(
+              builder: (context, state) {
+                if (state is CredentialUserLoaded) {
+                  return MenuItem(
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRoutes.profile);
+                    },
+                    icon: 'assets/icons/user.svg',
+                    title: 'Привет, ${state.user.username}',
+                  );
+                } else {
+                  return const Text('');
+                }
               },
-              icon: 'assets/icons/user.svg',
-              title: 'Привет, Аяна',
             ),
           ],
         ),
