@@ -605,150 +605,164 @@ class _OperationPageState extends State<OperationPage>
     await showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) {
-        return BlocBuilder<MenuCubit, MenuState>(
-          builder: (context, state) {
-            if (state is MenuLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
+      builder: (dialogContext) {
+        return Builder(
+          builder: (innerContext) {
+            return BlocBuilder<MenuCubit, MenuState>(
+              builder: (context, state) {
+                if (state is MenuLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-            if (state is MenuPartnerDataSuccess) {
-              return AlertDialog(
-                backgroundColor: AppColors.whiteColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                contentPadding: const EdgeInsets.all(20),
-                title: Text(
-                  'Добавить контрагента',
-                  style: AppTextStyles.f22w500,
-                ),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Выберите тип и партнера',
-                      style: AppTextStyles.f16w500.copyWith(
-                        color: AppColors.greyerColorLight,
-                      ),
+                if (state is MenuPartnerDataSuccess) {
+                  return AlertDialog(
+                    backgroundColor: AppColors.whiteColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    const SizedBox(height: 8),
-                    // Дропдаун для выбора типа контрагента
-                    DropDownFormField(
-                      label: 'Выберите тип',
-                      items:
-                          state.partnerTypes!.map((type) => type.name).toList(),
-                      value: selectedPartnerType ?? '',
-                      onChanged: (selectedType) {
-                        selectedPartnerType = selectedType;
-                        final selectedTypeId =
-                            state.partnerTypes!
-                                .firstWhere((type) => type.name == selectedType)
-                                .id;
-                        cubit.filterPartnersByType(selectedTypeId!);
-                      },
+                    contentPadding: const EdgeInsets.all(20),
+                    title: Text(
+                      'Добавить контрагента',
+                      style: AppTextStyles.f22w500,
                     ),
-                    const SizedBox(height: 8),
-                    // Дропдаун для выбора партнера
-                    DropDownFormField(
-                      label: 'Выберите партнера',
-                      items:
-                          state.filteredPartners
-                              ?.map((partner) => partner.name)
-                              .toList() ??
-                          [],
-                      value: selectedPartnerName ?? '',
-                      onChanged: (selectedPartner) {
-                        selectedPartnerName = selectedPartner;
-                      },
-                    ),
-                  ],
-                ),
-                actionsPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 10,
-                ),
-                actions: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: AppColors.backroundColor,
-                            side: BorderSide(color: AppColors.backroundColor),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: Text(
-                            'Отмена',
-                            style: AppTextStyles.f16w500.copyWith(
-                              color: AppColors.blackColor,
-                            ),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Выберите тип и партнера',
+                          style: AppTextStyles.f16w500.copyWith(
+                            color: AppColors.greyerColorLight,
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (selectedPartnerName == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Выберите партнера'),
-                                ),
-                              );
-                              return;
-                            }
-
-                            final selectedPartnerId =
-                                state.filteredPartners
-                                    ?.firstWhere(
-                                      (partner) =>
-                                          partner.name == selectedPartnerName,
-                                      orElse:
-                                          () =>
-                                              PartnersModel(id: null, name: ''),
+                        const SizedBox(height: 8),
+                        // Дропдаун для выбора типа контрагента
+                        DropDownFormField(
+                          label: 'Выберите тип',
+                          items:
+                              state.partnerTypes!
+                                  .map((type) => type.name)
+                                  .toList(),
+                          value: selectedPartnerType ?? '',
+                          onChanged: (selectedType) {
+                            selectedPartnerType = selectedType;
+                            final selectedTypeId =
+                                state.partnerTypes!
+                                    .firstWhere(
+                                      (type) => type.name == selectedType,
                                     )
                                     .id;
-
-                            if (selectedPartnerId == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Партнер не найден'),
-                                ),
-                              );
-                              return;
-                            }
-
-                            cubit.updatePartnerInTransaction(
-                              transaction,
-                              selectedPartnerId,
-                            );
-                            Navigator.of(context).pop();
+                            cubit.filterPartnersByType(selectedTypeId!);
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primaryColorLight,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: Text(
-                            'Да',
-                            style: AppTextStyles.f16w500.copyWith(
-                              color: AppColors.whiteColor,
-                            ),
-                          ),
                         ),
+                        const SizedBox(height: 8),
+                        // Дропдаун для выбора партнера
+                        DropDownFormField(
+                          label: 'Выберите партнера',
+                          items:
+                              state.filteredPartners
+                                  ?.map((partner) => partner.name)
+                                  .toList() ??
+                              [],
+                          value: selectedPartnerName ?? '',
+                          onChanged: (selectedPartner) {
+                            selectedPartnerName = selectedPartner;
+                          },
+                        ),
+                      ],
+                    ),
+                    actionsPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    actions: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: AppColors.backroundColor,
+                                side: BorderSide(
+                                  color: AppColors.backroundColor,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: Text(
+                                'Отмена',
+                                style: AppTextStyles.f16w500.copyWith(
+                                  color: AppColors.blackColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                if (selectedPartnerName == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Выберите партнера'),
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                final selectedPartnerId =
+                                    state.filteredPartners
+                                        ?.firstWhere(
+                                          (partner) =>
+                                              partner.name ==
+                                              selectedPartnerName,
+                                          orElse:
+                                              () => PartnersModel(
+                                                id: null,
+                                                name: '',
+                                              ),
+                                        )
+                                        .id;
+
+                                if (selectedPartnerId == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Партнер не найден'),
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                await cubit.updatePartnerInTransaction(
+                                  transaction,
+                                  selectedPartnerId,
+                                );
+                                await cubit.getTransactionsWithAccounts();
+                                Navigator.of(context).pop();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primaryColorLight,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: Text(
+                                'Да',
+                                style: AppTextStyles.f16w500.copyWith(
+                                  color: AppColors.whiteColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
-                ],
-              );
-            }
+                  );
+                }
 
-            return const SizedBox.shrink();
+                return const SizedBox.shrink();
+              },
+            );
           },
         );
       },
