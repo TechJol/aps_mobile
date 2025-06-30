@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -61,8 +63,15 @@ class _HomePageState extends State<HomePage> {
                 borderRadius: BorderRadius.circular(100),
               ),
               child: IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.menu);
+                onPressed: () async {
+                  final result = await Navigator.pushNamed(
+                    context,
+                    AppRoutes.menu,
+                  );
+
+                  if (result == true) {
+                    context.read<MenuCubit>().getTransactionsWithAccounts();
+                  }
                 },
                 icon: const Icon(Icons.more_vert_outlined, size: 28),
               ),

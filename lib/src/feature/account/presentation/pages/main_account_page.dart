@@ -45,8 +45,15 @@ class _MainAccountPageState extends State<MainAccountPage> {
                 borderRadius: BorderRadius.circular(100),
               ),
               child: IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.menu);
+                onPressed: () async {
+                  final result = await Navigator.pushNamed(
+                    context,
+                    AppRoutes.menu,
+                  );
+
+                  if (result == true) {
+                    context.read<MenuCubit>().getTransactionsWithAccounts();
+                  }
                 },
                 icon: const Icon(Icons.more_vert_outlined),
               ),

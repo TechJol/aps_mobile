@@ -38,14 +38,20 @@ class _MenuPageState extends State<MenuPage> {
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
+            // --- Все операции ---
             ExpandableMenuItem(
               icon: 'assets/icons/folder1.svg',
               title: 'Все операции',
               expanded: isOperationsExpanded,
-              onTap:
-                  () => setState(
-                    () => isOperationsExpanded = !isOperationsExpanded,
-                  ),
+              onTap: () {
+                setState(() {
+                  isOperationsExpanded = !isOperationsExpanded;
+                  if (isOperationsExpanded) {
+                    isReportsExpanded = false;
+                    isSettingsExpanded = false;
+                  }
+                });
+              },
               children: const [
                 'Все транзакции',
                 'По контрагентам',
@@ -63,12 +69,21 @@ class _MenuPageState extends State<MenuPage> {
             ),
 
             const SizedBox(height: 12),
+
+            // --- Отчёты ---
             ExpandableMenuItem(
               icon: 'assets/icons/folder2.svg',
               title: 'Отчеты',
               expanded: isReportsExpanded,
-              onTap:
-                  () => setState(() => isReportsExpanded = !isReportsExpanded),
+              onTap: () {
+                setState(() {
+                  isReportsExpanded = !isReportsExpanded;
+                  if (isReportsExpanded) {
+                    isOperationsExpanded = false;
+                    isSettingsExpanded = false;
+                  }
+                });
+              },
               children: const [
                 'Отчеты по статьям',
                 'Общее положение доходов и расходов',
@@ -87,14 +102,23 @@ class _MenuPageState extends State<MenuPage> {
                 }
               },
             ),
+
             const SizedBox(height: 12),
+
+            // --- Настройки ---
             ExpandableMenuItem(
               icon: 'assets/icons/setting.svg',
               title: 'Настройки',
               expanded: isSettingsExpanded,
-              onTap:
-                  () =>
-                      setState(() => isSettingsExpanded = !isSettingsExpanded),
+              onTap: () {
+                setState(() {
+                  isSettingsExpanded = !isSettingsExpanded;
+                  if (isSettingsExpanded) {
+                    isOperationsExpanded = false;
+                    isReportsExpanded = false;
+                  }
+                });
+              },
               children: const [
                 'Контрагенты',
                 'Тип контрагентов',
@@ -104,19 +128,19 @@ class _MenuPageState extends State<MenuPage> {
               onChildTap: (childTitle) {
                 if (childTitle == 'Контрагенты') {
                   Navigator.pushNamed(context, AppRoutes.counterparties);
-                }
-                if (childTitle == 'Тип контрагентов') {
+                } else if (childTitle == 'Тип контрагентов') {
                   Navigator.pushNamed(context, AppRoutes.typeCounterparties);
-                }
-                if (childTitle == 'Счета') {
+                } else if (childTitle == 'Счета') {
                   Navigator.pushNamed(context, AppRoutes.settingAccount);
-                }
-                if (childTitle == 'Статьи') {
+                } else if (childTitle == 'Статьи') {
                   Navigator.pushNamed(context, AppRoutes.articles);
                 }
               },
             ),
+
             const SizedBox(height: 20),
+
+            // --- Выход ---
             MenuItem(
               onTap: () {
                 context.read<AuthCubit>().logout();
@@ -124,7 +148,10 @@ class _MenuPageState extends State<MenuPage> {
               icon: 'assets/icons/folder3.svg',
               title: 'Выход',
             ),
+
             const SizedBox(height: 20),
+
+            // --- Приветствие с именем пользователя ---
             BlocBuilder<CredentialCubit, CredentialState>(
               builder: (context, state) {
                 if (state is CredentialUserLoaded) {
