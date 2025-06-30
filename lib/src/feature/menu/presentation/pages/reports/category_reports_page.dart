@@ -234,7 +234,11 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
         );
 
         final Decimal value = entry.value;
-        final Decimal percent = (totalAmount / 100.toDecimal()).toDecimal();
+        final Decimal percent = Decimal.parse(
+          ((value / totalAmount) * Decimal.fromInt(100).toRational())
+              .toDouble()
+              .toStringAsFixed(2),
+        );
 
         return {
           'month': month,

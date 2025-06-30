@@ -11,7 +11,12 @@ class AddArticlesPage extends StatefulWidget {
 }
 
 class _AddArticlesPageState extends State<AddArticlesPage> {
-  final List<String> names = ['Аренда', 'Зарплата', 'Прочее Расходы'];
+  final List<String> names = [
+    'Аренда',
+    'Зарплата',
+    'Прочее Расходы',
+    'Инвестиции',
+  ];
   final List<String> types = ['Доход', 'Расход'];
   final List<String> typesCode = ['income', 'expense'];
 
