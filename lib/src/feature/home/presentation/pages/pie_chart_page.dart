@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildHeader() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(vertical: 20),
       width: double.infinity,
       decoration: const BoxDecoration(
         color: Color(0xFFF3F4F7),
@@ -116,7 +116,10 @@ class _HomePageState extends State<HomePage> {
   Widget _buildTopSection() {
     final state = context.watch<MenuCubit>().state;
     if (state is! MenuTransactionsWithAccountsSuccess) {
-      return const SizedBox(height: 240);
+      return const SizedBox(
+        height: 240,
+        child: Center(child: Text('Нет данных')),
+      );
     }
 
     // Если groupedData ещё не инициализирован — сделай это один раз
@@ -126,69 +129,89 @@ class _HomePageState extends State<HomePage> {
       period: selectedPeriod,
     );
 
-    return Container(
-      height: 240,
-      width: double.infinity,
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // стрелки и заголовок
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _circleIcon(
-                Icons.arrow_back_ios_rounded,
-                const Offset(-22, 70),
-                onTap: () => _changePeriod(false),
-              ),
-              Transform.translate(
-                offset: const Offset(-130, -13),
-                child: Text(
-                  selectedPeriod,
-                  style: const TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Inter',
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            height: 240,
+            width: double.infinity,
+            padding: const EdgeInsets.only(
+              top: 5,
+              bottom: 10,
+              left: 10,
+              right: 10,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      selectedPeriod,
+                      style: const TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              _circleIcon(
-                Icons.arrow_forward_ios_rounded,
-                const Offset(22, 70),
-                onTap: () => _changePeriod(true),
-              ),
-            ],
-          ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Spacer(),
-              Transform.translate(
-                offset: const Offset(15, 3),
-                child: CustomPaint(
-                  size: const Size(112, 112),
-                  painter: PieChartDynamicPainter(data: groupedData),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Spacer(),
+                    Transform.translate(
+                      offset: const Offset(15, 3),
+                      child: CustomPaint(
+                        size: const Size(112, 112),
+                        painter: PieChartDynamicPainter(data: groupedData),
+                      ),
+                    ),
+                    const Spacer(flex: 5),
+                    _legendFromData(groupedData),
+                    const Spacer(),
+                  ],
                 ),
-              ),
-              const Spacer(flex: 5),
-              _legendFromData(groupedData),
-              const Spacer(),
-            ],
-          ),
 
-          const SizedBox(height: 18),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: periodOptions.map((p) => _periodButton(p)).toList(),
+                const SizedBox(height: 18),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: periodOptions.map((p) => _periodButton(p)).toList(),
+                ),
+              ],
+            ),
           ),
-        ],
-      ),
+        ),
+        Positioned(
+          left: 10,
+          top: 0,
+          bottom: 0,
+          child: _circleIcon(
+            icon: Icons.arrow_back_ios_rounded,
+            onTap: () {
+              _changePeriod(false);
+            },
+          ),
+        ),
+        Positioned(
+          right: 10,
+          top: 0,
+          bottom: 0,
+          child: _circleIcon(
+            icon: Icons.arrow_forward_ios_rounded,
+            onTap: () {
+              _changePeriod(true);
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -410,13 +433,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _circleIcon(
-    IconData icon,
-    Offset offset, {
+  Widget _circleIcon({
+    IconData? icon,
+    Offset? offset,
     required VoidCallback onTap,
   }) {
     return Transform.translate(
-      offset: offset,
+      offset: offset ?? Offset.zero,
       child: GestureDetector(
         onTap: onTap,
         child: Container(
@@ -488,8 +511,8 @@ class _HomePageState extends State<HomePage> {
                 GestureDetector(
                   onTap: () => updateState(view, (val) => selectedView = val),
                   child: Container(
-                    width: 120,
-                    height: 48,
+                    width: 100,
+                    height: 40,
                     decoration: BoxDecoration(
                       color: isSelected ? Colors.black : Colors.white,
                       borderRadius: BorderRadius.circular(25),
