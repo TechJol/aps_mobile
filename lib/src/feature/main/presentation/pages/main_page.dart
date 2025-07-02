@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,20 +44,27 @@ class MainScreen extends StatelessWidget {
           showSelectedLabels: true,
           showUnselectedLabels: true,
           currentIndex: context.watch<MainCubit>().state,
-          onTap: (index) {
+          onTap: (index) async {
             // context.read<MainCubit>().change(index);
             if (index == 2) {
-              IncomePage().showIncomeBottomSheet(
+              final result = await IncomePage().showIncomeBottomSheet(
                 context: context,
                 title: 'Доходы',
                 transactionType: 'income',
               );
+
+              if (result == true) {
+                context.read<MenuCubit>().getTransactionsWithAccounts();
+              }
             } else if (index == 3) {
-              IncomePage().showIncomeBottomSheet(
+              final result = await IncomePage().showIncomeBottomSheet(
                 context: context,
                 title: 'Расходы',
                 transactionType: 'expense',
               );
+              if (result == true) {
+                context.read<MenuCubit>().getTransactionsWithAccounts();
+              }
             } else {
               context.read<MainCubit>().change(index);
             }

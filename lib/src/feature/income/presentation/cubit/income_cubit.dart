@@ -66,4 +66,8 @@ class IncomeCubit extends Cubit<IncomeState> {
       emit(state.copyWith(isLoading: false, reasons: reasons));
     });
   }
+
+  void resetState() {
+    emit(state.copyWith(incomeSaved: false, error: null));
+  }
 }

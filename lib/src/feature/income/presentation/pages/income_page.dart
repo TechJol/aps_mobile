@@ -7,11 +7,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
 class IncomePage {
-  void showIncomeBottomSheet({
+  Future<bool?> showIncomeBottomSheet({
     required BuildContext context,
     required String title,
     required String transactionType,
-  }) {
+  }) async {
     final selectedDateNotifier = ValueNotifier<DateTime>(DateTime.now());
     final TextEditingController dateController = TextEditingController(
       text: DateFormat('dd.MM.yyyy – HH:mm').format(selectedDateNotifier.value),
@@ -27,7 +27,7 @@ class IncomePage {
     context.read<IncomeCubit>().getAccount();
     context.read<IncomeCubit>().getIncomeExpenseReasons();
 
-    showModalBottomSheet(
+    final result = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
@@ -36,6 +36,10 @@ class IncomePage {
       ),
       builder:
           (context) => BlocListener<IncomeCubit, IncomeState>(
+            listenWhen: (previous, current) {
+              // Только реагировать на важные состояния
+              return current.incomeSaved || current.error != null;
+            },
             listener: (context, state) {
               if (state.error != null) {
                 ScaffoldMessenger.of(
@@ -43,7 +47,8 @@ class IncomePage {
                 ).showSnackBar(SnackBar(content: Text(state.error!)));
               }
               if (state.incomeSaved) {
-                Navigator.pop(context);
+                Navigator.pop(context, true);
+                context.read<IncomeCubit>().resetState();
               }
             },
             child: Padding(
@@ -298,6 +303,7 @@ class IncomePage {
             ),
           ),
     );
+    return result;
   }
 
   void _showCustomDateTimePicker(
