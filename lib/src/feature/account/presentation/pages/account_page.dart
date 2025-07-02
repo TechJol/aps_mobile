@@ -112,7 +112,24 @@ class _AccountPageState extends State<AccountPage> {
                   Row(
                     children: [
                       OutlinedButtonWidget(
-                        onPressed: () {},
+                        onPressed: () {
+                          final headers = ['№', 'Название', 'Тип счета'];
+                          final rows =
+                              account.asMap().entries.map<List<String>>((
+                                entry,
+                              ) {
+                                final index = entry.key + 1;
+                                final item = entry.value;
+                                return ['$index', item.name, item.accountType];
+                              }).toList();
+
+                          _localService.printReportAsPdf(
+                            context: context,
+                            title: 'Список счетов',
+                            headers: headers,
+                            rows: rows,
+                          );
+                        },
                         text: 'Распечатать',
                       ),
                       12.w,
