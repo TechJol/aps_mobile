@@ -125,15 +125,22 @@ class _MenuPageState extends State<MenuPage> {
                 'Счета',
                 'Статьи',
               ],
-              onChildTap: (childTitle) {
+              onChildTap: (childTitle) async {
                 if (childTitle == 'Контрагенты') {
-                  Navigator.pushNamed(context, AppRoutes.counterparties);
+                  await Navigator.pushNamed(context, AppRoutes.counterparties);
+                  context.read<MenuCubit>().getTransactionsWithAccounts();
                 } else if (childTitle == 'Тип контрагентов') {
-                  Navigator.pushNamed(context, AppRoutes.typeCounterparties);
+                  await Navigator.pushNamed(
+                    context,
+                    AppRoutes.typeCounterparties,
+                  );
+                  context.read<MenuCubit>().getTransactionsWithAccounts();
                 } else if (childTitle == 'Счета') {
-                  Navigator.pushNamed(context, AppRoutes.settingAccount);
+                  await Navigator.pushNamed(context, AppRoutes.settingAccount);
+                  context.read<MenuCubit>().getTransactionsWithAccounts();
                 } else if (childTitle == 'Статьи') {
-                  Navigator.pushNamed(context, AppRoutes.articles);
+                  await Navigator.pushNamed(context, AppRoutes.articles);
+                  context.read<MenuCubit>().getTransactionsWithAccounts();
                 }
               },
             ),

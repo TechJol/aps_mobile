@@ -131,13 +131,8 @@ class _MainAccountPageState extends State<MainAccountPage> {
                   minimumSize: const Size(140, 48),
                 ),
                 onPressed: () async {
-                  final result = await Navigator.pushNamed(
-                    context,
-                    AppRoutes.account,
-                  );
-                  if (result == true) {
-                    context.read<MenuCubit>().getTransactionsWithAccounts();
-                  }
+                  await Navigator.pushNamed(context, AppRoutes.account);
+                  context.read<MenuCubit>().getTransactionsWithAccounts();
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

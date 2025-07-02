@@ -116,10 +116,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildTopSection() {
     final state = context.watch<MenuCubit>().state;
     if (state is! MenuTransactionsWithAccountsSuccess) {
-      return const SizedBox(
-        height: 240,
-        child: Center(child: Text('Нет данных')),
-      );
+      return const SizedBox(height: 240, child: Text('Загрузка...'));
     }
 
     // Если groupedData ещё не инициализирован — сделай это один раз
@@ -169,13 +166,34 @@ class _HomePageState extends State<HomePage> {
                     const Spacer(),
                     Transform.translate(
                       offset: const Offset(15, 3),
-                      child: CustomPaint(
-                        size: const Size(112, 112),
-                        painter: PieChartDynamicPainter(data: groupedData),
-                      ),
+                      child:
+                          groupedData.isEmpty
+                              ? SizedBox(
+                                width: 112,
+                                height: 112,
+                                child: Center(
+                                  child: Text(
+                                    'Нет данных за $selectedPeriod',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              : CustomPaint(
+                                size: const Size(112, 112),
+                                painter: PieChartDynamicPainter(
+                                  data: groupedData,
+                                ),
+                              ),
                     ),
+
                     const Spacer(flex: 5),
                     _legendFromData(groupedData),
+
                     const Spacer(),
                   ],
                 ),
