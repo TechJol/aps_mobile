@@ -78,9 +78,10 @@ dev_dependencies:
   build_runner: ^2.4.15
   flutter_launcher_icons: ^0.14.4
 flutter_icons:
-  image_path: "assets/icons/appstore.png"
   android: true
   ios: true
+  remove_alpha_ios: true
+  image_path: "assets/icons/appstore.png"
 
 flutter:
 
