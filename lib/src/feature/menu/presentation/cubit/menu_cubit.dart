@@ -107,9 +107,15 @@ class MenuCubit extends Cubit<MenuState> {
       return;
     }
 
+    // Получаем companyId из SharedPreferences
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    final companyId = storage.getInt('companyId');
+
     final transactions =
         (transactionsResult.getOrElse(() => []) as List)
             .map((e) => AllTransactionsModel.fromMap(e))
+            // Фильтруем по companyId
+            .where((tx) => tx.company == companyId)
             .toList();
 
     final accounts =

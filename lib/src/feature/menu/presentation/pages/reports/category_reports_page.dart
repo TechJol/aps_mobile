@@ -16,7 +16,7 @@ class CategoryReportsPage extends StatefulWidget {
 
 class _CategoryReportsPageState extends State<CategoryReportsPage> {
   final LocalService _localService = LocalService();
-  String selectedMonth = '6';
+  String selectedMonth = DateTime.now().month.toString();
 
   @override
   Widget build(BuildContext context) {
