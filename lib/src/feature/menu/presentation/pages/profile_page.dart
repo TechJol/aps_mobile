@@ -99,11 +99,19 @@ class ProfilePage extends StatelessWidget {
               // Exit button
               Expanded(
                 child: ElevatedButton(
-                  onPressed:
-                      () =>
-                          BlocProvider.of<CredentialCubit>(
-                            context,
-                          ).deleteUserById(),
+                  onPressed: () {
+                    ShowSheet().showDeleteDialog(
+                      context,
+                      accountName: 'аккаунт',
+                      onConfirm: () {
+                        context.read<CredentialCubit>().deleteUserById();
+                        Navigator.of(context).pushReplacementNamed('/');
+                      },
+                      title: 'Удалить аккаунт',
+                    );
+                  },
+                  // onPressed:
+                  //     () => context.read<CredentialCubit>().deleteUserById(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: AppColors.blackColor,

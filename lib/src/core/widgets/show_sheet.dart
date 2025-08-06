@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class ShowSheet {
   Future<void> showDeleteDialog(
     BuildContext context, {
-    required String accountName,
+    String? accountName,
     required void Function()? onConfirm,
     required String title,
   }) {
@@ -20,7 +20,7 @@ class ShowSheet {
           contentPadding: const EdgeInsets.all(20),
           title: Text(title, style: AppTextStyles.f22w500),
           content: Text(
-            'Вы уверены, что хотите удалить счет "$accountName"?',
+            'Вы уверены, что хотите удалить "$accountName"?',
             style: AppTextStyles.f16w500.copyWith(
               color: AppColors.greyerColorLight,
             ),
