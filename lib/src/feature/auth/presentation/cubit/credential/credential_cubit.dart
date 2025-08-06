@@ -102,6 +102,9 @@ class CredentialCubit extends Cubit<CredentialState> {
       SharedPreferences pref = await SharedPreferences.getInstance();
       final id = pref.getInt('userId');
       Either result = await deleteUserByIdUsecase.call(id!);
+      pref.remove('userId');
+      pref.remove('companyId');
+      pref.remove('accessToken');
       result.fold(
         (l) {
           emit(UserFailure(errorMessage: l));
