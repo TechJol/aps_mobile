@@ -614,8 +614,7 @@ class _OperationPageState extends State<OperationPage>
     final result = await showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
-
-      // barrierDismissible: false,
+      isDismissible: false,
       builder: (dialogContext) {
         return BlocBuilder<MenuCubit, MenuState>(
           builder: (context, state) {
