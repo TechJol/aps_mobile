@@ -3,6 +3,7 @@ import 'package:aps_mobile/src/feature/auth/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -99,13 +100,16 @@ class ProfilePage extends StatelessWidget {
               // Exit button
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     ShowSheet().showDeleteDialog(
                       context,
                       accountName: 'аккаунт',
-                      onConfirm: () {
+                      onConfirm: () async {
+                        SharedPreferences pref =
+                            await SharedPreferences.getInstance();
                         context.read<CredentialCubit>().deleteUserById();
                         Navigator.of(context).pushReplacementNamed('/');
+                        await pref.clear();
                       },
                       title: 'Удалить аккаунт',
                     );
