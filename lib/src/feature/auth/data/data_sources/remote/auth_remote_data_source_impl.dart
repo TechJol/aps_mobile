@@ -92,4 +92,36 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       return Left(Exception('Something went wrong: ${e.toString()}'));
     }
   }
+
+  @override
+  Future<Either> deleteUserById(int id) async {
+    final accessToken = await AuthTokenStorage().getAccessToken();
+    try {
+      final response = await sl<DioClient>().delete(
+        '${AppApi.users}$id/',
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+            'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
+          },
+        ),
+      );
+
+      if (response.statusCode == 204 || response.statusCode == 200) {
+        return Right(response.data);
+      } else {
+        throw Exception(
+          'Failed to delete partner type. Status code: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      // Обработка ошибки 401 (неверный или истёкший токен)
+      if (e is DioException && e.response?.statusCode == 401) {
+        return await AuthError(dio: dio).handleUnauthorized();
+      }
+      return Left(Exception('Something went wrong: ${e.toString()}'));
+    }
+  }
 }

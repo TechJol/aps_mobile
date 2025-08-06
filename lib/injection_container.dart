@@ -17,6 +17,7 @@ Future<void> init() async {
       registerUsecase: sl.call(),
       logoutUsecase: sl.call(),
       getUserByIdUsecase: sl.call(),
+      deleteUserByIdUsecase: sl.call(),
     ),
   );
 
@@ -90,6 +91,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => DeleteReasonUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => UpdateReasonUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => PostReasonUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => DeleteUserByIdUsecase(repository: sl.call()));
 
   //! Repository
   sl.registerLazySingleton<AuthRepository>(

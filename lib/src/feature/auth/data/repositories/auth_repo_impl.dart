@@ -73,4 +73,11 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either> getUserById(int id) async {
     return await authRemoteDataSource.getUserById(id);
   }
+
+  @override
+  Future<Either> deleteUserById(int id) async {
+    // SharedPreferences storage = await SharedPreferences.getInstance();
+    // await storage.clear();
+    return await authRemoteDataSource.deleteUserById(id);
+  }
 }

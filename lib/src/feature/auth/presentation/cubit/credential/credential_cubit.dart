@@ -11,12 +11,14 @@ class CredentialCubit extends Cubit<CredentialState> {
   final RegisterUsecase registerUsecase;
   final LogoutUsecase logoutUsecase;
   final GetUserByIdUsecase getUserByIdUsecase;
+  final DeleteUserByIdUsecase deleteUserByIdUsecase;
 
   CredentialCubit({
     required this.loginUsecase,
     required this.registerUsecase,
     required this.logoutUsecase,
     required this.getUserByIdUsecase,
+    required this.deleteUserByIdUsecase,
   }) : super(CredentialInitial());
 
   void register(AuthEntity user) async {
@@ -87,6 +89,25 @@ class CredentialCubit extends Cubit<CredentialState> {
           // 💥 Здесь ты должен эмитить CredentialUserLoaded!
           final user = AuthModel.fromJson(r);
           emit(CredentialUserLoaded(user: user));
+        },
+      );
+    } catch (e) {
+      emit(CredentialFailure(errorMessage: e.toString()));
+    }
+  }
+
+  void deleteUserById() async {
+    emit(CredentialLoading());
+    try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      final id = pref.getInt('userId');
+      Either result = await deleteUserByIdUsecase.call(id!);
+      result.fold(
+        (l) {
+          emit(UserFailure(errorMessage: l));
+        },
+        (r) {
+          emit(CredentialSuccess());
         },
       );
     } catch (e) {

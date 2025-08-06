@@ -1,5 +1,3 @@
-import 'dart:io'; // for exit(0)
-
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/auth/auth.dart';
 import 'package:flutter/material.dart';
@@ -13,24 +11,34 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
-      body: BlocBuilder<CredentialCubit, CredentialState>(
-        builder: (context, state) {
-          if (state is CredentialLoading) {
-            return const Center(child: CircularProgressIndicator());
+      body: BlocListener<CredentialCubit, CredentialState>(
+        listener: (context, state) {
+          if (state is CredentialSuccess) {
+            Navigator.of(context).pushReplacementNamed('/'); // или '/login'
           }
-
-          if (state is CredentialFailure) {
-            return Center(child: Text('Ошибка: ${state.errorMessage}'));
+          if (state is UserFailure) {
+            Center(child: Text('Ошибка: ${state.errorMessage}'));
           }
-
-          if (state is CredentialUserLoaded) {
-            final user = state.user;
-
-            return _buildContent(context, user);
-          }
-
-          return const SizedBox(); // initial
         },
+        child: BlocBuilder<CredentialCubit, CredentialState>(
+          builder: (context, state) {
+            if (state is CredentialLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state is CredentialFailure) {
+              return Center(child: Text('Ошибка: ${state.errorMessage}'));
+            }
+
+            if (state is CredentialUserLoaded) {
+              final user = state.user;
+
+              return _buildContent(context, user);
+            }
+
+            return const SizedBox(); // initial
+          },
+        ),
       ),
     );
   }
@@ -91,7 +99,11 @@ class ProfilePage extends StatelessWidget {
               // Exit button
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () => exit(0),
+                  onPressed:
+                      () =>
+                          BlocProvider.of<CredentialCubit>(
+                            context,
+                          ).deleteUserById(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: AppColors.blackColor,
@@ -102,7 +114,7 @@ class ProfilePage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                   child: const Text(
-                    'Выйти',
+                    'Удалить аккаунт',
                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
                   ),
                 ),
