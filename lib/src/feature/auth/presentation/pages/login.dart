@@ -26,6 +26,7 @@ class _LoginPageState extends State<LoginPage> {
 
   bool usernameTouched = false;
   bool passwordTouched = false;
+  bool _obscurePassword = true;
 
   @override
   void initState() {
@@ -264,7 +265,7 @@ class _LoginPageState extends State<LoginPage> {
                 TextField(
                   controller: passwordController,
                   focusNode: passwordFocus,
-                  obscureText: true,
+                  obscureText: _obscurePassword,
                   textInputAction: TextInputAction.done,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.symmetric(
@@ -284,27 +285,40 @@ class _LoginPageState extends State<LoginPage> {
                     focusedBorder: _getBorder(true, passwordController.text),
                     filled: true,
                     fillColor: Colors.grey.shade50,
-                  ),
-                ),
-
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 150.0),
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, AppRoutes.forgotPassword);
-                      },
-                      child: const Text(
-                        "Забыли пароль?",
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Color(0xFF661EFB),
-                        ),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Colors.grey,
                       ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
                     ),
                   ),
                 ),
+
+                // Align(
+                //   alignment: Alignment.centerRight,
+                //   child: Padding(
+                //     padding: EdgeInsets.only(left: 150.0),
+                //     child: TextButton(
+                //       onPressed: () {
+                //         Navigator.pushNamed(context, AppRoutes.forgotPassword);
+                //       },
+                //       child: const Text(
+                //         "Забыли пароль?",
+                //         style: TextStyle(
+                //           fontSize: 13,
+                //           color: Color(0xFF661EFB),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 SizedBox(height: 35),
 
                 // Login button

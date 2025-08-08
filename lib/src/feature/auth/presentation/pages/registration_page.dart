@@ -17,6 +17,8 @@ class _RegistrationState extends State<Registration> {
   bool isFormValid = false;
   bool isAgreementChecked = false;
 
+  bool _obscureRegPassword = true;
+
   final TextEditingController firmController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -228,6 +230,7 @@ class _RegistrationState extends State<Registration> {
                   buildInputField(
                     controller: passwordController,
                     hint: "Придумайте пароль",
+                    isPassword: true,
                   ),
                   SizedBox(height: 15),
 
@@ -353,10 +356,12 @@ class _RegistrationState extends State<Registration> {
   Widget buildInputField({
     required TextEditingController controller,
     required String hint,
+    bool isPassword = false,
   }) {
     final hasText = controller.text.trim().isNotEmpty;
     return TextField(
       controller: controller,
+      obscureText: isPassword ? _obscureRegPassword : false,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         hintText: hint,
@@ -366,6 +371,22 @@ class _RegistrationState extends State<Registration> {
         focusedBorder: getDynamicBorder(hasText),
         filled: true,
         fillColor: Colors.grey.shade50,
+        suffixIcon:
+            isPassword
+                ? IconButton(
+                  icon: Icon(
+                    _obscureRegPassword
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _obscureRegPassword = !_obscureRegPassword;
+                    });
+                  },
+                )
+                : null,
       ),
     );
   }
