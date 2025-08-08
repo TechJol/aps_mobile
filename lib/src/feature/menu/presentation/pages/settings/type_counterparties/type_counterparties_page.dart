@@ -242,7 +242,10 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
           const Center(
             child: Padding(
               padding: EdgeInsets.only(top: 50),
-              child: Text('Нет контрагентов', style: AppTextStyles.f16w500),
+              child: Text(
+                'Нет типов контрагентов',
+                style: AppTextStyles.f16w500,
+              ),
             ),
           ),
       ],

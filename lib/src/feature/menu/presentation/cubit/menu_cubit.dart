@@ -114,31 +114,34 @@ class MenuCubit extends Cubit<MenuState> {
     final transactions =
         (transactionsResult.getOrElse(() => []) as List)
             .map((e) => AllTransactionsModel.fromMap(e))
-            // Фильтруем по companyId
+            // Фильтруем транзакции по companyId
             .where((tx) => tx.company == companyId)
             .toList();
 
     final accounts =
         (accountsResult.getOrElse(() => []) as List)
             .map((e) => AccountModel.fromMap(e))
+            .where((tx) => tx.company == companyId)
             .toList();
 
     final reasons =
         (reasonsResult.getOrElse(() => []) as List)
             .map((e) => IncomeExpenseReasons.fromMap(e))
+            .where((reason) => reason.company == companyId)
             .toList();
 
     final partners =
         (partnersResult.getOrElse(() => []) as List)
             .map((e) => PartnersModel.fromMap(e))
+            .where((partner) => partner.company == companyId)
             .toList();
 
     final partnerTypes =
         (partnerTypesResult.getOrElse(() => []) as List)
             .map((e) => PartnerTypesModel.fromMap(e))
+            .where((type) => type.company == companyId)
             .toList();
 
-    /// 👇 Вычисляем балансы партнёров
     final balances = calculatePartnerBalances(transactions);
     partnerBalances = balances;
 
@@ -180,7 +183,22 @@ class MenuCubit extends Cubit<MenuState> {
             .map((e) => PartnerTypesModel.fromMap(e))
             .toList();
 
-    emit(MenuPartnerDataSuccess(partners: partners, partnerTypes: types));
+    // Get companyId from SharedPreferences
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    final companyId = storage.getInt('companyId');
+
+    // Filter partners and types by companyId
+    final filteredPartners =
+        partners.where((partner) => partner.company == companyId).toList();
+    final filteredTypes =
+        types.where((type) => type.company == companyId).toList();
+
+    emit(
+      MenuPartnerDataSuccess(
+        partners: filteredPartners,
+        partnerTypes: filteredTypes,
+      ),
+    );
   }
 
   Map<int, Decimal> calculatePartnerBalances(
@@ -199,10 +217,21 @@ class MenuCubit extends Cubit<MenuState> {
 
   Future<void> getAccounts() async {
     emit(MenuLoading());
+
     final result = await getAccountsUsecase();
-    result.fold((l) => emit(MenuError(message: l.message)), (r) {
+
+    result.fold((l) => emit(MenuError(message: l.message)), (r) async {
       final accounts = (r as List).map((e) => AccountModel.fromMap(e)).toList();
-      emit(MenuAccountsSuccess(accounts: accounts));
+
+      // Получаем companyId из SharedPreferences
+      SharedPreferences storage = await SharedPreferences.getInstance();
+      final companyId = storage.getInt('companyId');
+
+      // Фильтруем счета по companyId
+      final filteredAccounts =
+          accounts.where((account) => account.company == companyId).toList();
+
+      emit(MenuAccountsSuccess(accounts: filteredAccounts));
     });
   }
 
@@ -214,7 +243,7 @@ class MenuCubit extends Cubit<MenuState> {
       name: account.name,
       accountType: account.accountType,
       currency: account.currency,
-      company: companyId,
+      company: companyId, // Обязательно указываем companyId
     );
 
     final result = await postAccountUsecase.call(acc);
@@ -250,10 +279,20 @@ class MenuCubit extends Cubit<MenuState> {
   Future<void> getReasons() async {
     emit(MenuLoading());
     final result = await getReasonsUsecase();
-    result.fold((l) => emit(MenuError(message: l.message)), (r) {
+
+    result.fold((l) => emit(MenuError(message: l.message)), (r) async {
       final reasons =
           (r as List).map((e) => IncomeExpenseReasons.fromMap(e)).toList();
-      emit(MenuReasonsSuccess(reasons: reasons));
+
+      // Get companyId from SharedPreferences
+      SharedPreferences storage = await SharedPreferences.getInstance();
+      final companyId = storage.getInt('companyId');
+
+      // Filter reasons by companyId
+      final filteredReasons =
+          reasons.where((reason) => reason.company == companyId).toList();
+
+      emit(MenuReasonsSuccess(reasons: filteredReasons));
     });
   }
 

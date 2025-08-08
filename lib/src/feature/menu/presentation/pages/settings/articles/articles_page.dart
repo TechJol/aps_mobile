@@ -70,6 +70,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
     BuildContext context,
     List<IncomeExpenseReasons> reasons,
   ) {
+    final hasReasons = reasons.isNotEmpty;
+
     return Column(
       children: [
         // Верхняя панель с кнопками
@@ -109,58 +111,63 @@ class _ArticlesPageState extends State<ArticlesPage> {
                   ],
                 ),
                 12.h,
-                Row(
-                  children: [
-                    OutlinedButtonWidget(
-                      onPressed: () {
-                        final headers = ['№', 'Название', 'Тип счета'];
-                        final rows =
-                            reasons.asMap().entries.map<List<String>>((entry) {
-                              final index = entry.key + 1;
-                              final reason = entry.value;
-                              return [
-                                '$index',
-                                reason.name,
-                                reason.type == 'income' ? 'Доход' : 'Расход',
-                              ];
-                            }).toList();
+                if (hasReasons)
+                  Row(
+                    children: [
+                      OutlinedButtonWidget(
+                        onPressed: () {
+                          final headers = ['№', 'Название', 'Тип счета'];
+                          final rows =
+                              reasons.asMap().entries.map<List<String>>((
+                                entry,
+                              ) {
+                                final index = entry.key + 1;
+                                final reason = entry.value;
+                                return [
+                                  '$index',
+                                  reason.name,
+                                  reason.type == 'income' ? 'Доход' : 'Расход',
+                                ];
+                              }).toList();
 
-                        _localService.printReportAsPdf(
-                          context: context,
-                          title: 'Список статей',
-                          headers: headers,
-                          rows: rows,
-                        );
-                      },
-                      text: 'Распечатать',
-                    ),
+                          _localService.printReportAsPdf(
+                            context: context,
+                            title: 'Список статей',
+                            headers: headers,
+                            rows: rows,
+                          );
+                        },
+                        text: 'Распечатать',
+                      ),
 
-                    12.w,
-                    OutlinedButtonWidget(
-                      onPressed: () {
-                        final headers = ['№', 'Название', 'Тип счета'];
-                        final rows =
-                            reasons.asMap().entries.map<List<String>>((entry) {
-                              final index = entry.key + 1;
-                              final reason = entry.value;
-                              return [
-                                '$index',
-                                reason.name,
-                                reason.type == 'income' ? 'Доход' : 'Расход',
-                              ];
-                            }).toList();
+                      12.w,
+                      OutlinedButtonWidget(
+                        onPressed: () {
+                          final headers = ['№', 'Название', 'Тип счета'];
+                          final rows =
+                              reasons.asMap().entries.map<List<String>>((
+                                entry,
+                              ) {
+                                final index = entry.key + 1;
+                                final reason = entry.value;
+                                return [
+                                  '$index',
+                                  reason.name,
+                                  reason.type == 'income' ? 'Доход' : 'Расход',
+                                ];
+                              }).toList();
 
-                        _localService.exportToExcelGeneric(
-                          fileName: 'Список_статей',
-                          headers: headers,
-                          rows: rows,
-                          context: context,
-                        );
-                      },
-                      text: 'Скачать в Excel',
-                    ),
-                  ],
-                ),
+                          _localService.exportToExcelGeneric(
+                            fileName: 'Список_статей',
+                            headers: headers,
+                            rows: rows,
+                            context: context,
+                          );
+                        },
+                        text: 'Скачать в Excel',
+                      ),
+                    ],
+                  ),
                 20.h,
               ],
             ),
@@ -168,90 +175,98 @@ class _ArticlesPageState extends State<ArticlesPage> {
         ),
         12.h,
 
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: 0.1),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: DataTable(
-              showCheckboxColumn: true,
-              showBottomBorder: true,
-              headingRowColor: WidgetStateProperty.all(Colors.black),
-              headingTextStyle: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+        if (hasReasons)
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black, width: 0.1),
+                borderRadius: BorderRadius.circular(4),
               ),
-              columns: const [
-                DataColumn(
-                  label: Text('Название', style: AppTextStyles.f16w500),
+              child: DataTable(
+                showCheckboxColumn: true,
+                showBottomBorder: true,
+                headingRowColor: WidgetStateProperty.all(Colors.black),
+                headingTextStyle: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
-                DataColumn(
-                  label: Text('Тип счета', style: AppTextStyles.f16w500),
-                ),
-                DataColumn(label: Text('')), // для меню с тремя точками
-              ],
-              rows:
-                  reasons.map((reason) {
-                    return DataRow(
-                      cells: [
-                        DataCell(
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              reason.name,
-                              style: AppTextStyles.f16w500,
+                columns: const [
+                  DataColumn(
+                    label: Text('Название', style: AppTextStyles.f16w500),
+                  ),
+                  DataColumn(
+                    label: Text('Тип счета', style: AppTextStyles.f16w500),
+                  ),
+                  DataColumn(label: Text('')), // для меню с тремя точками
+                ],
+                rows:
+                    reasons.map((reason) {
+                      return DataRow(
+                        cells: [
+                          DataCell(
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                reason.name,
+                                style: AppTextStyles.f16w500,
+                              ),
                             ),
                           ),
-                        ),
-                        DataCell(
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              reason.type == 'income' ? 'Доход' : 'Расход',
-                              style: AppTextStyles.f16w500,
+                          DataCell(
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                reason.type == 'income' ? 'Доход' : 'Расход',
+                                style: AppTextStyles.f16w500,
+                              ),
                             ),
                           ),
-                        ),
-                        DataCell(
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: PopupMenuWid(
-                              context: context,
-                              tapDelete: () {
-                                ShowSheet().showDeleteDialog(
-                                  context,
-                                  accountName: reason.name,
-                                  onConfirm: () {
-                                    context.read<MenuCubit>().deleteReason(
-                                      reason.id!,
-                                    );
-                                    Navigator.pop(context);
-                                  },
-                                  title: 'Удалить счет',
-                                );
-                              },
-                              tapEdit: () async {
-                                final reasons = await Navigator.pushNamed(
-                                  context,
-                                  AppRoutes.editArticles,
-                                  arguments: reason,
-                                );
+                          DataCell(
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: PopupMenuWid(
+                                context: context,
+                                tapDelete: () {
+                                  ShowSheet().showDeleteDialog(
+                                    context,
+                                    accountName: reason.name,
+                                    onConfirm: () {
+                                      context.read<MenuCubit>().deleteReason(
+                                        reason.id!,
+                                      );
+                                      Navigator.pop(context);
+                                    },
+                                    title: 'Удалить счет',
+                                  );
+                                },
+                                tapEdit: () async {
+                                  final reasons = await Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.editArticles,
+                                    arguments: reason,
+                                  );
 
-                                if (reasons == true) {
-                                  context.read<MenuCubit>().getReasons();
-                                }
-                              },
+                                  if (reasons == true) {
+                                    context.read<MenuCubit>().getReasons();
+                                  }
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
+                        ],
+                      );
+                    }).toList(),
+              ),
+            ),
+          )
+        else
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.only(top: 50),
+              child: Text('Нет статей', style: AppTextStyles.f16w500),
             ),
           ),
-        ),
       ],
     );
   }

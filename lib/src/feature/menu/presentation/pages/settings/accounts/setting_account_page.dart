@@ -18,8 +18,8 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
 
   @override
   void initState() {
-    context.read<MenuCubit>().getAccounts();
     super.initState();
+    context.read<MenuCubit>().getAccounts();
   }
 
   @override
@@ -121,7 +121,11 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
                               ) {
                                 final index = entry.key + 1;
                                 final acc = entry.value;
-                                return ['$index', acc.name, acc.accountType];
+                                return [
+                                  '$index',
+                                  acc.name,
+                                  _getAccountTypeName(acc.accountType),
+                                ];
                               }).toList();
 
                           _localService.printReportAsPdf(
@@ -144,7 +148,11 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
                               ) {
                                 final index = entry.key + 1;
                                 final acc = entry.value;
-                                return ['$index', acc.name, acc.accountType];
+                                return [
+                                  '$index',
+                                  acc.name,
+                                  _getAccountTypeName(acc.accountType),
+                                ];
                               }).toList();
 
                           _localService.exportToExcelGeneric(
@@ -165,73 +173,96 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
         ),
         12.h,
 
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.black, width: 0.1),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: DataTable(
-            showCheckboxColumn: true,
-            showBottomBorder: true,
-            headingRowColor: WidgetStateProperty.all(Colors.black),
-            headingTextStyle: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+        if (hasAccounts)
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black, width: 0.1),
+              borderRadius: BorderRadius.circular(4),
             ),
-            columns: const [
-              DataColumn(label: Text('Название', style: AppTextStyles.f16w500)),
-              DataColumn(
-                label: Text('Тип счета', style: AppTextStyles.f16w500),
+            child: DataTable(
+              showCheckboxColumn: true,
+              showBottomBorder: true,
+              headingRowColor: WidgetStateProperty.all(Colors.black),
+              headingTextStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
-              DataColumn(label: Text('')),
-            ],
-            rows:
-                account.map((account) {
-                  return DataRow(
-                    cells: [
-                      DataCell(
-                        Text(account.name, style: AppTextStyles.f16w500),
-                      ),
-                      DataCell(
-                        Text(account.accountType, style: AppTextStyles.f16w500),
-                      ),
-
-                      DataCell(
-                        PopupMenuWid(
-                          context: context,
-                          tapDelete: () {
-                            ShowSheet().showDeleteDialog(
-                              context,
-                              accountName: account.name,
-
-                              onConfirm: () {
-                                context.read<MenuCubit>().deleteAccount(
-                                  account.id!,
-                                );
-                                Navigator.pop(context);
-                              },
-                              title: 'Удалить счет',
-                            );
-                          },
-                          tapEdit: () async {
-                            final result = await Navigator.pushNamed(
-                              context,
-                              AppRoutes.editSettingAccount,
-                              arguments: account,
-                            );
-
-                            if (result == true) {
-                              context.read<MenuCubit>().getAccounts();
-                            }
-                          },
+              columns: const [
+                DataColumn(
+                  label: Text('Название', style: AppTextStyles.f16w500),
+                ),
+                DataColumn(
+                  label: Text('Тип счета', style: AppTextStyles.f16w500),
+                ),
+                DataColumn(label: Text('')),
+              ],
+              rows:
+                  account.map((account) {
+                    return DataRow(
+                      cells: [
+                        DataCell(
+                          Text(account.name, style: AppTextStyles.f16w500),
                         ),
-                      ),
-                    ],
-                  );
-                }).toList(),
+                        DataCell(
+                          Text(
+                            _getAccountTypeName(account.accountType),
+                            style: AppTextStyles.f16w500,
+                          ),
+                        ),
+                        DataCell(
+                          PopupMenuWid(
+                            context: context,
+                            tapDelete: () {
+                              ShowSheet().showDeleteDialog(
+                                context,
+                                accountName: account.name,
+                                onConfirm: () {
+                                  context.read<MenuCubit>().deleteAccount(
+                                    account.id!,
+                                  );
+                                  Navigator.pop(context);
+                                },
+                                title: 'Удалить счет',
+                              );
+                            },
+                            tapEdit: () async {
+                              final result = await Navigator.pushNamed(
+                                context,
+                                AppRoutes.editSettingAccount,
+                                arguments: account,
+                              );
+
+                              if (result == true) {
+                                context.read<MenuCubit>().getAccounts();
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  }).toList(),
+            ),
+          )
+        else
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.only(top: 50),
+              child: Text('Нет cчетов', style: AppTextStyles.f16w500),
+            ),
           ),
-        ),
       ],
     );
+  }
+
+  // Utility function to convert account type to a more user-friendly name
+  String _getAccountTypeName(String accountType) {
+    switch (accountType) {
+      case 'bank':
+        return 'Банк';
+      case 'cash':
+        return 'Касса';
+      default:
+        return 'Неизвестно';
+    }
   }
 }

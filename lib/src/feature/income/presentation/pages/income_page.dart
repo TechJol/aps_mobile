@@ -161,7 +161,7 @@ class IncomePage {
                                 return DropDownFormField(
                                   items: const [],
                                   label: 'Счет',
-                                  value: 'Нет данных...',
+                                  value: 'Нет счетов...',
                                   onChanged: (_) {},
                                 );
                               }
@@ -199,7 +199,7 @@ class IncomePage {
                                 return DropDownFormField(
                                   items: const [],
                                   label: 'Статья',
-                                  value: 'Нет данных...',
+                                  value: 'Нет статей...',
                                   onChanged: (_) {},
                                 );
                               }

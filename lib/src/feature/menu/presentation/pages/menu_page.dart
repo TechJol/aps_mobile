@@ -169,7 +169,7 @@ class _MenuPageState extends State<MenuPage> {
                       Navigator.pushNamed(context, AppRoutes.profile);
                     },
                     icon: 'assets/icons/user.svg',
-                    title: 'Привет, ${state.user.username}',
+                    title: 'Профиль',
                   );
                 } else {
                   return const Text('');

@@ -11,15 +11,17 @@ class AddSettingAccountsPage extends StatefulWidget {
 }
 
 class _AddSettingAccountsPageState extends State<AddSettingAccountsPage> {
+  final nameController = TextEditingController();
+
   final List<String> currencies = ['Доллар', 'Сом', 'Рубль', 'Евро'];
   final List<String> currenciesCodes = ['USD', 'KGS', 'RUB', 'EUR'];
 
   final List<String> types = ['Банк', 'Касса'];
   final List<String> typesCodes = ['bank', 'cash'];
 
-  final List<String> names = ['Бакай банк', 'Офис касса'];
+  // final List<String> names = ['Бакай банк', 'Офис касса'];
 
-  String? selectedName;
+  // String? selectedName;
   String? selectedType;
   String? selectedCurrency;
   String? selectedCurrencyCode;
@@ -30,13 +32,27 @@ class _AddSettingAccountsPageState extends State<AddSettingAccountsPage> {
   void checkFormValidity() {
     setState(() {
       isFormValid =
-          selectedName != null &&
+          // selectedName != null &&
           selectedType != null &&
           selectedCurrency != null &&
-          selectedName!.isNotEmpty &&
+          // selectedName!.isNotEmpty &&
           selectedType!.isNotEmpty &&
           selectedCurrency!.isNotEmpty;
+      isFormValid = nameController.text.isNotEmpty;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.addListener(checkFormValidity);
+  }
+
+  @override
+  void dispose() {
+    nameController.removeListener(checkFormValidity);
+    nameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -75,17 +91,7 @@ class _AddSettingAccountsPageState extends State<AddSettingAccountsPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  DropDownFormField(
-                    items: names,
-                    label: 'Название',
-                    value: selectedName,
-                    onChanged: (val) {
-                      setState(() {
-                        selectedName = val;
-                      });
-                      checkFormValidity();
-                    },
-                  ),
+                  TextFieldWid(label: 'Название', controller: nameController),
                   const SizedBox(height: 12),
                   DropDownFormField(
                     items: types,
@@ -129,7 +135,7 @@ class _AddSettingAccountsPageState extends State<AddSettingAccountsPage> {
                             isFormValid
                                 ? () {
                                   final account = AccountModel(
-                                    name: selectedName ?? '',
+                                    name: nameController.text.trim(),
                                     accountType: selectedTypeCode ?? '',
                                     currency: selectedCurrencyCode,
                                   );

@@ -71,122 +71,136 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
     final end = (start + rowsPerPage).clamp(0, data.length);
     final paginatedData = data.sublist(start, end);
 
+    final hasData = paginatedData.isNotEmpty;
+
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('$total с', style: AppTextStyles.f24w600),
-          Text(
-            'общий баланс',
-            style: AppTextStyles.f14w500.copyWith(color: AppColors.greyColor),
-          ),
-          20.h,
-          Row(
-            children: [
-              OutlinedButtonWidget(
-                text: 'Распечатать',
-                onPressed: () {
-                  final headers = ['№', 'Название', 'Баланс', 'Тип счета'];
-
-                  final rows =
-                      data.asMap().entries.map<List<String>>((entry) {
-                        final index = entry.key + 1;
-                        final acc = entry.value;
-
-                        final balance = calculateAccountBalance(
-                          accountId: acc.id!,
-                          transactions: transactions,
-                        );
-
-                        return [
-                          '$index',
-                          acc.name,
-                          balance.toString(),
-                          acc.accountType,
-                        ];
-                      }).toList();
-
-                  _localService.printReportAsPdf(
-                    context: context,
-                    title: 'Отчет по счетам',
-                    headers: headers,
-                    rows: rows,
-                  );
-                },
-              ),
-              12.w,
-              OutlinedButtonWidget(
-                text: 'Скачать в Excel',
-                onPressed: () {
-                  final headers = ['№', 'Название', 'Баланс', 'Тип счета'];
-
-                  final rows =
-                      data.asMap().entries.map<List<String>>((entry) {
-                        final index = entry.key + 1;
-                        final acc = entry.value;
-
-                        final balance = calculateAccountBalance(
-                          accountId: acc.id!,
-                          transactions: transactions,
-                        );
-
-                        return [
-                          '$index',
-                          acc.name,
-                          balance.toString(),
-                          acc.accountType,
-                        ];
-                      }).toList();
-
-                  _localService.exportToExcelGeneric(
-                    fileName: 'По_счетам',
-                    headers: headers,
-                    rows: rows,
-                    context: context,
-                  );
-                },
-              ),
-            ],
-          ),
-
-          20.h,
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columnSpacing: 44,
-              headingRowColor: WidgetStateProperty.all(
-                AppColors.primaryColorLight,
-              ),
-              headingTextStyle: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-              dataRowColor: WidgetStateProperty.all(Colors.white),
-              columns: const [
-                DataColumn(label: Text('№')),
-                DataColumn(label: Text('Название')),
-                DataColumn(label: Text('Баланс')),
-                DataColumn(label: Text('Тип счета')),
-              ],
-              rows:
-                  paginatedData.asMap().entries.map((entry) {
-                    final tx = entry.value;
-                    final balance = calculateAccountBalance(
-                      accountId: tx.id!,
-                      transactions: transactions,
-                    );
-                    return DataRow(
-                      cells: [
-                        DataCell(Text(tx.id.toString())),
-                        DataCell(Text(tx.name)),
-                        DataCell(Text('$balance с')),
-                        DataCell(Text(tx.accountType)),
-                      ],
-                    );
-                  }).toList(),
+          if (hasData) Text('$total с', style: AppTextStyles.f24w600),
+          if (hasData)
+            Text(
+              'общий баланс',
+              style: AppTextStyles.f14w500.copyWith(color: AppColors.greyColor),
             ),
-          ),
+          20.h,
+          if (hasData)
+            Row(
+              children: [
+                OutlinedButtonWidget(
+                  text: 'Распечатать',
+                  onPressed: () {
+                    final headers = ['№', 'Название', 'Баланс', 'Тип счета'];
+
+                    final rows =
+                        data.asMap().entries.map<List<String>>((entry) {
+                          final index = entry.key + 1;
+                          final acc = entry.value;
+
+                          final balance = calculateAccountBalance(
+                            accountId: acc.id!,
+                            transactions: transactions,
+                          );
+
+                          return [
+                            '$index',
+                            acc.name,
+                            balance.toString(),
+                            acc.accountType == 'cash' ? 'Касса' : 'Банк',
+                          ];
+                        }).toList();
+
+                    _localService.printReportAsPdf(
+                      context: context,
+                      title: 'Отчет по счетам',
+                      headers: headers,
+                      rows: rows,
+                    );
+                  },
+                ),
+                12.w,
+                OutlinedButtonWidget(
+                  text: 'Скачать в Excel',
+                  onPressed: () {
+                    final headers = ['№', 'Название', 'Баланс', 'Тип счета'];
+
+                    final rows =
+                        data.asMap().entries.map<List<String>>((entry) {
+                          final index = entry.key + 1;
+                          final acc = entry.value;
+
+                          final balance = calculateAccountBalance(
+                            accountId: acc.id!,
+                            transactions: transactions,
+                          );
+
+                          return [
+                            '$index',
+                            acc.name,
+                            balance.toString(),
+                            acc.accountType == 'cash' ? 'Касса' : 'Банк',
+                          ];
+                        }).toList();
+
+                    _localService.exportToExcelGeneric(
+                      fileName: 'По_счетам',
+                      headers: headers,
+                      rows: rows,
+                      context: context,
+                    );
+                  },
+                ),
+              ],
+            ),
+
+          20.h,
+          if (hasData)
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columnSpacing: 44,
+                headingRowColor: WidgetStateProperty.all(
+                  AppColors.primaryColorLight,
+                ),
+                headingTextStyle: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+                dataRowColor: WidgetStateProperty.all(Colors.white),
+                columns: const [
+                  DataColumn(label: Text('№')),
+                  DataColumn(label: Text('Название')),
+                  DataColumn(label: Text('Баланс')),
+                  DataColumn(label: Text('Тип счета')),
+                ],
+                rows:
+                    paginatedData.asMap().entries.map((entry) {
+                      final tx = entry.value;
+                      final balance = calculateAccountBalance(
+                        accountId: tx.id!,
+                        transactions: transactions,
+                      );
+                      return DataRow(
+                        cells: [
+                          DataCell(Text(tx.id.toString())),
+                          DataCell(Text(tx.name)),
+                          DataCell(Text('$balance с')),
+                          DataCell(
+                            Text(tx.accountType == 'cash' ? 'Касса' : 'Банк'),
+                          ),
+                        ],
+                      );
+                    }).toList(),
+              ),
+            )
+          else
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.only(top: 50),
+                child: Text('Нет данных', style: AppTextStyles.f16w500),
+              ),
+            ),
         ],
       ),
     );

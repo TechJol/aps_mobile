@@ -18,8 +18,8 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   void initState() {
-    context.read<MenuCubit>().getAccounts();
     super.initState();
+    context.read<MenuCubit>().getAccounts();
   }
 
   @override
@@ -28,7 +28,6 @@ class _AccountPageState extends State<AccountPage> {
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
         title: 'Счета',
-
         backgroundColor: AppColors.backroundColor,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
@@ -120,7 +119,11 @@ class _AccountPageState extends State<AccountPage> {
                               ) {
                                 final index = entry.key + 1;
                                 final item = entry.value;
-                                return ['$index', item.name, item.accountType];
+                                return [
+                                  '$index',
+                                  item.name,
+                                  _getAccountTypeName(item.accountType),
+                                ];
                               }).toList();
 
                           _localService.printReportAsPdf(
@@ -142,7 +145,11 @@ class _AccountPageState extends State<AccountPage> {
                               ) {
                                 final index = entry.key + 1;
                                 final item = entry.value;
-                                return ['$index', item.name, item.accountType];
+                                return [
+                                  '$index',
+                                  item.name,
+                                  _getAccountTypeName(item.accountType),
+                                ];
                               }).toList();
 
                           _localService.exportToExcelGeneric(
@@ -195,7 +202,7 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                         DataCell(
                           Text(
-                            account.accountType,
+                            _getAccountTypeName(account.accountType),
                             style: AppTextStyles.f16w500,
                           ),
                         ),
@@ -207,7 +214,6 @@ class _AccountPageState extends State<AccountPage> {
                               ShowSheet().showDeleteDialog(
                                 context,
                                 accountName: account.name,
-
                                 onConfirm: () {
                                   context.read<MenuCubit>().deleteAccount(
                                     account.id!,
@@ -244,5 +250,17 @@ class _AccountPageState extends State<AccountPage> {
           ),
       ],
     );
+  }
+
+  // Utility function to convert account type to a more user-friendly name
+  String _getAccountTypeName(String accountType) {
+    switch (accountType) {
+      case 'bank':
+        return 'Банк';
+      case 'cash':
+        return 'Касса';
+      default:
+        return 'Неизвестно';
+    }
   }
 }

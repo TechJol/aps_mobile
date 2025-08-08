@@ -107,25 +107,23 @@ class _MainAccountPageState extends State<MainAccountPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              if (hasAccount)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '$total с',
-                      style: AppTextStyles.f24w600.copyWith(
-                        fontFamily: 'Inter',
-                      ),
+              // if (hasAccount)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$total с',
+                    style: AppTextStyles.f24w600.copyWith(fontFamily: 'Inter'),
+                  ),
+                  Text(
+                    'общий баланс',
+                    style: AppTextStyles.f14w500.copyWith(
+                      color: AppColors.greyColor,
+                      fontFamily: 'Inter',
                     ),
-                    Text(
-                      'общий баланс',
-                      style: AppTextStyles.f14w500.copyWith(
-                        color: AppColors.greyColor,
-                        fontFamily: 'Inter',
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size(140, 48),
@@ -176,6 +174,13 @@ class _MainAccountPageState extends State<MainAccountPage> {
                   currency: account.currency,
                 );
               },
+            )
+          else
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.only(top: 50),
+                child: Text('Нет счетов', style: AppTextStyles.f16w500),
+              ),
             ),
         ],
       ),

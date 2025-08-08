@@ -11,16 +11,18 @@ class AddArticlesPage extends StatefulWidget {
 }
 
 class _AddArticlesPageState extends State<AddArticlesPage> {
-  final List<String> names = [
-    'Аренда',
-    'Зарплата',
-    'Прочее Расходы',
-    'Инвестиции',
-  ];
+  final nameController = TextEditingController();
+
+  // final List<String> names = [
+  //   'Аренда',
+  //   'Зарплата',
+  //   'Прочее Расходы',
+  //   'Инвестиции',
+  // ];
   final List<String> types = ['Доход', 'Расход'];
   final List<String> typesCode = ['income', 'expense'];
 
-  String? selectedName;
+  // String? selectedName;
   String? selectedType;
   String? selectedTypeCode;
 
@@ -29,11 +31,25 @@ class _AddArticlesPageState extends State<AddArticlesPage> {
   void checkFormValidity() {
     setState(() {
       isFormValid =
-          selectedName != null &&
+          // selectedName != null &&
           selectedType != null &&
-          selectedName!.isNotEmpty &&
+          // selectedName!.isNotEmpty &&
           selectedType!.isNotEmpty;
+      isFormValid = nameController.text.isNotEmpty;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.addListener(checkFormValidity);
+  }
+
+  @override
+  void dispose() {
+    nameController.removeListener(checkFormValidity);
+    nameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -72,17 +88,8 @@ class _AddArticlesPageState extends State<AddArticlesPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  DropDownFormField(
-                    items: names,
-                    label: 'Название',
-                    value: selectedName,
-                    onChanged: (val) {
-                      setState(() {
-                        selectedName = val;
-                      });
-                      checkFormValidity();
-                    },
-                  ),
+                  TextFieldWid(label: 'Название', controller: nameController),
+
                   const SizedBox(height: 12),
                   DropDownFormField(
                     items: types,
@@ -111,7 +118,7 @@ class _AddArticlesPageState extends State<AddArticlesPage> {
                             isFormValid
                                 ? () {
                                   final reason = IncomeExpenseReasons(
-                                    name: selectedName ?? '',
+                                    name: nameController.text.trim(),
                                     type: selectedTypeCode ?? '',
                                   );
                                   context.read<MenuCubit>().postReason(reason);

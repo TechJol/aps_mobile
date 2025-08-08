@@ -38,17 +38,20 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: AppColors.whiteColor,
       appBar: AppBar(
         backgroundColor: const Color(0xFFF3F4F7),
-        title: BlocBuilder<CredentialCubit, CredentialState>(
-          builder: (context, state) {
-            if (state is CredentialUserLoaded) {
-              return Text(
-                'Привет, ${state.user.username}',
-                style: AppTextStyles.f24w600,
-              );
-            } else {
-              return const Text('Привет', style: AppTextStyles.f24w600);
-            }
-          },
+        title: Row(
+          children: [
+            SizedBox(
+              width: 40,
+              height: 40,
+              child: Image.asset('assets/icons/logo_softkg.png'),
+            ),
+            Text(
+              'SoftkgPro',
+              style: AppTextStyles.f24w600.copyWith(
+                color: AppColors.primaryColor,
+              ),
+            ),
+          ],
         ),
 
         centerTitle: false,
@@ -505,7 +508,7 @@ class _HomePageState extends State<HomePage> {
             fontWeight: FontWeight.w400,
             fontFamily: 'Inter',
             fontSize: 13,
-            color: isSelected ? Colors.black : Colors.grey,
+            color: isSelected ? AppColors.primaryColor : Colors.grey,
           ),
         ),
       ),

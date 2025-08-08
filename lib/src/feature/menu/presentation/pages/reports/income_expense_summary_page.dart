@@ -81,7 +81,22 @@ class IncomeExpenseSummaryPage extends StatelessWidget {
                     };
                   }).toList();
 
-              return ListView(children: [20.h, DataTableSectionA(data: data)]);
+              final hasData = data.isNotEmpty;
+
+              return ListView(
+                children: [
+                  20.h,
+                  if (hasData)
+                    DataTableSectionA(data: data)
+                  else
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 50),
+                        child: Text('Нет данных', style: AppTextStyles.f16w500),
+                      ),
+                    ),
+                ],
+              );
             }
 
             return const SizedBox.shrink();

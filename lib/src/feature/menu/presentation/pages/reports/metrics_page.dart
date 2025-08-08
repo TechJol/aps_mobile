@@ -32,6 +32,8 @@ class _MetricsPageState extends State<MetricsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final hasYearlyData = yearlyData.isNotEmpty;
+
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
@@ -49,89 +51,101 @@ class _MetricsPageState extends State<MetricsPage> {
           child: ListView(
             children: [
               20.h,
-              Row(
-                children: [
-                  OutlinedButtonWidget(
-                    text: 'Распечатать',
-                    onPressed: () {
-                      final headers = [
-                        'Год',
-                        'Доход (KGZ)',
-                        'Расход (KGZ)',
-                        'Чистый доход (KGZ)',
-                      ];
+              if (hasYearlyData)
+                Row(
+                  children: [
+                    OutlinedButtonWidget(
+                      text: 'Распечатать',
+                      onPressed: () {
+                        final headers = [
+                          'Год',
+                          'Доход (KGZ)',
+                          'Расход (KGZ)',
+                          'Чистый доход (KGZ)',
+                        ];
 
-                      final rows =
-                          yearlyData.map((row) {
-                            return [
-                              row['year'].toString(),
-                              row['income'].toString(),
-                              row['expense'].toString(),
-                              row['balance'].toString(),
-                            ];
-                          }).toList();
+                        final rows =
+                            yearlyData.map((row) {
+                              return [
+                                row['year'].toString(),
+                                row['income'].toString(),
+                                row['expense'].toString(),
+                                row['balance'].toString(),
+                              ];
+                            }).toList();
 
-                      LocalService().printReportAsPdf(
-                        context: context,
-                        title: 'Годовой отчет',
-                        headers: headers,
-                        rows: rows,
-                      );
-                    },
-                  ),
-                  12.w,
-                  OutlinedButtonWidget(
-                    text: 'Скачать в Excel',
-                    onPressed: () {
-                      final headers = [
-                        'Год',
-                        'Доход (KGZ)',
-                        'Расход (KGZ)',
-                        'Чистый доход (KGZ)',
-                      ];
-                      final rows =
-                          yearlyData
-                              .map(
-                                (row) => [
-                                  row['year'].toString(),
-                                  row['income'].toString(),
-                                  row['expense'].toString(),
-                                  row['balance'].toString(),
-                                ],
-                              )
-                              .toList();
+                        LocalService().printReportAsPdf(
+                          context: context,
+                          title: 'Годовой отчет',
+                          headers: headers,
+                          rows: rows,
+                        );
+                      },
+                    ),
+                    12.w,
+                    OutlinedButtonWidget(
+                      text: 'Скачать в Excel',
+                      onPressed: () {
+                        final headers = [
+                          'Год',
+                          'Доход (KGZ)',
+                          'Расход (KGZ)',
+                          'Чистый доход (KGZ)',
+                        ];
+                        final rows =
+                            yearlyData
+                                .map(
+                                  (row) => [
+                                    row['year'].toString(),
+                                    row['income'].toString(),
+                                    row['expense'].toString(),
+                                    row['balance'].toString(),
+                                  ],
+                                )
+                                .toList();
 
-                      LocalService().exportToExcelGeneric(
-                        fileName: 'Годовой_отчет',
-                        headers: headers,
-                        rows: rows,
-                        context: context,
-                      );
-                    },
-                  ),
-                ],
-              ),
+                        LocalService().exportToExcelGeneric(
+                          fileName: 'Годовой_отчет',
+                          headers: headers,
+                          rows: rows,
+                          context: context,
+                        );
+                      },
+                    ),
+                  ],
+                ),
               20.h,
-              DropDownFormField(
-                items: ['по годам'],
-                label: 'Выберите период',
-                value: 'по годам',
-                onChanged: (value) {},
-              ),
+              if (hasYearlyData)
+                DropDownFormField(
+                  items: ['по годам'],
+                  label: 'Выберите период',
+                  value: 'по годам',
+                  onChanged: (value) {},
+                ),
               40.h,
-              Text(
-                'Таблица доходов и расходов по годам',
-                style: AppTextStyles.f16w500,
-              ),
+              if (hasYearlyData)
+                Text(
+                  'Таблица доходов и расходов по годам',
+                  style: AppTextStyles.f16w500,
+                ),
               20.h,
-              _buildMetrics(),
+              if (hasYearlyData) _buildMetrics(),
               60.h,
-              Text(
-                'График доходов и расходов по годам',
-                style: AppTextStyles.f16w500,
-              ),
+              if (hasYearlyData)
+                Text(
+                  'График доходов и расходов по годам',
+                  style: AppTextStyles.f16w500,
+                ),
               30.h,
-              _buildGraphic(),
+              if (hasYearlyData)
+                _buildGraphic()
+              else
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 50),
+                    child: Text('Нет данных', style: AppTextStyles.f16w500),
+                  ),
+                ),
             ],
           ),
         ),

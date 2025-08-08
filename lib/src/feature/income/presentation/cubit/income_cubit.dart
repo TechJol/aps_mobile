@@ -42,12 +42,21 @@ class IncomeCubit extends Cubit<IncomeState> {
     final res = await getAccountUsecase();
     res.fold((l) => emit(state.copyWith(isLoading: false, error: l.message)), (
       r,
-    ) {
+    ) async {
       final accounts =
           (r as List)
               .map((e) => AccountModel.fromMap(e as Map<String, dynamic>))
               .toList();
-      emit(state.copyWith(isLoading: false, accounts: accounts));
+
+      // Get companyId from SharedPreferences
+      SharedPreferences storage = await SharedPreferences.getInstance();
+      final companyId = storage.getInt('companyId');
+
+      // Filter accounts by companyId
+      final filteredAccounts =
+          accounts.where((account) => account.company == companyId).toList();
+
+      emit(state.copyWith(isLoading: false, accounts: filteredAccounts));
     });
   }
 
@@ -56,14 +65,23 @@ class IncomeCubit extends Cubit<IncomeState> {
     final res = await getIncomeExpenseReasonUsecase();
     res.fold((l) => emit(state.copyWith(isLoading: false, error: l.message)), (
       r,
-    ) {
+    ) async {
       final reasons =
           (r as List)
               .map(
                 (e) => IncomeExpenseReasons.fromMap(e as Map<String, dynamic>),
               )
               .toList();
-      emit(state.copyWith(isLoading: false, reasons: reasons));
+
+      // Get companyId from SharedPreferences
+      SharedPreferences storage = await SharedPreferences.getInstance();
+      final companyId = storage.getInt('companyId');
+
+      // Filter reasons by companyId
+      final filteredReasons =
+          reasons.where((reason) => reason.company == companyId).toList();
+
+      emit(state.copyWith(isLoading: false, reasons: filteredReasons));
     });
   }
 

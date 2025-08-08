@@ -205,7 +205,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                                 'dd.MM.yyyy',
                               ).format(DateTime.parse(tx.date!))
                               : '',
-                          tx.transactionType ?? '',
+                          tx.transactionType == 'income' ? 'Приход' : 'Расход',
                           getAccountName(tx.account ?? 0),
                           getReasonName(tx.incomeExpenseReason ?? 0),
                           getPartnerName(tx.partners ?? 0),
@@ -266,7 +266,13 @@ class _TransactionsPageState extends State<TransactionsPage> {
                                 : '',
                           ),
                         ),
-                        DataCell(Text(tx.transactionType ?? '')),
+                        DataCell(
+                          Text(
+                            tx.transactionType == 'income'
+                                ? 'Приход'
+                                : 'Расход',
+                          ),
+                        ),
                         DataCell(Text(getAccountName(tx.account ?? 0))),
                         DataCell(
                           Text(getReasonName(tx.incomeExpenseReason ?? 0)),
