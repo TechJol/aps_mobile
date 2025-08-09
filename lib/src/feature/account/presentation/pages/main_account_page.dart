@@ -157,8 +157,18 @@ class _MainAccountPageState extends State<MainAccountPage> {
               separatorBuilder: (_, __) => const SizedBox(height: 20),
               itemBuilder: (context, index) {
                 final account = data[index];
-                final color =
-                    index.isEven ? AppColors.redColor : AppColors.blueColor;
+                final gradientColors =
+                    index.isEven
+                        ? [
+                          const Color(0xFFB68CFF),
+                          const Color(0xFF8657F5),
+                          const Color(0xFF5C36D6),
+                        ]
+                        : [
+                          const Color(0xFFA5BEFF),
+                          const Color.fromARGB(255, 8, 52, 198),
+                          const Color.fromARGB(255, 2, 9, 42),
+                        ];
                 final balance = calculateAccountBalance(
                   accountId: account.id!,
                   transactions: transactions,
@@ -170,7 +180,7 @@ class _MainAccountPageState extends State<MainAccountPage> {
                   },
                   price: '$balance с',
                   office: account.name,
-                  cardColor: color,
+                  cardColor: gradientColors,
                   currency: account.currency,
                 );
               },

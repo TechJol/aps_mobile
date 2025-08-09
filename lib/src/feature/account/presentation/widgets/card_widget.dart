@@ -75,7 +75,7 @@ class CardWidget extends StatelessWidget {
   final String price;
   final String office;
   final String? currency;
-  final Color? cardColor;
+  final List<Color>? cardColor;
 
   @override
   Widget build(BuildContext context) {
@@ -85,23 +85,21 @@ class CardWidget extends StatelessWidget {
         width: double.infinity,
         height: 190,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(20),
           gradient: LinearGradient(
+            colors: cardColor ?? [Colors.blue, Colors.purple, Colors.pink],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              cardColor!.withOpacity(0.5), // Верх — прозрачнее
-              cardColor!.withOpacity(1.0), // Низ — насыщенный
-            ],
           ),
         ),
+
         child: LayoutBuilder(
           builder: (context, constraints) {
             return Stack(
               children: [
                 CustomPaint(
                   size: Size(constraints.maxWidth, constraints.maxHeight),
-                  painter: WavePainter(cardColor!.withOpacity(0.3)),
+                  painter: WavePainter(cardColor?.first ?? Colors.blue),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(20.0),
