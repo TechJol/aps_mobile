@@ -146,26 +146,34 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                   ),
                   20.h,
 
-                  hasIncomeData || hasExpenseData
-                      ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TitleSection(title: 'Основные статьи , доход'),
+                  if (!hasIncomeData && !hasExpenseData)
+                    const Center(child: Text("Нет данных за выбранный месяц"))
+                  else
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // --- ДОХОД ---
+                        if (hasIncomeData) ...[
+                          const TitleSection(title: 'Основные статьи , доход'),
                           PieChartSection(data: incomeData),
                           20.h,
                           LegendSection(data: incomeData),
                           20.h,
                           DataTableSection(data: incomeData),
                           40.h,
-                          TitleSection(title: 'Основные статьи , расход'),
+                        ],
+
+                        // --- РАСХОД ---
+                        if (hasExpenseData) ...[
+                          const TitleSection(title: 'Основные статьи , расход'),
                           PieChartSection(data: expenseData),
                           20.h,
                           LegendSection(data: expenseData),
-                          40.h,
+                          20.h,
                           DataTableSection(data: expenseData),
                         ],
-                      )
-                      : Center(child: Text("Нет данных за выбранный месяц")),
+                      ],
+                    ),
                 ],
               ),
             );
@@ -332,23 +340,32 @@ class PieChartSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     return SizedBox(
-      height: MediaQuery.of(context).size.width * 0.8,
+      height: w * 0.8,
       child: PieChart(
         PieChartData(
           sectionsSpace: 2,
-          centerSpaceRadius: MediaQuery.of(context).size.width * 0.16,
+          // пончик
+          centerSpaceRadius: w * 0.16,
           sections:
               data.asMap().entries.map((entry) {
                 final color = _chartColors[entry.key % _chartColors.length];
-                final percent =
-                    (entry.value['percent'] as Decimal)
-                        .toDouble(); // Преобразование в double
+                final percent = (entry.value['percent'] as Decimal).toDouble();
+
                 return PieChartSectionData(
                   color: color,
                   value: percent,
-                  title: '${percent.toStringAsFixed(2)}%',
-                  radius: MediaQuery.of(context).size.width * 0.2,
+                  // как в макете: целые проценты, белым внутри сектора
+                  title: '${percent.round()}%',
+                  titleStyle: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  ),
+                  // позиция текста ближе к центру сектора
+                  titlePositionPercentageOffset: 0.6,
+                  radius: w * 0.2,
                 );
               }).toList(),
         ),
@@ -401,34 +418,167 @@ class DataTableSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: DataTable(
-        columnSpacing: 32,
-        headingRowColor: WidgetStateProperty.all(AppColors.primaryColorLight),
-        headingTextStyle: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-        dataRowColor: WidgetStateProperty.all(Colors.white),
-        columns: const [
-          DataColumn(label: Text('№')),
-          DataColumn(label: Text('Статья')),
-          DataColumn(label: Text('Сумма (сом)')),
-          DataColumn(label: Text('Процент')),
-        ],
-        rows:
+    if (data.isEmpty) return const SizedBox.shrink();
+
+    final textStyle = AppTextStyles.f16w500;
+
+    // измеряем самую длинную "Статью"
+    double _measureTextWidth(String text) {
+      final tp = TextPainter(
+        text: TextSpan(text: text, style: textStyle),
+        textDirection: TextDirection.ltr,
+        maxLines: 1,
+      )..layout(minWidth: 0, maxWidth: double.infinity);
+      return tp.width;
+    }
+
+    // базовые настройки ширин и отступов
+    const numColW = 56.0; // №
+    const sumColW = 140.0; // Сумма (сом)
+    const pctColW = 110.0; // Процент
+    const cellHPad = 16.0; // горизонтальный паддинг в ячейке
+    const cellVPad = 14.0; // вертикальный паддинг в ячейке
+    const gridColor = Color(0xFFE6E6E6);
+
+    // максимальная ширина текста в "Статья"
+    final maxNameTextW = data.fold<double>(80.0, (maxW, row) {
+      final name = (row['name'] ?? '').toString();
+      final w = _measureTextWidth(name);
+      return w > maxW ? w : maxW;
+    });
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final screenW = constraints.maxWidth;
+
+        // фиксированная часть (кроме колонки "Статья") + паддинги 4х колонок
+        final fixedPartW = numColW + sumColW + pctColW + (cellHPad * 2 * 4);
+
+        // если этого мало — растянем таблицу на весь экран,
+        // если не помещается — дадим ей нужную minWidth и включим горизонтальный скролл
+        final requiredTableW = fixedPartW + maxNameTextW;
+        final tableMinWidth =
+            requiredTableW < screenW ? screenW : requiredTableW;
+
+        // ширина "Статья", когда таблица растянута и без скролла
+        final nameColW = (screenW - fixedPartW).clamp(120.0, 800.0);
+
+        // заголовок таблицы
+        TableRow _headerRow() => TableRow(
+          decoration: const BoxDecoration(color: AppColors.primaryColorLight),
+          children: [
+            _cell(
+              '№',
+              isHeader: true,
+              width: numColW,
+              padH: cellHPad,
+              padV: cellVPad,
+            ),
+            _cell(
+              'Статья дохода',
+              isHeader: true,
+              width: tableMinWidth == screenW ? nameColW : maxNameTextW,
+              padH: cellHPad,
+              padV: cellVPad,
+            ),
+            _cell(
+              'Сумма (сом)',
+              isHeader: true,
+              width: sumColW,
+              padH: cellHPad,
+              padV: cellVPad,
+            ),
+            _cell(
+              'Процент',
+              isHeader: true,
+              width: pctColW,
+              padH: cellHPad,
+              padV: cellVPad,
+            ),
+          ],
+        );
+
+        // строки данных
+        List<TableRow> _dataRows() =>
             data.asMap().entries.map((entry) {
+              final i = entry.key + 1;
               final row = entry.value;
-              return DataRow(
-                cells: [
-                  DataCell(Text('${entry.key + 1}')),
-                  DataCell(Text(row['name'] ?? '')),
-                  DataCell(Text(row['amount'] ?? '')),
-                  DataCell(Text('${(row['percent'] ?? 0.0)}%')),
+              final name = (row['name'] ?? '').toString();
+              final amount = (row['amount'] ?? '').toString();
+              final percent = row['percent'];
+
+              final isStretched = tableMinWidth == screenW;
+
+              return TableRow(
+                children: [
+                  _cell('$i', width: numColW, padH: cellHPad, padV: cellVPad),
+                  _cell(
+                    name,
+                    width: isStretched ? nameColW : maxNameTextW,
+                    padH: cellHPad,
+                    padV: cellVPad,
+                    ellipsis: isStretched, // при растяжке режем длинные
+                  ),
+                  _cell(amount, width: sumColW, padH: cellHPad, padV: cellVPad),
+                  _cell(
+                    percent is Decimal
+                        ? '${percent.toString()}%'
+                        : '${percent ?? 0}%',
+                    width: pctColW,
+                    padH: cellHPad,
+                    padV: cellVPad,
+                  ),
                 ],
               );
-            }).toList(),
+            }).toList();
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: tableMinWidth),
+            child: Table(
+              // полноценная сетка как в макете
+              border: TableBorder.all(color: gridColor, width: 1),
+              columnWidths: {
+                0: const FixedColumnWidth(numColW),
+                1: FixedColumnWidth(
+                  tableMinWidth == screenW ? nameColW : maxNameTextW,
+                ),
+                2: const FixedColumnWidth(sumColW),
+                3: const FixedColumnWidth(pctColW),
+              },
+              children: [_headerRow(), ..._dataRows()],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // ячейка таблицы
+  Widget _cell(
+    String text, {
+    required double width,
+    required double padH,
+    required double padV,
+    bool isHeader = false,
+    bool ellipsis = false,
+  }) {
+    final style =
+        isHeader
+            ? const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)
+            : AppTextStyles.f16w500;
+
+    return SizedBox(
+      width: width,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: padH, vertical: padV),
+        child: Text(
+          text,
+          style: style,
+          maxLines: 1,
+          overflow: ellipsis ? TextOverflow.ellipsis : TextOverflow.visible,
+        ),
       ),
     );
   }

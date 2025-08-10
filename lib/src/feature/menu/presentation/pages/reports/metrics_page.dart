@@ -154,54 +154,89 @@ class _MetricsPageState extends State<MetricsPage> {
   }
 
   Widget _buildMetrics() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: DataTable(
-        columnSpacing: 32,
-        headingRowColor: WidgetStateProperty.all(AppColors.primaryColorLight),
-        headingTextStyle: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-        dataRowColor: WidgetStateProperty.all(Colors.white),
-        columns: const [
-          DataColumn(label: Text('Год')),
-          DataColumn(label: Text('Доход (KGZ)')),
-          DataColumn(label: Text('Расход (KGZ)')),
-          DataColumn(label: Text('Чистый доход (KGZ)')),
-        ],
-        rows:
-            yearlyData.map((row) {
-              return DataRow(
-                cells: [
-                  DataCell(Text(row['year'].toString())),
-                  DataCell(
-                    Text(
-                      row['income'].toString(),
-                      style: AppTextStyles.f16w500.copyWith(
+    if (yearlyData.isEmpty) return const SizedBox.shrink();
+
+    const yearW = 100.0;
+    const incomeW = 160.0;
+    const expenseW = 160.0;
+    const balanceW = 180.0;
+
+    const gridColor = Color(0xFFE6E6E6);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final totalW = yearW + incomeW + expenseW + balanceW + 16 * 2 * 4;
+        final minWidth =
+            totalW < constraints.maxWidth ? constraints.maxWidth : totalW;
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: minWidth),
+            child: Table(
+              border: TableBorder.all(color: gridColor, width: 1),
+              columnWidths: const {
+                0: FixedColumnWidth(yearW),
+                1: FixedColumnWidth(incomeW),
+                2: FixedColumnWidth(expenseW),
+                3: FixedColumnWidth(balanceW),
+              },
+              children: [
+                // Шапка
+                TableRow(
+                  decoration: const BoxDecoration(
+                    color: AppColors.primaryColorLight,
+                  ),
+                  children: [
+                    _cell('Год', isHeader: true),
+                    _cell('Доход (KGZ)', isHeader: true),
+                    _cell('Расход (KGZ)', isHeader: true),
+                    _cell('Чистый доход (KGZ)', isHeader: true),
+                  ],
+                ),
+                // Данные
+                ...yearlyData.map((row) {
+                  return TableRow(
+                    children: [
+                      _cell(row['year'].toString()),
+                      _cell(
+                        row['income'].toString(),
                         color: AppColors.greenColor,
                       ),
-                    ),
-                  ),
-                  DataCell(
-                    Text(
-                      row['expense'].toString(),
-                      style: AppTextStyles.f16w500.copyWith(
+                      _cell(
+                        row['expense'].toString(),
                         color: AppColors.redColor,
                       ),
-                    ),
-                  ),
-                  DataCell(
-                    Text(
-                      row['balance'].toString(),
-                      style: AppTextStyles.f16w500.copyWith(
+                      _cell(
+                        row['balance'].toString(),
                         color: AppColors.greenColor,
                       ),
-                    ),
-                  ),
-                ],
-              );
-            }).toList(),
+                    ],
+                  );
+                }),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _cell(String text, {bool isHeader = false, Color? color}) {
+    final style =
+        isHeader
+            ? const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)
+            : AppTextStyles.f16w500.copyWith(
+              color: color ?? AppColors.blackColor,
+            );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+      child: Text(
+        text,
+        style: style,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }

@@ -383,50 +383,80 @@ class _MonthlyDataTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: DataTable(
-        columnSpacing: 32,
-        headingRowColor: WidgetStateProperty.all(AppColors.primaryColorLight),
-        headingTextStyle: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-        dataRowColor: WidgetStateProperty.all(Colors.white),
-        columns: const [
-          DataColumn(label: Text('Месяц')),
-          DataColumn(label: Text('Доход (KGZ)')),
-          DataColumn(label: Text('Расход (KGZ)')),
-          DataColumn(label: Text('Чистый доход (KGZ)')),
-        ],
-        rows:
-            data
-                .map(
-                  (row) => DataRow(
-                    cells: [
-                      DataCell(Text(row['month']!)),
-                      DataCell(
-                        Text(
-                          row['income']!,
-                          style: TextStyle(color: AppColors.greenColor),
-                        ),
-                      ),
-                      DataCell(
-                        Text(
-                          row['expense']!,
-                          style: TextStyle(color: AppColors.redColor),
-                        ),
-                      ),
-                      DataCell(
-                        Text(
-                          row['balance']!,
-                          style: TextStyle(color: AppColors.greenColor),
-                        ),
-                      ),
-                    ],
+    if (data.isEmpty) return const SizedBox.shrink();
+
+    const monthW = 120.0;
+    const incomeW = 160.0;
+    const expenseW = 160.0;
+    const balanceW = 180.0;
+
+    const gridColor = Color(0xFFE6E6E6);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final totalW = monthW + incomeW + expenseW + balanceW + 16 * 2 * 4;
+        final minWidth =
+            totalW < constraints.maxWidth ? constraints.maxWidth : totalW;
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: minWidth),
+            child: Table(
+              border: TableBorder.all(color: gridColor, width: 1),
+              columnWidths: const {
+                0: FixedColumnWidth(monthW),
+                1: FixedColumnWidth(incomeW),
+                2: FixedColumnWidth(expenseW),
+                3: FixedColumnWidth(balanceW),
+              },
+              children: [
+                // Шапка
+                TableRow(
+                  decoration: const BoxDecoration(
+                    color: AppColors.primaryColorLight,
                   ),
-                )
-                .toList(),
+                  children: [
+                    _cell('Месяц', isHeader: true),
+                    _cell('Доход (KGZ)', isHeader: true),
+                    _cell('Расход (KGZ)', isHeader: true),
+                    _cell('Чистый доход (KGZ)', isHeader: true),
+                  ],
+                ),
+                // Данные
+                ...data.map((row) {
+                  return TableRow(
+                    children: [
+                      _cell(row['month'] ?? ''),
+                      _cell(row['income'] ?? '', color: AppColors.greenColor),
+                      _cell(row['expense'] ?? '', color: AppColors.redColor),
+                      _cell(row['balance'] ?? '', color: AppColors.greenColor),
+                    ],
+                  );
+                }),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _cell(String text, {bool isHeader = false, Color? color}) {
+    final style =
+        isHeader
+            ? const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)
+            : AppTextStyles.f16w500.copyWith(
+              color: color ?? AppColors.blackColor,
+            );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+      child: Text(
+        text,
+        style: style,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }
