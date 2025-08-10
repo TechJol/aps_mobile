@@ -423,7 +423,7 @@ class DataTableSection extends StatelessWidget {
     final textStyle = AppTextStyles.f16w500;
 
     // измеряем самую длинную "Статью"
-    double _measureTextWidth(String text) {
+    double measureTextWidth(String text) {
       final tp = TextPainter(
         text: TextSpan(text: text, style: textStyle),
         textDirection: TextDirection.ltr,
@@ -443,7 +443,7 @@ class DataTableSection extends StatelessWidget {
     // максимальная ширина текста в "Статья"
     final maxNameTextW = data.fold<double>(80.0, (maxW, row) {
       final name = (row['name'] ?? '').toString();
-      final w = _measureTextWidth(name);
+      final w = measureTextWidth(name);
       return w > maxW ? w : maxW;
     });
 
@@ -464,7 +464,7 @@ class DataTableSection extends StatelessWidget {
         final nameColW = (screenW - fixedPartW).clamp(120.0, 800.0);
 
         // заголовок таблицы
-        TableRow _headerRow() => TableRow(
+        TableRow headerRow() => TableRow(
           decoration: const BoxDecoration(color: AppColors.primaryColorLight),
           children: [
             _cell(
@@ -499,9 +499,9 @@ class DataTableSection extends StatelessWidget {
         );
 
         // строки данных
-        List<TableRow> _dataRows() =>
+        List<TableRow> dataRows() =>
             data.asMap().entries.map((entry) {
-              final i = entry.key + 1;
+              final i = {entry.key + 1};
               final row = entry.value;
               final name = (row['name'] ?? '').toString();
               final amount = (row['amount'] ?? '').toString();
@@ -547,7 +547,7 @@ class DataTableSection extends StatelessWidget {
                 2: const FixedColumnWidth(sumColW),
                 3: const FixedColumnWidth(pctColW),
               },
-              children: [_headerRow(), ..._dataRows()],
+              children: [headerRow(), ...dataRows()],
             ),
           ),
         );

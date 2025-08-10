@@ -291,16 +291,25 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                                           );
                                         },
                                         tapEdit: () async {
-                                          final result =
-                                              await Navigator.pushNamed(
-                                                context,
+                                          // сохраняем ссылки ДО await
+                                          final cubit =
+                                              context.read<MenuCubit>();
+                                          final navigator = Navigator.of(
+                                            context,
+                                          );
+
+                                          final result = await navigator
+                                              .pushNamed(
                                                 AppRoutes.editCounterparties,
                                                 arguments: p,
                                               );
+
+                                          if (!mounted) {
+                                            return; // защита от деактивации
+                                          }
                                           if (result == true) {
-                                            context
-                                                .read<MenuCubit>()
-                                                .getPartnerData();
+                                            cubit
+                                                .getPartnerData(); // больше не используем context после await
                                           }
                                         },
                                       ),
