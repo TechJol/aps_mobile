@@ -42,7 +42,6 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
 
           if (state is DeleteError) {
             String message;
-
             if (state.error is DioException) {
               final err = state.error as DioException;
               final status = err.response?.statusCode;
@@ -51,13 +50,11 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
             } else {
               message = 'Ошибка при удалении: ${state.error.toString()}';
             }
-
             return Center(child: Text(message));
           }
 
           if (state is MenuAccountsSuccess) {
-            final account = state.accounts;
-            return _buildTableSection(context, account);
+            return _buildTableSection(context, state.accounts);
           }
 
           return const SizedBox.shrink();
@@ -66,10 +63,12 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
     );
   }
 
-  Column _buildTableSection(BuildContext context, List<AccountModel> account) {
-    final hasAccounts = account.isNotEmpty;
+  Widget _buildTableSection(BuildContext context, List<AccountModel> accounts) {
+    final hasAccounts = accounts.isNotEmpty;
+
     return Column(
       children: [
+        // Верхняя панель
         DecoratedBox(
           decoration: BoxDecoration(
             color: AppColors.backroundColor,
@@ -103,6 +102,7 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
                           backgroundColor: AppColors.primaryColorLight,
                           foregroundColor: Colors.white,
                           fixedSize: const Size(double.infinity, 48),
+                          shape: const StadiumBorder(),
                         ),
                       ),
                     ),
@@ -116,9 +116,7 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
                         onPressed: () {
                           final headers = ['№', 'Название', 'Тип счета'];
                           final rows =
-                              account.asMap().entries.map<List<String>>((
-                                entry,
-                              ) {
+                              accounts.asMap().entries.map((entry) {
                                 final index = entry.key + 1;
                                 final acc = entry.value;
                                 return [
@@ -135,7 +133,6 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
                             rows: rows,
                           );
                         },
-
                         text: 'Распечатать',
                       ),
                       12.w,
@@ -143,9 +140,7 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
                         onPressed: () {
                           final headers = ['№', 'Название', 'Тип счета'];
                           final rows =
-                              account.asMap().entries.map<List<String>>((
-                                entry,
-                              ) {
+                              accounts.asMap().entries.map((entry) {
                                 final index = entry.key + 1;
                                 final acc = entry.value;
                                 return [
@@ -173,88 +168,158 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
         ),
         12.h,
 
+        // Таблица
         if (hasAccounts)
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: 0.1),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: DataTable(
-              showCheckboxColumn: true,
-              showBottomBorder: true,
-              headingRowColor: WidgetStateProperty.all(Colors.black),
-              headingTextStyle: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-              columns: const [
-                DataColumn(
-                  label: Text('Название', style: AppTextStyles.f16w500),
-                ),
-                DataColumn(
-                  label: Text('Тип счета', style: AppTextStyles.f16w500),
-                ),
-                DataColumn(label: Text('')),
-              ],
-              rows:
-                  account.map((account) {
-                    return DataRow(
-                      cells: [
-                        DataCell(
-                          Text(account.name, style: AppTextStyles.f16w500),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final maxW = constraints.maxWidth;
+
+                const menuW = 32.0; // узкая колонка под троеточие
+                const spacing = 12.0;
+                const margin = 12.0;
+                const minTypeW = 110.0;
+                const maxTypeW = 160.0;
+
+                // ширина колонки "Тип счета"
+                double typeW = maxW * 0.33;
+                if (typeW < minTypeW) typeW = minTypeW;
+                if (typeW > maxTypeW) typeW = maxTypeW;
+
+                // оставшееся — под "Название"
+                final nameW = maxW - menuW - typeW - margin * 2 - spacing * 2;
+
+                // компактные высоты строк
+                final isSmall = maxW < 360;
+                final headingH = isSmall ? 44.0 : 52.0;
+                final rowH = isSmall ? 44.0 : 52.0;
+
+                String cut(String s, int max) =>
+                    s.length > max ? '${s.substring(0, max)}…' : s;
+
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black, width: 0.1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: DataTableTheme(
+                    data: DataTableThemeData(
+                      headingRowHeight: headingH,
+                      dataRowMinHeight: rowH,
+                      dataRowMaxHeight: rowH,
+                      horizontalMargin: margin,
+                    ),
+                    child: DataTable(
+                      showCheckboxColumn: false,
+                      showBottomBorder: true,
+                      columnSpacing: spacing,
+                      headingRowColor: WidgetStateProperty.all(Colors.black),
+                      headingTextStyle: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      columns: const [
+                        DataColumn(
+                          label: Text('Название', style: AppTextStyles.f16w500),
                         ),
-                        DataCell(
-                          Text(
-                            _getAccountTypeName(account.accountType),
+                        DataColumn(
+                          label: Text(
+                            'Тип счета',
                             style: AppTextStyles.f16w500,
                           ),
                         ),
-                        DataCell(
-                          PopupMenuWid(
-                            context: context,
-                            tapDelete: () {
-                              ShowSheet().showDeleteDialog(
-                                context,
-                                accountName: account.name,
-                                onConfirm: () {
-                                  context.read<MenuCubit>().deleteAccount(
-                                    account.id!,
-                                  );
-                                  Navigator.pop(context);
-                                },
-                                title: 'Удалить счет',
-                              );
-                            },
-                            tapEdit: () async {
-                              final result = await Navigator.pushNamed(
-                                context,
-                                AppRoutes.editSettingAccount,
-                                arguments: account,
-                              );
-
-                              if (result == true) {
-                                context.read<MenuCubit>().getAccounts();
-                              }
-                            },
-                          ),
-                        ),
+                        DataColumn(label: Text('')),
                       ],
-                    );
-                  }).toList(),
+                      rows:
+                          accounts.map((acc) {
+                            final nameText = cut(acc.name, 12);
+                            final typeText = cut(
+                              _getAccountTypeName(acc.accountType),
+                              14,
+                            );
+
+                            return DataRow(
+                              cells: [
+                                DataCell(
+                                  SizedBox(
+                                    width: nameW,
+                                    child: Text(
+                                      nameText,
+                                      style: AppTextStyles.f16w500,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                                DataCell(
+                                  SizedBox(
+                                    width: typeW,
+                                    child: Text(
+                                      typeText,
+                                      style: AppTextStyles.f16w500,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                                DataCell(
+                                  SizedBox(
+                                    width: menuW,
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: PopupMenuWid(
+                                        context: context,
+                                        tapDelete: () {
+                                          ShowSheet().showDeleteDialog(
+                                            context,
+                                            accountName: acc.name,
+                                            onConfirm: () {
+                                              context
+                                                  .read<MenuCubit>()
+                                                  .deleteAccount(acc.id!);
+                                              Navigator.pop(context);
+                                            },
+                                            title: 'Удалить счет',
+                                          );
+                                        },
+                                        tapEdit: () async {
+                                          final result =
+                                              await Navigator.pushNamed(
+                                                context,
+                                                AppRoutes.editSettingAccount,
+                                                arguments: acc,
+                                              );
+                                          if (result == true) {
+                                            context
+                                                .read<MenuCubit>()
+                                                .getAccounts();
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }).toList(),
+                    ),
+                  ),
+                );
+              },
             ),
           )
         else
           const Center(
             child: Padding(
               padding: EdgeInsets.only(top: 50),
-              child: Text('Нет cчетов', style: AppTextStyles.f16w500),
+              child: Text('Нет счетов', style: AppTextStyles.f16w500),
             ),
           ),
       ],
     );
   }
 
-  // Utility function to convert account type to a more user-friendly name
   String _getAccountTypeName(String accountType) {
     switch (accountType) {
       case 'bank':

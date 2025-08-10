@@ -12,7 +12,9 @@ class EditArticlesPage extends StatefulWidget {
 }
 
 class _EditArticlesPageState extends State<EditArticlesPage> {
-  String? selectedName;
+  final nameController = TextEditingController();
+
+  // String? selectedName;
   String? selectedType;
   bool isFormValid = false;
 
@@ -22,16 +24,28 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
 
   void checkFormValidity() {
     setState(() {
-      isFormValid = selectedName != null && selectedType != null;
+      isFormValid = nameController.text.isNotEmpty && selectedType != null;
     });
   }
 
   @override
   void initState() {
-    selectedName = widget.reason.name;
+    // selectedName = widget.reason.name;
+    nameController.text = widget.reason.name;
+
     selectedType = typeToLabel[widget.reason.type];
+
+    nameController.addListener(checkFormValidity);
+
     checkFormValidity();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    nameController.removeListener(checkFormValidity);
+    nameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -49,25 +63,13 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
           }
 
           if (state is MenuReasonsSuccess) {
-            final reasons = state.reasons;
-
-            // Собираем уникальные названия
-            final uniqueNames = reasons.map((e) => e.name).toSet().toList();
-
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
                   24.h,
-                  DropDownFormField(
-                    items: uniqueNames,
-                    label: 'Название',
-                    value: selectedName,
-                    onChanged: (val) {
-                      setState(() => selectedName = val);
-                      checkFormValidity();
-                    },
-                  ),
+                  TextFieldWid(label: 'Название', controller: nameController),
+
                   const SizedBox(height: 12),
                   DropDownFormField(
                     items: typeToLabel.values.toList(),
@@ -85,7 +87,7 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
                             ? () {
                               final id = widget.reason.id!;
                               final updated = IncomeExpenseReasons(
-                                name: selectedName!,
+                                name: nameController.text,
                                 type: labelToType[selectedType]!,
                               );
                               context.read<MenuCubit>().updateReason(

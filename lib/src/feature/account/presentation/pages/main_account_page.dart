@@ -160,14 +160,18 @@ class _MainAccountPageState extends State<MainAccountPage> {
                 final gradientColors =
                     index.isEven
                         ? [
-                          const Color(0xFFB68CFF),
+                          const Color(0xFF783BE0),
                           const Color(0xFF8657F5),
-                          const Color(0xFF5C36D6),
+                          const Color(0xFF492BAB),
+                          const Color(0xFF462BA0),
+                          const Color(0xFF27175A),
                         ]
                         : [
-                          const Color(0xFFA5BEFF),
-                          const Color.fromARGB(255, 8, 52, 198),
-                          const Color.fromARGB(255, 2, 9, 42),
+                          const Color.fromARGB(255, 6, 34, 105),
+                          const Color(0xFF0A0AC8),
+                          const Color(0xFF0A0AC8),
+                          const Color.fromARGB(255, 25, 25, 185),
+                          const Color.fromARGB(255, 11, 29, 117),
                         ];
                 final balance = calculateAccountBalance(
                   accountId: account.id!,

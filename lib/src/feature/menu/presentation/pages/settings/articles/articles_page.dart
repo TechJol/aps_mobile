@@ -18,8 +18,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
 
   @override
   void initState() {
-    context.read<MenuCubit>().getReasons();
     super.initState();
+    context.read<MenuCubit>().getReasons();
   }
 
   @override
@@ -37,27 +37,20 @@ class _ArticlesPageState extends State<ArticlesPage> {
           }
 
           if (state is MenuError) {
-            return Center(child: Text('Ошибка: ${state.message.toString()}'));
+            return Center(child: Text('Ошибка: ${state.message}'));
           }
 
           if (state is DeleteError) {
-            String message;
-
-            if (state.error is DioException) {
-              final err = state.error as DioException;
-              final status = err.response?.statusCode;
-              final detail = err.response?.data?.toString() ?? err.message;
-              message = 'Ошибка удаления [$status]: $detail';
-            } else {
-              message = 'Ошибка при удалении: ${state.error.toString()}';
-            }
-
-            return Center(child: Text(message));
+            final e = state.error;
+            final msg =
+                e is DioException
+                    ? 'Ошибка удаления [${e.response?.statusCode}]: ${e.response?.data ?? e.message}'
+                    : 'Ошибка при удалении: $e';
+            return Center(child: Text(msg));
           }
 
           if (state is MenuReasonsSuccess) {
-            final reasons = state.reasons;
-            return _buildTableSection(context, reasons);
+            return _buildTableSection(context, state.reasons);
           }
 
           return const SizedBox.shrink();
@@ -66,7 +59,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
     );
   }
 
-  Column _buildTableSection(
+  Widget _buildTableSection(
     BuildContext context,
     List<IncomeExpenseReasons> reasons,
   ) {
@@ -74,7 +67,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
 
     return Column(
       children: [
-        // Верхняя панель с кнопками
+        // Верхняя панель
         DecoratedBox(
           decoration: BoxDecoration(
             color: AppColors.backroundColor,
@@ -96,7 +89,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                           Navigator.pushNamed(context, AppRoutes.addArticles);
                         },
                         label: const Text(
-                          'Добавить счет',
+                          'Добавить статью',
                           style: AppTextStyles.f16w500,
                         ),
                         icon: const Icon(Icons.add, size: 20),
@@ -105,6 +98,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                           backgroundColor: AppColors.primaryColorLight,
                           foregroundColor: Colors.white,
                           fixedSize: const Size(double.infinity, 48),
+                          shape: const StadiumBorder(),
                         ),
                       ),
                     ),
@@ -116,17 +110,15 @@ class _ArticlesPageState extends State<ArticlesPage> {
                     children: [
                       OutlinedButtonWidget(
                         onPressed: () {
-                          final headers = ['№', 'Название', 'Тип счета'];
+                          final headers = ['№', 'Название', 'Тип'];
                           final rows =
-                              reasons.asMap().entries.map<List<String>>((
-                                entry,
-                              ) {
-                                final index = entry.key + 1;
-                                final reason = entry.value;
+                              reasons.asMap().entries.map((entry) {
+                                final i = entry.key + 1;
+                                final r = entry.value;
                                 return [
-                                  '$index',
-                                  reason.name,
-                                  reason.type == 'income' ? 'Доход' : 'Расход',
+                                  '$i',
+                                  r.name,
+                                  r.type == 'income' ? 'Доход' : 'Расход',
                                 ];
                               }).toList();
 
@@ -139,21 +131,18 @@ class _ArticlesPageState extends State<ArticlesPage> {
                         },
                         text: 'Распечатать',
                       ),
-
                       12.w,
                       OutlinedButtonWidget(
                         onPressed: () {
-                          final headers = ['№', 'Название', 'Тип счета'];
+                          final headers = ['№', 'Название', 'Тип'];
                           final rows =
-                              reasons.asMap().entries.map<List<String>>((
-                                entry,
-                              ) {
-                                final index = entry.key + 1;
-                                final reason = entry.value;
+                              reasons.asMap().entries.map((entry) {
+                                final i = entry.key + 1;
+                                final r = entry.value;
                                 return [
-                                  '$index',
-                                  reason.name,
-                                  reason.type == 'income' ? 'Доход' : 'Расход',
+                                  '$i',
+                                  r.name,
+                                  r.type == 'income' ? 'Доход' : 'Расход',
                                 ];
                               }).toList();
 
@@ -175,89 +164,140 @@ class _ArticlesPageState extends State<ArticlesPage> {
         ),
         12.h,
 
+        // Таблица: Название + Тип + узкая колонка меню (без горизонтального скролла)
         if (hasReasons)
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black, width: 0.1),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: DataTable(
-                showCheckboxColumn: true,
-                showBottomBorder: true,
-                headingRowColor: WidgetStateProperty.all(Colors.black),
-                headingTextStyle: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-                columns: const [
-                  DataColumn(
-                    label: Text('Название', style: AppTextStyles.f16w500),
-                  ),
-                  DataColumn(
-                    label: Text('Тип счета', style: AppTextStyles.f16w500),
-                  ),
-                  DataColumn(label: Text('')), // для меню с тремя точками
-                ],
-                rows:
-                    reasons.map((reason) {
-                      return DataRow(
-                        cells: [
-                          DataCell(
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                reason.name,
-                                style: AppTextStyles.f16w500,
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                reason.type == 'income' ? 'Доход' : 'Расход',
-                                style: AppTextStyles.f16w500,
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: PopupMenuWid(
-                                context: context,
-                                tapDelete: () {
-                                  ShowSheet().showDeleteDialog(
-                                    context,
-                                    accountName: reason.name,
-                                    onConfirm: () {
-                                      context.read<MenuCubit>().deleteReason(
-                                        reason.id!,
-                                      );
-                                      Navigator.pop(context);
-                                    },
-                                    title: 'Удалить счет',
-                                  );
-                                },
-                                tapEdit: () async {
-                                  final reasons = await Navigator.pushNamed(
-                                    context,
-                                    AppRoutes.editArticles,
-                                    arguments: reason,
-                                  );
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final maxW = constraints.maxWidth;
 
-                                  if (reasons == true) {
-                                    context.read<MenuCubit>().getReasons();
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    }).toList(),
-              ),
+                // параметры
+                const menuW = 32.0; // троеточие
+                const spacing = 12.0;
+                const margin = 12.0;
+                const minTypeW = 100.0;
+                const maxTypeW = 140.0;
+
+                // ширина "Тип"
+                double typeW = maxW * 0.28;
+                if (typeW < minTypeW) typeW = minTypeW;
+                if (typeW > maxTypeW) typeW = maxTypeW;
+
+                // остальное — "Название"
+                final nameW = maxW - typeW - menuW - margin * 2 - spacing * 2;
+
+                // компактные высоты
+                final isSmall = maxW < 360;
+                final headingH = isSmall ? 44.0 : 52.0;
+                final rowH = isSmall ? 44.0 : 52.0;
+
+                String cut(String s, int max) =>
+                    s.length > max ? '${s.substring(0, max)}…' : s;
+
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black, width: 0.1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: DataTableTheme(
+                    data: DataTableThemeData(
+                      headingRowHeight: headingH,
+                      dataRowMinHeight: rowH,
+                      dataRowMaxHeight: rowH,
+                      horizontalMargin: margin,
+                    ),
+                    child: DataTable(
+                      showCheckboxColumn: false,
+                      showBottomBorder: true,
+                      columnSpacing: spacing,
+                      headingRowColor: WidgetStateProperty.all(Colors.black),
+                      headingTextStyle: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      columns: const [
+                        DataColumn(
+                          label: Text('Название', style: AppTextStyles.f16w500),
+                        ),
+                        DataColumn(
+                          label: Text('Тип', style: AppTextStyles.f16w500),
+                        ),
+                        DataColumn(label: Text('')),
+                      ],
+                      rows:
+                          reasons.map((r) {
+                            final nameText = cut(r.name, 18);
+                            final typeText =
+                                r.type == 'income' ? 'Доход' : 'Расход';
+
+                            return DataRow(
+                              cells: [
+                                DataCell(
+                                  SizedBox(
+                                    width: nameW,
+                                    child: Text(
+                                      nameText,
+                                      style: AppTextStyles.f16w500,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                                DataCell(
+                                  SizedBox(
+                                    width: typeW,
+                                    child: Text(
+                                      typeText,
+                                      style: AppTextStyles.f16w500,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                                DataCell(
+                                  SizedBox(
+                                    width: menuW,
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: PopupMenuWid(
+                                        context: context,
+                                        tapDelete: () {
+                                          ShowSheet().showDeleteDialog(
+                                            context,
+                                            accountName: r.name,
+                                            onConfirm: () {
+                                              context
+                                                  .read<MenuCubit>()
+                                                  .deleteReason(r.id!);
+                                              Navigator.pop(context);
+                                            },
+                                            title: 'Удалить статью',
+                                          );
+                                        },
+                                        tapEdit: () async {
+                                          final res = await Navigator.pushNamed(
+                                            context,
+                                            AppRoutes.editArticles,
+                                            arguments: r,
+                                          );
+                                          if (res == true) {
+                                            context
+                                                .read<MenuCubit>()
+                                                .getReasons();
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }).toList(),
+                    ),
+                  ),
+                );
+              },
             ),
           )
         else

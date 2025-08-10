@@ -42,7 +42,7 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
 
           if (state is DeleteError) {
             final error = state.error;
-            String message =
+            final message =
                 error is DioException
                     ? 'Ошибка удаления [${error.response?.statusCode}]: ${error.response?.data ?? error.message}'
                     : 'Ошибка при удалении: $error';
@@ -79,6 +79,7 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
 
     return Column(
       children: [
+        // Верхняя панель
         DecoratedBox(
           decoration: BoxDecoration(
             color: AppColors.backroundColor,
@@ -112,6 +113,7 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                           backgroundColor: AppColors.primaryColorLight,
                           foregroundColor: Colors.white,
                           fixedSize: const Size(double.infinity, 48),
+                          shape: const StadiumBorder(),
                         ),
                       ),
                     ),
@@ -130,7 +132,6 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                               ) {
                                 final index = entry.key + 1;
                                 final partner = entry.value;
-
                                 return [
                                   '$index',
                                   partner.name,
@@ -147,7 +148,6 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                         },
                         text: 'Распечатать',
                       ),
-
                       12.w,
                       OutlinedButtonWidget(
                         onPressed: () {
@@ -158,7 +158,6 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                               ) {
                                 final index = entry.key + 1;
                                 final partner = entry.value;
-
                                 return [
                                   '$index',
                                   partner.name,
@@ -183,79 +182,138 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
           ),
         ),
         12.h,
+
         if (partners.isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: SizedBox(
-              width: double.infinity,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black, width: 0.1),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: DataTable(
-                  showCheckboxColumn: true,
-                  showBottomBorder: true,
-                  headingRowColor: WidgetStateProperty.all(Colors.black),
-                  headingTextStyle: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final maxW = constraints.maxWidth;
+
+                const menuW = 32.0;
+                const spacing = 12.0;
+                const margin = 12.0;
+                const minTypeW = 110.0;
+                const maxTypeW = 180.0;
+
+                double typeW = maxW * 0.33;
+                if (typeW < minTypeW) typeW = minTypeW;
+                if (typeW > maxTypeW) typeW = maxTypeW;
+
+                // оставшееся — под "Название"
+                final nameW = maxW - menuW - typeW - margin * 2 - spacing * 2;
+
+                // режим компактных высот для узких экранов
+                final isSmall = maxW < 360;
+                final headingH = isSmall ? 44.0 : 52.0;
+                final rowMinH = isSmall ? 44.0 : 52.0;
+
+                String cut(String s, int max) =>
+                    s.length > max ? '${s.substring(0, max)}…' : s;
+
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black, width: 0.1),
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  columns: const [
-                    DataColumn(
-                      label: Text('Название', style: AppTextStyles.f16w500),
+                  child: DataTableTheme(
+                    data: DataTableThemeData(
+                      headingRowHeight: headingH,
+                      dataRowMinHeight: rowMinH,
+                      dataRowMaxHeight: rowMinH,
+                      horizontalMargin: margin,
                     ),
-                    DataColumn(
-                      label: Text('Тип', style: AppTextStyles.f16w500),
+                    child: DataTable(
+                      showCheckboxColumn: false,
+                      showBottomBorder: true,
+                      columnSpacing: spacing,
+                      headingRowColor: WidgetStateProperty.all(Colors.black),
+                      headingTextStyle: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      columns: const [
+                        DataColumn(
+                          label: Text('Название', style: AppTextStyles.f16w500),
+                        ),
+                        DataColumn(
+                          label: Text('Тип', style: AppTextStyles.f16w500),
+                        ),
+                        DataColumn(label: Text('')), // меню
+                      ],
+                      rows:
+                          partners.map((p) {
+                            final nameText = cut(p.name, 10);
+                            final typeText = cut(getTypeName(p.type ?? 0), 12);
+
+                            return DataRow(
+                              cells: [
+                                DataCell(
+                                  SizedBox(
+                                    width: nameW,
+                                    child: Text(
+                                      nameText,
+                                      style: AppTextStyles.f16w500,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                                DataCell(
+                                  SizedBox(
+                                    width: typeW,
+                                    child: Text(
+                                      typeText,
+                                      style: AppTextStyles.f16w500,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                                DataCell(
+                                  SizedBox(
+                                    width: menuW,
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: PopupMenuWid(
+                                        context: context,
+                                        tapDelete: () {
+                                          ShowSheet().showDeleteDialog(
+                                            context,
+                                            accountName: p.name,
+                                            onConfirm: () {
+                                              context
+                                                  .read<MenuCubit>()
+                                                  .deletePartner(p.id!);
+                                              Navigator.pop(context);
+                                            },
+                                            title: 'Удалить контрагента',
+                                          );
+                                        },
+                                        tapEdit: () async {
+                                          final result =
+                                              await Navigator.pushNamed(
+                                                context,
+                                                AppRoutes.editCounterparties,
+                                                arguments: p,
+                                              );
+                                          if (result == true) {
+                                            context
+                                                .read<MenuCubit>()
+                                                .getPartnerData();
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }).toList(),
                     ),
-                    DataColumn(label: Text('')),
-                  ],
-                  rows:
-                      partners.map((partner) {
-                        return DataRow(
-                          cells: [
-                            DataCell(
-                              Text(partner.name, style: AppTextStyles.f16w500),
-                            ),
-                            DataCell(
-                              Text(
-                                getTypeName(partner.type ?? 0),
-                                style: AppTextStyles.f16w500,
-                              ),
-                            ),
-                            DataCell(
-                              PopupMenuWid(
-                                context: context,
-                                tapDelete: () {
-                                  ShowSheet().showDeleteDialog(
-                                    context,
-                                    accountName: partner.name,
-                                    onConfirm: () {
-                                      context.read<MenuCubit>().deletePartner(
-                                        partner.id!,
-                                      );
-                                      Navigator.pop(context);
-                                    },
-                                    title: 'Удалить контрагента',
-                                  );
-                                },
-                                tapEdit: () async {
-                                  final result = await Navigator.pushNamed(
-                                    context,
-                                    AppRoutes.editCounterparties,
-                                    arguments: partner,
-                                  );
-                                  if (result == true) {
-                                    context.read<MenuCubit>().getPartnerData();
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
-                        );
-                      }).toList(),
-                ),
-              ),
+                  ),
+                );
+              },
             ),
           )
         else
