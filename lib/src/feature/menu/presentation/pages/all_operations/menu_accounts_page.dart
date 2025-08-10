@@ -70,8 +70,68 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
     final start = (currentPage - 1) * rowsPerPage;
     final end = (start + rowsPerPage).clamp(0, data.length);
     final paginatedData = data.sublist(start, end);
-
     final hasData = paginatedData.isNotEmpty;
+
+    const borderColor = Color(0xFFE6E6E6);
+    const colW = {
+      0: FixedColumnWidth(50), // №
+      1: FixedColumnWidth(200), // Название
+      2: FixedColumnWidth(140), // Баланс
+      3: FixedColumnWidth(120), // Тип счета
+    };
+
+    Widget cell(String text, {bool isHeader = false, Color? color}) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        child: Text(
+          text,
+          style:
+              isHeader
+                  ? const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  )
+                  : AppTextStyles.f14w500.copyWith(
+                    color: color ?? AppColors.blackColor,
+                  ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      );
+    }
+
+    final tableRows = <TableRow>[];
+
+    // Заголовок
+    tableRows.add(
+      TableRow(
+        decoration: const BoxDecoration(color: AppColors.primaryColorLight),
+        children: [
+          cell('№', isHeader: true),
+          cell('Название', isHeader: true),
+          cell('Баланс', isHeader: true),
+          cell('Тип счета', isHeader: true),
+        ],
+      ),
+    );
+
+    // Данные
+    for (final acc in paginatedData) {
+      final balance = calculateAccountBalance(
+        accountId: acc.id!,
+        transactions: transactions,
+      );
+      tableRows.add(
+        TableRow(
+          children: [
+            cell('${data.indexOf(acc) + 1}'),
+            cell(acc.name),
+            cell('${balance.toString()} с'),
+            cell(acc.accountType == 'cash' ? 'Касса' : 'Банк'),
+          ],
+        ),
+      );
+    }
 
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -92,17 +152,14 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
                   text: 'Распечатать',
                   onPressed: () {
                     final headers = ['№', 'Название', 'Баланс', 'Тип счета'];
-
                     final rows =
                         data.asMap().entries.map<List<String>>((entry) {
                           final index = entry.key + 1;
                           final acc = entry.value;
-
                           final balance = calculateAccountBalance(
                             accountId: acc.id!,
                             transactions: transactions,
                           );
-
                           return [
                             '$index',
                             acc.name,
@@ -110,7 +167,6 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
                             acc.accountType == 'cash' ? 'Касса' : 'Банк',
                           ];
                         }).toList();
-
                     _localService.printReportAsPdf(
                       context: context,
                       title: 'Отчет по счетам',
@@ -124,17 +180,14 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
                   text: 'Скачать в Excel',
                   onPressed: () {
                     final headers = ['№', 'Название', 'Баланс', 'Тип счета'];
-
                     final rows =
                         data.asMap().entries.map<List<String>>((entry) {
                           final index = entry.key + 1;
                           final acc = entry.value;
-
                           final balance = calculateAccountBalance(
                             accountId: acc.id!,
                             transactions: transactions,
                           );
-
                           return [
                             '$index',
                             acc.name,
@@ -142,7 +195,6 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
                             acc.accountType == 'cash' ? 'Касса' : 'Банк',
                           ];
                         }).toList();
-
                     _localService.exportToExcelGeneric(
                       fileName: 'По_счетам',
                       headers: headers,
@@ -153,45 +205,14 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
                 ),
               ],
             ),
-
           20.h,
           if (hasData)
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columnSpacing: 44,
-                headingRowColor: WidgetStateProperty.all(
-                  AppColors.primaryColorLight,
-                ),
-                headingTextStyle: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-                dataRowColor: WidgetStateProperty.all(Colors.white),
-                columns: const [
-                  DataColumn(label: Text('№')),
-                  DataColumn(label: Text('Название')),
-                  DataColumn(label: Text('Баланс')),
-                  DataColumn(label: Text('Тип счета')),
-                ],
-                rows:
-                    paginatedData.asMap().entries.map((entry) {
-                      final tx = entry.value;
-                      final balance = calculateAccountBalance(
-                        accountId: tx.id!,
-                        transactions: transactions,
-                      );
-                      return DataRow(
-                        cells: [
-                          DataCell(Text(tx.id.toString())),
-                          DataCell(Text(tx.name)),
-                          DataCell(Text('$balance с')),
-                          DataCell(
-                            Text(tx.accountType == 'cash' ? 'Касса' : 'Банк'),
-                          ),
-                        ],
-                      );
-                    }).toList(),
+              child: Table(
+                border: TableBorder.all(color: borderColor, width: 1),
+                columnWidths: colW,
+                children: tableRows,
               ),
             )
           else

@@ -109,39 +109,75 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
     final end = (start + rowsPerPage).clamp(0, data.length);
     final paginatedData = data.sublist(start, end);
 
+    // Настройки
+    const borderColor = Color(0xFFE6E6E6);
+    const colW = {
+      0: FixedColumnWidth(50), // №
+      1: FixedColumnWidth(200), // Имя
+      2: FixedColumnWidth(120), // Баланс
+      3: FixedColumnWidth(200), // Контакты
+    };
+
+    Widget _cell(String text, {bool isHeader = false, Color? color}) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        child: Text(
+          text,
+          style:
+              isHeader
+                  ? const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  )
+                  : AppTextStyles.f14w500.copyWith(
+                    color: color ?? AppColors.blackColor,
+                  ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      );
+    }
+
+    // Строки таблицы
+    final tableRows = <TableRow>[];
+    // Заголовок
+    tableRows.add(
+      TableRow(
+        decoration: const BoxDecoration(color: AppColors.primaryColorLight),
+        children: [
+          _cell('№', isHeader: true),
+          _cell('Имя', isHeader: true),
+          _cell('Баланс', isHeader: true),
+          _cell('Контакты', isHeader: true),
+        ],
+      ),
+    );
+
+    // Данные
+    for (final partner in paginatedData) {
+      tableRows.add(
+        TableRow(
+          children: [
+            _cell('${data.indexOf(partner) + 1}'),
+            _cell(partner.name),
+            _cell(balances[partner.id]?.toStringAsFixed(2) ?? '0.00'),
+            _cell(partner.contactInfo ?? ''),
+          ],
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.only(top: 12),
       child: Column(
         children: [
-          DataTable(
-            headingRowColor: WidgetStateProperty.all(
-              AppColors.primaryColorLight,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Table(
+              border: TableBorder.all(color: borderColor, width: 1),
+              columnWidths: colW,
+              children: tableRows,
             ),
-            headingTextStyle: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-            dataRowColor: WidgetStateProperty.all(Colors.white),
-            columns: const [
-              DataColumn(label: Text('№')),
-              DataColumn(label: Text('Имя')),
-              DataColumn(label: Text('Баланс')),
-              DataColumn(label: Text('Контакты')),
-            ],
-            rows:
-                paginatedData.asMap().entries.map((entry) {
-                  final tx = entry.value;
-                  return DataRow(
-                    cells: [
-                      DataCell(Text(tx.id.toString())),
-                      DataCell(Text(tx.name)),
-                      DataCell(
-                        Text(balances[tx.id]?.toStringAsFixed(2) ?? '0.00'),
-                      ),
-                      DataCell(Text(tx.contactInfo ?? '')),
-                    ],
-                  );
-                }).toList(),
           ),
           16.h,
           _buildPagination(pageCount),

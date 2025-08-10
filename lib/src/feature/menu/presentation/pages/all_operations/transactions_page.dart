@@ -76,7 +76,6 @@ class _TransactionsPageState extends State<TransactionsPage> {
     );
   }
 
-  /// Таблица + пагинация
   Widget _buildTableWithPagination(
     List<AllTransactionsModel> data,
     List<AccountModel> accounts,
@@ -125,10 +124,88 @@ class _TransactionsPageState extends State<TransactionsPage> {
     final paginatedData = data.sublist(start, end);
     final pageCount = (data.length / rowsPerPage).ceil();
 
+    // ===== Настройки таблицы =====
+    const borderColor = Color(0xFFE6E6E6);
+    const colW = {
+      0: FixedColumnWidth(50), // №
+      1: FixedColumnWidth(100), // Сумма
+      2: FixedColumnWidth(50), // Вл
+      3: FixedColumnWidth(90), // Дата
+      4: FixedColumnWidth(70), // Тип
+      5: FixedColumnWidth(120), // Счет
+      6: FixedColumnWidth(150), // Статьи
+      7: FixedColumnWidth(150), // Контрагент
+      8: FixedColumnWidth(200), // Комментарий
+    };
+
+    Widget cell(String text, {bool isHeader = false, Color? color}) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        child: Text(
+          text,
+          style:
+              isHeader
+                  ? const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  )
+                  : AppTextStyles.f14w500.copyWith(
+                    color: color ?? AppColors.blackColor,
+                  ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      );
+    }
+
+    // ===== Формируем строки таблицы =====
+    final tableRows = <TableRow>[];
+    // Шапка
+    tableRows.add(
+      TableRow(
+        decoration: const BoxDecoration(color: AppColors.primaryColorLight),
+        children: [
+          cell('№', isHeader: true),
+          cell('Сумма', isHeader: true),
+          cell('Вл', isHeader: true),
+          cell('Дата', isHeader: true),
+          cell('Тип', isHeader: true),
+          cell('Счет', isHeader: true),
+          cell('Статьи', isHeader: true),
+          cell('Контрагент', isHeader: true),
+          cell('Комментарий', isHeader: true),
+        ],
+      ),
+    );
+
+    // Данные
+    for (final tx in paginatedData) {
+      tableRows.add(
+        TableRow(
+          children: [
+            cell('${data.indexOf(tx) + 1}'),
+            cell(tx.amount?.toString() ?? ''),
+            cell(tx.currency ?? ''),
+            cell(
+              tx.date != null
+                  ? DateFormat('dd.MM.yyyy').format(DateTime.parse(tx.date!))
+                  : '',
+            ),
+            cell(tx.transactionType == 'income' ? 'Приход' : 'Расход'),
+            cell(getAccountName(tx.account ?? 0)),
+            cell(getReasonName(tx.incomeExpenseReason ?? 0)),
+            cell(getPartnerName(tx.partners ?? 0)),
+            cell(tx.description ?? ''),
+          ],
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
         children: [
+          // ===== Кнопки =====
           Row(
             children: [
               OutlinedButtonWidget(
@@ -175,7 +252,6 @@ class _TransactionsPageState extends State<TransactionsPage> {
                   );
                 },
               ),
-
               12.w,
               OutlinedButtonWidget(
                 text: 'Скачать в Excel',
@@ -224,68 +300,19 @@ class _TransactionsPageState extends State<TransactionsPage> {
             ],
           ),
           20.h,
-          // --------------- таблица ---------------
+
+          // ===== Таблица =====
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columnSpacing: 32,
-              headingRowColor: WidgetStateProperty.all(
-                AppColors.primaryColorLight,
-              ),
-              headingTextStyle: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-              dataRowColor: WidgetStateProperty.all(Colors.white),
-              columns: const [
-                DataColumn(label: Text('№')),
-                DataColumn(label: Text('Сумма')),
-                DataColumn(label: Text('Вл')),
-                DataColumn(label: Text('Дата')),
-                DataColumn(label: Text('Тип')),
-                DataColumn(label: Text('Счет')),
-                DataColumn(label: Text('Статьи')),
-                DataColumn(label: Text('Контрагент')),
-                DataColumn(label: Text('Комментарий')),
-              ],
-              rows:
-                  paginatedData.asMap().entries.map((entry) {
-                    // final index = entry.key;
-                    final tx = entry.value;
-                    return DataRow(
-                      cells: [
-                        DataCell(Text(tx.id.toString())),
-                        DataCell(Text(tx.amount.toString())),
-                        DataCell(Text(tx.currency ?? '')),
-                        DataCell(
-                          Text(
-                            tx.date != null
-                                ? DateFormat(
-                                  'dd.MM.yyyy',
-                                ).format(DateTime.parse(tx.date!))
-                                : '',
-                          ),
-                        ),
-                        DataCell(
-                          Text(
-                            tx.transactionType == 'income'
-                                ? 'Приход'
-                                : 'Расход',
-                          ),
-                        ),
-                        DataCell(Text(getAccountName(tx.account ?? 0))),
-                        DataCell(
-                          Text(getReasonName(tx.incomeExpenseReason ?? 0)),
-                        ),
-                        DataCell(Text(getPartnerName(tx.partners ?? 0))),
-                        DataCell(Text('${tx.description}')),
-                      ],
-                    );
-                  }).toList(),
+            child: Table(
+              border: TableBorder.all(color: borderColor, width: 1),
+              columnWidths: colW,
+              children: tableRows,
             ),
           ),
           20.h,
-          // --------------- пагинация ---------------
+
+          // ===== Пагинация =====
           _buildPagination(pageCount),
         ],
       ),
