@@ -180,7 +180,11 @@ class _MainAccountPageState extends State<MainAccountPage> {
 
                 return CardWidget(
                   onTap: () {
-                    // переход в подробности счета
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.moreinfo,
+                      arguments: account,
+                    );
                   },
                   price: '$balance с',
                   office: account.name,

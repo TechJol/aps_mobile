@@ -48,10 +48,10 @@ class LocalService {
       }
     }
 
-    // Сообщение
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Файл "$fileName.xlsx" успешно сохранен!')),
-    );
+    // // Сообщение
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(content: Text('Файл "$fileName.xlsx" успешно сохранен!')),
+    // );
 
     // Поделиться
     await Share.shareXFiles([XFile(file.path)]);

@@ -132,6 +132,18 @@ class RouteGenerator {
       case AppRoutes.profile:
         return CupertinoPageRoute(builder: (_) => ProfilePage());
 
+      case AppRoutes.moreinfo:
+        {
+          final args = settings.arguments;
+          if (args is AccountModel) {
+            // ПЕРЕДАЁМ аргумент через конструктор
+            return CupertinoPageRoute(
+              builder: (_) => MoreInfoPage(account: args),
+            );
+          }
+          return errorRoute();
+        }
+
       default:
         return errorRoute();
     }

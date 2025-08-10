@@ -44,4 +44,7 @@ class AppRoutes {
   static const editArticles = 'editArticles';
 
   static const profile = 'profile';
+
+  /* <---- Account -----> */
+  static const moreinfo = 'moreinfo';
 }
