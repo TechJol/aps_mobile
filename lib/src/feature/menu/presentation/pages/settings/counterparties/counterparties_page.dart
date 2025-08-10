@@ -89,7 +89,7 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
               children: [
                 20.h,

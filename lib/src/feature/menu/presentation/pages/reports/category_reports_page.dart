@@ -501,7 +501,7 @@ class DataTableSection extends StatelessWidget {
         // строки данных
         List<TableRow> dataRows() =>
             data.asMap().entries.map((entry) {
-              final i = {entry.key + 1};
+              final i = entry.key + 1;
               final row = entry.value;
               final name = (row['name'] ?? '').toString();
               final amount = (row['amount'] ?? '').toString();
