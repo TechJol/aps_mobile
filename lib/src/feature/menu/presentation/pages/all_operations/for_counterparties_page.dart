@@ -118,7 +118,7 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
       3: FixedColumnWidth(200), // Контакты
     };
 
-    Widget _cell(String text, {bool isHeader = false, Color? color}) {
+    Widget cell(String text, {bool isHeader = false, Color? color}) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
         child: Text(
@@ -145,10 +145,10 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
       TableRow(
         decoration: const BoxDecoration(color: AppColors.primaryColorLight),
         children: [
-          _cell('№', isHeader: true),
-          _cell('Имя', isHeader: true),
-          _cell('Баланс', isHeader: true),
-          _cell('Контакты', isHeader: true),
+          cell('№', isHeader: true),
+          cell('Имя', isHeader: true),
+          cell('Баланс', isHeader: true),
+          cell('Контакты', isHeader: true),
         ],
       ),
     );
@@ -158,10 +158,10 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
       tableRows.add(
         TableRow(
           children: [
-            _cell('${data.indexOf(partner) + 1}'),
-            _cell(partner.name),
-            _cell(balances[partner.id]?.toStringAsFixed(2) ?? '0.00'),
-            _cell(partner.contactInfo ?? ''),
+            cell('${data.indexOf(partner) + 1}'),
+            cell(partner.name),
+            cell(balances[partner.id]?.toStringAsFixed(2) ?? '0.00'),
+            cell(partner.contactInfo ?? ''),
           ],
         ),
       );
