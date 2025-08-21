@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:decimal/decimal.dart';
@@ -30,7 +31,7 @@ class _MainAccountPageState extends State<MainAccountPage> {
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Text(
-            'Управление счетами',
+            t.account.accountManagement,
             style: AppTextStyles.f24w600.copyWith(fontFamily: 'Inter'),
           ),
         ),
@@ -116,7 +117,7 @@ class _MainAccountPageState extends State<MainAccountPage> {
                     style: AppTextStyles.f24w600.copyWith(fontFamily: 'Inter'),
                   ),
                   Text(
-                    'общий баланс',
+                    t.account.totalBalances,
                     style: AppTextStyles.f14w500.copyWith(
                       color: AppColors.greyColor,
                       fontFamily: 'Inter',
@@ -136,7 +137,7 @@ class _MainAccountPageState extends State<MainAccountPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Добавить счет',
+                      t.account.addAccount,
                       style: AppTextStyles.f16w500.copyWith(
                         color: AppColors.blackColor,
                       ),
@@ -194,10 +195,13 @@ class _MainAccountPageState extends State<MainAccountPage> {
               },
             )
           else
-            const Center(
+            Center(
               child: Padding(
                 padding: EdgeInsets.only(top: 50),
-                child: Text('Нет счетов', style: AppTextStyles.f16w500),
+                child: Text(
+                  t.account.account.errors.accountNotFound,
+                  style: AppTextStyles.f16w500,
+                ),
               ),
             ),
         ],

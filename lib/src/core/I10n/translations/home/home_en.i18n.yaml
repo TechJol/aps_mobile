@@ -1,0 +1,15 @@
+appbar: SoftkgPro
+home: Home
+day: Day
+week: Week
+month: Month
+year: Year
+expenses: Expenses
+income: Income
+all: Total
+operations: Operations
+seeAll: see all
+noData: No data for the period
+loading: Loading...
+noOperations: No operations
+unknown: Unknown

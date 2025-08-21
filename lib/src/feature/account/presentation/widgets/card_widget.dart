@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
@@ -113,7 +114,7 @@ class CardWidget extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              'подробнее',
+                              t.account.moreDetails,
                               style: AppTextStyles.f16w500.copyWith(
                                 color: Colors.white,
                               ),

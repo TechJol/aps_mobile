@@ -1,4 +1,5 @@
 // lib/src/feature/menu/presentation/pages/more_info_page.dart
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:decimal/decimal.dart';
@@ -16,7 +17,7 @@ class MoreInfoPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Подробная информация',
+        title: t.account.moreInfo,
         backgroundColor: AppColors.backroundColor,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
@@ -26,7 +27,7 @@ class MoreInfoPage extends StatelessWidget {
           }
 
           if (state is MenuError) {
-            return Center(child: Text('Ошибка: ${state.message}'));
+            return Center(child: Text('${t.account.errors}: ${state.message}'));
           }
 
           if (state is! MenuTransactionsWithAccountsSuccess) {
@@ -76,13 +77,13 @@ class MoreInfoPage extends StatelessWidget {
                   child: Row(
                     children: [
                       OutlinedButtonWidget(
-                        text: 'Распечатать',
+                        text: t.account.print,
                         onPressed: () {
                           final headers1 = [
-                            'Валюта',
-                            'Общая сумма доходов',
-                            'Общая сумма расходов',
-                            'Текущий баланс',
+                            t.account.currency,
+                            t.account.totalSumIncome,
+                            t.account.totalSumExpense,
+                            t.account.currentBalance,
                           ];
                           final rows1 = [
                             [
@@ -95,9 +96,9 @@ class MoreInfoPage extends StatelessWidget {
 
                           final headers2 = [
                             'ID',
-                            'Дата',
-                            'Тип транзакции',
-                            'Причина',
+                            t.account.date,
+                            t.account.typeTransaction,
+                            t.account.reason,
                           ];
                           final rows2 =
                               txByAccount.map((t) {
@@ -117,13 +118,14 @@ class MoreInfoPage extends StatelessWidget {
 
                           service.printReportAsPdf(
                             context: context,
-                            title: 'Все транзакции по счёту: ${account.name}',
+                            title:
+                                '${t.account.allTransactionsWithAccount}: ${account.name}',
                             headers: headers1,
                             rows: [
                               ...rows1,
                               [],
                               [
-                                '--- ВСЕ ТРАНЗАКЦИИ ПО СЧЁТУ ${account.name} ---',
+                                '--- ${t.account.allTransactionsWithAccount}${account.name} ---',
                               ],
                               headers2,
                               ...rows2,
@@ -133,13 +135,13 @@ class MoreInfoPage extends StatelessWidget {
                       ),
                       12.w,
                       OutlinedButtonWidget(
-                        text: 'Скачать в Excel',
+                        text: t.account.export,
                         onPressed: () {
                           final headers1 = [
-                            'Валюта',
-                            'Общая сумма доходов',
-                            'Общая сумма расходов',
-                            'Текущий баланс',
+                            t.account.currency,
+                            t.account.totalSumIncome,
+                            t.account.totalSumExpense,
+                            t.account.currentBalance,
                           ];
                           final rows1 = [
                             [
@@ -152,9 +154,9 @@ class MoreInfoPage extends StatelessWidget {
 
                           final headers2 = [
                             'ID',
-                            'Дата',
-                            'Тип транзакции',
-                            'Причина',
+                            t.account.date,
+                            t.account.typeTransaction,
+                            t.account.reason,
                           ];
                           final rows2 =
                               txByAccount.map((t) {
@@ -173,13 +175,14 @@ class MoreInfoPage extends StatelessWidget {
                               }).toList();
 
                           service.exportToExcelGeneric(
-                            fileName: 'Счёт_${account.name}',
+                            fileName:
+                                '${t.account.account.account.title}_${account.name}',
                             headers: headers1,
                             rows: [
                               ...rows1,
                               [],
                               [
-                                '--- ВСЕ ТРАНЗАКЦИИ ПО СЧЁТУ ${account.name} ---',
+                                '--- ${t.account.allTransactionsWithAccount} ${account.name} ---',
                               ],
                               headers2,
                               ...rows2,
@@ -202,18 +205,18 @@ class MoreInfoPage extends StatelessWidget {
                   children: [
                     // Таблица №1 — сводка по счёту
                     Text(
-                      'Баланс и общие суммы ($currency):',
+                      '${t.account.balanceAllSummary} ($currency):',
                       style: AppTextStyles.f16w500,
                     ),
                     12.h,
                     _BoxedTable(
                       headerBg: Colors.black,
                       headerFg: Colors.white,
-                      headers: const [
-                        'Валюта',
-                        'Общая сумма доходов',
-                        'Общая сумма расходов',
-                        'Текущий баланс',
+                      headers: [
+                        t.account.currency,
+                        t.account.totalSumIncome,
+                        t.account.totalSumExpense,
+                        t.account.currentBalance,
                       ],
                       rows: [
                         [
@@ -229,18 +232,18 @@ class MoreInfoPage extends StatelessWidget {
 
                     // Таблица №2 — все транзакции
                     Text(
-                      'Все транзакции по счёту ${account.name}',
+                      '${t.account.allTransactionsWithAccount} ${account.name}',
                       style: AppTextStyles.f16w500,
                     ),
                     12.h,
                     _BoxedTable(
                       headerBg: Colors.black,
                       headerFg: Colors.white,
-                      headers: const [
+                      headers: [
                         'ID',
-                        'Дата',
-                        'Тип транзакции',
-                        'Причина',
+                        t.account.date,
+                        t.account.typeTransaction,
+                        t.account.reason,
                       ],
                       rows:
                           txByAccount.map((t) {

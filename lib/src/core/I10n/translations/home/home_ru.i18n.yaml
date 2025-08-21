@@ -1,0 +1,15 @@
+appbar: SoftkgPro
+home: Главная
+day: День
+week: Неделя
+month: Месяц
+year: Год
+expenses: Расходы
+income: Доходы
+all: Общий
+operations: Операции
+seeAll: смотреть все
+noData: Нет данных за период
+loading: Загрузка...
+noOperations: Нет операций
+unknown: Неизвестно

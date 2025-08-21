@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +16,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int selectedIndex = 0;
-  String selectedView = 'Общий';
-  String selectedPeriod = 'День';
+  String selectedView = t.home.all;
+  String selectedPeriod = t.home.day;
 
-  final viewOptions = const ['Расходы', 'Доходы', 'Общий'];
-  final periodOptions = const ['День', 'Неделя', 'Месяц', 'Год'];
+  final viewOptions = [t.home.expenses, t.home.income, t.home.all];
+  final periodOptions = [t.home.day, t.home.week, t.home.month, t.home.year];
 
   Map<String, double> groupedData = {};
 
@@ -47,7 +48,7 @@ class _HomePageState extends State<HomePage> {
               child: Image.asset('assets/icons/logo_softkg.png'),
             ),
             Text(
-              'SoftkgPro',
+              t.home.appbar,
               style: AppTextStyles.f24w600.copyWith(
                 color: AppColors.primaryColor,
               ),
@@ -118,7 +119,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildTopSection() {
     final state = context.watch<MenuCubit>().state;
     if (state is! MenuTransactionsWithAccountsSuccess) {
-      return const SizedBox(height: 240, child: Text('Загрузка...'));
+      return SizedBox(height: 240, child: Text(t.home.loading));
     }
 
     // Пересчитываем данные под выбранный период
@@ -182,9 +183,9 @@ class _HomePageState extends State<HomePage> {
                           ? SizedBox(
                             key: ValueKey('empty_$selectedPeriod'),
                             height: 140,
-                            child: const Center(
+                            child: Center(
                               child: Text(
-                                'Нет данных за период',
+                                t.home.noData,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 13,
@@ -289,9 +290,9 @@ class _HomePageState extends State<HomePage> {
           viewOptions.map((view) {
             final isSelected = selectedView == view;
             final icon =
-                view == 'Общий'
+                view == t.home.all
                     ? 'assets/images/vector_all.svg'
-                    : view == 'Доходы'
+                    : view == t.home.income
                     ? 'assets/images/vector_down.svg'
                     : 'assets/images/vector_up.svg';
             return Column(
@@ -339,7 +340,7 @@ class _HomePageState extends State<HomePage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Операции', style: AppTextStyles.f20w600),
+            Text(t.home.operations, style: AppTextStyles.f20w600),
             Row(
               children: [
                 GestureDetector(
@@ -347,7 +348,7 @@ class _HomePageState extends State<HomePage> {
                     context.read<MainCubit>().change(4);
                   },
                   child: Text(
-                    'смотреть все',
+                    t.home.seeAll,
                     style: AppTextStyles.f14w500.copyWith(
                       color: AppColors.smallTextGreyColor,
                     ),
@@ -384,7 +385,7 @@ class _HomePageState extends State<HomePage> {
               final partners = state.partners;
 
               if (txList.isEmpty) {
-                return const Center(child: Text('Нет операций'));
+                return Center(child: Text(t.home.noOperations));
               }
 
               return Column(
@@ -402,7 +403,7 @@ class _HomePageState extends State<HomePage> {
                       partners
                           .firstWhere(
                             (p) => p.id == tx.partners,
-                            orElse: () => PartnersModel(name: 'Неизвестно'),
+                            orElse: () => PartnersModel(name: t.home.unknown),
                           )
                           .name;
 
@@ -500,10 +501,10 @@ class _HomePageState extends State<HomePage> {
       return dateB.compareTo(dateA);
     });
 
-    if (selectedView == 'Общий') {
+    if (selectedView == t.home.all) {
       return sorted.take(3).toList();
     } else {
-      final type = selectedView == 'Доходы' ? 'income' : 'expense';
+      final type = selectedView == t.home.income ? 'income' : 'expense';
       return sorted.where((tx) => tx.transactionType == type).take(3).toList();
     }
   }
