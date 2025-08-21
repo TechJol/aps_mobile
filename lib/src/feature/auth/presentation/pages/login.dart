@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, library_private_types_in_public_api, deprecated_member_use
 
 import 'package:aps_ci_keys/aps_ci_keys.dart';
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -108,12 +109,12 @@ class _LoginPageState extends State<LoginPage> {
     return Column(
       children: [
         SizedBox(height: 90),
-        const Padding(
+        Padding(
           padding: EdgeInsets.only(left: 30.0),
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              "Привет!",
+              t.auth.welcome,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 26,
@@ -122,21 +123,21 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-        SizedBox(height: 5),
-        Padding(
-          padding: const EdgeInsets.only(left: 30.0),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Добро пожаловать",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
+        // SizedBox(height: 5),
+        // Padding(
+        //   padding: const EdgeInsets.only(left: 30.0),
+        //   child: Align(
+        //     alignment: Alignment.centerLeft,
+        //     child: Text(
+        //       "Добро пожаловать",
+        //       style: TextStyle(
+        //         color: Colors.white,
+        //         fontSize: 26,
+        //         fontWeight: FontWeight.bold,
+        //       ),
+        //     ),
+        //   ),
+        // ),
         SizedBox(height: 50),
         Expanded(
           child: Container(
@@ -204,7 +205,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: Column(
                           children: [
                             Text(
-                              "Регистрация",
+                              t.auth.register,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -243,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
                       horizontal: 16,
                       vertical: 14,
                     ),
-                    hintText: 'Логин',
+                    hintText: t.auth.logIn,
                     hintStyle: TextStyle(color: Colors.black.withOpacity(0.2)),
                     border: _getBorder(
                       usernameTouched,
@@ -272,7 +273,7 @@ class _LoginPageState extends State<LoginPage> {
                       horizontal: 16,
                       vertical: 14,
                     ),
-                    hintText: 'Пароль',
+                    hintText: t.auth.password,
                     hintStyle: TextStyle(color: Colors.black.withOpacity(0.2)),
                     border: _getBorder(
                       passwordTouched,
@@ -353,8 +354,8 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-                      child: const Text(
-                        "Войти",
+                      child: Text(
+                        t.auth.login,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,

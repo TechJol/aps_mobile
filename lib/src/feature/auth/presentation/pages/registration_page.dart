@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api, deprecated_member_use
 
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -98,12 +99,12 @@ class _RegistrationState extends State<Registration> {
     return Column(
       children: [
         SizedBox(height: 90),
-        const Padding(
+        Padding(
           padding: EdgeInsets.only(left: 30.0),
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              "Привет!",
+              t.auth.welcome,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 26,
@@ -112,21 +113,21 @@ class _RegistrationState extends State<Registration> {
             ),
           ),
         ),
-        SizedBox(height: 5),
-        Padding(
-          padding: const EdgeInsets.only(left: 30.0),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Добро пожаловать",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
+        // SizedBox(height: 5),
+        // Padding(
+        //   padding: const EdgeInsets.only(left: 30.0),
+        //   child: Align(
+        //     alignment: Alignment.centerLeft,
+        //     child: Text(
+        //       "Добро пожаловать",
+        //       style: TextStyle(
+        //         color: Colors.white,
+        //         fontSize: 26,
+        //         fontWeight: FontWeight.bold,
+        //       ),
+        //     ),
+        //   ),
+        // ),
         SizedBox(height: 50),
         Expanded(
           child: Container(
@@ -159,7 +160,7 @@ class _RegistrationState extends State<Registration> {
                           child: Column(
                             children: [
                               Text(
-                                "Войти",
+                                t.auth.login,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -184,7 +185,7 @@ class _RegistrationState extends State<Registration> {
                           child: Column(
                             children: [
                               Text(
-                                "Регистрация",
+                                t.auth.register,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -208,28 +209,34 @@ class _RegistrationState extends State<Registration> {
                   SizedBox(height: 30),
 
                   // Input fields
-                  buildInputField(controller: firmController, hint: "Фирма"),
+                  buildInputField(
+                    controller: firmController,
+                    hint: t.auth.company,
+                  ),
                   SizedBox(height: 24),
                   buildInputField(
                     controller: usernameController,
-                    hint: "Пользовательское имя",
+                    hint: t.auth.username,
                   ),
                   SizedBox(height: 24),
                   buildInputField(
                     controller: emailController,
-                    hint: "Эл.адрес",
+                    hint: t.auth.email,
                   ),
                   SizedBox(height: 24),
-                  buildInputField(controller: nameController, hint: "Имя"),
+                  buildInputField(
+                    controller: nameController,
+                    hint: t.auth.name,
+                  ),
                   SizedBox(height: 24),
                   buildInputField(
                     controller: surnameController,
-                    hint: "Фамилия",
+                    hint: t.auth.surname,
                   ),
                   SizedBox(height: 24),
                   buildInputField(
                     controller: passwordController,
-                    hint: "Придумайте пароль",
+                    hint: t.auth.password,
                     isPassword: true,
                   ),
                   SizedBox(height: 15),
@@ -277,7 +284,7 @@ class _RegistrationState extends State<Registration> {
                       ),
                       Expanded(
                         child: Text(
-                          "Принимаю все условии пользовательского соглашения",
+                          t.auth.agreement,
                           style: TextStyle(
                             fontSize: 12,
                             color: Color(0xFF661EFB),
@@ -331,8 +338,8 @@ class _RegistrationState extends State<Registration> {
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
-                        child: const Text(
-                          "Зарегистрироваться",
+                        child: Text(
+                          t.auth.registerButton,
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
