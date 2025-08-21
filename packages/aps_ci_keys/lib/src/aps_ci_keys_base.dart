@@ -38,10 +38,6 @@ final class ApsKeys {
   static const String confirmDeleteAccountButton =
       'confirm-delete-account-button';
 
-  // gender
-  static const gender = 'gender';
-  static String genderName(String name) => 'gender-$name';
-
   // login type
   static const loginType = 'login';
   static String loginTypeName(String name) => 'loginType-$name';
