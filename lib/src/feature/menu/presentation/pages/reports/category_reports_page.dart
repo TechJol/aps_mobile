@@ -154,23 +154,33 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                       children: [
                         // --- ДОХОД ---
                         if (hasIncomeData) ...[
-                          const TitleSection(title: 'Основные статьи , доход'),
+                          const TitleSection(
+                            title: 'Основные статьи , доходов',
+                          ),
                           PieChartSection(data: incomeData),
                           20.h,
                           LegendSection(data: incomeData),
                           20.h,
-                          DataTableSection(data: incomeData),
+                          DataTableSection(
+                            data: incomeData,
+                            nameColumnTitle: 'Cтатья дохода',
+                          ),
                           40.h,
                         ],
 
                         // --- РАСХОД ---
                         if (hasExpenseData) ...[
-                          const TitleSection(title: 'Основные статьи , расход'),
+                          const TitleSection(
+                            title: 'Основные статьи , расходов',
+                          ),
                           PieChartSection(data: expenseData),
                           20.h,
                           LegendSection(data: expenseData),
                           20.h,
-                          DataTableSection(data: expenseData),
+                          DataTableSection(
+                            data: expenseData,
+                            nameColumnTitle: 'Cтатья расхода',
+                          ),
                         ],
                       ],
                     ),
@@ -413,8 +423,13 @@ class LegendItem extends StatelessWidget {
 }
 
 class DataTableSection extends StatelessWidget {
-  const DataTableSection({super.key, required this.data});
+  const DataTableSection({
+    super.key,
+    required this.data,
+    this.nameColumnTitle = 'Статья',
+  });
   final List<Map<String, dynamic>> data;
+  final String nameColumnTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -475,7 +490,7 @@ class DataTableSection extends StatelessWidget {
               padV: cellVPad,
             ),
             _cell(
-              'Статья дохода',
+              nameColumnTitle,
               isHeader: true,
               width: tableMinWidth == screenW ? nameColW : maxNameTextW,
               padH: cellHPad,
