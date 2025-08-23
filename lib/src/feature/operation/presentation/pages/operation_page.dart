@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously, deprecated_member_use
 
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,8 @@ class _OperationPageState extends State<OperationPage>
   late AnimationController _controller;
   DateTime? _customStartDate;
   DateTime? _customEndDate;
-  String? _selectedPeriod;
+  String?
+  _selectedPeriod; // хранит локализованный текст (week/oneMonth/threeMonth)
 
   @override
   void initState() {
@@ -39,7 +41,7 @@ class _OperationPageState extends State<OperationPage>
 
   void _applyFilter(String? period, DateTime? startDate, DateTime? endDate) {
     setState(() {
-      _selectedPeriod = period;
+      _selectedPeriod = period; // локализованный текст периода или null
       _customStartDate = period == null ? startDate : null;
       _customEndDate = period == null ? endDate : null;
     });
@@ -47,6 +49,7 @@ class _OperationPageState extends State<OperationPage>
 
   @override
   Widget build(BuildContext context) {
+    // Лейбл фильтра: либо локализованный период, либо диапазон дат
     String filterLabel = '';
     if (_selectedPeriod != null) {
       filterLabel = _selectedPeriod!;
@@ -76,7 +79,6 @@ class _OperationPageState extends State<OperationPage>
             ),
           ],
         ),
-
         centerTitle: false,
         actions: [
           Padding(
@@ -106,6 +108,7 @@ class _OperationPageState extends State<OperationPage>
       ),
       body: ListView(
         children: [
+          // Поле выбора периода
           Container(
             width: double.infinity,
             height: 100,
@@ -146,39 +149,50 @@ class _OperationPageState extends State<OperationPage>
                     ),
                   ),
                   hintText:
-                      filterLabel.isEmpty ? 'Выбрать период' : filterLabel,
+                      filterLabel.isEmpty
+                          ? t.operation.selectPeriod
+                          : filterLabel,
                 ),
               ),
             ),
           ),
+
+          // Чип активного фильтра
           if (filterLabel.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 12, left: 30, right: 30),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Фильтр: $filterLabel', style: AppTextStyles.f14w500),
+                  Text(
+                    '${t.operation.filter}: $filterLabel',
+                    style: AppTextStyles.f14w500,
+                  ),
                   TextButton(
                     onPressed: () {
                       _applyFilter(null, null, null);
                     },
-                    child: const Text('Сбросить'),
+                    child: Text(t.operation.resetFilter),
                   ),
                 ],
               ),
             ),
+
           30.h,
+
+          // Список операций
           BlocConsumer<MenuCubit, MenuState>(
             listener: (context, state) {
               if (state is MenuTransactionUpdatedSuccess) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Партнер успешно обновлен!')),
+                  SnackBar(content: Text(t.operation.partnerSuccessUpdate)),
                 );
               }
               if (state is MenuError) {
-                // Показываем ошибку, если обновление не удалось
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Ошибка: ${state.message}')),
+                  SnackBar(
+                    content: Text('${t.operation.error}: ${state.message}'),
+                  ),
                 );
               }
             },
@@ -191,7 +205,7 @@ class _OperationPageState extends State<OperationPage>
                 final filtered = _filterTransactions(state.transactions);
 
                 if (filtered.isEmpty) {
-                  return const Center(child: Text('Нет операций'));
+                  return Center(child: Text(t.operation.notOperation));
                 }
 
                 final grouped = _groupTransactionsByDate(filtered);
@@ -202,7 +216,7 @@ class _OperationPageState extends State<OperationPage>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Операции', style: AppTextStyles.f20w600),
+                      Text(t.operation.operation, style: AppTextStyles.f20w600),
                       12.h,
                       ...grouped.entries.expand((entry) {
                         final dailyTxs = entry.value;
@@ -232,9 +246,7 @@ class _OperationPageState extends State<OperationPage>
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text(
-                                        'Партнёр уже присвоен для этой операции',
-                                      ),
+                                      content: Text(t.operation.hasPartner),
                                     ),
                                   );
                                 }
@@ -253,10 +265,12 @@ class _OperationPageState extends State<OperationPage>
               }
 
               if (state is MenuError) {
-                return Center(child: Text('Ошибка: ${state.message}'));
+                return Center(
+                  child: Text('${t.operation.error}: ${state.message}'),
+                );
               }
 
-              return const SizedBox.shrink(); // Показываем пустой контейнер, если состояние не найдено
+              return const SizedBox.shrink();
             },
           ),
         ],
@@ -264,26 +278,25 @@ class _OperationPageState extends State<OperationPage>
     );
   }
 
+  // --- ЛОГИКА ФИЛЬТРА -------------------------------------------------------
+
   List<AllTransactionsModel> _filterTransactions(
     List<AllTransactionsModel> txs,
   ) {
-    DateTime now = DateTime.now();
+    final now = DateTime.now();
     DateTime? start, end;
 
+    // сравниваем с локализованными значениями
     if (_selectedPeriod != null) {
-      switch (_selectedPeriod) {
-        case 'Неделя':
-          start = now.subtract(const Duration(days: 7));
-          end = now;
-          break;
-        case 'За месяц':
-          start = DateTime(now.year, now.month - 1, now.day);
-          end = now;
-          break;
-        case 'Три месяца':
-          start = DateTime(now.year, now.month - 3, now.day);
-          end = now;
-          break;
+      if (_selectedPeriod == t.operation.week) {
+        start = now.subtract(const Duration(days: 7));
+        end = now;
+      } else if (_selectedPeriod == t.operation.oneMonth) {
+        start = DateTime(now.year, now.month - 1, now.day);
+        end = now;
+      } else if (_selectedPeriod == t.operation.threeMonth) {
+        start = DateTime(now.year, now.month - 3, now.day);
+        end = now;
       }
     }
 
@@ -311,7 +324,7 @@ class _OperationPageState extends State<OperationPage>
       return bDate.compareTo(aDate);
     });
 
-    Map<String, List<AllTransactionsModel>> grouped = {};
+    final Map<String, List<AllTransactionsModel>> grouped = {};
 
     for (var tx in transactions) {
       final date = DateTime.tryParse(tx.date ?? '') ?? DateTime.now();
@@ -325,6 +338,8 @@ class _OperationPageState extends State<OperationPage>
     return grouped;
   }
 
+  // --- ЭЛЕМЕНТ СПИСКА -------------------------------------------------------
+
   Widget _buildTransactionItem(
     AllTransactionsModel tx,
     List<PartnersModel> partners,
@@ -337,8 +352,10 @@ class _OperationPageState extends State<OperationPage>
     final String amount = tx.amount ?? '';
     final String amountText = '$amount с';
 
-    final Color bgColor = isIncome ? Color(0xFFDFF7E2) : Color(0xFFF9DCDC);
-    final Color arrowColor = isIncome ? Color(0xFF56BC60) : Color(0xFFE85445);
+    final Color bgColor =
+        isIncome ? const Color(0xFFDFF7E2) : const Color(0xFFF9DCDC);
+    final Color arrowColor =
+        isIncome ? const Color(0xFF56BC60) : const Color(0xFFE85445);
     final IconData arrowIcon =
         isIncome ? Icons.call_received : Icons.north_west;
 
@@ -346,16 +363,13 @@ class _OperationPageState extends State<OperationPage>
         partners
             .firstWhere(
               (p) => p.id == tx.partners,
-              orElse: () => PartnersModel(name: '+ Контрагент'),
+              orElse: () => PartnersModel(name: t.operation.plusPartner),
             )
             .name;
 
-    // Проверка, если имя партнера "Контрагент", то изменить цвет
     final TextStyle partnerNameStyle =
-        partnerName == '+ Контрагент'
-            ? AppTextStyles.f14w500.copyWith(
-              color: AppColors.primaryColor,
-            ) // или любой другой цвет
+        partnerName == t.operation.plusPartner
+            ? AppTextStyles.f14w500.copyWith(color: AppColors.primaryColor)
             : AppTextStyles.f14w500;
 
     return Padding(
@@ -373,7 +387,7 @@ class _OperationPageState extends State<OperationPage>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(partnerName, style: partnerNameStyle), // Применяем стиль
+                Text(partnerName, style: partnerNameStyle),
                 4.h,
                 Text(
                   formattedDate,
@@ -387,13 +401,16 @@ class _OperationPageState extends State<OperationPage>
           Text(
             '${isIncome ? '' : '-'}$amountText',
             style: AppTextStyles.f16w600.copyWith(
-              color: isIncome ? Color(0xFF56BC60) : Color(0xFFE85445),
+              color:
+                  isIncome ? const Color(0xFF56BC60) : const Color(0xFFE85445),
             ),
           ),
         ],
       ),
     );
   }
+
+  // --- БОТТОМШИТ ВЫБОРА ПЕРИОДА И ДОБАВЛЕНИЯ ПАРТНЕРА -----------------------
 
   Future<void> _showPeriodPickerBottomSheet(BuildContext context) async {
     final result = await showModalBottomSheet<Map<String, dynamic>>(
@@ -406,7 +423,8 @@ class _OperationPageState extends State<OperationPage>
       builder: (context) {
         DateTime startDate = _customStartDate ?? DateTime.now();
         DateTime endDate = _customEndDate ?? DateTime.now();
-        String? selectedPeriod = _selectedPeriod;
+        String? selectedPeriod =
+            _selectedPeriod; // локализованный текст или null
 
         return StatefulBuilder(
           builder: (context, setStateModal) {
@@ -431,7 +449,7 @@ class _OperationPageState extends State<OperationPage>
                     Row(
                       children: [
                         _dateField(
-                          label: 'Начало',
+                          label: t.operation.start,
                           date: startDate,
                           onTap: () async {
                             final picked = await showDatePicker(
@@ -447,7 +465,7 @@ class _OperationPageState extends State<OperationPage>
                         ),
                         const SizedBox(width: 10),
                         _dateField(
-                          label: 'Конец',
+                          label: t.operation.end,
                           date: endDate,
                           onTap: () async {
                             final picked = await showDatePicker(
@@ -464,26 +482,29 @@ class _OperationPageState extends State<OperationPage>
                       ],
                     ),
                     const SizedBox(height: 20),
+
                     _periodOption(
-                      'Неделя',
+                      t.operation.week,
                       selectedPeriod,
                       (val) => setStateModal(() => selectedPeriod = val!),
                     ),
                     _periodOption(
-                      'За месяц',
+                      t.operation.oneMonth,
                       selectedPeriod,
                       (val) => setStateModal(() => selectedPeriod = val!),
                     ),
                     _periodOption(
-                      'Три месяца',
+                      t.operation.threeMonth,
                       selectedPeriod,
                       (val) => setStateModal(() => selectedPeriod = val!),
                     ),
+
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context, {
-                          'period': selectedPeriod,
+                          'period':
+                              selectedPeriod, // локализованный текст или null
                           'start': selectedPeriod == null ? startDate : null,
                           'end': selectedPeriod == null ? endDate : null,
                         });
@@ -496,7 +517,7 @@ class _OperationPageState extends State<OperationPage>
                         ),
                         minimumSize: const Size(double.infinity, 48),
                       ),
-                      child: const Text('Показать'),
+                      child: Text(t.operation.show),
                     ),
                     const SizedBox(height: 20),
                   ],
@@ -510,9 +531,9 @@ class _OperationPageState extends State<OperationPage>
 
     if (result != null) {
       setState(() {
-        _selectedPeriod = result['period'];
-        _customStartDate = result['start'];
-        _customEndDate = result['end'];
+        _selectedPeriod = result['period'] as String?;
+        _customStartDate = result['start'] as DateTime?;
+        _customEndDate = result['end'] as DateTime?;
       });
     }
   }
@@ -639,21 +660,21 @@ class _OperationPageState extends State<OperationPage>
                   ),
                   contentPadding: const EdgeInsets.all(20),
                   title: Text(
-                    'Добавить контрагента',
+                    t.operation.addPartner,
                     style: AppTextStyles.f22w500,
                   ),
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Выберите тип и партнера',
+                        t.operation.selectTypeAndPartner,
                         style: AppTextStyles.f16w500.copyWith(
                           color: AppColors.greyerColorLight,
                         ),
                       ),
                       const SizedBox(height: 8),
                       DropDownFormField(
-                        label: 'Выберите тип',
+                        label: t.operation.selectType,
                         items: state.partnerTypes!.map((t) => t.name).toList(),
                         value: selectedPartnerType ?? '',
                         onChanged: (selectedType) {
@@ -667,7 +688,7 @@ class _OperationPageState extends State<OperationPage>
                       ),
                       const SizedBox(height: 8),
                       DropDownFormField(
-                        label: 'Выберите партнера',
+                        label: t.operation.selectPartner,
                         items:
                             state.filteredPartners
                                 ?.map((p) => p.name)
@@ -699,7 +720,7 @@ class _OperationPageState extends State<OperationPage>
                               ),
                             ),
                             child: Text(
-                              'Отмена',
+                              t.operation.cancel,
                               style: AppTextStyles.f16w500.copyWith(
                                 color: AppColors.blackColor,
                               ),
@@ -712,8 +733,8 @@ class _OperationPageState extends State<OperationPage>
                             onPressed: () async {
                               if (selectedPartnerName == null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Выберите партнера'),
+                                  SnackBar(
+                                    content: Text(t.operation.selectPartner),
                                   ),
                                 );
                                 return;
@@ -733,8 +754,8 @@ class _OperationPageState extends State<OperationPage>
 
                               if (selectedPartnerId == null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Партнер не найден'),
+                                  SnackBar(
+                                    content: Text(t.operation.notFoundPartner),
                                   ),
                                 );
                                 return;
@@ -745,9 +766,7 @@ class _OperationPageState extends State<OperationPage>
                                 selectedPartnerId,
                               );
                               await cubit.getTransactionsWithAccounts();
-                              Navigator.of(
-                                dialogContext,
-                              ).pop(true); // вернуть true
+                              Navigator.of(dialogContext).pop(true);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primaryColorLight,
@@ -756,7 +775,7 @@ class _OperationPageState extends State<OperationPage>
                               ),
                             ),
                             child: Text(
-                              'Да',
+                              t.operation.yes,
                               style: AppTextStyles.f16w500.copyWith(
                                 color: AppColors.whiteColor,
                               ),

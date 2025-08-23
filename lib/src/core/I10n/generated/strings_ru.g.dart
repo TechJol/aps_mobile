@@ -41,6 +41,7 @@ class TranslationsRu extends Translations {
 	@override late final _TranslationsAccountRu account = _TranslationsAccountRu._(_root);
 	@override late final _TranslationsAuthRu auth = _TranslationsAuthRu._(_root);
 	@override late final _TranslationsHomeRu home = _TranslationsHomeRu._(_root);
+	@override late final _TranslationsOperationRu operation = _TranslationsOperationRu._(_root);
 }
 
 // Path: account
@@ -134,6 +135,37 @@ class _TranslationsHomeRu extends TranslationsHomeEn {
 	@override String get loading => 'Загрузка...';
 	@override String get noOperations => 'Нет операций';
 	@override String get unknown => 'Неизвестно';
+}
+
+// Path: operation
+class _TranslationsOperationRu extends TranslationsOperationEn {
+	_TranslationsOperationRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get operation => 'Операции';
+	@override String get selectPeriod => 'Выбрать период';
+	@override String get filter => 'Фильтр';
+	@override String get resetFilter => 'Сбросить фильтр';
+	@override String get partnerSuccessUpdate => 'Партнер успешно обновлен!';
+	@override String get error => 'Ошибка';
+	@override String get notOperation => 'Нет операций';
+	@override String get hasPartner => 'Партнёр уже присвоен для этой операции';
+	@override String get week => 'Неделя';
+	@override String get oneMonth => 'За месяц';
+	@override String get threeMonth => 'За 3 месяца';
+	@override String get plusPartner => '+ Контрагент';
+	@override String get start => 'Начало';
+	@override String get end => 'Конец';
+	@override String get show => 'Показать';
+	@override String get addPartner => 'Добавить контрагента';
+	@override String get selectTypeAndPartner => 'Выберите тип и партнера';
+	@override String get selectType => 'Выберите тип';
+	@override String get selectPartner => 'Выберите партнера';
+	@override String get cancel => 'Отмена';
+	@override String get yes => 'Да';
+	@override String get notFoundPartner => 'Партнер не найден';
 }
 
 // Path: account.account
@@ -275,6 +307,28 @@ extension on TranslationsRu {
 			case 'home.loading': return 'Загрузка...';
 			case 'home.noOperations': return 'Нет операций';
 			case 'home.unknown': return 'Неизвестно';
+			case 'operation.operation': return 'Операции';
+			case 'operation.selectPeriod': return 'Выбрать период';
+			case 'operation.filter': return 'Фильтр';
+			case 'operation.resetFilter': return 'Сбросить фильтр';
+			case 'operation.partnerSuccessUpdate': return 'Партнер успешно обновлен!';
+			case 'operation.error': return 'Ошибка';
+			case 'operation.notOperation': return 'Нет операций';
+			case 'operation.hasPartner': return 'Партнёр уже присвоен для этой операции';
+			case 'operation.week': return 'Неделя';
+			case 'operation.oneMonth': return 'За месяц';
+			case 'operation.threeMonth': return 'За 3 месяца';
+			case 'operation.plusPartner': return '+ Контрагент';
+			case 'operation.start': return 'Начало';
+			case 'operation.end': return 'Конец';
+			case 'operation.show': return 'Показать';
+			case 'operation.addPartner': return 'Добавить контрагента';
+			case 'operation.selectTypeAndPartner': return 'Выберите тип и партнера';
+			case 'operation.selectType': return 'Выберите тип';
+			case 'operation.selectPartner': return 'Выберите партнера';
+			case 'operation.cancel': return 'Отмена';
+			case 'operation.yes': return 'Да';
+			case 'operation.notFoundPartner': return 'Партнер не найден';
 			default: return null;
 		}
 	}

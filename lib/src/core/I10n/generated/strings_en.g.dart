@@ -42,6 +42,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	late final TranslationsAccountEn account = TranslationsAccountEn.internal(_root);
 	late final TranslationsAuthEn auth = TranslationsAuthEn.internal(_root);
 	late final TranslationsHomeEn home = TranslationsHomeEn.internal(_root);
+	late final TranslationsOperationEn operation = TranslationsOperationEn.internal(_root);
 }
 
 // Path: account
@@ -267,6 +268,81 @@ class TranslationsHomeEn {
 	String get unknown => 'Unknown';
 }
 
+// Path: operation
+class TranslationsOperationEn {
+	TranslationsOperationEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Operations'
+	String get operation => 'Operations';
+
+	/// en: 'Select period'
+	String get selectPeriod => 'Select period';
+
+	/// en: 'Filter'
+	String get filter => 'Filter';
+
+	/// en: 'Reset filter'
+	String get resetFilter => 'Reset filter';
+
+	/// en: 'Partner successfully updated!'
+	String get partnerSuccessUpdate => 'Partner successfully updated!';
+
+	/// en: 'Error'
+	String get error => 'Error';
+
+	/// en: 'No operations'
+	String get notOperation => 'No operations';
+
+	/// en: 'Partner is already assigned for this operation'
+	String get hasPartner => 'Partner is already assigned for this operation';
+
+	/// en: 'Week'
+	String get week => 'Week';
+
+	/// en: 'For a month'
+	String get oneMonth => 'For a month';
+
+	/// en: 'For 3 months'
+	String get threeMonth => 'For 3 months';
+
+	/// en: '+ Counterparty'
+	String get plusPartner => '+ Counterparty';
+
+	/// en: 'Start'
+	String get start => 'Start';
+
+	/// en: 'End'
+	String get end => 'End';
+
+	/// en: 'Show'
+	String get show => 'Show';
+
+	/// en: 'Add counterparty'
+	String get addPartner => 'Add counterparty';
+
+	/// en: 'Select type and partner'
+	String get selectTypeAndPartner => 'Select type and partner';
+
+	/// en: 'Select type'
+	String get selectType => 'Select type';
+
+	/// en: 'Select partner'
+	String get selectPartner => 'Select partner';
+
+	/// en: 'Cancel'
+	String get cancel => 'Cancel';
+
+	/// en: 'Yes'
+	String get yes => 'Yes';
+
+	/// en: 'Partner not found'
+	String get notFoundPartner => 'Partner not found';
+}
+
 // Path: account.account
 class TranslationsAccountAccountEn {
 	TranslationsAccountAccountEn.internal(this._root);
@@ -426,6 +502,28 @@ extension on Translations {
 			case 'home.loading': return 'Loading...';
 			case 'home.noOperations': return 'No operations';
 			case 'home.unknown': return 'Unknown';
+			case 'operation.operation': return 'Operations';
+			case 'operation.selectPeriod': return 'Select period';
+			case 'operation.filter': return 'Filter';
+			case 'operation.resetFilter': return 'Reset filter';
+			case 'operation.partnerSuccessUpdate': return 'Partner successfully updated!';
+			case 'operation.error': return 'Error';
+			case 'operation.notOperation': return 'No operations';
+			case 'operation.hasPartner': return 'Partner is already assigned for this operation';
+			case 'operation.week': return 'Week';
+			case 'operation.oneMonth': return 'For a month';
+			case 'operation.threeMonth': return 'For 3 months';
+			case 'operation.plusPartner': return '+ Counterparty';
+			case 'operation.start': return 'Start';
+			case 'operation.end': return 'End';
+			case 'operation.show': return 'Show';
+			case 'operation.addPartner': return 'Add counterparty';
+			case 'operation.selectTypeAndPartner': return 'Select type and partner';
+			case 'operation.selectType': return 'Select type';
+			case 'operation.selectPartner': return 'Select partner';
+			case 'operation.cancel': return 'Cancel';
+			case 'operation.yes': return 'Yes';
+			case 'operation.notFoundPartner': return 'Partner not found';
 			default: return null;
 		}
 	}
