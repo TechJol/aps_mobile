@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,7 @@ class ShowSheet {
           contentPadding: const EdgeInsets.all(20),
           title: Text(title, style: AppTextStyles.f22w500),
           content: Text(
-            'Вы уверены, что хотите удалить "$accountName"?',
+            '${t.account.confirmDelete} "$accountName"?',
             style: AppTextStyles.f16w500.copyWith(
               color: AppColors.greyerColorLight,
             ),

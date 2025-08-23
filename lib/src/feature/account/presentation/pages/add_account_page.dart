@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +14,15 @@ class AddAccountPage extends StatefulWidget {
 class _AddAccountPageState extends State<AddAccountPage> {
   final nameController = TextEditingController();
 
-  final List<String> currencies = ['Доллар', 'Сом', 'Рубль', 'Евро'];
+  final List<String> currencies = [
+    t.account.dollar,
+    t.account.som,
+    t.account.ruble,
+    t.account.euro,
+  ];
   final List<String> currenciesCodes = ['USD', 'KGS', 'RUB', 'EUR'];
 
-  final List<String> types = ['Банк', 'Касса'];
+  final List<String> types = [t.account.bank, t.account.cash];
   final List<String> typesCodes = ['bank', 'cash'];
 
   // final List<String> names = ['Бакай банк', 'Офис касса'];
@@ -60,7 +66,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Добавить счет',
+        title: t.account.addAccount,
         backgroundColor: AppColors.backroundColor,
       ),
       body: BlocListener<MenuCubit, MenuState>(
@@ -91,12 +97,15 @@ class _AddAccountPageState extends State<AddAccountPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  TextFieldWid(label: 'Название', controller: nameController),
+                  TextFieldWid(
+                    label: t.account.name,
+                    controller: nameController,
+                  ),
 
                   const SizedBox(height: 12),
                   DropDownFormField(
                     items: types,
-                    label: 'Тип',
+                    label: t.account.type,
                     value: selectedType,
                     onChanged: (val) {
                       setState(() {
@@ -111,7 +120,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
                   const SizedBox(height: 12),
                   DropDownFormField(
                     items: currencies,
-                    label: 'Валюта',
+                    label: t.account.currency,
                     value: selectedCurrency,
                     onChanged: (val) {
                       setState(() {
@@ -153,7 +162,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
                           ),
                         ),
                         child: Text(
-                          'Сохранить',
+                          t.account.save,
                           style: AppTextStyles.f16w500.copyWith(
                             color: AppColors.whiteColor,
                           ),

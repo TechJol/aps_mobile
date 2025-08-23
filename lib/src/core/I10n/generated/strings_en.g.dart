@@ -89,8 +89,8 @@ class TranslationsAccountEn {
 	/// en: 'Cancel'
 	String get cancel => 'Cancel';
 
-	/// en: 'Are you sure you want to delete this account?'
-	String get confirmDelete => 'Are you sure you want to delete this account?';
+	/// en: 'Are you sure you want to delete this account'
+	String get confirmDelete => 'Are you sure you want to delete this account';
 
 	/// en: 'More Information'
 	String get moreInfo => 'More Information';
@@ -139,6 +139,21 @@ class TranslationsAccountEn {
 
 	/// en: 'Cash'
 	String get cash => 'Cash';
+
+	/// en: 'Unknown'
+	String get unknownType => 'Unknown';
+
+	/// en: 'Dollar'
+	String get dollar => 'Dollar';
+
+	/// en: 'Som'
+	String get som => 'Som';
+
+	/// en: 'Ruble'
+	String get ruble => 'Ruble';
+
+	/// en: 'Euro'
+	String get euro => 'Euro';
 }
 
 // Path: auth
@@ -355,7 +370,7 @@ extension on Translations {
 			case 'account.currency': return 'Currency';
 			case 'account.save': return 'Save';
 			case 'account.cancel': return 'Cancel';
-			case 'account.confirmDelete': return 'Are you sure you want to delete this account?';
+			case 'account.confirmDelete': return 'Are you sure you want to delete this account';
 			case 'account.moreInfo': return 'More Information';
 			case 'account.print': return 'Print';
 			case 'account.export': return 'Export to Excel';
@@ -372,6 +387,11 @@ extension on Translations {
 			case 'account.errors': return 'Error';
 			case 'account.bank': return 'Bank';
 			case 'account.cash': return 'Cash';
+			case 'account.unknownType': return 'Unknown';
+			case 'account.dollar': return 'Dollar';
+			case 'account.som': return 'Som';
+			case 'account.ruble': return 'Ruble';
+			case 'account.euro': return 'Euro';
 			case 'auth.welcome': return 'Hello!\nWelcome';
 			case 'auth.login': return 'Login';
 			case 'auth.register': return 'Register';

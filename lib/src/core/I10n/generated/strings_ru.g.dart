@@ -80,6 +80,11 @@ class _TranslationsAccountRu extends TranslationsAccountEn {
 	@override String get errors => 'Ошибкa';
 	@override String get bank => 'Банк';
 	@override String get cash => 'Касса';
+	@override String get unknownType => 'Неизвестно';
+	@override String get dollar => 'Доллар';
+	@override String get som => 'Сом';
+	@override String get ruble => 'Рубль';
+	@override String get euro => 'Евро';
 }
 
 // Path: auth
@@ -233,6 +238,11 @@ extension on TranslationsRu {
 			case 'account.errors': return 'Ошибкa';
 			case 'account.bank': return 'Банк';
 			case 'account.cash': return 'Касса';
+			case 'account.unknownType': return 'Неизвестно';
+			case 'account.dollar': return 'Доллар';
+			case 'account.som': return 'Сом';
+			case 'account.ruble': return 'Рубль';
+			case 'account.euro': return 'Евро';
 			case 'auth.welcome': return 'Привет!\nДобро пожаловать';
 			case 'auth.login': return 'Войти';
 			case 'auth.register': return 'Регистрация';

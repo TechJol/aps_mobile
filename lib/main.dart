@@ -5,10 +5,11 @@ import 'src/feature/feature.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  LocaleSettings.useDeviceLocale();
+  // LocaleSettings.useDeviceLocale();
+
+  LocaleSettings.setLocale(AppLocale.en);
 
   await di.init();
 
   runApp(TranslationProvider(child: MyApp()));
-  // runApp(MyApp());
 }

@@ -61,7 +61,6 @@ class MoreInfoPage extends StatelessWidget {
 
           return ListView(
             children: [
-              // 20.h,
               // Кнопки
               Container(
                 padding: const EdgeInsets.only(top: 20, bottom: 20),
@@ -101,19 +100,20 @@ class MoreInfoPage extends StatelessWidget {
                             t.account.reason,
                           ];
                           final rows2 =
-                              txByAccount.map((t) {
+                              txByAccount.map((tx) {
                                 final date =
-                                    t.date != null
+                                    tx.date != null
                                         ? DateFormat(
                                           'yyyy-MM-dd',
-                                        ).format(DateTime.parse(t.date!))
+                                        ).format(DateTime.parse(tx.date!))
                                         : '';
+                                // ✅ локализация типа транзакции
                                 final type =
-                                    (t.transactionType == 'income')
-                                        ? 'Приход'
-                                        : 'Расход';
-                                final reason = t.description ?? '';
-                                return ['${t.id ?? ''}', date, type, reason];
+                                    (tx.transactionType == 'income')
+                                        ? t.account.income
+                                        : t.account.expense;
+                                final reason = tx.description ?? '';
+                                return ['${tx.id ?? ''}', date, type, reason];
                               }).toList();
 
                           service.printReportAsPdf(
@@ -125,7 +125,7 @@ class MoreInfoPage extends StatelessWidget {
                               ...rows1,
                               [],
                               [
-                                '--- ${t.account.allTransactionsWithAccount}${account.name} ---',
+                                '--- ${t.account.allTransactionsWithAccount} ${account.name} ---',
                               ],
                               headers2,
                               ...rows2,
@@ -159,19 +159,20 @@ class MoreInfoPage extends StatelessWidget {
                             t.account.reason,
                           ];
                           final rows2 =
-                              txByAccount.map((t) {
+                              txByAccount.map((tx) {
                                 final date =
-                                    t.date != null
+                                    tx.date != null
                                         ? DateFormat(
                                           'yyyy-MM-dd',
-                                        ).format(DateTime.parse(t.date!))
+                                        ).format(DateTime.parse(tx.date!))
                                         : '';
+                                // ✅ локализация типа транзакции
                                 final type =
-                                    (t.transactionType == 'income')
-                                        ? 'Приход'
-                                        : 'Расход';
-                                final reason = t.description ?? '';
-                                return ['${t.id ?? ''}', date, type, reason];
+                                    (tx.transactionType == 'income')
+                                        ? t.account.income
+                                        : t.account.expense;
+                                final reason = tx.description ?? '';
+                                return ['${tx.id ?? ''}', date, type, reason];
                               }).toList();
 
                           service.exportToExcelGeneric(
@@ -246,19 +247,20 @@ class MoreInfoPage extends StatelessWidget {
                         t.account.reason,
                       ],
                       rows:
-                          txByAccount.map((t) {
+                          txByAccount.map((tx) {
                             final date =
-                                t.date != null
+                                tx.date != null
                                     ? DateFormat(
                                       'yyyy-MM-dd',
-                                    ).format(DateTime.parse(t.date!))
+                                    ).format(DateTime.parse(tx.date!))
                                     : '';
+                            // ✅ локализация типа транзакции
                             final type =
-                                (t.transactionType == 'income')
-                                    ? 'Приход'
-                                    : 'Расход';
-                            final reason = t.description ?? '';
-                            return ['${t.id ?? ''}', date, type, reason];
+                                (tx.transactionType == 'income')
+                                    ? t.account.income
+                                    : t.account.expense;
+                            final reason = tx.description ?? '';
+                            return ['${tx.id ?? ''}', date, type, reason];
                           }).toList(),
                     ),
                   ],

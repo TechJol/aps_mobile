@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +16,15 @@ class EditAccountPage extends StatefulWidget {
 }
 
 class _EditAccountPageState extends State<EditAccountPage> {
-  final List<String> currencies = ['Доллар', 'Сом', 'Рубль', 'Евро'];
+  final List<String> currencies = [
+    t.account.dollar,
+    t.account.som,
+    t.account.ruble,
+    t.account.euro,
+  ];
   final List<String> currenciesCodes = ['USD', 'KGS', 'RUB', 'EUR'];
 
-  final List<String> types = ['Банк', 'Касса'];
+  final List<String> types = [t.account.bank, t.account.cash];
   final List<String> typesCodes = ['bank', 'cash'];
 
   final nameController = TextEditingController();
@@ -71,7 +77,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Редактировать счет',
+        title: t.account.account.actions.editAccount,
         backgroundColor: AppColors.backroundColor,
       ),
       body: BlocListener<MenuCubit, MenuState>(
@@ -99,12 +105,15 @@ class _EditAccountPageState extends State<EditAccountPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  TextFieldWid(label: 'Название', controller: nameController),
+                  TextFieldWid(
+                    label: t.account.name,
+                    controller: nameController,
+                  ),
 
                   12.h,
                   DropDownFormField(
                     items: types,
-                    label: 'Тип',
+                    label: t.account.type,
                     value: selectedType,
                     onChanged: (val) {
                       setState(() {
@@ -120,7 +129,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
 
                   DropDownFormField(
                     items: currencies,
-                    label: 'Валюта',
+                    label: t.account.currency,
                     value: selectedCurrency,
                     onChanged: (val) {
                       setState(() {
@@ -160,7 +169,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
                       ),
                     ),
                     child: Text(
-                      'Сохранить',
+                      t.account.save,
                       style: AppTextStyles.f16w500.copyWith(
                         color: AppColors.whiteColor,
                       ),

@@ -203,16 +203,16 @@ class _AccountPageState extends State<AccountPage> {
                 final headingH = isSmall ? 44.0 : 52.0;
                 final rowMinH = isSmall ? 44.0 : 52.0;
 
-                String typeName(String t) {
-                  switch (t) {
-                    case 'bank':
-                      return 'Банк';
-                    case 'cash':
-                      return 'Касса';
-                    default:
-                      return 'Неизвестно';
-                  }
-                }
+                // String typeName(String t) {
+                //   switch (t) {
+                //     case 'bank':
+                //       return 'Банк';
+                //     case 'cash':
+                //       return 'Касса';
+                //     default:
+                //       return 'Неизвестно';
+                //   }
+                // }
 
                 String cut(String s, int max) =>
                     s.length > max ? '${s.substring(0, max)}…' : s;
@@ -238,13 +238,16 @@ class _AccountPageState extends State<AccountPage> {
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
-                      columns: const [
+                      columns: [
                         DataColumn(
-                          label: Text('Название', style: AppTextStyles.f16w500),
+                          label: Text(
+                            t.account.name,
+                            style: AppTextStyles.f16w500,
+                          ),
                         ),
                         DataColumn(
                           label: Text(
-                            'Тип счета',
+                            t.account.typeAccount,
                             style: AppTextStyles.f16w500,
                           ),
                         ),
@@ -253,7 +256,10 @@ class _AccountPageState extends State<AccountPage> {
                       rows:
                           accounts.map((acc) {
                             final nameText = cut(acc.name, 18);
-                            final typeText = cut(typeName(acc.accountType), 12);
+                            final typeText = cut(
+                              _getAccountTypeName(acc.accountType),
+                              12,
+                            );
 
                             return DataRow(
                               cells: [
@@ -296,7 +302,12 @@ class _AccountPageState extends State<AccountPage> {
                                                   .deleteAccount(acc.id!);
                                               Navigator.pop(context, true);
                                             },
-                                            title: 'Удалить счет',
+                                            title:
+                                                t
+                                                    .account
+                                                    .account
+                                                    .actions
+                                                    .deleteAccount,
                                           );
                                         },
                                         tapEdit: () async {
@@ -326,10 +337,13 @@ class _AccountPageState extends State<AccountPage> {
             ),
           )
         else
-          const Center(
+          Center(
             child: Padding(
               padding: EdgeInsets.only(top: 50),
-              child: Text('Нет cчетов', style: AppTextStyles.f16w500),
+              child: Text(
+                t.account.account.errors.accountNotFound,
+                style: AppTextStyles.f16w500,
+              ),
             ),
           ),
       ],
@@ -339,11 +353,11 @@ class _AccountPageState extends State<AccountPage> {
   String _getAccountTypeName(String accountType) {
     switch (accountType) {
       case 'bank':
-        return 'Банк';
+        return t.account.bank; // i18n
       case 'cash':
-        return 'Касса';
+        return t.account.cash; // i18n
       default:
-        return 'Неизвестно';
+        return t.account.unknownType; // i18n (fallback)
     }
   }
 }
