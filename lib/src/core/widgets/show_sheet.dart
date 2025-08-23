@@ -46,7 +46,7 @@ class ShowSheet {
                       ),
                     ),
                     child: Text(
-                      'Отмена',
+                      t.account.cancel,
                       style: AppTextStyles.f16w500.copyWith(
                         color: AppColors.blackColor,
                       ),
@@ -67,7 +67,7 @@ class ShowSheet {
                       ),
                     ),
                     child: Text(
-                      'Да',
+                      t.account.yes,
                       style: AppTextStyles.f16w500.copyWith(
                         color: AppColors.whiteColor,
                       ),

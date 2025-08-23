@@ -89,6 +89,9 @@ class TranslationsAccountEn {
 	/// en: 'Cancel'
 	String get cancel => 'Cancel';
 
+	/// en: 'Yes'
+	String get yes => 'Yes';
+
 	/// en: 'Are you sure you want to delete this account'
 	String get confirmDelete => 'Are you sure you want to delete this account';
 
@@ -370,6 +373,7 @@ extension on Translations {
 			case 'account.currency': return 'Currency';
 			case 'account.save': return 'Save';
 			case 'account.cancel': return 'Cancel';
+			case 'account.yes': return 'Yes';
 			case 'account.confirmDelete': return 'Are you sure you want to delete this account';
 			case 'account.moreInfo': return 'More Information';
 			case 'account.print': return 'Print';

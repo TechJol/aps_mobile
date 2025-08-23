@@ -63,6 +63,7 @@ class _TranslationsAccountRu extends TranslationsAccountEn {
 	@override String get currency => 'Валюта';
 	@override String get save => 'Сохранить';
 	@override String get cancel => 'Отмена';
+	@override String get yes => 'Да';
 	@override String get confirmDelete => 'Вы уверены, что хотите удалить';
 	@override String get moreInfo => 'Подробная информация';
 	@override String get print => 'Распечатать';
@@ -221,6 +222,7 @@ extension on TranslationsRu {
 			case 'account.currency': return 'Валюта';
 			case 'account.save': return 'Сохранить';
 			case 'account.cancel': return 'Отмена';
+			case 'account.yes': return 'Да';
 			case 'account.confirmDelete': return 'Вы уверены, что хотите удалить';
 			case 'account.moreInfo': return 'Подробная информация';
 			case 'account.print': return 'Распечатать';
