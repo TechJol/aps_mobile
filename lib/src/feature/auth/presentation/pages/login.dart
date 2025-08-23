@@ -1,6 +1,5 @@
 // ignore_for_file: file_names, library_private_types_in_public_api, deprecated_member_use
 
-import 'package:aps_ci_keys/aps_ci_keys.dart';
 import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
@@ -168,7 +167,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: Column(
                             children: [
                               Text(
-                                ApsKeys.login,
+                                t.auth.login,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,

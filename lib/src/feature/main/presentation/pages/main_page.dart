@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,7 +50,7 @@ class MainScreen extends StatelessWidget {
             if (index == 2) {
               final result = await IncomePage().showIncomeBottomSheet(
                 context: context,
-                title: 'Доходы',
+                title: t.income.incomes,
                 transactionType: 'income',
               );
 
@@ -59,7 +60,7 @@ class MainScreen extends StatelessWidget {
             } else if (index == 3) {
               final result = await IncomePage().showIncomeBottomSheet(
                 context: context,
-                title: 'Расходы',
+                title: t.income.expenses,
                 transactionType: 'expense',
               );
               if (result == true) {
@@ -81,7 +82,7 @@ class MainScreen extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              label: 'Главная',
+              label: t.home.home,
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
@@ -93,7 +94,7 @@ class MainScreen extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              label: 'Счета',
+              label: t.account.account.account.title,
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
@@ -105,7 +106,7 @@ class MainScreen extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              label: 'Доходы',
+              label: t.income.incomes,
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
@@ -117,7 +118,7 @@ class MainScreen extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              label: 'Расходы',
+              label: t.income.expenses,
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
@@ -129,7 +130,7 @@ class MainScreen extends StatelessWidget {
                   BlendMode.srcIn,
                 ),
               ),
-              label: 'Операции',
+              label: t.operation.operation,
             ),
           ],
         ),

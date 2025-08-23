@@ -42,6 +42,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	late final TranslationsAccountEn account = TranslationsAccountEn.internal(_root);
 	late final TranslationsAuthEn auth = TranslationsAuthEn.internal(_root);
 	late final TranslationsHomeEn home = TranslationsHomeEn.internal(_root);
+	late final TranslationsIncomeEn income = TranslationsIncomeEn.internal(_root);
 	late final TranslationsOperationEn operation = TranslationsOperationEn.internal(_root);
 }
 
@@ -266,6 +267,51 @@ class TranslationsHomeEn {
 
 	/// en: 'Unknown'
 	String get unknown => 'Unknown';
+}
+
+// Path: income
+class TranslationsIncomeEn {
+	TranslationsIncomeEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Incomes'
+	String get incomes => 'Incomes';
+
+	/// en: 'Expenses'
+	String get expenses => 'Expenses';
+
+	/// en: 'Account'
+	String get account => 'Account';
+
+	/// en: 'No accounts..'
+	String get notAccount => 'No accounts..';
+
+	/// en: 'Sum'
+	String get sum => 'Sum';
+
+	/// en: 'Article'
+	String get article => 'Article';
+
+	/// en: 'No articles..'
+	String get notArticle => 'No articles..';
+
+	/// en: 'Description'
+	String get description => 'Description';
+
+	/// en: 'Please fill in all fields'
+	String get pleaseFillInAllFields => 'Please fill in all fields';
+
+	/// en: 'Save'
+	String get save => 'Save';
+
+	/// en: 'Time'
+	String get time => 'Time';
+
+	/// en: 'Select'
+	String get select => 'Select';
 }
 
 // Path: operation
@@ -502,6 +548,18 @@ extension on Translations {
 			case 'home.loading': return 'Loading...';
 			case 'home.noOperations': return 'No operations';
 			case 'home.unknown': return 'Unknown';
+			case 'income.incomes': return 'Incomes';
+			case 'income.expenses': return 'Expenses';
+			case 'income.account': return 'Account';
+			case 'income.notAccount': return 'No accounts..';
+			case 'income.sum': return 'Sum';
+			case 'income.article': return 'Article';
+			case 'income.notArticle': return 'No articles..';
+			case 'income.description': return 'Description';
+			case 'income.pleaseFillInAllFields': return 'Please fill in all fields';
+			case 'income.save': return 'Save';
+			case 'income.time': return 'Time';
+			case 'income.select': return 'Select';
 			case 'operation.operation': return 'Operations';
 			case 'operation.selectPeriod': return 'Select period';
 			case 'operation.filter': return 'Filter';

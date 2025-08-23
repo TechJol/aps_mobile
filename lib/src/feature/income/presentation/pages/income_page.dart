@@ -1,6 +1,7 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:aps_mobile/src/feature/income/presentation/cubit/income_state.dart';
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart'; // <— t.*
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -37,7 +38,7 @@ class IncomePage {
       builder:
           (context) => BlocListener<IncomeCubit, IncomeState>(
             listenWhen: (previous, current) {
-              // Только реагировать на важные состояния
+              // реагируем только на сохранение/ошибку
               return current.incomeSaved || current.error != null;
             },
             listener: (context, state) {
@@ -98,6 +99,8 @@ class IncomePage {
                             ],
                           ),
                           const SizedBox(height: 16),
+
+                          // Дата/время
                           TextFormField(
                             readOnly: true,
                             controller: dateController,
@@ -160,8 +163,11 @@ class IncomePage {
                               if (state.accounts.isEmpty) {
                                 return DropDownFormField(
                                   items: const [],
-                                  label: 'Счет',
-                                  value: 'Нет счетов...',
+                                  label: t.income.account, // "Счет" / "Account"
+                                  value:
+                                      t
+                                          .income
+                                          .notAccount, // "Нет счетов.." / "No accounts.."
                                   onChanged: (_) {},
                                 );
                               }
@@ -169,7 +175,7 @@ class IncomePage {
                               return DropDownFormField(
                                 items:
                                     state.accounts.map((e) => e.name).toList(),
-                                label: 'Счет',
+                                label: t.income.account,
                                 value: selectedAccountName,
                                 onChanged: (val) {
                                   selectedAccountName = val;
@@ -182,8 +188,10 @@ class IncomePage {
                             },
                           ),
                           const SizedBox(height: 12),
+
+                          // Сумма
                           TextFieldWid(
-                            label: 'Сумма',
+                            label: t.income.sum, // "Сумма" / "Sum"
                             controller: amountController,
                           ),
                           const SizedBox(height: 12),
@@ -198,8 +206,12 @@ class IncomePage {
                               if (state.reasons.isEmpty) {
                                 return DropDownFormField(
                                   items: const [],
-                                  label: 'Статья',
-                                  value: 'Нет статей...',
+                                  label:
+                                      t.income.article, // "Статья" / "Article"
+                                  value:
+                                      t
+                                          .income
+                                          .notArticle, // "Нет статей.." / "No articles.."
                                   onChanged: (_) {},
                                 );
                               }
@@ -212,7 +224,7 @@ class IncomePage {
                               return DropDownFormField(
                                 items:
                                     filteredReasons.map((e) => e.name).toList(),
-                                label: 'Статья',
+                                label: t.income.article,
                                 value: selectedReasonName,
                                 onChanged: (val) {
                                   selectedReasonName = val;
@@ -225,6 +237,8 @@ class IncomePage {
                             },
                           ),
                           const SizedBox(height: 12),
+
+                          // Описание
                           TextFormField(
                             maxLength: 160,
                             maxLines: 3,
@@ -236,7 +250,10 @@ class IncomePage {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(25),
                               ),
-                              hintText: 'Описание',
+                              hintText:
+                                  t
+                                      .income
+                                      .description, // "Описание" / "Description"
                             ),
                           ),
                           const SizedBox(height: 24),
@@ -254,11 +271,11 @@ class IncomePage {
                                       selectedReasonId == null ||
                                       amountController.text.isEmpty) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
+                                      SnackBar(
                                         content: Text(
-                                          'Пожалуйста, заполните все поля.',
+                                          t.income.pleaseFillInAllFields,
                                         ),
-                                      ),
+                                      ), // "Пожалуйста, заполните все поля."
                                     );
                                     return;
                                   }
@@ -286,7 +303,7 @@ class IncomePage {
                                   ),
                                 ),
                                 child: Text(
-                                  'Сохранить',
+                                  t.income.save, // "Сохранить" / "Save"
                                   style: AppTextStyles.f16w500.copyWith(
                                     color: AppColors.whiteColor,
                                   ),
@@ -338,7 +355,10 @@ class IncomePage {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Время', style: AppTextStyles.f20w500),
+                      Text(
+                        t.income.time,
+                        style: AppTextStyles.f20w500,
+                      ), // "Время" / "Time"
                       ElevatedButton(
                         onPressed: () async {
                           final picked = await showTimePicker(
@@ -351,7 +371,11 @@ class IncomePage {
                             });
                           }
                         },
-                        child: Text(tempTime.format(context)),
+                        child: Text(
+                          MaterialLocalizations.of(
+                            context,
+                          ).formatTimeOfDay(tempTime),
+                        ),
                       ),
                     ],
                   ),
@@ -368,7 +392,7 @@ class IncomePage {
                       onDateTimeSelected(newDateTime);
                       Navigator.pop(context);
                     },
-                    child: Text("Выбрать"),
+                    child: Text(t.income.select), // "Выбрать" / "Select"
                   ),
                 ],
               ),

@@ -41,6 +41,7 @@ class TranslationsRu extends Translations {
 	@override late final _TranslationsAccountRu account = _TranslationsAccountRu._(_root);
 	@override late final _TranslationsAuthRu auth = _TranslationsAuthRu._(_root);
 	@override late final _TranslationsHomeRu home = _TranslationsHomeRu._(_root);
+	@override late final _TranslationsIncomeRu income = _TranslationsIncomeRu._(_root);
 	@override late final _TranslationsOperationRu operation = _TranslationsOperationRu._(_root);
 }
 
@@ -135,6 +136,27 @@ class _TranslationsHomeRu extends TranslationsHomeEn {
 	@override String get loading => 'Загрузка...';
 	@override String get noOperations => 'Нет операций';
 	@override String get unknown => 'Неизвестно';
+}
+
+// Path: income
+class _TranslationsIncomeRu extends TranslationsIncomeEn {
+	_TranslationsIncomeRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get incomes => 'Доходы';
+	@override String get expenses => 'Расходы';
+	@override String get account => 'Счет';
+	@override String get notAccount => 'Нет счетов..';
+	@override String get sum => 'Сумма';
+	@override String get article => 'Статья';
+	@override String get notArticle => 'Нет статей..';
+	@override String get description => 'Описание';
+	@override String get pleaseFillInAllFields => 'Пожалуйста, заполните все поля';
+	@override String get save => 'Сохранить';
+	@override String get time => 'Время';
+	@override String get select => 'Выбрать';
 }
 
 // Path: operation
@@ -307,6 +329,18 @@ extension on TranslationsRu {
 			case 'home.loading': return 'Загрузка...';
 			case 'home.noOperations': return 'Нет операций';
 			case 'home.unknown': return 'Неизвестно';
+			case 'income.incomes': return 'Доходы';
+			case 'income.expenses': return 'Расходы';
+			case 'income.account': return 'Счет';
+			case 'income.notAccount': return 'Нет счетов..';
+			case 'income.sum': return 'Сумма';
+			case 'income.article': return 'Статья';
+			case 'income.notArticle': return 'Нет статей..';
+			case 'income.description': return 'Описание';
+			case 'income.pleaseFillInAllFields': return 'Пожалуйста, заполните все поля';
+			case 'income.save': return 'Сохранить';
+			case 'income.time': return 'Время';
+			case 'income.select': return 'Выбрать';
 			case 'operation.operation': return 'Операции';
 			case 'operation.selectPeriod': return 'Выбрать период';
 			case 'operation.filter': return 'Фильтр';
