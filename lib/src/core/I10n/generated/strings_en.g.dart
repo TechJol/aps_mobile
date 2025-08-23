@@ -133,6 +133,12 @@ class TranslationsAccountEn {
 
 	/// en: 'Error'
 	String get errors => 'Error';
+
+	/// en: 'Bank'
+	String get bank => 'Bank';
+
+	/// en: 'Cash'
+	String get cash => 'Cash';
 }
 
 // Path: auth
@@ -364,6 +370,8 @@ extension on Translations {
 			case 'account.income': return 'Income';
 			case 'account.expense': return 'Expense';
 			case 'account.errors': return 'Error';
+			case 'account.bank': return 'Bank';
+			case 'account.cash': return 'Cash';
 			case 'auth.welcome': return 'Hello!\nWelcome';
 			case 'auth.login': return 'Login';
 			case 'auth.register': return 'Register';

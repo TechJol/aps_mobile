@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dio/dio.dart';
@@ -27,7 +28,7 @@ class _AccountPageState extends State<AccountPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Счета',
+        title: t.account.account.account.title,
         backgroundColor: AppColors.backroundColor,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
@@ -90,8 +91,8 @@ class _AccountPageState extends State<AccountPage> {
                         onPressed: () {
                           Navigator.pushNamed(context, AppRoutes.addAccount);
                         },
-                        label: const Text(
-                          'Добавить счет',
+                        label: Text(
+                          t.account.account.actions.addAccount,
                           style: AppTextStyles.f16w500,
                         ),
                         icon: const Icon(Icons.add, size: 20),
@@ -111,7 +112,11 @@ class _AccountPageState extends State<AccountPage> {
                     children: [
                       OutlinedButtonWidget(
                         onPressed: () {
-                          final headers = ['№', 'Название', 'Тип счета'];
+                          final headers = [
+                            '№',
+                            t.account.name,
+                            t.account.typeAccount,
+                          ];
                           final rows =
                               accounts.asMap().entries.map<List<String>>((
                                 entry,
@@ -132,12 +137,16 @@ class _AccountPageState extends State<AccountPage> {
                             rows: rows,
                           );
                         },
-                        text: 'Распечатать',
+                        text: t.account.print,
                       ),
                       12.w,
                       OutlinedButtonWidget(
                         onPressed: () {
-                          final headers = ['№', 'Название', 'Тип счета'];
+                          final headers = [
+                            '№',
+                            t.account.name,
+                            t.account.typeAccount,
+                          ];
                           final rows =
                               accounts.asMap().entries.map<List<String>>((
                                 entry,
@@ -158,7 +167,7 @@ class _AccountPageState extends State<AccountPage> {
                             context: context,
                           );
                         },
-                        text: 'Скачать в Excel',
+                        text: t.account.export,
                       ),
                     ],
                   ),

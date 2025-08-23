@@ -78,6 +78,8 @@ class _TranslationsAccountRu extends TranslationsAccountEn {
 	@override String get income => 'Приход';
 	@override String get expense => 'Расход';
 	@override String get errors => 'Ошибкa';
+	@override String get bank => 'Банк';
+	@override String get cash => 'Касса';
 }
 
 // Path: auth
@@ -148,7 +150,7 @@ class _TranslationsAccountAccountAccountRu extends TranslationsAccountAccountAcc
 	final TranslationsRu _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Счет';
+	@override String get title => 'Счета';
 	@override String get description => 'Управление вашими счетами';
 }
 
@@ -192,7 +194,7 @@ class _TranslationsAccountAccountErrorsRu extends TranslationsAccountAccountErro
 extension on TranslationsRu {
 	dynamic _flatMapFunction(String path) {
 		switch (path) {
-			case 'account.account.account.title': return 'Счет';
+			case 'account.account.account.title': return 'Счета';
 			case 'account.account.account.description': return 'Управление вашими счетами';
 			case 'account.account.actions.addAccount': return 'Добавить счет';
 			case 'account.account.actions.editAccount': return 'Редактировать счет';
@@ -229,6 +231,8 @@ extension on TranslationsRu {
 			case 'account.income': return 'Приход';
 			case 'account.expense': return 'Расход';
 			case 'account.errors': return 'Ошибкa';
+			case 'account.bank': return 'Банк';
+			case 'account.cash': return 'Касса';
 			case 'auth.welcome': return 'Привет!\nДобро пожаловать';
 			case 'auth.login': return 'Войти';
 			case 'auth.register': return 'Регистрация';
