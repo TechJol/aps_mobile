@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +13,7 @@ class IncomeExpenseSummaryPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Общее положение',
+        title: t.menu.incomeExpenseSummary.title,
         backgroundColor: AppColors.whiteColor,
       ),
       body: Padding(
@@ -26,11 +27,11 @@ class IncomeExpenseSummaryPage extends StatelessWidget {
             if (state is MenuTransactionsWithAccountsSuccess) {
               final transactions = state.transactions;
 
-              // Считаем данные по валютам (доходы, расходы и баланс)
+              // Агрегируем данные по валютам
               final Map<String, Map<String, Decimal>> aggregatedData = {};
 
               for (var tx in transactions) {
-                final currency = tx.currency; // Получаем валюту
+                final currency = tx.currency;
                 final amount =
                     Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
                 final type = tx.transactionType;
@@ -40,11 +41,10 @@ class IncomeExpenseSummaryPage extends StatelessWidget {
                     'income': Decimal.zero,
                     'expense': Decimal.zero,
                     'balance': Decimal.zero,
-                    'rate': Decimal.zero, // Примерный курс валюты
+                    'rate': Decimal.zero,
                   };
                 }
 
-                // Проверка на null перед операцией сложения
                 if (type == 'income') {
                   aggregatedData[currency]?['income'] =
                       (aggregatedData[currency]?['income'] ?? Decimal.zero) +
@@ -56,7 +56,7 @@ class IncomeExpenseSummaryPage extends StatelessWidget {
                 }
               }
 
-              // Вычисляем баланс по каждой валюте
+              // Баланс + курс валюты
               aggregatedData.forEach((currency, data) {
                 data['balance'] = data['income']! - data['expense']!;
                 if (currency == 'USD') {
@@ -89,10 +89,13 @@ class IncomeExpenseSummaryPage extends StatelessWidget {
                   if (hasData)
                     DataTableSectionA(data: data)
                   else
-                    const Center(
+                    Center(
                       child: Padding(
-                        padding: EdgeInsets.only(top: 50),
-                        child: Text('Нет данных', style: AppTextStyles.f16w500),
+                        padding: const EdgeInsets.only(top: 50),
+                        child: Text(
+                          t.menu.noData,
+                          style: AppTextStyles.f16w500,
+                        ),
                       ),
                     ),
                 ],
@@ -115,13 +118,12 @@ class DataTableSectionA extends StatelessWidget {
   Widget build(BuildContext context) {
     if (data.isEmpty) return const SizedBox.shrink();
 
-    // фиксированные ширины колонок под сетку
-    const curW = 100.0; // Валюта
-    const incW = 140.0; // Доходы
-    const expW = 140.0; // Расходы
-    const balW = 140.0; // Баланс
-    const balKGZW = 160.0; // Баланс KGZ
-    const rateW = 120.0; // Курс валюты
+    const curW = 100.0;
+    const incW = 140.0;
+    const expW = 140.0;
+    const balW = 140.0;
+    const balKGZW = 160.0;
+    const rateW = 120.0;
 
     const cellHPad = 16.0;
     const gridColor = Color(0xFFE6E6E6);
@@ -137,18 +139,41 @@ class DataTableSectionA extends StatelessWidget {
         TableRow header() => TableRow(
           decoration: const BoxDecoration(color: AppColors.primaryColorLight),
           children: [
-            _cell('Валюта', isHeader: true, width: curW),
-            _cell('Доходы', isHeader: true, width: incW),
-            _cell('Расходы', isHeader: true, width: expW),
-            _cell('Баланс', isHeader: true, width: balW),
-            _cell('Баланс KGZ', isHeader: true, width: balKGZW),
-            _cell('Курс валюты', isHeader: true, width: rateW),
+            _cell(
+              t.menu.incomeExpenseSummary.currency,
+              isHeader: true,
+              width: curW,
+            ),
+            _cell(
+              t.menu.incomeExpenseSummary.income,
+              isHeader: true,
+              width: incW,
+            ),
+            _cell(
+              t.menu.incomeExpenseSummary.expense,
+              isHeader: true,
+              width: expW,
+            ),
+            _cell(
+              t.menu.incomeExpenseSummary.balance,
+              isHeader: true,
+              width: balW,
+            ),
+            _cell(
+              t.menu.incomeExpenseSummary.balanceKgz,
+              isHeader: true,
+              width: balKGZW,
+            ),
+            _cell(
+              t.menu.incomeExpenseSummary.exchangeRate,
+              isHeader: true,
+              width: rateW,
+            ),
           ],
         );
 
         List<TableRow> rows() =>
             data.map((row) {
-              // парсим строки в Decimal
               Decimal income =
                   Decimal.tryParse(row['income'] ?? '') ?? Decimal.zero;
               Decimal expense =

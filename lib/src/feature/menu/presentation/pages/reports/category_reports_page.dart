@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:decimal/decimal.dart';
@@ -20,10 +21,12 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final months = _localizedMonths();
+
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Отчеты по статьям',
+        title: t.menu.reportsByArticle.title,
         backgroundColor: AppColors.whiteColor,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
@@ -47,9 +50,8 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
               month: selectedMonth,
             );
 
-            // Проверка наличия данных для дохода и расхода
-            bool hasIncomeData = incomeData.isNotEmpty;
-            bool hasExpenseData = expenseData.isNotEmpty;
+            final hasIncomeData = incomeData.isNotEmpty;
+            final hasExpenseData = expenseData.isNotEmpty;
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -58,7 +60,12 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                   20.h,
                   ButtonsRow(
                     onExport: () {
-                      final headers = ['№', 'Статья', 'Сумма (сом)', 'Процент'];
+                      final headers = [
+                        t.menu.common.numberSign,
+                        t.menu.articles.name,
+                        t.menu.common.amountKgs,
+                        t.menu.common.percent,
+                      ];
 
                       final incomeRows =
                           incomeData.asMap().entries.map((e) {
@@ -83,20 +90,26 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                           }).toList();
 
                       _localService.exportToExcelGeneric(
-                        fileName: 'Отчет_по_статьям_месяц_$selectedMonth',
+                        fileName:
+                            '${t.menu.reportsByArticle.filenamePrefix}$selectedMonth',
                         headers: headers,
                         rows: [
-                          ['--- ДОХОД ---'],
+                          [t.menu.reportsByArticle.markers.income],
                           ...incomeRows,
                           [],
-                          ['--- РАСХОД ---'],
+                          [t.menu.reportsByArticle.markers.expense],
                           ...expenseRows,
                         ],
                         context: context,
                       );
                     },
                     onPrint: () {
-                      final headers = ['№', 'Статья', 'Сумма (сом)', 'Процент'];
+                      final headers = [
+                        t.menu.common.numberSign,
+                        t.menu.articles.name,
+                        t.menu.common.amountKgs,
+                        t.menu.common.percent,
+                      ];
 
                       final incomeRows =
                           incomeData.asMap().entries.map((e) {
@@ -120,15 +133,18 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                             ];
                           }).toList();
 
+                      final monthName =
+                          months[int.parse(selectedMonth) - 1]; // локализовано
+
                       _localService.printReportAsPdf(
                         context: context,
-                        title: 'Отчет по статьям (месяц $selectedMonth)',
+                        title: '${t.menu.reportsByArticle.title} ($monthName)',
                         headers: headers,
                         rows: [
-                          ['--- ДОХОД ---'],
+                          [t.menu.reportsByArticle.markers.income],
                           ...incomeRows,
                           [],
-                          ['--- РАСХОД ---'],
+                          [t.menu.reportsByArticle.markers.expense],
                           ...expenseRows,
                         ],
                       );
@@ -137,25 +153,24 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
 
                   20.h,
                   MonthsTabs(
+                    months: months,
                     selectedMonth: selectedMonth,
                     onMonthSelected: (month) {
-                      setState(() {
-                        selectedMonth = month;
-                      });
+                      setState(() => selectedMonth = month);
                     },
                   ),
                   20.h,
 
                   if (!hasIncomeData && !hasExpenseData)
-                    const Center(child: Text("Нет данных за выбранный месяц"))
+                    Center(child: Text(t.menu.common.noDataForSelectedMonth))
                   else
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // --- ДОХОД ---
+                        // --- INCOME ---
                         if (hasIncomeData) ...[
-                          const TitleSection(
-                            title: 'Основные статьи , доходов',
+                          TitleSection(
+                            title: t.menu.reportsByArticle.sections.incomeTitle,
                           ),
                           PieChartSection(data: incomeData),
                           20.h,
@@ -163,15 +178,17 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                           20.h,
                           DataTableSection(
                             data: incomeData,
-                            nameColumnTitle: 'Cтатья дохода',
+                            nameColumnTitle:
+                                t.menu.reportsByArticle.sections.incomeNameCol,
                           ),
                           40.h,
                         ],
 
-                        // --- РАСХОД ---
+                        // --- EXPENSE ---
                         if (hasExpenseData) ...[
-                          const TitleSection(
-                            title: 'Основные статьи , расходов',
+                          TitleSection(
+                            title:
+                                t.menu.reportsByArticle.sections.expenseTitle,
                           ),
                           PieChartSection(data: expenseData),
                           20.h,
@@ -179,7 +196,8 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                           20.h,
                           DataTableSection(
                             data: expenseData,
-                            nameColumnTitle: 'Cтатья расхода',
+                            nameColumnTitle:
+                                t.menu.reportsByArticle.sections.expenseNameCol,
                           ),
                         ],
                       ],
@@ -209,31 +227,25 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
         final txMonth = DateTime.parse(tx.date!).month.toString();
 
         if (txMonth == month) {
-          if (!monthlyTotals.containsKey(month)) {
-            monthlyTotals[month] = {};
-          }
-
-          monthlyTotals[month]?[tx.incomeExpenseReason!] =
-              (monthlyTotals[month]?[tx.incomeExpenseReason!] ?? Decimal.zero) +
+          monthlyTotals.putIfAbsent(month, () => {});
+          monthlyTotals[month]![tx.incomeExpenseReason!] =
+              (monthlyTotals[month]![tx.incomeExpenseReason!] ?? Decimal.zero) +
               amount;
         }
       }
     }
 
-    // Если нет данных, возвращаем пустой список
     if (monthlyTotals.isEmpty || monthlyTotals[month] == null) {
       return [];
     }
 
     final sortedMonths = monthlyTotals.keys.toList()..sort();
 
-    return sortedMonths.expand((month) {
-      final monthlyData = monthlyTotals[month]!;
+    return sortedMonths.expand((m) {
+      final monthlyData = monthlyTotals[m]!;
       Decimal totalAmount = Decimal.zero;
 
-      monthlyData.forEach((key, value) {
-        totalAmount += value;
-      });
+      monthlyData.forEach((_, value) => totalAmount += value);
 
       final sorted =
           monthlyData.entries.toList()
@@ -245,7 +257,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
           orElse:
               () => IncomeExpenseReasons(
                 id: entry.key,
-                name: 'Без названия',
+                name: t.menu.common.untitled,
                 type: type,
                 company: null,
               ),
@@ -259,7 +271,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
         );
 
         return {
-          'month': month,
+          'month': m,
           'name': reason.name,
           'amount': type == 'expense' ? (-value).toString() : value.toString(),
           'percent': percent,
@@ -267,6 +279,21 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
       }).toList();
     }).toList();
   }
+
+  List<String> _localizedMonths() => [
+    t.menu.months.january,
+    t.menu.months.february,
+    t.menu.months.march,
+    t.menu.months.april,
+    t.menu.months.may,
+    t.menu.months.june,
+    t.menu.months.july,
+    t.menu.months.august,
+    t.menu.months.september,
+    t.menu.months.october,
+    t.menu.months.november,
+    t.menu.months.december,
+  ];
 }
 
 class MonthsTabs extends StatelessWidget {
@@ -274,28 +301,15 @@ class MonthsTabs extends StatelessWidget {
     super.key,
     required this.onMonthSelected,
     required this.selectedMonth,
+    required this.months,
   });
 
   final Function(String) onMonthSelected;
   final String selectedMonth;
+  final List<String> months;
 
   @override
   Widget build(BuildContext context) {
-    const months = [
-      'Январь',
-      'Февраль',
-      'Март',
-      'Апрель',
-      'Май',
-      'Июнь',
-      'Июль',
-      'Август',
-      'Сентябрь',
-      'Октябрь',
-      'Ноябрь',
-      'Декабрь',
-    ];
-
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -336,9 +350,9 @@ class ButtonsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        OutlinedButtonWidget(text: 'Распечатать', onPressed: onPrint),
-        SizedBox(width: 12),
-        OutlinedButtonWidget(text: 'Скачать в Excel', onPressed: onExport),
+        OutlinedButtonWidget(text: t.menu.common.print, onPressed: onPrint),
+        const SizedBox(width: 12),
+        OutlinedButtonWidget(text: t.menu.common.export, onPressed: onExport),
       ],
     );
   }
@@ -356,7 +370,6 @@ class PieChartSection extends StatelessWidget {
       child: PieChart(
         PieChartData(
           sectionsSpace: 2,
-          // пончик
           centerSpaceRadius: w * 0.16,
           sections:
               data.asMap().entries.map((entry) {
@@ -366,14 +379,12 @@ class PieChartSection extends StatelessWidget {
                 return PieChartSectionData(
                   color: color,
                   value: percent,
-                  // как в макете: целые проценты, белым внутри сектора
                   title: '${percent.round()}%',
                   titleStyle: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
                     fontSize: 14,
                   ),
-                  // позиция текста ближе к центру сектора
                   titlePositionPercentageOffset: 0.6,
                   radius: w * 0.2,
                 );
@@ -437,7 +448,6 @@ class DataTableSection extends StatelessWidget {
 
     final textStyle = AppTextStyles.f16w500;
 
-    // измеряем самую длинную "Статью"
     double measureTextWidth(String text) {
       final tp = TextPainter(
         text: TextSpan(text: text, style: textStyle),
@@ -447,15 +457,13 @@ class DataTableSection extends StatelessWidget {
       return tp.width;
     }
 
-    // базовые настройки ширин и отступов
-    const numColW = 56.0; // №
-    const sumColW = 140.0; // Сумма (сом)
-    const pctColW = 110.0; // Процент
-    const cellHPad = 16.0; // горизонтальный паддинг в ячейке
-    const cellVPad = 14.0; // вертикальный паддинг в ячейке
+    const numColW = 56.0;
+    const sumColW = 140.0;
+    const pctColW = 110.0;
+    const cellHPad = 16.0;
+    const cellVPad = 14.0;
     const gridColor = Color(0xFFE6E6E6);
 
-    // максимальная ширина текста в "Статья"
     final maxNameTextW = data.fold<double>(80.0, (maxW, row) {
       final name = (row['name'] ?? '').toString();
       final w = measureTextWidth(name);
@@ -466,24 +474,21 @@ class DataTableSection extends StatelessWidget {
       builder: (context, constraints) {
         final screenW = constraints.maxWidth;
 
-        // фиксированная часть (кроме колонки "Статья") + паддинги 4х колонок
         final fixedPartW = numColW + sumColW + pctColW + (cellHPad * 2 * 4);
-
-        // если этого мало — растянем таблицу на весь экран,
-        // если не помещается — дадим ей нужную minWidth и включим горизонтальный скролл
         final requiredTableW = fixedPartW + maxNameTextW;
         final tableMinWidth =
             requiredTableW < screenW ? screenW : requiredTableW;
 
-        // ширина "Статья", когда таблица растянута и без скролла
-        final nameColW = (screenW - fixedPartW).clamp(120.0, 800.0);
+        final nameColW = (screenW - fixedPartW).clamp(
+          120.0,
+          800.0,
+        ); // stretched width
 
-        // заголовок таблицы
         TableRow headerRow() => TableRow(
           decoration: const BoxDecoration(color: AppColors.primaryColorLight),
           children: [
             _cell(
-              '№',
+              t.menu.common.numberSign,
               isHeader: true,
               width: numColW,
               padH: cellHPad,
@@ -497,14 +502,14 @@ class DataTableSection extends StatelessWidget {
               padV: cellVPad,
             ),
             _cell(
-              'Сумма (сом)',
+              t.menu.common.amountKgs,
               isHeader: true,
               width: sumColW,
               padH: cellHPad,
               padV: cellVPad,
             ),
             _cell(
-              'Процент',
+              t.menu.common.percent,
               isHeader: true,
               width: pctColW,
               padH: cellHPad,
@@ -513,7 +518,6 @@ class DataTableSection extends StatelessWidget {
           ],
         );
 
-        // строки данных
         List<TableRow> dataRows() =>
             data.asMap().entries.map((entry) {
               final i = entry.key + 1;
@@ -532,7 +536,7 @@ class DataTableSection extends StatelessWidget {
                     width: isStretched ? nameColW : maxNameTextW,
                     padH: cellHPad,
                     padV: cellVPad,
-                    ellipsis: isStretched, // при растяжке режем длинные
+                    ellipsis: isStretched,
                   ),
                   _cell(amount, width: sumColW, padH: cellHPad, padV: cellVPad),
                   _cell(
@@ -552,7 +556,6 @@ class DataTableSection extends StatelessWidget {
           child: ConstrainedBox(
             constraints: BoxConstraints(minWidth: tableMinWidth),
             child: Table(
-              // полноценная сетка как в макете
               border: TableBorder.all(color: gridColor, width: 1),
               columnWidths: {
                 0: const FixedColumnWidth(numColW),
@@ -570,7 +573,6 @@ class DataTableSection extends StatelessWidget {
     );
   }
 
-  // ячейка таблицы
   Widget _cell(
     String text, {
     required double width,

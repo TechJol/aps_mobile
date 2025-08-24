@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:decimal/decimal.dart';
@@ -23,14 +24,13 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Месячный отчет',
+        title: t.menu.monthlyReport.title,
         backgroundColor: AppColors.whiteColor,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: BlocBuilder<MenuCubit, MenuState>(
           builder: (context, state) {
-            // ===== все стейты обрабатываем здесь =====
             if (state is MenuLoading) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -47,16 +47,16 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
                 transactions,
                 _selectedMonth,
               );
+
               final chartData = _buildChartData(
                 transactions,
                 reasons,
                 _selectedMonth,
               );
-              final legendData = _getLegendDataFromAPI(reasons);
 
+              final legendData = _getLegendDataFromAPI(reasons);
               final hasData = tableData.isNotEmpty;
 
-              // ===== внутри BlocBuilder только имена виджетов =====
               return ListView(
                 children: [
                   20.h,
@@ -75,7 +75,7 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
                       ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _SectionTitle(text: 'Доход'),
+                          _SectionTitle(text: t.menu.monthlyReport.title),
                           20.h,
                           _ChartSection(data: chartData, reasons: reasons),
                           20.h,
@@ -96,7 +96,7 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
     );
   }
 
-  // ====== чистые функции (не виджеты) ======
+  /// ====== чистые функции (не виджеты) ======
 
   Map<int, Map<int, Decimal>> _buildChartData(
     List<AllTransactionsModel> transactions,
@@ -121,6 +121,7 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
   }
 }
 
+/// Подсчёт агрегатов за выбранный месяц для таблицы
 List<Map<String, String>> _calculateMonthlyData(
   List<AllTransactionsModel> transactions,
   String month,
@@ -155,6 +156,7 @@ List<Map<String, String>> _calculateMonthlyData(
   ];
 }
 
+/// Генерация легенды (имя статьи + цвет)
 List<Map<String, String>> _getLegendDataFromAPI(
   List<IncomeExpenseReasons> reasons,
 ) {
@@ -177,7 +179,7 @@ List<Map<String, String>> _getLegendDataFromAPI(
   return legendData;
 }
 
-// ====== виджеты (снаружи, с полной реализацией) ======
+/// ====== виджеты ======
 
 class _ActionButtons extends StatelessWidget {
   const _ActionButtons({
@@ -195,13 +197,13 @@ class _ActionButtons extends StatelessWidget {
     return Row(
       children: [
         OutlinedButtonWidget(
-          text: 'Распечатать',
+          text: t.menu.common.print,
           onPressed: () {
             final headers = [
-              'Месяц',
-              'Доход (KGZ)',
-              'Расход (KGZ)',
-              'Чистый доход (KGZ)',
+              t.menu.monthlyReport.table.month,
+              t.menu.monthlyReport.table.income,
+              t.menu.monthlyReport.table.expense,
+              t.menu.monthlyReport.table.balance,
             ];
             final rows =
                 tableData
@@ -217,7 +219,7 @@ class _ActionButtons extends StatelessWidget {
 
             localService.printReportAsPdf(
               context: context,
-              title: 'Месячный отчет за месяц $selectedMonth',
+              title: '${t.menu.monthlyReport.filenamePrefix}$selectedMonth',
               headers: headers,
               rows: rows,
             );
@@ -225,13 +227,13 @@ class _ActionButtons extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         OutlinedButtonWidget(
-          text: 'Скачать в Excel',
+          text: t.menu.common.export,
           onPressed: () {
             final headers = [
-              'Месяц',
-              'Доход (KGZ)',
-              'Расход (KGZ)',
-              'Чистый доход (KGZ)',
+              t.menu.monthlyReport.table.month,
+              t.menu.monthlyReport.table.income,
+              t.menu.monthlyReport.table.expense,
+              t.menu.monthlyReport.table.balance,
             ];
             final rows =
                 tableData
@@ -246,7 +248,7 @@ class _ActionButtons extends StatelessWidget {
                     .toList();
 
             localService.exportToExcelGeneric(
-              fileName: 'Месячный_отчет_$selectedMonth',
+              fileName: '${t.menu.monthlyReport.filenamePrefix}$selectedMonth',
               headers: headers,
               rows: rows,
               context: context,
@@ -269,19 +271,19 @@ class _MonthsTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const months = [
-      'Январь',
-      'Февраль',
-      'Март',
-      'Апрель',
-      'Май',
-      'Июнь',
-      'Июль',
-      'Август',
-      'Сентябрь',
-      'Октябрь',
-      'Ноябрь',
-      'Декабрь',
+    final months = [
+      t.menu.months.january,
+      t.menu.months.february,
+      t.menu.months.march,
+      t.menu.months.april,
+      t.menu.months.may,
+      t.menu.months.june,
+      t.menu.months.july,
+      t.menu.months.august,
+      t.menu.months.september,
+      t.menu.months.october,
+      t.menu.months.november,
+      t.menu.months.december,
     ];
 
     return SingleChildScrollView(
@@ -417,10 +419,10 @@ class _MonthlyDataTable extends StatelessWidget {
                     color: AppColors.primaryColorLight,
                   ),
                   children: [
-                    _cell('Месяц', isHeader: true),
-                    _cell('Доход (KGZ)', isHeader: true),
-                    _cell('Расход (KGZ)', isHeader: true),
-                    _cell('Чистый доход (KGZ)', isHeader: true),
+                    _cell(t.menu.monthlyReport.table.month, isHeader: true),
+                    _cell(t.menu.monthlyReport.table.income, isHeader: true),
+                    _cell(t.menu.monthlyReport.table.expense, isHeader: true),
+                    _cell(t.menu.monthlyReport.table.balance, isHeader: true),
                   ],
                 ),
                 // Данные
@@ -467,16 +469,16 @@ class _NoDataStub extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Padding(
-        padding: EdgeInsets.only(top: 100),
-        child: Text('Нет данных за выбранный месяц'),
+        padding: const EdgeInsets.only(top: 100),
+        child: Text(t.menu.common.noDataForSelectedMonth),
       ),
     );
   }
 }
 
-// ===== график с «умной» осью Y =====
+/// ===== график с «умной» осью Y =====
 
 class MonthlyReportChart extends StatelessWidget {
   final Map<int, Map<int, Decimal>> data;
@@ -533,7 +535,7 @@ class MonthlyReportChart extends StatelessWidget {
 
     final double niceMax = _niceCeil(maxDaySum * 1.15); // +15% запаса
     final double tickStep = _niceStep(niceMax, targetTicks: 5);
-    final compact = NumberFormat.compact(locale: 'ru'); // 23K, 1,2M
+    final compact = NumberFormat.compact(locale: 'ru'); // формат 23K, 1,2M
 
     return SizedBox(
       height: 350,

@@ -7,7 +7,7 @@ operationsByAccounts: "По счетам"
 
 reports: "Отчеты"
 reportsByArticles: "Отчеты по статьям"
-reportsIncomeExpenseSummary: "Общее положение доходов и расходов"
+reportsIncomeExpenseSummary: "Общее положение"
 reportsMonthly: "Месячный отчет по доходам и расходам"
 reportsMetrics: "Показатели"
 
@@ -65,3 +65,77 @@ articles:
   notFound: "Нет статей"
 income: "Доход"
 expense: "Расход"
+
+common:
+  print: "Распечатать"
+  export: "Скачать в Excel"
+  amountKgs: "Сумма (сом)"
+  percent: "Процент"
+  numberSign: "№"
+  noDataForSelectedMonth: "Нет данных за выбранный месяц"
+  untitled: "Без названия"
+
+months:
+  january: "Январь"
+  february: "Февраль"
+  march: "Март"
+  april: "Апрель"
+  may: "Май"
+  june: "Июнь"
+  july: "Июль"
+  august: "Август"
+  september: "Сентябрь"
+  october: "Октябрь"
+  november: "Ноябрь"
+  december: "Декабрь"
+
+reportsByArticle:
+  title: "Отчеты по статьям"
+  filenamePrefix: "Отчет_по_статьям_месяц_"
+  markers:
+    income: "--- ДОХОД ---"
+    expense: "--- РАСХОД ---"
+  sections:
+    incomeTitle: "Основные статьи доходов"
+    expenseTitle: "Основные статьи расходов"
+    incomeNameCol: "Статья дохода"
+    expenseNameCol: "Статья расхода"
+
+article:
+  name: "Название"
+  income: "Доход"
+  expense: "Расход"
+
+incomeExpenseSummary:
+  title: "Общее положение"
+  currency: "Валюта"
+  income: "Доходы"
+  expense: "Расходы"
+  balance: "Баланс"
+  balanceKgz: "Баланс KGS"
+  exchangeRate: "Курс валюты"
+noData: "Нет данных"
+
+monthlyReport:
+  title: "Месячный отчет"
+  incomeTitle: "Доход"
+  filenamePrefix: "Месячный_отчет_"
+  table:
+    month: "Месяц"
+    income: "Доход (KGS)"
+    expense: "Расход (KGS)"
+    balance: "Чистый доход (KGS)"
+  noData: "Нет данных за выбранный месяц"
+
+metrics:
+  title: "Показатели"
+  yearlyReportTitle: "Годовой отчет"
+  yearlyReportFilename: "Годовой_отчет"
+  year: "Год"
+  incomeKgz: "Доход (KGZ)"
+  expenseKgz: "Расход (KGZ)"
+  netIncomeKgz: "Чистый доход (KGZ)"
+  byYears: "по годам"
+  selectPeriod: "Выберите период"
+  tableTitle: "Таблица доходов и расходов по годам"
+  chartTitle: "График доходов и расходов по годам"

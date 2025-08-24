@@ -347,8 +347,8 @@ class TranslationsMenuEn {
 	/// en: 'Reports by articles'
 	String get reportsByArticles => 'Reports by articles';
 
-	/// en: 'Overall income & expense position'
-	String get reportsIncomeExpenseSummary => 'Overall income & expense position';
+	/// en: 'Overall position'
+	String get reportsIncomeExpenseSummary => 'Overall position';
 
 	/// en: 'Monthly income & expense report'
 	String get reportsMonthly => 'Monthly income & expense report';
@@ -398,6 +398,18 @@ class TranslationsMenuEn {
 
 	/// en: 'Expense'
 	String get expense => 'Expense';
+
+	late final TranslationsMenuCommonEn common = TranslationsMenuCommonEn.internal(_root);
+	late final TranslationsMenuMonthsEn months = TranslationsMenuMonthsEn.internal(_root);
+	late final TranslationsMenuReportsByArticleEn reportsByArticle = TranslationsMenuReportsByArticleEn.internal(_root);
+	late final TranslationsMenuArticleEn article = TranslationsMenuArticleEn.internal(_root);
+	late final TranslationsMenuIncomeExpenseSummaryEn incomeExpenseSummary = TranslationsMenuIncomeExpenseSummaryEn.internal(_root);
+
+	/// en: 'No data'
+	String get noData => 'No data';
+
+	late final TranslationsMenuMonthlyReportEn monthlyReport = TranslationsMenuMonthlyReportEn.internal(_root);
+	late final TranslationsMenuMetricsEn metrics = TranslationsMenuMetricsEn.internal(_root);
 }
 
 // Path: operation
@@ -623,6 +635,212 @@ class TranslationsMenuArticlesEn {
 	String get notFound => 'No articles';
 }
 
+// Path: menu.common
+class TranslationsMenuCommonEn {
+	TranslationsMenuCommonEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Print'
+	String get print => 'Print';
+
+	/// en: 'Export to Excel'
+	String get export => 'Export to Excel';
+
+	/// en: 'Amount (KGS)'
+	String get amountKgs => 'Amount (KGS)';
+
+	/// en: 'Percent'
+	String get percent => 'Percent';
+
+	/// en: '#'
+	String get numberSign => '#';
+
+	/// en: 'No data for selected month'
+	String get noDataForSelectedMonth => 'No data for selected month';
+
+	/// en: 'Untitled'
+	String get untitled => 'Untitled';
+}
+
+// Path: menu.months
+class TranslationsMenuMonthsEn {
+	TranslationsMenuMonthsEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'January'
+	String get january => 'January';
+
+	/// en: 'February'
+	String get february => 'February';
+
+	/// en: 'March'
+	String get march => 'March';
+
+	/// en: 'April'
+	String get april => 'April';
+
+	/// en: 'May'
+	String get may => 'May';
+
+	/// en: 'June'
+	String get june => 'June';
+
+	/// en: 'July'
+	String get july => 'July';
+
+	/// en: 'August'
+	String get august => 'August';
+
+	/// en: 'September'
+	String get september => 'September';
+
+	/// en: 'October'
+	String get october => 'October';
+
+	/// en: 'November'
+	String get november => 'November';
+
+	/// en: 'December'
+	String get december => 'December';
+}
+
+// Path: menu.reportsByArticle
+class TranslationsMenuReportsByArticleEn {
+	TranslationsMenuReportsByArticleEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Reports by articles'
+	String get title => 'Reports by articles';
+
+	/// en: 'Report_by_articles_month_'
+	String get filenamePrefix => 'Report_by_articles_month_';
+
+	late final TranslationsMenuReportsByArticleMarkersEn markers = TranslationsMenuReportsByArticleMarkersEn.internal(_root);
+	late final TranslationsMenuReportsByArticleSectionsEn sections = TranslationsMenuReportsByArticleSectionsEn.internal(_root);
+}
+
+// Path: menu.article
+class TranslationsMenuArticleEn {
+	TranslationsMenuArticleEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Name'
+	String get name => 'Name';
+
+	/// en: 'Income'
+	String get income => 'Income';
+
+	/// en: 'Expense'
+	String get expense => 'Expense';
+}
+
+// Path: menu.incomeExpenseSummary
+class TranslationsMenuIncomeExpenseSummaryEn {
+	TranslationsMenuIncomeExpenseSummaryEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Overall position'
+	String get title => 'Overall position';
+
+	/// en: 'Currency'
+	String get currency => 'Currency';
+
+	/// en: 'Income'
+	String get income => 'Income';
+
+	/// en: 'Expense'
+	String get expense => 'Expense';
+
+	/// en: 'Balance'
+	String get balance => 'Balance';
+
+	/// en: 'Balance in KGS'
+	String get balanceKgz => 'Balance in KGS';
+
+	/// en: 'Exchange rate'
+	String get exchangeRate => 'Exchange rate';
+}
+
+// Path: menu.monthlyReport
+class TranslationsMenuMonthlyReportEn {
+	TranslationsMenuMonthlyReportEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Monthly report'
+	String get title => 'Monthly report';
+
+	/// en: 'Income'
+	String get incomeTitle => 'Income';
+
+	/// en: 'Monthly_report_'
+	String get filenamePrefix => 'Monthly_report_';
+
+	late final TranslationsMenuMonthlyReportTableEn table = TranslationsMenuMonthlyReportTableEn.internal(_root);
+
+	/// en: 'No data for selected month'
+	String get noData => 'No data for selected month';
+}
+
+// Path: menu.metrics
+class TranslationsMenuMetricsEn {
+	TranslationsMenuMetricsEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Metrics'
+	String get title => 'Metrics';
+
+	/// en: 'Yearly report'
+	String get yearlyReportTitle => 'Yearly report';
+
+	/// en: 'Yearly_report'
+	String get yearlyReportFilename => 'Yearly_report';
+
+	/// en: 'Year'
+	String get year => 'Year';
+
+	/// en: 'Income (KGZ)'
+	String get incomeKgz => 'Income (KGZ)';
+
+	/// en: 'Expense (KGZ)'
+	String get expenseKgz => 'Expense (KGZ)';
+
+	/// en: 'Net income (KGZ)'
+	String get netIncomeKgz => 'Net income (KGZ)';
+
+	/// en: 'by years'
+	String get byYears => 'by years';
+
+	/// en: 'Select period'
+	String get selectPeriod => 'Select period';
+
+	/// en: 'Table of income and expenses by year'
+	String get tableTitle => 'Table of income and expenses by year';
+
+	/// en: 'Chart of income and expenses by year'
+	String get chartTitle => 'Chart of income and expenses by year';
+}
+
 // Path: account.account.account
 class TranslationsAccountAccountAccountEn {
 	TranslationsAccountAccountAccountEn.internal(this._root);
@@ -690,6 +908,63 @@ class TranslationsAccountAccountErrorsEn {
 
 	/// en: 'An account with this name already exists'
 	String get accountAlreadyExists => 'An account with this name already exists';
+}
+
+// Path: menu.reportsByArticle.markers
+class TranslationsMenuReportsByArticleMarkersEn {
+	TranslationsMenuReportsByArticleMarkersEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: '--- INCOME ---'
+	String get income => '--- INCOME ---';
+
+	/// en: '--- EXPENSE ---'
+	String get expense => '--- EXPENSE ---';
+}
+
+// Path: menu.reportsByArticle.sections
+class TranslationsMenuReportsByArticleSectionsEn {
+	TranslationsMenuReportsByArticleSectionsEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Top income categories'
+	String get incomeTitle => 'Top income categories';
+
+	/// en: 'Top expense categories'
+	String get expenseTitle => 'Top expense categories';
+
+	/// en: 'Income category'
+	String get incomeNameCol => 'Income category';
+
+	/// en: 'Expense category'
+	String get expenseNameCol => 'Expense category';
+}
+
+// Path: menu.monthlyReport.table
+class TranslationsMenuMonthlyReportTableEn {
+	TranslationsMenuMonthlyReportTableEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Month'
+	String get month => 'Month';
+
+	/// en: 'Income (KGS)'
+	String get income => 'Income (KGS)';
+
+	/// en: 'Expense (KGS)'
+	String get expense => 'Expense (KGS)';
+
+	/// en: 'Net income (KGS)'
+	String get balance => 'Net income (KGS)';
 }
 
 /// Flat map(s) containing all translations.
@@ -793,7 +1068,7 @@ extension on Translations {
 			case 'menu.operationsByAccounts': return 'By accounts';
 			case 'menu.reports': return 'Reports';
 			case 'menu.reportsByArticles': return 'Reports by articles';
-			case 'menu.reportsIncomeExpenseSummary': return 'Overall income & expense position';
+			case 'menu.reportsIncomeExpenseSummary': return 'Overall position';
 			case 'menu.reportsMonthly': return 'Monthly income & expense report';
 			case 'menu.reportsMetrics': return 'Metrics';
 			case 'menu.settings': return 'Settings';
@@ -841,6 +1116,63 @@ extension on Translations {
 			case 'menu.articles.notFound': return 'No articles';
 			case 'menu.income': return 'Income';
 			case 'menu.expense': return 'Expense';
+			case 'menu.common.print': return 'Print';
+			case 'menu.common.export': return 'Export to Excel';
+			case 'menu.common.amountKgs': return 'Amount (KGS)';
+			case 'menu.common.percent': return 'Percent';
+			case 'menu.common.numberSign': return '#';
+			case 'menu.common.noDataForSelectedMonth': return 'No data for selected month';
+			case 'menu.common.untitled': return 'Untitled';
+			case 'menu.months.january': return 'January';
+			case 'menu.months.february': return 'February';
+			case 'menu.months.march': return 'March';
+			case 'menu.months.april': return 'April';
+			case 'menu.months.may': return 'May';
+			case 'menu.months.june': return 'June';
+			case 'menu.months.july': return 'July';
+			case 'menu.months.august': return 'August';
+			case 'menu.months.september': return 'September';
+			case 'menu.months.october': return 'October';
+			case 'menu.months.november': return 'November';
+			case 'menu.months.december': return 'December';
+			case 'menu.reportsByArticle.title': return 'Reports by articles';
+			case 'menu.reportsByArticle.filenamePrefix': return 'Report_by_articles_month_';
+			case 'menu.reportsByArticle.markers.income': return '--- INCOME ---';
+			case 'menu.reportsByArticle.markers.expense': return '--- EXPENSE ---';
+			case 'menu.reportsByArticle.sections.incomeTitle': return 'Top income categories';
+			case 'menu.reportsByArticle.sections.expenseTitle': return 'Top expense categories';
+			case 'menu.reportsByArticle.sections.incomeNameCol': return 'Income category';
+			case 'menu.reportsByArticle.sections.expenseNameCol': return 'Expense category';
+			case 'menu.article.name': return 'Name';
+			case 'menu.article.income': return 'Income';
+			case 'menu.article.expense': return 'Expense';
+			case 'menu.incomeExpenseSummary.title': return 'Overall position';
+			case 'menu.incomeExpenseSummary.currency': return 'Currency';
+			case 'menu.incomeExpenseSummary.income': return 'Income';
+			case 'menu.incomeExpenseSummary.expense': return 'Expense';
+			case 'menu.incomeExpenseSummary.balance': return 'Balance';
+			case 'menu.incomeExpenseSummary.balanceKgz': return 'Balance in KGS';
+			case 'menu.incomeExpenseSummary.exchangeRate': return 'Exchange rate';
+			case 'menu.noData': return 'No data';
+			case 'menu.monthlyReport.title': return 'Monthly report';
+			case 'menu.monthlyReport.incomeTitle': return 'Income';
+			case 'menu.monthlyReport.filenamePrefix': return 'Monthly_report_';
+			case 'menu.monthlyReport.table.month': return 'Month';
+			case 'menu.monthlyReport.table.income': return 'Income (KGS)';
+			case 'menu.monthlyReport.table.expense': return 'Expense (KGS)';
+			case 'menu.monthlyReport.table.balance': return 'Net income (KGS)';
+			case 'menu.monthlyReport.noData': return 'No data for selected month';
+			case 'menu.metrics.title': return 'Metrics';
+			case 'menu.metrics.yearlyReportTitle': return 'Yearly report';
+			case 'menu.metrics.yearlyReportFilename': return 'Yearly_report';
+			case 'menu.metrics.year': return 'Year';
+			case 'menu.metrics.incomeKgz': return 'Income (KGZ)';
+			case 'menu.metrics.expenseKgz': return 'Expense (KGZ)';
+			case 'menu.metrics.netIncomeKgz': return 'Net income (KGZ)';
+			case 'menu.metrics.byYears': return 'by years';
+			case 'menu.metrics.selectPeriod': return 'Select period';
+			case 'menu.metrics.tableTitle': return 'Table of income and expenses by year';
+			case 'menu.metrics.chartTitle': return 'Chart of income and expenses by year';
 			case 'operation.operation': return 'Operations';
 			case 'operation.selectPeriod': return 'Select period';
 			case 'operation.filter': return 'Filter';

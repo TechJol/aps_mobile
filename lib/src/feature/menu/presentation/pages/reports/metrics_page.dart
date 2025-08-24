@@ -1,11 +1,15 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:math';
+
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
+import 'package:intl/intl.dart'; // <— добавлено для форматирования оси Y
 
 class MetricsPage extends StatefulWidget {
   const MetricsPage({super.key});
@@ -37,7 +41,7 @@ class _MetricsPageState extends State<MetricsPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Показатели',
+        title: t.menu.metrics.title,
         backgroundColor: AppColors.whiteColor,
       ),
       body: BlocListener<MenuCubit, MenuState>(
@@ -55,13 +59,13 @@ class _MetricsPageState extends State<MetricsPage> {
                 Row(
                   children: [
                     OutlinedButtonWidget(
-                      text: 'Распечатать',
+                      text: t.menu.common.print,
                       onPressed: () {
                         final headers = [
-                          'Год',
-                          'Доход (KGZ)',
-                          'Расход (KGZ)',
-                          'Чистый доход (KGZ)',
+                          t.menu.metrics.year,
+                          t.menu.metrics.incomeKgz,
+                          t.menu.metrics.expenseKgz,
+                          t.menu.metrics.netIncomeKgz,
                         ];
 
                         final rows =
@@ -76,7 +80,7 @@ class _MetricsPageState extends State<MetricsPage> {
 
                         LocalService().printReportAsPdf(
                           context: context,
-                          title: 'Годовой отчет',
+                          title: t.menu.metrics.yearlyReportTitle,
                           headers: headers,
                           rows: rows,
                         );
@@ -84,28 +88,26 @@ class _MetricsPageState extends State<MetricsPage> {
                     ),
                     12.w,
                     OutlinedButtonWidget(
-                      text: 'Скачать в Excel',
+                      text: t.menu.common.export,
                       onPressed: () {
                         final headers = [
-                          'Год',
-                          'Доход (KGZ)',
-                          'Расход (KGZ)',
-                          'Чистый доход (KGZ)',
+                          t.menu.metrics.year,
+                          t.menu.metrics.incomeKgz,
+                          t.menu.metrics.expenseKgz,
+                          t.menu.metrics.netIncomeKgz,
                         ];
                         final rows =
-                            yearlyData
-                                .map(
-                                  (row) => [
-                                    row['year'].toString(),
-                                    row['income'].toString(),
-                                    row['expense'].toString(),
-                                    row['balance'].toString(),
-                                  ],
-                                )
-                                .toList();
+                            yearlyData.map((row) {
+                              return [
+                                row['year'].toString(),
+                                row['income'].toString(),
+                                row['expense'].toString(),
+                                row['balance'].toString(),
+                              ];
+                            }).toList();
 
                         LocalService().exportToExcelGeneric(
-                          fileName: 'Годовой_отчет',
+                          fileName: t.menu.metrics.yearlyReportFilename,
                           headers: headers,
                           rows: rows,
                           context: context,
@@ -117,33 +119,27 @@ class _MetricsPageState extends State<MetricsPage> {
               20.h,
               if (hasYearlyData)
                 DropDownFormField(
-                  items: ['по годам'],
-                  label: 'Выберите период',
-                  value: 'по годам',
+                  items: [t.menu.metrics.byYears],
+                  label: t.menu.metrics.selectPeriod,
+                  value: t.menu.metrics.byYears,
                   onChanged: (value) {},
                 ),
               40.h,
               if (hasYearlyData)
-                Text(
-                  'Таблица доходов и расходов по годам',
-                  style: AppTextStyles.f16w500,
-                ),
+                Text(t.menu.metrics.tableTitle, style: AppTextStyles.f16w500),
               20.h,
               if (hasYearlyData) _buildMetrics(),
               60.h,
               if (hasYearlyData)
-                Text(
-                  'График доходов и расходов по годам',
-                  style: AppTextStyles.f16w500,
-                ),
+                Text(t.menu.metrics.chartTitle, style: AppTextStyles.f16w500),
               30.h,
               if (hasYearlyData)
                 _buildGraphic()
               else
-                const Center(
+                Center(
                   child: Padding(
-                    padding: EdgeInsets.only(top: 50),
-                    child: Text('Нет данных', style: AppTextStyles.f16w500),
+                    padding: const EdgeInsets.only(top: 50),
+                    child: Text(t.menu.noData, style: AppTextStyles.f16w500),
                   ),
                 ),
             ],
@@ -182,19 +178,17 @@ class _MetricsPageState extends State<MetricsPage> {
                 3: FixedColumnWidth(balanceW),
               },
               children: [
-                // Шапка
                 TableRow(
                   decoration: const BoxDecoration(
                     color: AppColors.primaryColorLight,
                   ),
                   children: [
-                    _cell('Год', isHeader: true),
-                    _cell('Доход (KGZ)', isHeader: true),
-                    _cell('Расход (KGZ)', isHeader: true),
-                    _cell('Чистый доход (KGZ)', isHeader: true),
+                    _cell(t.menu.metrics.year, isHeader: true),
+                    _cell(t.menu.metrics.incomeKgz, isHeader: true),
+                    _cell(t.menu.metrics.expenseKgz, isHeader: true),
+                    _cell(t.menu.metrics.netIncomeKgz, isHeader: true),
                   ],
                 ),
-                // Данные
                 ...yearlyData.map((row) {
                   return TableRow(
                     children: [
@@ -241,6 +235,7 @@ class _MetricsPageState extends State<MetricsPage> {
     );
   }
 
+  /// === НОВЫЙ график с «умной» осью Y (как в Monthly report) ===
   Widget _buildGraphic() {
     const double barWidth = 170;
     const double groupSpacing = 20;
@@ -251,16 +246,26 @@ class _MetricsPageState extends State<MetricsPage> {
         yearlyData.map((e) {
           final income =
               Decimal.tryParse(e['income'].toString()) ?? Decimal.zero;
-          return income.toDouble(); // Или сумма с expense, если хочешь
+          return income.toDouble();
         }).toList();
 
-    final colors = [
-      const Color(0xFF7B37B5),
-      const Color(0xFFF219A2),
-      const Color(0xFF156CB1),
-      const Color(0xFFCCC9AA),
-      const Color(0xFF1EBF93),
-      const Color(0xFFFCA12C),
+    // Автоподбор красивого максимума и шага
+    final double rawMax =
+        values.isNotEmpty ? values.reduce((a, b) => a > b ? a : b) : 0;
+    final double niceMax = _niceCeil(rawMax * 1.15); // +15% запас сверху
+    final double tickStep = _niceStep(niceMax, targetTicks: 6);
+
+    // Компактное форматирование по текущей локали
+    final locale = Localizations.localeOf(context).languageCode;
+    final compact = NumberFormat.compact(locale: locale);
+
+    final colors = const [
+      Color(0xFF7B37B5),
+      Color(0xFFF219A2),
+      Color(0xFF156CB1),
+      Color(0xFFCCC9AA),
+      Color(0xFF1EBF93),
+      Color(0xFFFCA12C),
     ];
 
     double chartWidth =
@@ -273,10 +278,9 @@ class _MetricsPageState extends State<MetricsPage> {
         height: 400,
         child: BarChart(
           BarChartData(
-            maxY:
-                (values.isNotEmpty
-                    ? values.reduce((a, b) => a > b ? a : b) * 1.2
-                    : 1000),
+            minY: 0,
+            maxY: niceMax > 0 ? niceMax : 1,
+            groupsSpace: groupSpacing,
             barGroups: List.generate(years.length, (index) {
               return BarChartGroupData(
                 x: index,
@@ -294,12 +298,9 @@ class _MetricsPageState extends State<MetricsPage> {
             gridData: FlGridData(
               show: true,
               drawVerticalLine: false,
-              horizontalInterval: 20000,
+              horizontalInterval: tickStep,
               getDrawingHorizontalLine:
-                  (value) => FlLine(
-                    color: Colors.grey.withOpacity(0.3),
-                    strokeWidth: 1,
-                  ),
+                  (_) => const FlLine(color: Color(0xFFEAEAEA), strokeWidth: 1),
             ),
             titlesData: FlTitlesData(
               bottomTitles: AxisTitles(
@@ -317,21 +318,45 @@ class _MetricsPageState extends State<MetricsPage> {
               leftTitles: AxisTitles(
                 sideTitles: SideTitles(
                   showTitles: true,
-                  interval: 20000,
-                  reservedSize: 70,
-                  getTitlesWidget: (value, _) => Text(value.toInt().toString()),
+                  interval: tickStep,
+                  reservedSize: 60,
+                  getTitlesWidget: (value, _) => Text(compact.format(value)),
                 ),
               ),
-              rightTitles: AxisTitles(
+              rightTitles: const AxisTitles(
                 sideTitles: SideTitles(showTitles: false),
               ),
-              topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              topTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
             ),
-            groupsSpace: groupSpacing,
           ),
         ),
       ),
     );
+  }
+
+  // === Вспомогательные функции для красивых делений оси Y ===
+  double _niceCeil(double x) {
+    if (x <= 0) return 1;
+    final exp = (log(x) / ln10).floor();
+    final base = pow(10, exp).toDouble();
+    for (final m in [1, 2, 5, 10]) {
+      final candidate = m * base;
+      if (candidate >= x) return candidate.toDouble();
+    }
+    return 10 * base;
+  }
+
+  double _niceStep(double maxValue, {int targetTicks = 5}) {
+    if (maxValue <= 0) return 1;
+    final raw = maxValue / targetTicks;
+    final exp = (log(raw) / ln10).floor();
+    final base = pow(10, exp).toDouble();
+    final candidates =
+        [1, 2, 5, 10].map((m) => m * base).toList()
+          ..sort((a, b) => (a - raw).abs().compareTo((b - raw).abs()));
+    return candidates.first.toDouble();
   }
 
   void _prepareData(List<AllTransactionsModel> transactions) {
@@ -375,56 +400,4 @@ class _MetricsPageState extends State<MetricsPage> {
       yearlyData = result;
     });
   }
-
-  // void exportToExcel() async {
-  //   final excel = Excel.createExcel();
-  //   final sheet = excel['Отчет'];
-
-  //   // Заголовки
-  //   sheet.appendRow([
-  //     TextCellValue('Год'),
-  //     TextCellValue('Доход (KGZ)'),
-  //     TextCellValue('Расход (KGZ)'),
-  //     TextCellValue('Чистый доход (KGZ)'),
-  //   ]);
-
-  //   // Данные
-  //   for (final row in yearlyData) {
-  //     sheet.appendRow([
-  //       TextCellValue(row['year'].toString()),
-  //       TextCellValue(row['income'].toString()),
-  //       TextCellValue(row['expense'].toString()),
-  //       TextCellValue(row['balance'].toString()),
-  //     ]);
-  //   }
-
-  //   // Сохранение в байты
-  //   final fileBytes = excel.save();
-  //   if (fileBytes == null) return;
-
-  //   // Получение пути
-  //   final dir = await getApplicationDocumentsDirectory();
-  //   final file = File('${dir.path}/Отчет.xlsx');
-
-  //   await file.writeAsBytes(fileBytes, flush: true);
-
-  //   // Android: разрешения
-  //   if (Platform.isAndroid) {
-  //     final status = await Permission.storage.request();
-  //     if (!status.isGranted) {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         const SnackBar(content: Text('Нет разрешения на запись файла')),
-  //       );
-  //       return;
-  //     }
-  //   }
-
-  //   // Показать SnackBar
-  //   ScaffoldMessenger.of(
-  //     context,
-  //   ).showSnackBar(const SnackBar(content: Text('Файл успешно сохранен!')));
-
-  //   // Поделиться файлом
-  //   await Share.shareXFiles([XFile(file.path)]);
-  // }
 }

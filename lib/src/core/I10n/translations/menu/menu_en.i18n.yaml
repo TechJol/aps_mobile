@@ -7,7 +7,7 @@ operationsByAccounts: "By accounts"
 
 reports: "Reports"
 reportsByArticles: "Reports by articles"
-reportsIncomeExpenseSummary: "Overall income & expense position"
+reportsIncomeExpenseSummary: "Overall position"
 reportsMonthly: "Monthly income & expense report"
 reportsMetrics: "Metrics"
 
@@ -65,3 +65,77 @@ articles:
   notFound: "No articles"
 income: "Income"
 expense: "Expense"
+
+common:
+  print: "Print"
+  export: "Export to Excel"
+  amountKgs: "Amount (KGS)"
+  percent: "Percent"
+  numberSign: "#"
+  noDataForSelectedMonth: "No data for selected month"
+  untitled: "Untitled"
+
+months:
+  january: "January"
+  february: "February"
+  march: "March"
+  april: "April"
+  may: "May"
+  june: "June"
+  july: "July"
+  august: "August"
+  september: "September"
+  october: "October"
+  november: "November"
+  december: "December"
+
+reportsByArticle:
+  title: "Reports by articles"
+  filenamePrefix: "Report_by_articles_month_"
+  markers:
+    income: "--- INCOME ---"
+    expense: "--- EXPENSE ---"
+  sections:
+    incomeTitle: "Top income categories"
+    expenseTitle: "Top expense categories"
+    incomeNameCol: "Income category"
+    expenseNameCol: "Expense category"
+
+article:
+  name: "Name"
+  income: "Income"
+  expense: "Expense"
+
+incomeExpenseSummary:
+  title: "Overall position"
+  currency: "Currency"
+  income: "Income"
+  expense: "Expense"
+  balance: "Balance"
+  balanceKgz: "Balance in KGS"
+  exchangeRate: "Exchange rate"
+noData: "No data"
+
+monthlyReport:
+  title: "Monthly report"
+  incomeTitle: "Income"
+  filenamePrefix: "Monthly_report_"
+  table:
+    month: "Month"
+    income: "Income (KGS)"
+    expense: "Expense (KGS)"
+    balance: "Net income (KGS)"
+  noData: "No data for selected month"
+
+metrics:
+  title: "Metrics"
+  yearlyReportTitle: "Yearly report"
+  yearlyReportFilename: "Yearly_report"
+  year: "Year"
+  incomeKgz: "Income (KGZ)"
+  expenseKgz: "Expense (KGZ)"
+  netIncomeKgz: "Net income (KGZ)"
+  byYears: "by years"
+  selectPeriod: "Select period"
+  tableTitle: "Table of income and expenses by year"
+  chartTitle: "Chart of income and expenses by year"

@@ -175,7 +175,7 @@ class _TranslationsMenuRu extends TranslationsMenuEn {
 	@override String get operationsByAccounts => 'По счетам';
 	@override String get reports => 'Отчеты';
 	@override String get reportsByArticles => 'Отчеты по статьям';
-	@override String get reportsIncomeExpenseSummary => 'Общее положение доходов и расходов';
+	@override String get reportsIncomeExpenseSummary => 'Общее положение';
 	@override String get reportsMonthly => 'Месячный отчет по доходам и расходам';
 	@override String get reportsMetrics => 'Показатели';
 	@override String get settings => 'Настройки';
@@ -194,6 +194,14 @@ class _TranslationsMenuRu extends TranslationsMenuEn {
 	@override late final _TranslationsMenuArticlesRu articles = _TranslationsMenuArticlesRu._(_root);
 	@override String get income => 'Доход';
 	@override String get expense => 'Расход';
+	@override late final _TranslationsMenuCommonRu common = _TranslationsMenuCommonRu._(_root);
+	@override late final _TranslationsMenuMonthsRu months = _TranslationsMenuMonthsRu._(_root);
+	@override late final _TranslationsMenuReportsByArticleRu reportsByArticle = _TranslationsMenuReportsByArticleRu._(_root);
+	@override late final _TranslationsMenuArticleRu article = _TranslationsMenuArticleRu._(_root);
+	@override late final _TranslationsMenuIncomeExpenseSummaryRu incomeExpenseSummary = _TranslationsMenuIncomeExpenseSummaryRu._(_root);
+	@override String get noData => 'Нет данных';
+	@override late final _TranslationsMenuMonthlyReportRu monthlyReport = _TranslationsMenuMonthlyReportRu._(_root);
+	@override late final _TranslationsMenuMetricsRu metrics = _TranslationsMenuMetricsRu._(_root);
 }
 
 // Path: operation
@@ -309,6 +317,118 @@ class _TranslationsMenuArticlesRu extends TranslationsMenuArticlesEn {
 	@override String get notFound => 'Нет статей';
 }
 
+// Path: menu.common
+class _TranslationsMenuCommonRu extends TranslationsMenuCommonEn {
+	_TranslationsMenuCommonRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get print => 'Распечатать';
+	@override String get export => 'Скачать в Excel';
+	@override String get amountKgs => 'Сумма (сом)';
+	@override String get percent => 'Процент';
+	@override String get numberSign => '№';
+	@override String get noDataForSelectedMonth => 'Нет данных за выбранный месяц';
+	@override String get untitled => 'Без названия';
+}
+
+// Path: menu.months
+class _TranslationsMenuMonthsRu extends TranslationsMenuMonthsEn {
+	_TranslationsMenuMonthsRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get january => 'Январь';
+	@override String get february => 'Февраль';
+	@override String get march => 'Март';
+	@override String get april => 'Апрель';
+	@override String get may => 'Май';
+	@override String get june => 'Июнь';
+	@override String get july => 'Июль';
+	@override String get august => 'Август';
+	@override String get september => 'Сентябрь';
+	@override String get october => 'Октябрь';
+	@override String get november => 'Ноябрь';
+	@override String get december => 'Декабрь';
+}
+
+// Path: menu.reportsByArticle
+class _TranslationsMenuReportsByArticleRu extends TranslationsMenuReportsByArticleEn {
+	_TranslationsMenuReportsByArticleRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Отчеты по статьям';
+	@override String get filenamePrefix => 'Отчет_по_статьям_месяц_';
+	@override late final _TranslationsMenuReportsByArticleMarkersRu markers = _TranslationsMenuReportsByArticleMarkersRu._(_root);
+	@override late final _TranslationsMenuReportsByArticleSectionsRu sections = _TranslationsMenuReportsByArticleSectionsRu._(_root);
+}
+
+// Path: menu.article
+class _TranslationsMenuArticleRu extends TranslationsMenuArticleEn {
+	_TranslationsMenuArticleRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get name => 'Название';
+	@override String get income => 'Доход';
+	@override String get expense => 'Расход';
+}
+
+// Path: menu.incomeExpenseSummary
+class _TranslationsMenuIncomeExpenseSummaryRu extends TranslationsMenuIncomeExpenseSummaryEn {
+	_TranslationsMenuIncomeExpenseSummaryRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Общее положение';
+	@override String get currency => 'Валюта';
+	@override String get income => 'Доходы';
+	@override String get expense => 'Расходы';
+	@override String get balance => 'Баланс';
+	@override String get balanceKgz => 'Баланс KGS';
+	@override String get exchangeRate => 'Курс валюты';
+}
+
+// Path: menu.monthlyReport
+class _TranslationsMenuMonthlyReportRu extends TranslationsMenuMonthlyReportEn {
+	_TranslationsMenuMonthlyReportRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Месячный отчет';
+	@override String get incomeTitle => 'Доход';
+	@override String get filenamePrefix => 'Месячный_отчет_';
+	@override late final _TranslationsMenuMonthlyReportTableRu table = _TranslationsMenuMonthlyReportTableRu._(_root);
+	@override String get noData => 'Нет данных за выбранный месяц';
+}
+
+// Path: menu.metrics
+class _TranslationsMenuMetricsRu extends TranslationsMenuMetricsEn {
+	_TranslationsMenuMetricsRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Показатели';
+	@override String get yearlyReportTitle => 'Годовой отчет';
+	@override String get yearlyReportFilename => 'Годовой_отчет';
+	@override String get year => 'Год';
+	@override String get incomeKgz => 'Доход (KGZ)';
+	@override String get expenseKgz => 'Расход (KGZ)';
+	@override String get netIncomeKgz => 'Чистый доход (KGZ)';
+	@override String get byYears => 'по годам';
+	@override String get selectPeriod => 'Выберите период';
+	@override String get tableTitle => 'Таблица доходов и расходов по годам';
+	@override String get chartTitle => 'График доходов и расходов по годам';
+}
+
 // Path: account.account.account
 class _TranslationsAccountAccountAccountRu extends TranslationsAccountAccountAccountEn {
 	_TranslationsAccountAccountAccountRu._(TranslationsRu root) : this._root = root, super.internal(root);
@@ -354,6 +474,43 @@ class _TranslationsAccountAccountErrorsRu extends TranslationsAccountAccountErro
 	@override String get accountNotFound => 'Счет не найден';
 	@override String get notAccounts => 'Нет счетов';
 	@override String get accountAlreadyExists => 'Счет с таким именем уже существует';
+}
+
+// Path: menu.reportsByArticle.markers
+class _TranslationsMenuReportsByArticleMarkersRu extends TranslationsMenuReportsByArticleMarkersEn {
+	_TranslationsMenuReportsByArticleMarkersRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get income => '--- ДОХОД ---';
+	@override String get expense => '--- РАСХОД ---';
+}
+
+// Path: menu.reportsByArticle.sections
+class _TranslationsMenuReportsByArticleSectionsRu extends TranslationsMenuReportsByArticleSectionsEn {
+	_TranslationsMenuReportsByArticleSectionsRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get incomeTitle => 'Основные статьи доходов';
+	@override String get expenseTitle => 'Основные статьи расходов';
+	@override String get incomeNameCol => 'Статья дохода';
+	@override String get expenseNameCol => 'Статья расхода';
+}
+
+// Path: menu.monthlyReport.table
+class _TranslationsMenuMonthlyReportTableRu extends TranslationsMenuMonthlyReportTableEn {
+	_TranslationsMenuMonthlyReportTableRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get month => 'Месяц';
+	@override String get income => 'Доход (KGS)';
+	@override String get expense => 'Расход (KGS)';
+	@override String get balance => 'Чистый доход (KGS)';
 }
 
 /// Flat map(s) containing all translations.
@@ -457,7 +614,7 @@ extension on TranslationsRu {
 			case 'menu.operationsByAccounts': return 'По счетам';
 			case 'menu.reports': return 'Отчеты';
 			case 'menu.reportsByArticles': return 'Отчеты по статьям';
-			case 'menu.reportsIncomeExpenseSummary': return 'Общее положение доходов и расходов';
+			case 'menu.reportsIncomeExpenseSummary': return 'Общее положение';
 			case 'menu.reportsMonthly': return 'Месячный отчет по доходам и расходам';
 			case 'menu.reportsMetrics': return 'Показатели';
 			case 'menu.settings': return 'Настройки';
@@ -505,6 +662,63 @@ extension on TranslationsRu {
 			case 'menu.articles.notFound': return 'Нет статей';
 			case 'menu.income': return 'Доход';
 			case 'menu.expense': return 'Расход';
+			case 'menu.common.print': return 'Распечатать';
+			case 'menu.common.export': return 'Скачать в Excel';
+			case 'menu.common.amountKgs': return 'Сумма (сом)';
+			case 'menu.common.percent': return 'Процент';
+			case 'menu.common.numberSign': return '№';
+			case 'menu.common.noDataForSelectedMonth': return 'Нет данных за выбранный месяц';
+			case 'menu.common.untitled': return 'Без названия';
+			case 'menu.months.january': return 'Январь';
+			case 'menu.months.february': return 'Февраль';
+			case 'menu.months.march': return 'Март';
+			case 'menu.months.april': return 'Апрель';
+			case 'menu.months.may': return 'Май';
+			case 'menu.months.june': return 'Июнь';
+			case 'menu.months.july': return 'Июль';
+			case 'menu.months.august': return 'Август';
+			case 'menu.months.september': return 'Сентябрь';
+			case 'menu.months.october': return 'Октябрь';
+			case 'menu.months.november': return 'Ноябрь';
+			case 'menu.months.december': return 'Декабрь';
+			case 'menu.reportsByArticle.title': return 'Отчеты по статьям';
+			case 'menu.reportsByArticle.filenamePrefix': return 'Отчет_по_статьям_месяц_';
+			case 'menu.reportsByArticle.markers.income': return '--- ДОХОД ---';
+			case 'menu.reportsByArticle.markers.expense': return '--- РАСХОД ---';
+			case 'menu.reportsByArticle.sections.incomeTitle': return 'Основные статьи доходов';
+			case 'menu.reportsByArticle.sections.expenseTitle': return 'Основные статьи расходов';
+			case 'menu.reportsByArticle.sections.incomeNameCol': return 'Статья дохода';
+			case 'menu.reportsByArticle.sections.expenseNameCol': return 'Статья расхода';
+			case 'menu.article.name': return 'Название';
+			case 'menu.article.income': return 'Доход';
+			case 'menu.article.expense': return 'Расход';
+			case 'menu.incomeExpenseSummary.title': return 'Общее положение';
+			case 'menu.incomeExpenseSummary.currency': return 'Валюта';
+			case 'menu.incomeExpenseSummary.income': return 'Доходы';
+			case 'menu.incomeExpenseSummary.expense': return 'Расходы';
+			case 'menu.incomeExpenseSummary.balance': return 'Баланс';
+			case 'menu.incomeExpenseSummary.balanceKgz': return 'Баланс KGS';
+			case 'menu.incomeExpenseSummary.exchangeRate': return 'Курс валюты';
+			case 'menu.noData': return 'Нет данных';
+			case 'menu.monthlyReport.title': return 'Месячный отчет';
+			case 'menu.monthlyReport.incomeTitle': return 'Доход';
+			case 'menu.monthlyReport.filenamePrefix': return 'Месячный_отчет_';
+			case 'menu.monthlyReport.table.month': return 'Месяц';
+			case 'menu.monthlyReport.table.income': return 'Доход (KGS)';
+			case 'menu.monthlyReport.table.expense': return 'Расход (KGS)';
+			case 'menu.monthlyReport.table.balance': return 'Чистый доход (KGS)';
+			case 'menu.monthlyReport.noData': return 'Нет данных за выбранный месяц';
+			case 'menu.metrics.title': return 'Показатели';
+			case 'menu.metrics.yearlyReportTitle': return 'Годовой отчет';
+			case 'menu.metrics.yearlyReportFilename': return 'Годовой_отчет';
+			case 'menu.metrics.year': return 'Год';
+			case 'menu.metrics.incomeKgz': return 'Доход (KGZ)';
+			case 'menu.metrics.expenseKgz': return 'Расход (KGZ)';
+			case 'menu.metrics.netIncomeKgz': return 'Чистый доход (KGZ)';
+			case 'menu.metrics.byYears': return 'по годам';
+			case 'menu.metrics.selectPeriod': return 'Выберите период';
+			case 'menu.metrics.tableTitle': return 'Таблица доходов и расходов по годам';
+			case 'menu.metrics.chartTitle': return 'График доходов и расходов по годам';
 			case 'operation.operation': return 'Операции';
 			case 'operation.selectPeriod': return 'Выбрать период';
 			case 'operation.filter': return 'Фильтр';
