@@ -71,9 +71,10 @@ common:
   export: "Export to Excel"
   amountKgs: "Amount (KGS)"
   percent: "Percent"
-  numberSign: "#"
+  numberSign: "№"
   noDataForSelectedMonth: "No data for selected month"
   untitled: "Untitled"
+  unknown: "Unknown"
 
 months:
   january: "January"
@@ -139,3 +140,55 @@ metrics:
   selectPeriod: "Select period"
   tableTitle: "Table of income and expenses by year"
   chartTitle: "Chart of income and expenses by year"
+
+transactions:
+  title: "All transactions"
+  notFound: "No transactions"
+  printTitle: "Report: All transactions"
+  fileName: "All_transactions"
+  table:
+    amount: "Amount"
+    currency: "Currency"
+    currencyShort: "Cur"
+    date: "Date"
+    type: "Type"
+    account: "Account"
+    article: "Article"
+    counterparty: "Counterparty"
+    comment: "Comment"
+
+forCounterparties:
+  title: "Counterparty categories"
+  noTypes: "No categories available"
+  noPartnersInType: "No counterparties in this category"
+  name: "Name"
+  balance: "Balance"
+  contacts: "Contacts"
+
+accounts:
+  total: "total balance"
+  printTitle: "Accounts report"
+  fileName: "By_accounts"
+  headers:
+    name: "Name"
+    balance: "Balance"
+    accountType: "Account type"
+  type:
+    cash: "Cash"
+    bank: "Bank"
+
+language: 
+  title: "Language"
+  system:  "System"
+  english: "English"
+  russian: "Russian"
+  kyrgyz: "Kyrgyz"
+  select: "Select language"
+
+interface: "Interface"
+
+theme:
+  title: "Theme"
+  light: "Light"
+  dark: "Dark"
+  system: "System"

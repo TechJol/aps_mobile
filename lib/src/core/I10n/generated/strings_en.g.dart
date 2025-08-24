@@ -410,6 +410,15 @@ class TranslationsMenuEn {
 
 	late final TranslationsMenuMonthlyReportEn monthlyReport = TranslationsMenuMonthlyReportEn.internal(_root);
 	late final TranslationsMenuMetricsEn metrics = TranslationsMenuMetricsEn.internal(_root);
+	late final TranslationsMenuTransactionsEn transactions = TranslationsMenuTransactionsEn.internal(_root);
+	late final TranslationsMenuForCounterpartiesEn forCounterparties = TranslationsMenuForCounterpartiesEn.internal(_root);
+	late final TranslationsMenuAccountsEn accounts = TranslationsMenuAccountsEn.internal(_root);
+	late final TranslationsMenuLanguageEn language = TranslationsMenuLanguageEn.internal(_root);
+
+	/// en: 'Interface'
+	String get interface => 'Interface';
+
+	late final TranslationsMenuThemeEn theme = TranslationsMenuThemeEn.internal(_root);
 }
 
 // Path: operation
@@ -655,14 +664,17 @@ class TranslationsMenuCommonEn {
 	/// en: 'Percent'
 	String get percent => 'Percent';
 
-	/// en: '#'
-	String get numberSign => '#';
+	/// en: '№'
+	String get numberSign => '№';
 
 	/// en: 'No data for selected month'
 	String get noDataForSelectedMonth => 'No data for selected month';
 
 	/// en: 'Untitled'
 	String get untitled => 'Untitled';
+
+	/// en: 'Unknown'
+	String get unknown => 'Unknown';
 }
 
 // Path: menu.months
@@ -841,6 +853,125 @@ class TranslationsMenuMetricsEn {
 	String get chartTitle => 'Chart of income and expenses by year';
 }
 
+// Path: menu.transactions
+class TranslationsMenuTransactionsEn {
+	TranslationsMenuTransactionsEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'All transactions'
+	String get title => 'All transactions';
+
+	/// en: 'No transactions'
+	String get notFound => 'No transactions';
+
+	/// en: 'Report: All transactions'
+	String get printTitle => 'Report: All transactions';
+
+	/// en: 'All_transactions'
+	String get fileName => 'All_transactions';
+
+	late final TranslationsMenuTransactionsTableEn table = TranslationsMenuTransactionsTableEn.internal(_root);
+}
+
+// Path: menu.forCounterparties
+class TranslationsMenuForCounterpartiesEn {
+	TranslationsMenuForCounterpartiesEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Counterparty categories'
+	String get title => 'Counterparty categories';
+
+	/// en: 'No categories available'
+	String get noTypes => 'No categories available';
+
+	/// en: 'No counterparties in this category'
+	String get noPartnersInType => 'No counterparties in this category';
+
+	/// en: 'Name'
+	String get name => 'Name';
+
+	/// en: 'Balance'
+	String get balance => 'Balance';
+
+	/// en: 'Contacts'
+	String get contacts => 'Contacts';
+}
+
+// Path: menu.accounts
+class TranslationsMenuAccountsEn {
+	TranslationsMenuAccountsEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'total balance'
+	String get total => 'total balance';
+
+	/// en: 'Accounts report'
+	String get printTitle => 'Accounts report';
+
+	/// en: 'By_accounts'
+	String get fileName => 'By_accounts';
+
+	late final TranslationsMenuAccountsHeadersEn headers = TranslationsMenuAccountsHeadersEn.internal(_root);
+	late final TranslationsMenuAccountsTypeEn type = TranslationsMenuAccountsTypeEn.internal(_root);
+}
+
+// Path: menu.language
+class TranslationsMenuLanguageEn {
+	TranslationsMenuLanguageEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Language'
+	String get title => 'Language';
+
+	/// en: 'System'
+	String get system => 'System';
+
+	/// en: 'English'
+	String get english => 'English';
+
+	/// en: 'Russian'
+	String get russian => 'Russian';
+
+	/// en: 'Kyrgyz'
+	String get kyrgyz => 'Kyrgyz';
+
+	/// en: 'Select language'
+	String get select => 'Select language';
+}
+
+// Path: menu.theme
+class TranslationsMenuThemeEn {
+	TranslationsMenuThemeEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Theme'
+	String get title => 'Theme';
+
+	/// en: 'Light'
+	String get light => 'Light';
+
+	/// en: 'Dark'
+	String get dark => 'Dark';
+
+	/// en: 'System'
+	String get system => 'System';
+}
+
 // Path: account.account.account
 class TranslationsAccountAccountAccountEn {
 	TranslationsAccountAccountAccountEn.internal(this._root);
@@ -965,6 +1096,75 @@ class TranslationsMenuMonthlyReportTableEn {
 
 	/// en: 'Net income (KGS)'
 	String get balance => 'Net income (KGS)';
+}
+
+// Path: menu.transactions.table
+class TranslationsMenuTransactionsTableEn {
+	TranslationsMenuTransactionsTableEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Amount'
+	String get amount => 'Amount';
+
+	/// en: 'Currency'
+	String get currency => 'Currency';
+
+	/// en: 'Cur'
+	String get currencyShort => 'Cur';
+
+	/// en: 'Date'
+	String get date => 'Date';
+
+	/// en: 'Type'
+	String get type => 'Type';
+
+	/// en: 'Account'
+	String get account => 'Account';
+
+	/// en: 'Article'
+	String get article => 'Article';
+
+	/// en: 'Counterparty'
+	String get counterparty => 'Counterparty';
+
+	/// en: 'Comment'
+	String get comment => 'Comment';
+}
+
+// Path: menu.accounts.headers
+class TranslationsMenuAccountsHeadersEn {
+	TranslationsMenuAccountsHeadersEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Name'
+	String get name => 'Name';
+
+	/// en: 'Balance'
+	String get balance => 'Balance';
+
+	/// en: 'Account type'
+	String get accountType => 'Account type';
+}
+
+// Path: menu.accounts.type
+class TranslationsMenuAccountsTypeEn {
+	TranslationsMenuAccountsTypeEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Cash'
+	String get cash => 'Cash';
+
+	/// en: 'Bank'
+	String get bank => 'Bank';
 }
 
 /// Flat map(s) containing all translations.
@@ -1120,9 +1320,10 @@ extension on Translations {
 			case 'menu.common.export': return 'Export to Excel';
 			case 'menu.common.amountKgs': return 'Amount (KGS)';
 			case 'menu.common.percent': return 'Percent';
-			case 'menu.common.numberSign': return '#';
+			case 'menu.common.numberSign': return '№';
 			case 'menu.common.noDataForSelectedMonth': return 'No data for selected month';
 			case 'menu.common.untitled': return 'Untitled';
+			case 'menu.common.unknown': return 'Unknown';
 			case 'menu.months.january': return 'January';
 			case 'menu.months.february': return 'February';
 			case 'menu.months.march': return 'March';
@@ -1173,6 +1374,44 @@ extension on Translations {
 			case 'menu.metrics.selectPeriod': return 'Select period';
 			case 'menu.metrics.tableTitle': return 'Table of income and expenses by year';
 			case 'menu.metrics.chartTitle': return 'Chart of income and expenses by year';
+			case 'menu.transactions.title': return 'All transactions';
+			case 'menu.transactions.notFound': return 'No transactions';
+			case 'menu.transactions.printTitle': return 'Report: All transactions';
+			case 'menu.transactions.fileName': return 'All_transactions';
+			case 'menu.transactions.table.amount': return 'Amount';
+			case 'menu.transactions.table.currency': return 'Currency';
+			case 'menu.transactions.table.currencyShort': return 'Cur';
+			case 'menu.transactions.table.date': return 'Date';
+			case 'menu.transactions.table.type': return 'Type';
+			case 'menu.transactions.table.account': return 'Account';
+			case 'menu.transactions.table.article': return 'Article';
+			case 'menu.transactions.table.counterparty': return 'Counterparty';
+			case 'menu.transactions.table.comment': return 'Comment';
+			case 'menu.forCounterparties.title': return 'Counterparty categories';
+			case 'menu.forCounterparties.noTypes': return 'No categories available';
+			case 'menu.forCounterparties.noPartnersInType': return 'No counterparties in this category';
+			case 'menu.forCounterparties.name': return 'Name';
+			case 'menu.forCounterparties.balance': return 'Balance';
+			case 'menu.forCounterparties.contacts': return 'Contacts';
+			case 'menu.accounts.total': return 'total balance';
+			case 'menu.accounts.printTitle': return 'Accounts report';
+			case 'menu.accounts.fileName': return 'By_accounts';
+			case 'menu.accounts.headers.name': return 'Name';
+			case 'menu.accounts.headers.balance': return 'Balance';
+			case 'menu.accounts.headers.accountType': return 'Account type';
+			case 'menu.accounts.type.cash': return 'Cash';
+			case 'menu.accounts.type.bank': return 'Bank';
+			case 'menu.language.title': return 'Language';
+			case 'menu.language.system': return 'System';
+			case 'menu.language.english': return 'English';
+			case 'menu.language.russian': return 'Russian';
+			case 'menu.language.kyrgyz': return 'Kyrgyz';
+			case 'menu.language.select': return 'Select language';
+			case 'menu.interface': return 'Interface';
+			case 'menu.theme.title': return 'Theme';
+			case 'menu.theme.light': return 'Light';
+			case 'menu.theme.dark': return 'Dark';
+			case 'menu.theme.system': return 'System';
 			case 'operation.operation': return 'Operations';
 			case 'operation.selectPeriod': return 'Select period';
 			case 'operation.filter': return 'Filter';

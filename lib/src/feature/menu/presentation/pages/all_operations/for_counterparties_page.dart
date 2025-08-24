@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Категории контрагентов',
+        title: t.menu.forCounterparties.title,
         backgroundColor: AppColors.whiteColor,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
@@ -37,7 +38,7 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
             return const Center(child: CircularProgressIndicator());
           }
           if (state is MenuError) {
-            return Center(child: Text('Ошибка: ${state.message}'));
+            return Center(child: Text('${t.menu.error}: ${state.message}'));
           }
           if (state is MenuTransactionsWithAccountsSuccess) {
             final partners = state.partners;
@@ -45,7 +46,7 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
             final balances = state.partnerBalances;
 
             if (partnerTypes.isEmpty) {
-              return const Center(child: Text('Нет доступных категорий'));
+              return Center(child: Text(t.menu.forCounterparties.noTypes));
             }
 
             if (activeType == null ||
@@ -64,26 +65,30 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children:
-                          partnerTypes.map((type) {
-                            return categoryButton(
-                              label: type.name,
-                              isActive: activeType == type.id,
-                              onTap: () {
-                                setState(() {
-                                  activeType = type.id!;
-                                  currentPage = 1;
-                                });
-                              },
-                            );
-                          }).toList(),
+                          partnerTypes
+                              .map(
+                                (type) => categoryButton(
+                                  label: type.name,
+                                  isActive: activeType == type.id,
+                                  onTap: () {
+                                    setState(() {
+                                      activeType = type.id!;
+                                      currentPage = 1;
+                                    });
+                                  },
+                                ),
+                              )
+                              .toList(),
                     ),
                   ),
                   20.h,
                   filteredPartners.isEmpty
-                      ? const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 60),
+                      ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 60),
                         child: Center(
-                          child: Text('Нет контрагентов в этой категории'),
+                          child: Text(
+                            t.menu.forCounterparties.noPartnersInType,
+                          ),
                         ),
                       )
                       : _buildTableWithPagination(
@@ -140,15 +145,16 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
 
     // Строки таблицы
     final tableRows = <TableRow>[];
+
     // Заголовок
     tableRows.add(
       TableRow(
         decoration: const BoxDecoration(color: AppColors.primaryColorLight),
         children: [
-          cell('№', isHeader: true),
-          cell('Имя', isHeader: true),
-          cell('Баланс', isHeader: true),
-          cell('Контакты', isHeader: true),
+          cell(t.menu.common.numberSign, isHeader: true),
+          cell(t.menu.forCounterparties.name, isHeader: true),
+          cell(t.menu.forCounterparties.balance, isHeader: true),
+          cell(t.menu.forCounterparties.contacts, isHeader: true),
         ],
       ),
     );
@@ -160,6 +166,7 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
           children: [
             cell('${data.indexOf(partner) + 1}'),
             cell(partner.name),
+            // оставляю твою логику без изменений
             cell(balances[partner.id]?.toStringAsFixed(2) ?? '0.00'),
             cell(partner.contactInfo ?? ''),
           ],

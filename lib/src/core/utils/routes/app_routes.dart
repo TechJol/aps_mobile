@@ -45,6 +45,8 @@ class AppRoutes {
 
   static const profile = 'profile';
 
+  static const settingsApp = 'settingsApp';
+
   /* <---- Account -----> */
   static const moreinfo = 'moreinfo';
 }

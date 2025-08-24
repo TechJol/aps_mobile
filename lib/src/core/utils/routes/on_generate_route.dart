@@ -132,6 +132,9 @@ class RouteGenerator {
       case AppRoutes.profile:
         return CupertinoPageRoute(builder: (_) => ProfilePage());
 
+      case AppRoutes.settingsApp:
+        return CupertinoPageRoute(builder: (_) => SettingsAppPage());
+
       case AppRoutes.moreinfo:
         {
           final args = settings.arguments;

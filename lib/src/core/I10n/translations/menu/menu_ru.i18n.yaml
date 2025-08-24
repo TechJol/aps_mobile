@@ -74,6 +74,7 @@ common:
   numberSign: "№"
   noDataForSelectedMonth: "Нет данных за выбранный месяц"
   untitled: "Без названия"
+  unknown: "Неизвестно"
 
 months:
   january: "Январь"
@@ -139,3 +140,55 @@ metrics:
   selectPeriod: "Выберите период"
   tableTitle: "Таблица доходов и расходов по годам"
   chartTitle: "График доходов и расходов по годам"
+
+transactions:
+  title: "Все транзакции"
+  notFound: "Нет транзакций"
+  printTitle: "Отчет по всем транзакциям"
+  fileName: "Все_транзакции"
+  table:
+    amount: "Сумма"
+    currency: "Валюта"
+    currencyShort: "Вл"
+    date: "Дата"
+    type: "Тип"
+    account: "Счет"
+    article: "Статья"
+    counterparty: "Контрагент"
+    comment: "Комментарий"
+
+forCounterparties:
+  title: "Категории контрагентов"
+  noTypes: "Нет доступных категорий"
+  noPartnersInType: "Нет контрагентов в этой категории"
+  name: "Имя"
+  balance: "Баланс"
+  contacts: "Контакты"
+
+accounts:
+  total: "общий баланс"
+  printTitle: "Отчет по счетам"
+  fileName: "По_счетам"
+  headers:
+    name: "Название"
+    balance: "Баланс"
+    accountType: "Тип счета"
+  type:
+    cash: "Касса"
+    bank: "Банк"
+
+language: 
+  title: "Язык"
+  system: "Системный"
+  english: "Английский"
+  russian: "Русский"
+  kyrgyz: "Кыргызский"
+  select: "Выберите язык"
+
+interface: "Интерфейс"
+
+theme:
+  title: "Тема"
+  light: "Светлый"
+  dark: "Темный"
+  system: "Системный"

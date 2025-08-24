@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,6 @@ class _TransactionsPageState extends State<TransactionsPage> {
   void initState() {
     super.initState();
     // загружаем реальные данные
-    // context.read<MenuCubit>().getTransactions();
     context.read<MenuCubit>().getTransactionsWithAccounts();
   }
 
@@ -42,7 +42,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Все транзакции',
+        title: t.menu.transactions.title,
         backgroundColor: AppColors.whiteColor,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
@@ -51,7 +51,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
             return const Center(child: CircularProgressIndicator());
           }
           if (state is MenuError) {
-            return Center(child: Text('Ошибка: ${state.message}'));
+            return Center(child: Text('${t.menu.error}: ${state.message}'));
           }
           if (state is MenuTransactionsWithAccountsSuccess) {
             final transactions = state.transactions;
@@ -59,7 +59,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
             final reasons = state.reasons;
 
             if (transactions.isEmpty) {
-              return const Center(child: Text('Нет транзакций'));
+              return Center(child: Text(t.menu.transactions.notFound));
             }
             return _buildTableWithPagination(
               transactions,
@@ -88,7 +88,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
             (acc) => acc.id == id,
             orElse:
                 () => AccountModel(
-                  name: 'Неизвестно',
+                  name: t.menu.common.unknown,
                   accountType: '',
                   company: 0,
                 ),
@@ -102,7 +102,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
             (reason) => reason.id == id,
             orElse:
                 () => IncomeExpenseReasons(
-                  name: 'Неизвестно',
+                  name: t.menu.common.unknown,
                   type: '',
                   company: 0,
                 ),
@@ -114,7 +114,8 @@ class _TransactionsPageState extends State<TransactionsPage> {
       return partners
           .firstWhere(
             (p) => p.id == id,
-            orElse: () => PartnersModel(name: 'Неизвестно', company: 0),
+            orElse:
+                () => PartnersModel(name: t.menu.common.unknown, company: 0),
           )
           .name;
     }
@@ -129,11 +130,11 @@ class _TransactionsPageState extends State<TransactionsPage> {
     const colW = {
       0: FixedColumnWidth(50), // №
       1: FixedColumnWidth(100), // Сумма
-      2: FixedColumnWidth(50), // Вл
+      2: FixedColumnWidth(50), // Валюта (кратко)
       3: FixedColumnWidth(90), // Дата
       4: FixedColumnWidth(70), // Тип
       5: FixedColumnWidth(120), // Счет
-      6: FixedColumnWidth(150), // Статьи
+      6: FixedColumnWidth(150), // Статья
       7: FixedColumnWidth(150), // Контрагент
       8: FixedColumnWidth(200), // Комментарий
     };
@@ -165,15 +166,15 @@ class _TransactionsPageState extends State<TransactionsPage> {
       TableRow(
         decoration: const BoxDecoration(color: AppColors.primaryColorLight),
         children: [
-          cell('№', isHeader: true),
-          cell('Сумма', isHeader: true),
-          cell('Вл', isHeader: true),
-          cell('Дата', isHeader: true),
-          cell('Тип', isHeader: true),
-          cell('Счет', isHeader: true),
-          cell('Статьи', isHeader: true),
-          cell('Контрагент', isHeader: true),
-          cell('Комментарий', isHeader: true),
+          cell(t.menu.common.numberSign, isHeader: true),
+          cell(t.menu.transactions.table.amount, isHeader: true),
+          cell(t.menu.transactions.table.currencyShort, isHeader: true),
+          cell(t.menu.transactions.table.date, isHeader: true),
+          cell(t.menu.transactions.table.type, isHeader: true),
+          cell(t.menu.transactions.table.account, isHeader: true),
+          cell(t.menu.transactions.table.article, isHeader: true),
+          cell(t.menu.transactions.table.counterparty, isHeader: true),
+          cell(t.menu.transactions.table.comment, isHeader: true),
         ],
       ),
     );
@@ -191,7 +192,11 @@ class _TransactionsPageState extends State<TransactionsPage> {
                   ? DateFormat('dd.MM.yyyy').format(DateTime.parse(tx.date!))
                   : '',
             ),
-            cell(tx.transactionType == 'income' ? 'Приход' : 'Расход'),
+            cell(
+              tx.transactionType == 'income'
+                  ? t.menu.articles.income
+                  : t.menu.articles.expense,
+            ),
             cell(getAccountName(tx.account ?? 0)),
             cell(getReasonName(tx.incomeExpenseReason ?? 0)),
             cell(getPartnerName(tx.partners ?? 0)),
@@ -209,18 +214,18 @@ class _TransactionsPageState extends State<TransactionsPage> {
           Row(
             children: [
               OutlinedButtonWidget(
-                text: 'Распечатать',
+                text: t.menu.common.print,
                 onPressed: () {
                   final headers = [
-                    '№',
-                    'Сумма',
-                    'Валюта',
-                    'Дата',
-                    'Тип',
-                    'Счет',
-                    'Статья',
-                    'Контрагент',
-                    'Комментарий',
+                    t.menu.common.numberSign,
+                    t.menu.transactions.table.amount,
+                    t.menu.transactions.table.currency,
+                    t.menu.transactions.table.date,
+                    t.menu.transactions.table.type,
+                    t.menu.transactions.table.account,
+                    t.menu.transactions.table.article,
+                    t.menu.transactions.table.counterparty,
+                    t.menu.transactions.table.comment,
                   ];
 
                   final rows =
@@ -236,7 +241,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
                                 'dd.MM.yyyy',
                               ).format(DateTime.parse(tx.date!))
                               : '',
-                          tx.transactionType ?? '',
+                          tx.transactionType == 'income'
+                              ? t.menu.articles.income
+                              : t.menu.articles.expense,
                           getAccountName(tx.account ?? 0),
                           getReasonName(tx.incomeExpenseReason ?? 0),
                           getPartnerName(tx.partners ?? 0),
@@ -246,7 +253,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
 
                   _localService.printReportAsPdf(
                     context: context,
-                    title: 'Отчет по всем транзакциям',
+                    title: t.menu.transactions.printTitle,
                     headers: headers,
                     rows: rows,
                   );
@@ -254,18 +261,18 @@ class _TransactionsPageState extends State<TransactionsPage> {
               ),
               12.w,
               OutlinedButtonWidget(
-                text: 'Скачать в Excel',
+                text: t.menu.common.export,
                 onPressed: () {
                   final headers = [
-                    '№',
-                    'Сумма',
-                    'Валюта',
-                    'Дата',
-                    'Тип',
-                    'Счет',
-                    'Статья',
-                    'Контрагент',
-                    'Комментарий',
+                    t.menu.common.numberSign,
+                    t.menu.transactions.table.amount,
+                    t.menu.transactions.table.currency,
+                    t.menu.transactions.table.date,
+                    t.menu.transactions.table.type,
+                    t.menu.transactions.table.account,
+                    t.menu.transactions.table.article,
+                    t.menu.transactions.table.counterparty,
+                    t.menu.transactions.table.comment,
                   ];
 
                   final rows =
@@ -281,7 +288,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
                                 'dd.MM.yyyy',
                               ).format(DateTime.parse(tx.date!))
                               : '',
-                          tx.transactionType == 'income' ? 'Приход' : 'Расход',
+                          tx.transactionType == 'income'
+                              ? t.menu.articles.income
+                              : t.menu.articles.expense,
                           getAccountName(tx.account ?? 0),
                           getReasonName(tx.incomeExpenseReason ?? 0),
                           getPartnerName(tx.partners ?? 0),
@@ -290,7 +299,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       }).toList();
 
                   _localService.exportToExcelGeneric(
-                    fileName: 'Все_транзакции',
+                    fileName: t.menu.transactions.fileName,
                     headers: headers,
                     rows: rows,
                     context: context,
@@ -325,10 +334,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
     }
 
     int startPage = (currentPage - 5).clamp(1, pageCount);
-    int endPage = (startPage + 9).clamp(
-      startPage,
-      pageCount,
-    ); // гарантируем, что end >= start
+    int endPage = (startPage + 9).clamp(startPage, pageCount);
 
     if (endPage - startPage < 9) {
       startPage = (endPage - 9).clamp(1, pageCount);

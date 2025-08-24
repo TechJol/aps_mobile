@@ -55,6 +55,7 @@ class _MenuPageState extends State<MenuPage> {
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
         title: t.menu.menuTitle,
+
         backgroundColor: AppColors.whiteColor,
       ),
       body: BlocListener<AuthCubit, AuthState>(
@@ -92,7 +93,7 @@ class _MenuPageState extends State<MenuPage> {
               },
             ),
 
-            const SizedBox(height: 12),
+            12.h,
 
             // --- Отчёты ---
             ExpandableMenuItem(
@@ -122,7 +123,7 @@ class _MenuPageState extends State<MenuPage> {
               },
             ),
 
-            const SizedBox(height: 12),
+            12.h,
 
             // --- Настройки ---
             ExpandableMenuItem(
@@ -159,7 +160,18 @@ class _MenuPageState extends State<MenuPage> {
               },
             ),
 
-            const SizedBox(height: 20),
+            20.h,
+
+            // --- Язык ---
+            MenuItem(
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.settingsApp);
+              },
+              icon: 'assets/icons/folder1.svg',
+              title: t.menu.interface,
+            ),
+
+            20.h,
 
             // --- Выход ---
             MenuItem(
@@ -170,23 +182,15 @@ class _MenuPageState extends State<MenuPage> {
               title: t.menu.logout,
             ),
 
-            const SizedBox(height: 20),
+            20.h,
 
-            // --- Профиль (если залогинен) ---
-            BlocBuilder<CredentialCubit, CredentialState>(
-              builder: (context, state) {
-                if (state is CredentialUserLoaded) {
-                  return MenuItem(
-                    onTap: () {
-                      Navigator.pushNamed(context, AppRoutes.profile);
-                    },
-                    icon: 'assets/icons/user.svg',
-                    title: t.menu.profile.profile,
-                  );
-                } else {
-                  return const SizedBox.shrink();
-                }
+            // --- Профиль ---
+            MenuItem(
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.profile);
               },
+              icon: 'assets/icons/user.svg',
+              title: t.menu.profile.profile,
             ),
           ],
         ),

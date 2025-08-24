@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:decimal/decimal.dart';
@@ -29,7 +30,7 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
         backgroundColor: AppColors.whiteColor,
-        title: 'По счетам',
+        title: t.menu.operationsByAccounts, // "По счетам"
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
         builder: (context, state) {
@@ -38,7 +39,7 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
           }
 
           if (state is MenuError) {
-            return Center(child: Text('Ошибка: ${state.message}'));
+            return Center(child: Text('${t.menu.error}: ${state.message}'));
           }
 
           if (state is MenuTransactionsWithAccountsSuccess) {
@@ -107,10 +108,10 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
       TableRow(
         decoration: const BoxDecoration(color: AppColors.primaryColorLight),
         children: [
-          cell('№', isHeader: true),
-          cell('Название', isHeader: true),
-          cell('Баланс', isHeader: true),
-          cell('Тип счета', isHeader: true),
+          cell(t.menu.common.numberSign, isHeader: true),
+          cell(t.menu.accounts.headers.name, isHeader: true),
+          cell(t.menu.accounts.headers.balance, isHeader: true),
+          cell(t.menu.accounts.headers.accountType, isHeader: true),
         ],
       ),
     );
@@ -127,7 +128,11 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
             cell('${data.indexOf(acc) + 1}'),
             cell(acc.name),
             cell('${balance.toString()} с'),
-            cell(acc.accountType == 'cash' ? 'Касса' : 'Банк'),
+            cell(
+              acc.accountType == 'cash'
+                  ? t.menu.accounts.type.cash
+                  : t.menu.accounts.type.bank,
+            ),
           ],
         ),
       );
@@ -141,7 +146,7 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
           if (hasData) Text('$total с', style: AppTextStyles.f24w600),
           if (hasData)
             Text(
-              'общий баланс',
+              t.menu.accounts.total, // "общий баланс"
               style: AppTextStyles.f14w500.copyWith(color: AppColors.greyColor),
             ),
           20.h,
@@ -149,9 +154,14 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
             Row(
               children: [
                 OutlinedButtonWidget(
-                  text: 'Распечатать',
+                  text: t.menu.common.print,
                   onPressed: () {
-                    final headers = ['№', 'Название', 'Баланс', 'Тип счета'];
+                    final headers = [
+                      t.menu.common.numberSign,
+                      t.menu.accounts.headers.name,
+                      t.menu.accounts.headers.balance,
+                      t.menu.accounts.headers.accountType,
+                    ];
                     final rows =
                         data.asMap().entries.map<List<String>>((entry) {
                           final index = entry.key + 1;
@@ -164,12 +174,14 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
                             '$index',
                             acc.name,
                             balance.toString(),
-                            acc.accountType == 'cash' ? 'Касса' : 'Банк',
+                            acc.accountType == 'cash'
+                                ? t.menu.accounts.type.cash
+                                : t.menu.accounts.type.bank,
                           ];
                         }).toList();
                     _localService.printReportAsPdf(
                       context: context,
-                      title: 'Отчет по счетам',
+                      title: t.menu.accounts.printTitle,
                       headers: headers,
                       rows: rows,
                     );
@@ -177,9 +189,14 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
                 ),
                 12.w,
                 OutlinedButtonWidget(
-                  text: 'Скачать в Excel',
+                  text: t.menu.common.export,
                   onPressed: () {
-                    final headers = ['№', 'Название', 'Баланс', 'Тип счета'];
+                    final headers = [
+                      t.menu.common.numberSign,
+                      t.menu.accounts.headers.name,
+                      t.menu.accounts.headers.balance,
+                      t.menu.accounts.headers.accountType,
+                    ];
                     final rows =
                         data.asMap().entries.map<List<String>>((entry) {
                           final index = entry.key + 1;
@@ -192,11 +209,13 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
                             '$index',
                             acc.name,
                             balance.toString(),
-                            acc.accountType == 'cash' ? 'Касса' : 'Банк',
+                            acc.accountType == 'cash'
+                                ? t.menu.accounts.type.cash
+                                : t.menu.accounts.type.bank,
                           ];
                         }).toList();
                     _localService.exportToExcelGeneric(
-                      fileName: 'По_счетам',
+                      fileName: t.menu.accounts.fileName,
                       headers: headers,
                       rows: rows,
                       context: context,
@@ -216,10 +235,10 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
               ),
             )
           else
-            const Center(
+            Center(
               child: Padding(
-                padding: EdgeInsets.only(top: 50),
-                child: Text('Нет данных', style: AppTextStyles.f16w500),
+                padding: const EdgeInsets.only(top: 50),
+                child: Text(t.menu.noData, style: AppTextStyles.f16w500),
               ),
             ),
         ],

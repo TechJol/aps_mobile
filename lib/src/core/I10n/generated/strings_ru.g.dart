@@ -202,6 +202,12 @@ class _TranslationsMenuRu extends TranslationsMenuEn {
 	@override String get noData => 'Нет данных';
 	@override late final _TranslationsMenuMonthlyReportRu monthlyReport = _TranslationsMenuMonthlyReportRu._(_root);
 	@override late final _TranslationsMenuMetricsRu metrics = _TranslationsMenuMetricsRu._(_root);
+	@override late final _TranslationsMenuTransactionsRu transactions = _TranslationsMenuTransactionsRu._(_root);
+	@override late final _TranslationsMenuForCounterpartiesRu forCounterparties = _TranslationsMenuForCounterpartiesRu._(_root);
+	@override late final _TranslationsMenuAccountsRu accounts = _TranslationsMenuAccountsRu._(_root);
+	@override late final _TranslationsMenuLanguageRu language = _TranslationsMenuLanguageRu._(_root);
+	@override String get interface => 'Интерфейс';
+	@override late final _TranslationsMenuThemeRu theme = _TranslationsMenuThemeRu._(_root);
 }
 
 // Path: operation
@@ -331,6 +337,7 @@ class _TranslationsMenuCommonRu extends TranslationsMenuCommonEn {
 	@override String get numberSign => '№';
 	@override String get noDataForSelectedMonth => 'Нет данных за выбранный месяц';
 	@override String get untitled => 'Без названия';
+	@override String get unknown => 'Неизвестно';
 }
 
 // Path: menu.months
@@ -429,6 +436,77 @@ class _TranslationsMenuMetricsRu extends TranslationsMenuMetricsEn {
 	@override String get chartTitle => 'График доходов и расходов по годам';
 }
 
+// Path: menu.transactions
+class _TranslationsMenuTransactionsRu extends TranslationsMenuTransactionsEn {
+	_TranslationsMenuTransactionsRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Все транзакции';
+	@override String get notFound => 'Нет транзакций';
+	@override String get printTitle => 'Отчет по всем транзакциям';
+	@override String get fileName => 'Все_транзакции';
+	@override late final _TranslationsMenuTransactionsTableRu table = _TranslationsMenuTransactionsTableRu._(_root);
+}
+
+// Path: menu.forCounterparties
+class _TranslationsMenuForCounterpartiesRu extends TranslationsMenuForCounterpartiesEn {
+	_TranslationsMenuForCounterpartiesRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Категории контрагентов';
+	@override String get noTypes => 'Нет доступных категорий';
+	@override String get noPartnersInType => 'Нет контрагентов в этой категории';
+	@override String get name => 'Имя';
+	@override String get balance => 'Баланс';
+	@override String get contacts => 'Контакты';
+}
+
+// Path: menu.accounts
+class _TranslationsMenuAccountsRu extends TranslationsMenuAccountsEn {
+	_TranslationsMenuAccountsRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get total => 'общий баланс';
+	@override String get printTitle => 'Отчет по счетам';
+	@override String get fileName => 'По_счетам';
+	@override late final _TranslationsMenuAccountsHeadersRu headers = _TranslationsMenuAccountsHeadersRu._(_root);
+	@override late final _TranslationsMenuAccountsTypeRu type = _TranslationsMenuAccountsTypeRu._(_root);
+}
+
+// Path: menu.language
+class _TranslationsMenuLanguageRu extends TranslationsMenuLanguageEn {
+	_TranslationsMenuLanguageRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Язык';
+	@override String get system => 'Системный';
+	@override String get english => 'Английский';
+	@override String get russian => 'Русский';
+	@override String get kyrgyz => 'Кыргызский';
+	@override String get select => 'Выберите язык';
+}
+
+// Path: menu.theme
+class _TranslationsMenuThemeRu extends TranslationsMenuThemeEn {
+	_TranslationsMenuThemeRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Тема';
+	@override String get light => 'Светлый';
+	@override String get dark => 'Темный';
+	@override String get system => 'Системный';
+}
+
 // Path: account.account.account
 class _TranslationsAccountAccountAccountRu extends TranslationsAccountAccountAccountEn {
 	_TranslationsAccountAccountAccountRu._(TranslationsRu root) : this._root = root, super.internal(root);
@@ -511,6 +589,47 @@ class _TranslationsMenuMonthlyReportTableRu extends TranslationsMenuMonthlyRepor
 	@override String get income => 'Доход (KGS)';
 	@override String get expense => 'Расход (KGS)';
 	@override String get balance => 'Чистый доход (KGS)';
+}
+
+// Path: menu.transactions.table
+class _TranslationsMenuTransactionsTableRu extends TranslationsMenuTransactionsTableEn {
+	_TranslationsMenuTransactionsTableRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get amount => 'Сумма';
+	@override String get currency => 'Валюта';
+	@override String get currencyShort => 'Вл';
+	@override String get date => 'Дата';
+	@override String get type => 'Тип';
+	@override String get account => 'Счет';
+	@override String get article => 'Статья';
+	@override String get counterparty => 'Контрагент';
+	@override String get comment => 'Комментарий';
+}
+
+// Path: menu.accounts.headers
+class _TranslationsMenuAccountsHeadersRu extends TranslationsMenuAccountsHeadersEn {
+	_TranslationsMenuAccountsHeadersRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get name => 'Название';
+	@override String get balance => 'Баланс';
+	@override String get accountType => 'Тип счета';
+}
+
+// Path: menu.accounts.type
+class _TranslationsMenuAccountsTypeRu extends TranslationsMenuAccountsTypeEn {
+	_TranslationsMenuAccountsTypeRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get cash => 'Касса';
+	@override String get bank => 'Банк';
 }
 
 /// Flat map(s) containing all translations.
@@ -669,6 +788,7 @@ extension on TranslationsRu {
 			case 'menu.common.numberSign': return '№';
 			case 'menu.common.noDataForSelectedMonth': return 'Нет данных за выбранный месяц';
 			case 'menu.common.untitled': return 'Без названия';
+			case 'menu.common.unknown': return 'Неизвестно';
 			case 'menu.months.january': return 'Январь';
 			case 'menu.months.february': return 'Февраль';
 			case 'menu.months.march': return 'Март';
@@ -719,6 +839,44 @@ extension on TranslationsRu {
 			case 'menu.metrics.selectPeriod': return 'Выберите период';
 			case 'menu.metrics.tableTitle': return 'Таблица доходов и расходов по годам';
 			case 'menu.metrics.chartTitle': return 'График доходов и расходов по годам';
+			case 'menu.transactions.title': return 'Все транзакции';
+			case 'menu.transactions.notFound': return 'Нет транзакций';
+			case 'menu.transactions.printTitle': return 'Отчет по всем транзакциям';
+			case 'menu.transactions.fileName': return 'Все_транзакции';
+			case 'menu.transactions.table.amount': return 'Сумма';
+			case 'menu.transactions.table.currency': return 'Валюта';
+			case 'menu.transactions.table.currencyShort': return 'Вл';
+			case 'menu.transactions.table.date': return 'Дата';
+			case 'menu.transactions.table.type': return 'Тип';
+			case 'menu.transactions.table.account': return 'Счет';
+			case 'menu.transactions.table.article': return 'Статья';
+			case 'menu.transactions.table.counterparty': return 'Контрагент';
+			case 'menu.transactions.table.comment': return 'Комментарий';
+			case 'menu.forCounterparties.title': return 'Категории контрагентов';
+			case 'menu.forCounterparties.noTypes': return 'Нет доступных категорий';
+			case 'menu.forCounterparties.noPartnersInType': return 'Нет контрагентов в этой категории';
+			case 'menu.forCounterparties.name': return 'Имя';
+			case 'menu.forCounterparties.balance': return 'Баланс';
+			case 'menu.forCounterparties.contacts': return 'Контакты';
+			case 'menu.accounts.total': return 'общий баланс';
+			case 'menu.accounts.printTitle': return 'Отчет по счетам';
+			case 'menu.accounts.fileName': return 'По_счетам';
+			case 'menu.accounts.headers.name': return 'Название';
+			case 'menu.accounts.headers.balance': return 'Баланс';
+			case 'menu.accounts.headers.accountType': return 'Тип счета';
+			case 'menu.accounts.type.cash': return 'Касса';
+			case 'menu.accounts.type.bank': return 'Банк';
+			case 'menu.language.title': return 'Язык';
+			case 'menu.language.system': return 'Системный';
+			case 'menu.language.english': return 'Английский';
+			case 'menu.language.russian': return 'Русский';
+			case 'menu.language.kyrgyz': return 'Кыргызский';
+			case 'menu.language.select': return 'Выберите язык';
+			case 'menu.interface': return 'Интерфейс';
+			case 'menu.theme.title': return 'Тема';
+			case 'menu.theme.light': return 'Светлый';
+			case 'menu.theme.dark': return 'Темный';
+			case 'menu.theme.system': return 'Системный';
 			case 'operation.operation': return 'Операции';
 			case 'operation.selectPeriod': return 'Выбрать период';
 			case 'operation.filter': return 'Фильтр';
