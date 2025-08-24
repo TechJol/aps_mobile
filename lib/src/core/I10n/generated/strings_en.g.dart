@@ -378,13 +378,23 @@ class TranslationsMenuEn {
 
 	late final TranslationsMenuTypeCounterpartiesEn typeCounterparties = TranslationsMenuTypeCounterpartiesEn.internal(_root);
 
-	/// en: 'Сохранить'
-	String get save => 'Сохранить';
+	/// en: 'Save'
+	String get save => 'Save';
 
-	/// en: 'Редактировать'
-	String get edit => 'Редактировать';
+	/// en: 'Delete'
+	String get delete => 'Delete';
+
+	/// en: 'Edit'
+	String get edit => 'Edit';
 
 	late final TranslationsMenuCounterpartiesEn counterparties = TranslationsMenuCounterpartiesEn.internal(_root);
+	late final TranslationsMenuArticlesEn articles = TranslationsMenuArticlesEn.internal(_root);
+
+	/// en: 'Income'
+	String get income => 'Income';
+
+	/// en: 'Expense'
+	String get expense => 'Expense';
 }
 
 // Path: operation
@@ -510,8 +520,8 @@ class TranslationsMenuTypeCounterpartiesEn {
 	/// en: 'Add type'
 	String get addType => 'Add type';
 
-	/// en: 'Редактировать тип'
-	String get editType => 'Редактировать тип';
+	/// en: 'Edit type'
+	String get editType => 'Edit type';
 
 	/// en: 'Print'
 	String get print => 'Print';
@@ -566,6 +576,48 @@ class TranslationsMenuCounterpartiesEn {
 
 	/// en: 'Contact information'
 	String get phoneNumber => 'Contact information';
+}
+
+// Path: menu.articles
+class TranslationsMenuArticlesEn {
+	TranslationsMenuArticlesEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Articles'
+	String get title => 'Articles';
+
+	/// en: 'Add article'
+	String get addArticle => 'Add article';
+
+	/// en: 'Edit article'
+	String get editArticle => 'Edit article';
+
+	/// en: 'Delete article'
+	String get deleteArticle => 'Delete article';
+
+	/// en: 'Print'
+	String get print => 'Print';
+
+	/// en: 'Export to Excel'
+	String get export => 'Export to Excel';
+
+	/// en: 'Name'
+	String get name => 'Name';
+
+	/// en: 'Type'
+	String get type => 'Type';
+
+	/// en: 'Income'
+	String get income => 'Income';
+
+	/// en: 'Expense'
+	String get expense => 'Expense';
+
+	/// en: 'No articles'
+	String get notFound => 'No articles';
 }
 
 // Path: account.account.account
@@ -749,14 +801,15 @@ extension on Translations {
 			case 'menu.error': return 'Error';
 			case 'menu.typeCounterparties.title': return 'Counterparty types';
 			case 'menu.typeCounterparties.addType': return 'Add type';
-			case 'menu.typeCounterparties.editType': return 'Редактировать тип';
+			case 'menu.typeCounterparties.editType': return 'Edit type';
 			case 'menu.typeCounterparties.print': return 'Print';
 			case 'menu.typeCounterparties.export': return 'Export to Excel';
 			case 'menu.typeCounterparties.name': return 'Name';
 			case 'menu.typeCounterparties.delete': return 'Delete type';
 			case 'menu.typeCounterparties.notFound': return 'No counterparty types';
-			case 'menu.save': return 'Сохранить';
-			case 'menu.edit': return 'Редактировать';
+			case 'menu.save': return 'Save';
+			case 'menu.delete': return 'Delete';
+			case 'menu.edit': return 'Edit';
 			case 'menu.counterparties.title': return 'Counterparties';
 			case 'menu.counterparties.addCounterparty': return 'Add counterparty';
 			case 'menu.counterparties.editCounterparty': return 'Edit counterparty';
@@ -767,6 +820,19 @@ extension on Translations {
 			case 'menu.counterparties.type': return 'Type';
 			case 'menu.counterparties.notFound': return 'No counterparties';
 			case 'menu.counterparties.phoneNumber': return 'Contact information';
+			case 'menu.articles.title': return 'Articles';
+			case 'menu.articles.addArticle': return 'Add article';
+			case 'menu.articles.editArticle': return 'Edit article';
+			case 'menu.articles.deleteArticle': return 'Delete article';
+			case 'menu.articles.print': return 'Print';
+			case 'menu.articles.export': return 'Export to Excel';
+			case 'menu.articles.name': return 'Name';
+			case 'menu.articles.type': return 'Type';
+			case 'menu.articles.income': return 'Income';
+			case 'menu.articles.expense': return 'Expense';
+			case 'menu.articles.notFound': return 'No articles';
+			case 'menu.income': return 'Income';
+			case 'menu.expense': return 'Expense';
 			case 'operation.operation': return 'Operations';
 			case 'operation.selectPeriod': return 'Select period';
 			case 'operation.filter': return 'Filter';

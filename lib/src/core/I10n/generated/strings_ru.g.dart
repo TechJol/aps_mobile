@@ -187,8 +187,12 @@ class _TranslationsMenuRu extends TranslationsMenuEn {
 	@override String get error => 'Ошибка';
 	@override late final _TranslationsMenuTypeCounterpartiesRu typeCounterparties = _TranslationsMenuTypeCounterpartiesRu._(_root);
 	@override String get save => 'Сохранить';
+	@override String get delete => 'Удалить';
 	@override String get edit => 'Редактировать';
 	@override late final _TranslationsMenuCounterpartiesRu counterparties = _TranslationsMenuCounterpartiesRu._(_root);
+	@override late final _TranslationsMenuArticlesRu articles = _TranslationsMenuArticlesRu._(_root);
+	@override String get income => 'Доход';
+	@override String get expense => 'Расход';
 }
 
 // Path: operation
@@ -282,6 +286,26 @@ class _TranslationsMenuCounterpartiesRu extends TranslationsMenuCounterpartiesEn
 	@override String get type => 'Тип';
 	@override String get notFound => 'Нет контрагентов';
 	@override String get phoneNumber => 'Контактная информация';
+}
+
+// Path: menu.articles
+class _TranslationsMenuArticlesRu extends TranslationsMenuArticlesEn {
+	_TranslationsMenuArticlesRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Статьи';
+	@override String get addArticle => 'Добавить статью';
+	@override String get editArticle => 'Редактировать статью';
+	@override String get deleteArticle => 'Удалить статью';
+	@override String get print => 'Распечатать';
+	@override String get export => 'Скачать в Excel';
+	@override String get name => 'Название';
+	@override String get type => 'Тип';
+	@override String get income => 'Доход';
+	@override String get expense => 'Расход';
+	@override String get notFound => 'Нет статей';
 }
 
 // Path: account.account.account
@@ -452,6 +476,7 @@ extension on TranslationsRu {
 			case 'menu.typeCounterparties.delete': return 'Удалить тип';
 			case 'menu.typeCounterparties.notFound': return 'Нет типов контрагентов';
 			case 'menu.save': return 'Сохранить';
+			case 'menu.delete': return 'Удалить';
 			case 'menu.edit': return 'Редактировать';
 			case 'menu.counterparties.title': return 'Контрагенты';
 			case 'menu.counterparties.addCounterparty': return 'Добавить контрагента';
@@ -463,6 +488,19 @@ extension on TranslationsRu {
 			case 'menu.counterparties.type': return 'Тип';
 			case 'menu.counterparties.notFound': return 'Нет контрагентов';
 			case 'menu.counterparties.phoneNumber': return 'Контактная информация';
+			case 'menu.articles.title': return 'Статьи';
+			case 'menu.articles.addArticle': return 'Добавить статью';
+			case 'menu.articles.editArticle': return 'Редактировать статью';
+			case 'menu.articles.deleteArticle': return 'Удалить статью';
+			case 'menu.articles.print': return 'Распечатать';
+			case 'menu.articles.export': return 'Скачать в Excel';
+			case 'menu.articles.name': return 'Название';
+			case 'menu.articles.type': return 'Тип';
+			case 'menu.articles.income': return 'Доход';
+			case 'menu.articles.expense': return 'Расход';
+			case 'menu.articles.notFound': return 'Нет статей';
+			case 'menu.income': return 'Доход';
+			case 'menu.expense': return 'Расход';
 			case 'operation.operation': return 'Операции';
 			case 'operation.selectPeriod': return 'Выбрать период';
 			case 'operation.filter': return 'Фильтр';

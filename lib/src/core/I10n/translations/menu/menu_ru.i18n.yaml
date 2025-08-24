@@ -36,6 +36,7 @@ typeCounterparties:
   delete: "Удалить тип"
   notFound: "Нет типов контрагентов"
 save: "Сохранить"
+delete: "Удалить"
 edit: "Редактировать"
 
 counterparties:
@@ -49,3 +50,18 @@ counterparties:
   type: "Тип"
   notFound: "Нет контрагентов"
   phoneNumber: "Контактная информация"
+
+articles:
+  title: "Статьи"
+  addArticle: "Добавить статью"
+  editArticle: "Редактировать статью"
+  deleteArticle: "Удалить статью"
+  print: "Распечатать"
+  export: "Скачать в Excel"
+  name: "Название"
+  type: "Тип"
+  income: "Доход"
+  expense: "Расход"
+  notFound: "Нет статей"
+income: "Доход"
+expense: "Расход"

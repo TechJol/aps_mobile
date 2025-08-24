@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -13,14 +14,8 @@ class EditArticlesPage extends StatefulWidget {
 
 class _EditArticlesPageState extends State<EditArticlesPage> {
   final nameController = TextEditingController();
-
-  // String? selectedName;
   String? selectedType;
   bool isFormValid = false;
-
-  final typeToLabel = {'income': 'Доход', 'expense': 'Расход'};
-
-  final labelToType = {'Доход': 'income', 'Расход': 'expense'};
 
   void checkFormValidity() {
     setState(() {
@@ -30,13 +25,8 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
 
   @override
   void initState() {
-    // selectedName = widget.reason.name;
     nameController.text = widget.reason.name;
-
-    selectedType = typeToLabel[widget.reason.type];
-
     nameController.addListener(checkFormValidity);
-
     checkFormValidity();
     super.initState();
   }
@@ -50,10 +40,24 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
 
   @override
   Widget build(BuildContext context) {
+    /// 🔹 Локализованные словари
+    final typeToLabel = {
+      'income': t.menu.articles.income,
+      'expense': t.menu.articles.expense,
+    };
+
+    final labelToType = {
+      t.menu.articles.income: 'income',
+      t.menu.articles.expense: 'expense',
+    };
+
+    // Инициализация выбранного типа (только при первом билде)
+    selectedType ??= typeToLabel[widget.reason.type];
+
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Редактировать статью',
+        title: t.menu.articles.editArticle,
         backgroundColor: AppColors.backroundColor,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
@@ -68,12 +72,14 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
               child: Column(
                 children: [
                   24.h,
-                  TextFieldWid(label: 'Название', controller: nameController),
-
+                  TextFieldWid(
+                    label: t.menu.articles.name,
+                    controller: nameController,
+                  ),
                   const SizedBox(height: 12),
                   DropDownFormField(
                     items: typeToLabel.values.toList(),
-                    label: 'Тип',
+                    label: t.menu.articles.type,
                     value: selectedType,
                     onChanged: (val) {
                       setState(() => selectedType = val);
@@ -105,7 +111,7 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
                       ),
                     ),
                     child: Text(
-                      'Сохранить',
+                      t.menu.save,
                       style: AppTextStyles.f16w500.copyWith(
                         color: AppColors.whiteColor,
                       ),
@@ -117,7 +123,7 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
           }
 
           if (state is MenuError) {
-            return Center(child: Text('Ошибка: ${state.message}'));
+            return Center(child: Text('${t.menu.error}: ${state.message}'));
           }
 
           return const Center(child: CircularProgressIndicator());

@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class _AddArticlesPageState extends State<AddArticlesPage> {
   //   'Прочее Расходы',
   //   'Инвестиции',
   // ];
-  final List<String> types = ['Доход', 'Расход'];
+  final List<String> types = [t.menu.income, t.menu.expense];
   final List<String> typesCode = ['income', 'expense'];
 
   // String? selectedName;
@@ -57,7 +58,7 @@ class _AddArticlesPageState extends State<AddArticlesPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Добавить статью',
+        title: t.menu.articles.addArticle,
         backgroundColor: AppColors.backroundColor,
       ),
       body: BlocListener<MenuCubit, MenuState>(
@@ -88,12 +89,15 @@ class _AddArticlesPageState extends State<AddArticlesPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  TextFieldWid(label: 'Название', controller: nameController),
+                  TextFieldWid(
+                    label: t.menu.articles.name,
+                    controller: nameController,
+                  ),
 
                   const SizedBox(height: 12),
                   DropDownFormField(
                     items: types,
-                    label: 'Тип',
+                    label: t.menu.articles.type,
                     value: selectedType,
                     onChanged: (val) {
                       setState(() {
@@ -132,7 +136,7 @@ class _AddArticlesPageState extends State<AddArticlesPage> {
                           ),
                         ),
                         child: Text(
-                          'Сохранить',
+                          t.menu.save,
                           style: AppTextStyles.f16w500.copyWith(
                             color: AppColors.whiteColor,
                           ),

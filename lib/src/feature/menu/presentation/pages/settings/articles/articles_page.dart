@@ -5,6 +5,7 @@ import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 
 class ArticlesPage extends StatefulWidget {
   const ArticlesPage({super.key});
@@ -27,7 +28,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Статьи',
+        title: t.menu.articles.title,
         backgroundColor: AppColors.backroundColor,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
@@ -37,15 +38,15 @@ class _ArticlesPageState extends State<ArticlesPage> {
           }
 
           if (state is MenuError) {
-            return Center(child: Text('Ошибка: ${state.message}'));
+            return Center(child: Text('${t.menu.error}: ${state.message}'));
           }
 
           if (state is DeleteError) {
             final e = state.error;
             final msg =
                 e is DioException
-                    ? 'Ошибка удаления [${e.response?.statusCode}]: ${e.response?.data ?? e.message}'
-                    : 'Ошибка при удалении: $e';
+                    ? '${t.menu.error} [${e.response?.statusCode}]: ${e.response?.data ?? e.message}'
+                    : '${t.menu.error}: $e';
             return Center(child: Text(msg));
           }
 
@@ -90,8 +91,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
                           onPressed: () {
                             Navigator.pushNamed(context, AppRoutes.addArticles);
                           },
-                          label: const Text(
-                            'Добавить статью',
+                          label: Text(
+                            t.menu.articles.addArticle,
                             style: AppTextStyles.f16w500,
                           ),
                           icon: const Icon(Icons.add, size: 20),
@@ -112,7 +113,11 @@ class _ArticlesPageState extends State<ArticlesPage> {
                       children: [
                         OutlinedButtonWidget(
                           onPressed: () {
-                            final headers = ['№', 'Название', 'Тип'];
+                            final headers = [
+                              '№',
+                              t.menu.articles.name,
+                              t.menu.articles.type,
+                            ];
                             final rows =
                                 reasons.asMap().entries.map((entry) {
                                   final i = entry.key + 1;
@@ -120,23 +125,29 @@ class _ArticlesPageState extends State<ArticlesPage> {
                                   return [
                                     '$i',
                                     r.name,
-                                    r.type == 'income' ? 'Доход' : 'Расход',
+                                    r.type == 'income'
+                                        ? t.menu.articles.income
+                                        : t.menu.articles.expense,
                                   ];
                                 }).toList();
 
                             _localService.printReportAsPdf(
                               context: context,
-                              title: 'Список статей',
+                              title: t.menu.articles.title,
                               headers: headers,
                               rows: rows,
                             );
                           },
-                          text: 'Распечатать',
+                          text: t.menu.articles.print,
                         ),
                         12.w,
                         OutlinedButtonWidget(
                           onPressed: () {
-                            final headers = ['№', 'Название', 'Тип'];
+                            final headers = [
+                              '№',
+                              t.menu.articles.name,
+                              t.menu.articles.type,
+                            ];
                             final rows =
                                 reasons.asMap().entries.map((entry) {
                                   final i = entry.key + 1;
@@ -144,18 +155,20 @@ class _ArticlesPageState extends State<ArticlesPage> {
                                   return [
                                     '$i',
                                     r.name,
-                                    r.type == 'income' ? 'Доход' : 'Расход',
+                                    r.type == 'income'
+                                        ? t.menu.articles.income
+                                        : t.menu.articles.expense,
                                   ];
                                 }).toList();
 
                             _localService.exportToExcelGeneric(
-                              fileName: 'Список_статей',
+                              fileName: t.menu.articles.title,
                               headers: headers,
                               rows: rows,
                               context: context,
                             );
                           },
-                          text: 'Скачать в Excel',
+                          text: t.menu.articles.export,
                         ),
                       ],
                     ),
@@ -166,7 +179,6 @@ class _ArticlesPageState extends State<ArticlesPage> {
           ),
           12.h,
 
-          // Таблица: Название + Тип + узкая колонка меню (без горизонтального скролла)
           if (hasReasons)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -174,22 +186,18 @@ class _ArticlesPageState extends State<ArticlesPage> {
                 builder: (context, constraints) {
                   final maxW = constraints.maxWidth;
 
-                  // параметры
-                  const menuW = 32.0; // троеточие
+                  const menuW = 32.0;
                   const spacing = 12.0;
                   const margin = 12.0;
                   const minTypeW = 100.0;
                   const maxTypeW = 140.0;
 
-                  // ширина "Тип"
                   double typeW = maxW * 0.28;
                   if (typeW < minTypeW) typeW = minTypeW;
                   if (typeW > maxTypeW) typeW = maxTypeW;
 
-                  // остальное — "Название"
                   final nameW = maxW - typeW - menuW - margin * 2 - spacing * 2;
 
-                  // компактные высоты
                   final isSmall = maxW < 360;
                   final headingH = isSmall ? 44.0 : 52.0;
                   final rowH = isSmall ? 44.0 : 52.0;
@@ -218,23 +226,28 @@ class _ArticlesPageState extends State<ArticlesPage> {
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
-                        columns: const [
+                        columns: [
                           DataColumn(
                             label: Text(
-                              'Название',
+                              t.menu.articles.name,
                               style: AppTextStyles.f16w500,
                             ),
                           ),
                           DataColumn(
-                            label: Text('Тип', style: AppTextStyles.f16w500),
+                            label: Text(
+                              t.menu.articles.type,
+                              style: AppTextStyles.f16w500,
+                            ),
                           ),
-                          DataColumn(label: Text('')),
+                          const DataColumn(label: Text('')),
                         ],
                         rows:
                             reasons.map((r) {
                               final nameText = cut(r.name, 18);
                               final typeText =
-                                  r.type == 'income' ? 'Доход' : 'Расход';
+                                  r.type == 'income'
+                                      ? t.menu.articles.income
+                                      : t.menu.articles.expense;
 
                               return DataRow(
                                 cells: [
@@ -277,7 +290,8 @@ class _ArticlesPageState extends State<ArticlesPage> {
                                                     .deleteReason(r.id!);
                                                 Navigator.pop(context);
                                               },
-                                              title: 'Удалить статью',
+                                              title:
+                                                  t.menu.articles.deleteArticle,
                                             );
                                           },
                                           tapEdit: () async {
@@ -307,10 +321,13 @@ class _ArticlesPageState extends State<ArticlesPage> {
               ),
             )
           else
-            const Center(
+            Center(
               child: Padding(
-                padding: EdgeInsets.only(top: 50),
-                child: Text('Нет статей', style: AppTextStyles.f16w500),
+                padding: const EdgeInsets.only(top: 50),
+                child: Text(
+                  t.menu.articles.notFound,
+                  style: AppTextStyles.f16w500,
+                ),
               ),
             ),
           30.h,

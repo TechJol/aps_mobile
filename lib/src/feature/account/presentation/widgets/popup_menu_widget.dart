@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -54,7 +55,7 @@ class PopupMenuWid extends StatelessWidget {
                     children: [
                       SvgPicture.asset('assets/icons/delete.svg'),
                       SizedBox(width: 8),
-                      Text('Удалить', style: AppTextStyles.f14w500),
+                      Text(t.menu.delete, style: AppTextStyles.f14w500),
                     ],
                   ),
                 ),
@@ -65,7 +66,7 @@ class PopupMenuWid extends StatelessWidget {
                     children: [
                       SvgPicture.asset('assets/icons/edit.svg'),
                       SizedBox(width: 8),
-                      Text('Редактировать', style: AppTextStyles.f14w500),
+                      Text(t.menu.edit, style: AppTextStyles.f14w500),
                     ],
                   ),
                 ),
