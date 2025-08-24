@@ -1,0 +1,40 @@
+menuTitle: "Menu"
+
+operations: "All operations"
+operationsAll: "All transactions"
+operationsByCounterparties: "By counterparties"
+operationsByAccounts: "By accounts"
+
+reports: "Reports"
+reportsByArticles: "Reports by articles"
+reportsIncomeExpenseSummary: "Overall income & expense position"
+reportsMonthly: "Monthly income & expense report"
+reportsMetrics: "Metrics"
+
+settings: "Settings"
+settingsCounterparties: "Counterparties"
+settingsCounterpartyTypes: "Counterparty types"
+settingsAccounts: "Accounts"
+settingsArticles: "Articles"
+
+logout: "Logout"
+
+profile:
+  profile: "Profile"
+  next: "Next"
+  deleteAccount: "Delete Account"
+  account: "Account"
+error: "Error"
+
+typeCounterparties:
+  title: "Counterparty types"
+  addType: "Add type"
+  editType: "Редактировать тип"
+  print: "Print"
+  export: "Export to Excel"
+  name: "Name"
+  delete: "Delete type"
+  notFound: "No counterparty types"
+save: "Сохранить"
+edit: "Редактировать"
+

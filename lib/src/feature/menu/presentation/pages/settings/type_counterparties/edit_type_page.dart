@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,7 @@ class _EditTypePageState extends State<EditTypePage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Редактировать тип',
+        title: t.menu.typeCounterparties.editType,
         backgroundColor: AppColors.backroundColor,
       ),
       body: BlocListener<MenuCubit, MenuState>(
@@ -70,7 +71,10 @@ class _EditTypePageState extends State<EditTypePage> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  TextFieldWid(label: 'Название', controller: nameController),
+                  TextFieldWid(
+                    label: t.menu.typeCounterparties.name,
+                    controller: nameController,
+                  ),
                   24.h,
                   ElevatedButton(
                     onPressed:
@@ -96,7 +100,7 @@ class _EditTypePageState extends State<EditTypePage> {
                       ),
                     ),
                     child: Text(
-                      'Сохранить',
+                      t.menu.save,
                       style: AppTextStyles.f16w500.copyWith(
                         color: AppColors.whiteColor,
                       ),

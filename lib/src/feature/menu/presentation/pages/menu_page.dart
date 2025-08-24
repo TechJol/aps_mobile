@@ -4,6 +4,7 @@ import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 
 class MenuPage extends StatefulWidget {
   const MenuPage({super.key});
@@ -25,10 +26,35 @@ class _MenuPageState extends State<MenuPage> {
 
   @override
   Widget build(BuildContext context) {
+    // локализованные подписи
+    final opsTitle = t.menu.operations;
+    final reportsTitle = t.menu.reports;
+    final settingsTitle = t.menu.settings;
+
+    final opsChildren = <String>[
+      t.menu.operationsAll,
+      t.menu.operationsByCounterparties,
+      t.menu.operationsByAccounts,
+    ];
+
+    final reportsChildren = <String>[
+      t.menu.reportsByArticles,
+      t.menu.reportsIncomeExpenseSummary,
+      t.menu.reportsMonthly,
+      t.menu.reportsMetrics,
+    ];
+
+    final settingsChildren = <String>[
+      t.menu.settingsCounterparties,
+      t.menu.settingsCounterpartyTypes,
+      t.menu.settingsAccounts,
+      t.menu.settingsArticles,
+    ];
+
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Меню',
+        title: t.menu.menuTitle,
         backgroundColor: AppColors.whiteColor,
       ),
       body: BlocListener<AuthCubit, AuthState>(
@@ -43,7 +69,7 @@ class _MenuPageState extends State<MenuPage> {
             // --- Все операции ---
             ExpandableMenuItem(
               icon: 'assets/icons/folder1.svg',
-              title: 'Все операции',
+              title: opsTitle,
               expanded: isOperationsExpanded,
               onTap: () {
                 setState(() {
@@ -54,17 +80,13 @@ class _MenuPageState extends State<MenuPage> {
                   }
                 });
               },
-              children: const [
-                'Все транзакции',
-                'По контрагентам',
-                'По счетам',
-              ],
+              children: opsChildren,
               onChildTap: (value) {
-                if (value == 'Все транзакции') {
+                if (value == t.menu.operationsAll) {
                   Navigator.pushNamed(context, AppRoutes.transactions);
-                } else if (value == 'По контрагентам') {
+                } else if (value == t.menu.operationsByCounterparties) {
                   Navigator.pushNamed(context, AppRoutes.forCounterparties);
-                } else if (value == 'По счетам') {
+                } else if (value == t.menu.operationsByAccounts) {
                   Navigator.pushNamed(context, AppRoutes.menuAccounts);
                 }
               },
@@ -75,7 +97,7 @@ class _MenuPageState extends State<MenuPage> {
             // --- Отчёты ---
             ExpandableMenuItem(
               icon: 'assets/icons/folder2.svg',
-              title: 'Отчеты',
+              title: reportsTitle,
               expanded: isReportsExpanded,
               onTap: () {
                 setState(() {
@@ -86,20 +108,15 @@ class _MenuPageState extends State<MenuPage> {
                   }
                 });
               },
-              children: const [
-                'Отчеты по статьям',
-                'Общее положение доходов и расходов',
-                'Месячный отчет по доходам и расходам',
-                'Показатели',
-              ],
+              children: reportsChildren,
               onChildTap: (value) {
-                if (value == 'Отчеты по статьям') {
+                if (value == t.menu.reportsByArticles) {
                   Navigator.pushNamed(context, AppRoutes.categoryReports);
-                } else if (value == 'Общее положение доходов и расходов') {
+                } else if (value == t.menu.reportsIncomeExpenseSummary) {
                   Navigator.pushNamed(context, AppRoutes.incomeExpenseSummary);
-                } else if (value == 'Месячный отчет по доходам и расходам') {
+                } else if (value == t.menu.reportsMonthly) {
                   Navigator.pushNamed(context, AppRoutes.monthlyReport);
-                } else if (value == 'Показатели') {
+                } else if (value == t.menu.reportsMetrics) {
                   Navigator.pushNamed(context, AppRoutes.metrics);
                 }
               },
@@ -110,7 +127,7 @@ class _MenuPageState extends State<MenuPage> {
             // --- Настройки ---
             ExpandableMenuItem(
               icon: 'assets/icons/setting.svg',
-              title: 'Настройки',
+              title: settingsTitle,
               expanded: isSettingsExpanded,
               onTap: () {
                 setState(() {
@@ -121,26 +138,21 @@ class _MenuPageState extends State<MenuPage> {
                   }
                 });
               },
-              children: const [
-                'Контрагенты',
-                'Тип контрагентов',
-                'Счета',
-                'Статьи',
-              ],
+              children: settingsChildren,
               onChildTap: (childTitle) async {
-                if (childTitle == 'Контрагенты') {
+                if (childTitle == t.menu.settingsCounterparties) {
                   await Navigator.pushNamed(context, AppRoutes.counterparties);
                   context.read<MenuCubit>().getTransactionsWithAccounts();
-                } else if (childTitle == 'Тип контрагентов') {
+                } else if (childTitle == t.menu.settingsCounterpartyTypes) {
                   await Navigator.pushNamed(
                     context,
                     AppRoutes.typeCounterparties,
                   );
                   context.read<MenuCubit>().getTransactionsWithAccounts();
-                } else if (childTitle == 'Счета') {
+                } else if (childTitle == t.menu.settingsAccounts) {
                   await Navigator.pushNamed(context, AppRoutes.settingAccount);
                   context.read<MenuCubit>().getTransactionsWithAccounts();
-                } else if (childTitle == 'Статьи') {
+                } else if (childTitle == t.menu.settingsArticles) {
                   await Navigator.pushNamed(context, AppRoutes.articles);
                   context.read<MenuCubit>().getTransactionsWithAccounts();
                 }
@@ -155,12 +167,12 @@ class _MenuPageState extends State<MenuPage> {
                 context.read<AuthCubit>().logout();
               },
               icon: 'assets/icons/folder3.svg',
-              title: 'Выход',
+              title: t.menu.logout,
             ),
 
             const SizedBox(height: 20),
 
-            // --- Приветствие с именем пользователя ---
+            // --- Профиль (если залогинен) ---
             BlocBuilder<CredentialCubit, CredentialState>(
               builder: (context, state) {
                 if (state is CredentialUserLoaded) {
@@ -169,10 +181,10 @@ class _MenuPageState extends State<MenuPage> {
                       Navigator.pushNamed(context, AppRoutes.profile);
                     },
                     icon: 'assets/icons/user.svg',
-                    title: 'Профиль',
+                    title: t.menu.profile.profile,
                   );
                 } else {
-                  return const Text('');
+                  return const SizedBox.shrink();
                 }
               },
             ),

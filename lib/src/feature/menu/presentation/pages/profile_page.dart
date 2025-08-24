@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/auth/auth.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class ProfilePage extends StatelessWidget {
             Navigator.of(context).pushReplacementNamed('/'); // или '/login'
           }
           if (state is UserFailure) {
-            Center(child: Text('Ошибка: ${state.errorMessage}'));
+            Center(child: Text('${t.menu.error}: ${state.errorMessage}'));
           }
         },
         child: BlocBuilder<CredentialCubit, CredentialState>(
@@ -27,7 +28,9 @@ class ProfilePage extends StatelessWidget {
             }
 
             if (state is CredentialFailure) {
-              return Center(child: Text('Ошибка: ${state.errorMessage}'));
+              return Center(
+                child: Text('${t.menu.error}: ${state.errorMessage}'),
+              );
             }
 
             if (state is CredentialUserLoaded) {
@@ -102,12 +105,12 @@ class ProfilePage extends StatelessWidget {
                   onPressed: () async {
                     ShowSheet().showDeleteDialog(
                       context,
-                      accountName: 'аккаунт',
+                      accountName: t.menu.profile.account,
                       onConfirm: () async {
                         context.read<CredentialCubit>().deleteUserById();
                         Navigator.of(context).pushReplacementNamed('/');
                       },
-                      title: 'Удалить аккаунт',
+                      title: t.menu.profile.deleteAccount,
                     );
                   },
                   // onPressed:
@@ -121,8 +124,8 @@ class ProfilePage extends StatelessWidget {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
-                  child: const Text(
-                    'Удалить аккаунт',
+                  child: Text(
+                    t.menu.profile.deleteAccount,
                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
                   ),
                 ),
@@ -143,8 +146,8 @@ class ProfilePage extends StatelessWidget {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
-                  child: const Text(
-                    'Далее',
+                  child: Text(
+                    t.menu.profile.next,
                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
                   ),
                 ),

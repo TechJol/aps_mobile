@@ -42,6 +42,7 @@ class TranslationsRu extends Translations {
 	@override late final _TranslationsAuthRu auth = _TranslationsAuthRu._(_root);
 	@override late final _TranslationsHomeRu home = _TranslationsHomeRu._(_root);
 	@override late final _TranslationsIncomeRu income = _TranslationsIncomeRu._(_root);
+	@override late final _TranslationsMenuRu menu = _TranslationsMenuRu._(_root);
 	@override late final _TranslationsOperationRu operation = _TranslationsOperationRu._(_root);
 }
 
@@ -159,6 +160,36 @@ class _TranslationsIncomeRu extends TranslationsIncomeEn {
 	@override String get select => 'Выбрать';
 }
 
+// Path: menu
+class _TranslationsMenuRu extends TranslationsMenuEn {
+	_TranslationsMenuRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get menuTitle => 'Меню';
+	@override String get operations => 'Все операции';
+	@override String get operationsAll => 'Все транзакции';
+	@override String get operationsByCounterparties => 'По контрагентам';
+	@override String get operationsByAccounts => 'По счетам';
+	@override String get reports => 'Отчеты';
+	@override String get reportsByArticles => 'Отчеты по статьям';
+	@override String get reportsIncomeExpenseSummary => 'Общее положение доходов и расходов';
+	@override String get reportsMonthly => 'Месячный отчет по доходам и расходам';
+	@override String get reportsMetrics => 'Показатели';
+	@override String get settings => 'Настройки';
+	@override String get settingsCounterparties => 'Контрагенты';
+	@override String get settingsCounterpartyTypes => 'Тип контрагентов';
+	@override String get settingsAccounts => 'Счета';
+	@override String get settingsArticles => 'Статьи';
+	@override String get logout => 'Выход';
+	@override late final _TranslationsMenuProfileRu profile = _TranslationsMenuProfileRu._(_root);
+	@override String get error => 'Ошибка';
+	@override late final _TranslationsMenuTypeCounterpartiesRu typeCounterparties = _TranslationsMenuTypeCounterpartiesRu._(_root);
+	@override String get save => 'Сохранить';
+	@override String get edit => 'Редактировать';
+}
+
 // Path: operation
 class _TranslationsOperationRu extends TranslationsOperationEn {
 	_TranslationsOperationRu._(TranslationsRu root) : this._root = root, super.internal(root);
@@ -201,6 +232,36 @@ class _TranslationsAccountAccountRu extends TranslationsAccountAccountEn {
 	@override late final _TranslationsAccountAccountActionsRu actions = _TranslationsAccountAccountActionsRu._(_root);
 	@override late final _TranslationsAccountAccountMessagesRu messages = _TranslationsAccountAccountMessagesRu._(_root);
 	@override late final _TranslationsAccountAccountErrorsRu errors = _TranslationsAccountAccountErrorsRu._(_root);
+}
+
+// Path: menu.profile
+class _TranslationsMenuProfileRu extends TranslationsMenuProfileEn {
+	_TranslationsMenuProfileRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get profile => 'Профиль';
+	@override String get next => 'Далее';
+	@override String get deleteAccount => 'Удалить Аккаунт';
+	@override String get account => 'Аккаунт';
+}
+
+// Path: menu.typeCounterparties
+class _TranslationsMenuTypeCounterpartiesRu extends TranslationsMenuTypeCounterpartiesEn {
+	_TranslationsMenuTypeCounterpartiesRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Типы контрагентов';
+	@override String get addType => 'Добавить тип';
+	@override String get editType => 'Редактировать тип';
+	@override String get print => 'Распечатать';
+	@override String get export => 'Скачать в Excel';
+	@override String get name => 'Название';
+	@override String get delete => 'Удалить тип';
+	@override String get notFound => 'Нет типов контрагентов';
 }
 
 // Path: account.account.account
@@ -341,6 +402,37 @@ extension on TranslationsRu {
 			case 'income.save': return 'Сохранить';
 			case 'income.time': return 'Время';
 			case 'income.select': return 'Выбрать';
+			case 'menu.menuTitle': return 'Меню';
+			case 'menu.operations': return 'Все операции';
+			case 'menu.operationsAll': return 'Все транзакции';
+			case 'menu.operationsByCounterparties': return 'По контрагентам';
+			case 'menu.operationsByAccounts': return 'По счетам';
+			case 'menu.reports': return 'Отчеты';
+			case 'menu.reportsByArticles': return 'Отчеты по статьям';
+			case 'menu.reportsIncomeExpenseSummary': return 'Общее положение доходов и расходов';
+			case 'menu.reportsMonthly': return 'Месячный отчет по доходам и расходам';
+			case 'menu.reportsMetrics': return 'Показатели';
+			case 'menu.settings': return 'Настройки';
+			case 'menu.settingsCounterparties': return 'Контрагенты';
+			case 'menu.settingsCounterpartyTypes': return 'Тип контрагентов';
+			case 'menu.settingsAccounts': return 'Счета';
+			case 'menu.settingsArticles': return 'Статьи';
+			case 'menu.logout': return 'Выход';
+			case 'menu.profile.profile': return 'Профиль';
+			case 'menu.profile.next': return 'Далее';
+			case 'menu.profile.deleteAccount': return 'Удалить Аккаунт';
+			case 'menu.profile.account': return 'Аккаунт';
+			case 'menu.error': return 'Ошибка';
+			case 'menu.typeCounterparties.title': return 'Типы контрагентов';
+			case 'menu.typeCounterparties.addType': return 'Добавить тип';
+			case 'menu.typeCounterparties.editType': return 'Редактировать тип';
+			case 'menu.typeCounterparties.print': return 'Распечатать';
+			case 'menu.typeCounterparties.export': return 'Скачать в Excel';
+			case 'menu.typeCounterparties.name': return 'Название';
+			case 'menu.typeCounterparties.delete': return 'Удалить тип';
+			case 'menu.typeCounterparties.notFound': return 'Нет типов контрагентов';
+			case 'menu.save': return 'Сохранить';
+			case 'menu.edit': return 'Редактировать';
 			case 'operation.operation': return 'Операции';
 			case 'operation.selectPeriod': return 'Выбрать период';
 			case 'operation.filter': return 'Фильтр';

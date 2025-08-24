@@ -5,6 +5,7 @@ import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 
 class TypeCounterpartiesPage extends StatefulWidget {
   const TypeCounterpartiesPage({super.key});
@@ -27,7 +28,7 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Типы контрагентов',
+        title: t.menu.typeCounterparties.title,
         backgroundColor: AppColors.backroundColor,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
@@ -37,7 +38,7 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
           }
 
           if (state is MenuError) {
-            return Center(child: Text('Ошибка: ${state.message.toString()}'));
+            return Center(child: Text('${t.menu.error}: ${state.message}'));
           }
 
           if (state is DeleteError) {
@@ -46,9 +47,9 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
               final err = state.error as DioException;
               final status = err.response?.statusCode;
               final detail = err.response?.data?.toString() ?? err.message;
-              message = 'Ошибка удаления [$status]: $detail';
+              message = '${t.menu.error} [$status]: $detail';
             } else {
-              message = 'Ошибка при удалении: ${state.error.toString()}';
+              message = '${t.menu.error}: ${state.error.toString()}';
             }
             return Center(child: Text(message));
           }
@@ -95,8 +96,8 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
                           onPressed: () {
                             Navigator.pushNamed(context, AppRoutes.addType);
                           },
-                          label: const Text(
-                            'Добавить тип',
+                          label: Text(
+                            t.menu.typeCounterparties.addType,
                             style: AppTextStyles.f16w500,
                           ),
                           icon: const Icon(Icons.add, size: 20),
@@ -117,7 +118,10 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
                       children: [
                         OutlinedButtonWidget(
                           onPressed: () {
-                            final headers = ['№', 'Название'];
+                            final headers = [
+                              '№',
+                              t.menu.typeCounterparties.name,
+                            ];
                             final rows =
                                 types.asMap().entries.map<List<String>>((
                                   entry,
@@ -129,17 +133,20 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
 
                             _localService.printReportAsPdf(
                               context: context,
-                              title: 'Типы контрагентов',
+                              title: t.menu.typeCounterparties.title,
                               headers: headers,
                               rows: rows,
                             );
                           },
-                          text: 'Распечатать',
+                          text: t.menu.typeCounterparties.print,
                         ),
                         12.w,
                         OutlinedButtonWidget(
                           onPressed: () {
-                            final headers = ['№', 'Название'];
+                            final headers = [
+                              '№',
+                              t.menu.typeCounterparties.name,
+                            ];
                             final rows =
                                 types.asMap().entries.map<List<String>>((
                                   entry,
@@ -150,13 +157,13 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
                                 }).toList();
 
                             _localService.exportToExcelGeneric(
-                              fileName: 'Типы_контрагентов',
+                              fileName: t.menu.typeCounterparties.title,
                               headers: headers,
                               rows: rows,
                               context: context,
                             );
                           },
-                          text: 'Скачать в Excel',
+                          text: t.menu.typeCounterparties.export,
                         ),
                       ],
                     ),
@@ -167,7 +174,7 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
           ),
           12.h,
 
-          // ----- Таблица: Название + узкая колонка меню -----
+          // Таблица
           if (hasTypes)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -175,20 +182,16 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
                 builder: (context, constraints) {
                   final maxW = constraints.maxWidth;
 
-                  // компоновка без горизонтального скролла
-                  const menuW = 32.0; // колонка троеточия
+                  const menuW = 32.0;
                   const spacing = 12.0;
                   const margin = 12.0;
 
-                  // всё оставшееся — под «Название»
                   final nameW = maxW - menuW - spacing - margin * 2;
 
-                  // компактные высоты на узких экранах
                   final isSmall = maxW < 360;
                   final headingH = isSmall ? 44.0 : 52.0;
                   final rowH = isSmall ? 44.0 : 52.0;
 
-                  // ограничитель длины (дополнительно к ellipsis)
                   String cut(String s, int max) =>
                       s.length > max ? '${s.substring(0, max)}…' : s;
 
@@ -201,7 +204,7 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
                       data: DataTableThemeData(
                         headingRowHeight: headingH,
                         dataRowMinHeight: rowH,
-                        dataRowMaxHeight: rowH, // чтобы не было NOT NORMALIZED
+                        dataRowMaxHeight: rowH,
                         horizontalMargin: margin,
                       ),
                       child: DataTable(
@@ -213,22 +216,18 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
-                        columns: const [
+                        columns: [
                           DataColumn(
                             label: Text(
-                              'Название',
+                              t.menu.typeCounterparties.name,
                               style: AppTextStyles.f16w500,
                             ),
                           ),
-                          DataColumn(label: Text('')), // меню
+                          const DataColumn(label: Text('')),
                         ],
                         rows:
                             types.map((type) {
-                              final nameText = cut(
-                                type.name,
-                                18,
-                              ); // максимум 18 символов
-
+                              final nameText = cut(type.name, 18);
                               return DataRow(
                                 cells: [
                                   DataCell(
@@ -261,7 +260,11 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
                                                     );
                                                 Navigator.pop(context);
                                               },
-                                              title: 'Удалить тип',
+                                              title:
+                                                  t
+                                                      .menu
+                                                      .typeCounterparties
+                                                      .delete,
                                             );
                                           },
                                           tapEdit: () async {
@@ -291,11 +294,11 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
               ),
             )
           else
-            const Center(
+            Center(
               child: Padding(
-                padding: EdgeInsets.only(top: 50),
+                padding: const EdgeInsets.only(top: 50),
                 child: Text(
-                  'Нет типов контрагентов',
+                  t.menu.typeCounterparties.notFound,
                   style: AppTextStyles.f16w500,
                 ),
               ),

@@ -1,0 +1,39 @@
+menuTitle: "Меню"
+
+operations: "Все операции"
+operationsAll: "Все транзакции"
+operationsByCounterparties: "По контрагентам"
+operationsByAccounts: "По счетам"
+
+reports: "Отчеты"
+reportsByArticles: "Отчеты по статьям"
+reportsIncomeExpenseSummary: "Общее положение доходов и расходов"
+reportsMonthly: "Месячный отчет по доходам и расходам"
+reportsMetrics: "Показатели"
+
+settings: "Настройки"
+settingsCounterparties: "Контрагенты"
+settingsCounterpartyTypes: "Тип контрагентов"
+settingsAccounts: "Счета"
+settingsArticles: "Статьи"
+
+logout: "Выход"
+
+profile:
+  profile: "Профиль"
+  next: "Далее"
+  deleteAccount: "Удалить Аккаунт"
+  account: "Аккаунт"
+error: "Ошибка"
+
+typeCounterparties:
+  title: "Типы контрагентов"
+  addType: "Добавить тип"
+  editType: "Редактировать тип"
+  print: "Распечатать"
+  export: "Скачать в Excel"
+  name: "Название"
+  delete: "Удалить тип"
+  notFound: "Нет типов контрагентов"
+save: "Сохранить"
+edit: "Редактировать"

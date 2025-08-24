@@ -223,7 +223,7 @@ class _HomePageState extends State<HomePage> {
                           )
                           : Row(
                             key: ValueKey(
-                              'chart_${selectedPeriod}_${chartData.length}_${selectedView}',
+                              'chart_${selectedPeriod}_${chartData.length}_$selectedView',
                             ),
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [

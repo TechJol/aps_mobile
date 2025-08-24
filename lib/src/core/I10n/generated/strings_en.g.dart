@@ -43,6 +43,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	late final TranslationsAuthEn auth = TranslationsAuthEn.internal(_root);
 	late final TranslationsHomeEn home = TranslationsHomeEn.internal(_root);
 	late final TranslationsIncomeEn income = TranslationsIncomeEn.internal(_root);
+	late final TranslationsMenuEn menu = TranslationsMenuEn.internal(_root);
 	late final TranslationsOperationEn operation = TranslationsOperationEn.internal(_root);
 }
 
@@ -314,6 +315,76 @@ class TranslationsIncomeEn {
 	String get select => 'Select';
 }
 
+// Path: menu
+class TranslationsMenuEn {
+	TranslationsMenuEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Menu'
+	String get menuTitle => 'Menu';
+
+	/// en: 'All operations'
+	String get operations => 'All operations';
+
+	/// en: 'All transactions'
+	String get operationsAll => 'All transactions';
+
+	/// en: 'By counterparties'
+	String get operationsByCounterparties => 'By counterparties';
+
+	/// en: 'By accounts'
+	String get operationsByAccounts => 'By accounts';
+
+	/// en: 'Reports'
+	String get reports => 'Reports';
+
+	/// en: 'Reports by articles'
+	String get reportsByArticles => 'Reports by articles';
+
+	/// en: 'Overall income & expense position'
+	String get reportsIncomeExpenseSummary => 'Overall income & expense position';
+
+	/// en: 'Monthly income & expense report'
+	String get reportsMonthly => 'Monthly income & expense report';
+
+	/// en: 'Metrics'
+	String get reportsMetrics => 'Metrics';
+
+	/// en: 'Settings'
+	String get settings => 'Settings';
+
+	/// en: 'Counterparties'
+	String get settingsCounterparties => 'Counterparties';
+
+	/// en: 'Counterparty types'
+	String get settingsCounterpartyTypes => 'Counterparty types';
+
+	/// en: 'Accounts'
+	String get settingsAccounts => 'Accounts';
+
+	/// en: 'Articles'
+	String get settingsArticles => 'Articles';
+
+	/// en: 'Logout'
+	String get logout => 'Logout';
+
+	late final TranslationsMenuProfileEn profile = TranslationsMenuProfileEn.internal(_root);
+
+	/// en: 'Error'
+	String get error => 'Error';
+
+	late final TranslationsMenuTypeCounterpartiesEn typeCounterparties = TranslationsMenuTypeCounterpartiesEn.internal(_root);
+
+	/// en: 'Сохранить'
+	String get save => 'Сохранить';
+
+	/// en: 'Редактировать'
+	String get edit => 'Редактировать';
+}
+
 // Path: operation
 class TranslationsOperationEn {
 	TranslationsOperationEn.internal(this._root);
@@ -400,6 +471,60 @@ class TranslationsAccountAccountEn {
 	late final TranslationsAccountAccountActionsEn actions = TranslationsAccountAccountActionsEn.internal(_root);
 	late final TranslationsAccountAccountMessagesEn messages = TranslationsAccountAccountMessagesEn.internal(_root);
 	late final TranslationsAccountAccountErrorsEn errors = TranslationsAccountAccountErrorsEn.internal(_root);
+}
+
+// Path: menu.profile
+class TranslationsMenuProfileEn {
+	TranslationsMenuProfileEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Profile'
+	String get profile => 'Profile';
+
+	/// en: 'Next'
+	String get next => 'Next';
+
+	/// en: 'Delete Account'
+	String get deleteAccount => 'Delete Account';
+
+	/// en: 'Account'
+	String get account => 'Account';
+}
+
+// Path: menu.typeCounterparties
+class TranslationsMenuTypeCounterpartiesEn {
+	TranslationsMenuTypeCounterpartiesEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Counterparty types'
+	String get title => 'Counterparty types';
+
+	/// en: 'Add type'
+	String get addType => 'Add type';
+
+	/// en: 'Редактировать тип'
+	String get editType => 'Редактировать тип';
+
+	/// en: 'Print'
+	String get print => 'Print';
+
+	/// en: 'Export to Excel'
+	String get export => 'Export to Excel';
+
+	/// en: 'Name'
+	String get name => 'Name';
+
+	/// en: 'Delete type'
+	String get delete => 'Delete type';
+
+	/// en: 'No counterparty types'
+	String get notFound => 'No counterparty types';
 }
 
 // Path: account.account.account
@@ -560,6 +685,37 @@ extension on Translations {
 			case 'income.save': return 'Save';
 			case 'income.time': return 'Time';
 			case 'income.select': return 'Select';
+			case 'menu.menuTitle': return 'Menu';
+			case 'menu.operations': return 'All operations';
+			case 'menu.operationsAll': return 'All transactions';
+			case 'menu.operationsByCounterparties': return 'By counterparties';
+			case 'menu.operationsByAccounts': return 'By accounts';
+			case 'menu.reports': return 'Reports';
+			case 'menu.reportsByArticles': return 'Reports by articles';
+			case 'menu.reportsIncomeExpenseSummary': return 'Overall income & expense position';
+			case 'menu.reportsMonthly': return 'Monthly income & expense report';
+			case 'menu.reportsMetrics': return 'Metrics';
+			case 'menu.settings': return 'Settings';
+			case 'menu.settingsCounterparties': return 'Counterparties';
+			case 'menu.settingsCounterpartyTypes': return 'Counterparty types';
+			case 'menu.settingsAccounts': return 'Accounts';
+			case 'menu.settingsArticles': return 'Articles';
+			case 'menu.logout': return 'Logout';
+			case 'menu.profile.profile': return 'Profile';
+			case 'menu.profile.next': return 'Next';
+			case 'menu.profile.deleteAccount': return 'Delete Account';
+			case 'menu.profile.account': return 'Account';
+			case 'menu.error': return 'Error';
+			case 'menu.typeCounterparties.title': return 'Counterparty types';
+			case 'menu.typeCounterparties.addType': return 'Add type';
+			case 'menu.typeCounterparties.editType': return 'Редактировать тип';
+			case 'menu.typeCounterparties.print': return 'Print';
+			case 'menu.typeCounterparties.export': return 'Export to Excel';
+			case 'menu.typeCounterparties.name': return 'Name';
+			case 'menu.typeCounterparties.delete': return 'Delete type';
+			case 'menu.typeCounterparties.notFound': return 'No counterparty types';
+			case 'menu.save': return 'Сохранить';
+			case 'menu.edit': return 'Редактировать';
 			case 'operation.operation': return 'Operations';
 			case 'operation.selectPeriod': return 'Select period';
 			case 'operation.filter': return 'Filter';
