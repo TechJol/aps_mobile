@@ -188,6 +188,7 @@ class _TranslationsMenuRu extends TranslationsMenuEn {
 	@override late final _TranslationsMenuTypeCounterpartiesRu typeCounterparties = _TranslationsMenuTypeCounterpartiesRu._(_root);
 	@override String get save => 'Сохранить';
 	@override String get edit => 'Редактировать';
+	@override late final _TranslationsMenuCounterpartiesRu counterparties = _TranslationsMenuCounterpartiesRu._(_root);
 }
 
 // Path: operation
@@ -262,6 +263,25 @@ class _TranslationsMenuTypeCounterpartiesRu extends TranslationsMenuTypeCounterp
 	@override String get name => 'Название';
 	@override String get delete => 'Удалить тип';
 	@override String get notFound => 'Нет типов контрагентов';
+}
+
+// Path: menu.counterparties
+class _TranslationsMenuCounterpartiesRu extends TranslationsMenuCounterpartiesEn {
+	_TranslationsMenuCounterpartiesRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Контрагенты';
+	@override String get addCounterparty => 'Добавить контрагента';
+	@override String get editCounterparty => 'Редактировать контрагента';
+	@override String get deleteCounterparty => 'Удалить контрагента';
+	@override String get print => 'Распечатать';
+	@override String get export => 'Скачать в Excel';
+	@override String get name => 'Название';
+	@override String get type => 'Тип';
+	@override String get notFound => 'Нет контрагентов';
+	@override String get phoneNumber => 'Контактная информация';
 }
 
 // Path: account.account.account
@@ -433,6 +453,16 @@ extension on TranslationsRu {
 			case 'menu.typeCounterparties.notFound': return 'Нет типов контрагентов';
 			case 'menu.save': return 'Сохранить';
 			case 'menu.edit': return 'Редактировать';
+			case 'menu.counterparties.title': return 'Контрагенты';
+			case 'menu.counterparties.addCounterparty': return 'Добавить контрагента';
+			case 'menu.counterparties.editCounterparty': return 'Редактировать контрагента';
+			case 'menu.counterparties.deleteCounterparty': return 'Удалить контрагента';
+			case 'menu.counterparties.print': return 'Распечатать';
+			case 'menu.counterparties.export': return 'Скачать в Excel';
+			case 'menu.counterparties.name': return 'Название';
+			case 'menu.counterparties.type': return 'Тип';
+			case 'menu.counterparties.notFound': return 'Нет контрагентов';
+			case 'menu.counterparties.phoneNumber': return 'Контактная информация';
 			case 'operation.operation': return 'Операции';
 			case 'operation.selectPeriod': return 'Выбрать период';
 			case 'operation.filter': return 'Фильтр';

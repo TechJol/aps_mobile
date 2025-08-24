@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +59,7 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Редактировать контрагента',
+        title: t.menu.counterparties.editCounterparty,
         backgroundColor: AppColors.backroundColor,
       ),
       body: BlocListener<MenuCubit, MenuState>(
@@ -89,7 +90,10 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  TextFieldWid(label: 'Название', controller: nameController),
+                  TextFieldWid(
+                    label: t.menu.counterparties.name,
+                    controller: nameController,
+                  ),
                   12.h,
                   BlocBuilder<MenuCubit, MenuState>(
                     builder: (context, state) {
@@ -107,7 +111,7 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
                         }
 
                         return DropDownFormField(
-                          label: 'Тип',
+                          label: t.menu.counterparties.type,
                           items: types!.map((e) => e.name).toList(),
                           value: selectedTypeName,
                           onChanged: (val) {
@@ -130,7 +134,7 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
                   ),
                   12.h,
                   TextFieldWid(
-                    label: 'Контактная информация',
+                    label: t.menu.counterparties.phoneNumber,
                     controller: contactInfoController,
                   ),
                   24.h,
@@ -160,7 +164,7 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
                           ),
                         ),
                         child: Text(
-                          'Сохранить',
+                          t.menu.save,
                           style: AppTextStyles.f16w500.copyWith(
                             color: AppColors.whiteColor,
                           ),

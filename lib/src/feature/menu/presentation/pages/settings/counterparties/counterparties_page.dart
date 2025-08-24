@@ -5,6 +5,7 @@ import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 
 class CounterpartiesPage extends StatefulWidget {
   const CounterpartiesPage({super.key});
@@ -27,7 +28,7 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Контрагенты',
+        title: t.menu.counterparties.title,
         backgroundColor: AppColors.backroundColor,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
@@ -37,15 +38,15 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
           }
 
           if (state is MenuError) {
-            return Center(child: Text('Ошибка: ${state.message}'));
+            return Center(child: Text('${t.menu.error}: ${state.message}'));
           }
 
           if (state is DeleteError) {
             final error = state.error;
             final message =
                 error is DioException
-                    ? 'Ошибка удаления [${error.response?.statusCode}]: ${error.response?.data ?? error.message}'
-                    : 'Ошибка при удалении: $error';
+                    ? '${t.menu.error} [${error.response?.statusCode}]: ${error.response?.data ?? error.message}'
+                    : '${t.menu.error}: $error';
             return Center(child: Text(message));
           }
 
@@ -72,7 +73,7 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
       return types
           .firstWhere(
             (t) => t.id == typeId,
-            orElse: () => PartnerTypesModel(id: typeId, name: 'Неизвестно'),
+            orElse: () => PartnerTypesModel(id: typeId, name: t.menu.error),
           )
           .name;
     }
@@ -105,8 +106,8 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                               AppRoutes.addCounterparties,
                             );
                           },
-                          label: const Text(
-                            'Добавить контрагента',
+                          label: Text(
+                            t.menu.counterparties.addCounterparty,
                             style: AppTextStyles.f16w500,
                           ),
                           icon: const Icon(Icons.add, size: 20),
@@ -127,7 +128,11 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                       children: [
                         OutlinedButtonWidget(
                           onPressed: () {
-                            final headers = ['№', 'Название', 'Тип'];
+                            final headers = [
+                              '№',
+                              t.menu.counterparties.name,
+                              t.menu.counterparties.type,
+                            ];
                             final rows =
                                 partners.asMap().entries.map<List<String>>((
                                   entry,
@@ -143,17 +148,21 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
 
                             _localService.printReportAsPdf(
                               context: context,
-                              title: 'Контрагенты',
+                              title: t.menu.counterparties.title,
                               headers: headers,
                               rows: rows,
                             );
                           },
-                          text: 'Распечатать',
+                          text: t.menu.counterparties.print,
                         ),
                         12.w,
                         OutlinedButtonWidget(
                           onPressed: () {
-                            final headers = ['№', 'Название', 'Тип'];
+                            final headers = [
+                              '№',
+                              t.menu.counterparties.name,
+                              t.menu.counterparties.type,
+                            ];
                             final rows =
                                 partners.asMap().entries.map<List<String>>((
                                   entry,
@@ -168,13 +177,13 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                                 }).toList();
 
                             _localService.exportToExcelGeneric(
-                              fileName: 'Контрагенты',
+                              fileName: t.menu.counterparties.title,
                               headers: headers,
                               rows: rows,
                               context: context,
                             );
                           },
-                          text: 'Скачать в Excel',
+                          text: t.menu.counterparties.export,
                         ),
                       ],
                     ),
@@ -202,10 +211,8 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                   if (typeW < minTypeW) typeW = minTypeW;
                   if (typeW > maxTypeW) typeW = maxTypeW;
 
-                  // оставшееся — под "Название"
                   final nameW = maxW - menuW - typeW - margin * 2 - spacing * 2;
 
-                  // режим компактных высот для узких экранов
                   final isSmall = maxW < 360;
                   final headingH = isSmall ? 44.0 : 52.0;
                   final rowMinH = isSmall ? 44.0 : 52.0;
@@ -234,17 +241,20 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
-                        columns: const [
+                        columns: [
                           DataColumn(
                             label: Text(
-                              'Название',
+                              t.menu.counterparties.name,
                               style: AppTextStyles.f16w500,
                             ),
                           ),
                           DataColumn(
-                            label: Text('Тип', style: AppTextStyles.f16w500),
+                            label: Text(
+                              t.menu.counterparties.type,
+                              style: AppTextStyles.f16w500,
+                            ),
                           ),
-                          DataColumn(label: Text('')), // меню
+                          const DataColumn(label: Text('')),
                         ],
                         rows:
                             partners.map((p) {
@@ -295,11 +305,14 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                                                     .deletePartner(p.id!);
                                                 Navigator.pop(context);
                                               },
-                                              title: 'Удалить контрагента',
+                                              title:
+                                                  t
+                                                      .menu
+                                                      .counterparties
+                                                      .deleteCounterparty,
                                             );
                                           },
                                           tapEdit: () async {
-                                            // сохраняем ссылки ДО await
                                             final cubit =
                                                 context.read<MenuCubit>();
                                             final navigator = Navigator.of(
@@ -312,12 +325,9 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
                                                   arguments: p,
                                                 );
 
-                                            if (!mounted) {
-                                              return; // защита от деактивации
-                                            }
+                                            if (!mounted) return;
                                             if (result == true) {
-                                              cubit
-                                                  .getPartnerData(); // больше не используем context после await
+                                              cubit.getPartnerData();
                                             }
                                           },
                                         ),
@@ -334,10 +344,13 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
               ),
             )
           else
-            const Center(
+            Center(
               child: Padding(
-                padding: EdgeInsets.only(top: 50),
-                child: Text('Нет контрагентов', style: AppTextStyles.f16w500),
+                padding: const EdgeInsets.only(top: 50),
+                child: Text(
+                  t.menu.counterparties.notFound,
+                  style: AppTextStyles.f16w500,
+                ),
               ),
             ),
           30.h,

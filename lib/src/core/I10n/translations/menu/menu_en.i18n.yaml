@@ -38,3 +38,14 @@ typeCounterparties:
 save: "Сохранить"
 edit: "Редактировать"
 
+counterparties:
+  title: "Counterparties"
+  addCounterparty: "Add counterparty"
+  editCounterparty: "Edit counterparty"
+  deleteCounterparty: "Delete counterparty"
+  print: "Print"
+  export: "Export to Excel"
+  name: "Name"
+  type: "Type"
+  notFound: "No counterparties"
+  phoneNumber: "Contact information"

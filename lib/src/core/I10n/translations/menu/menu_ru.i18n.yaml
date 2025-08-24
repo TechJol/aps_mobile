@@ -37,3 +37,15 @@ typeCounterparties:
   notFound: "Нет типов контрагентов"
 save: "Сохранить"
 edit: "Редактировать"
+
+counterparties:
+  title: "Контрагенты"
+  addCounterparty: "Добавить контрагента"
+  editCounterparty: "Редактировать контрагента"
+  deleteCounterparty: "Удалить контрагента"
+  print: "Распечатать"
+  export: "Скачать в Excel"
+  name: "Название"
+  type: "Тип"
+  notFound: "Нет контрагентов"
+  phoneNumber: "Контактная информация"

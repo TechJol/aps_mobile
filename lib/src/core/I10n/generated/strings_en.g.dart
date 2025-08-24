@@ -383,6 +383,8 @@ class TranslationsMenuEn {
 
 	/// en: 'Редактировать'
 	String get edit => 'Редактировать';
+
+	late final TranslationsMenuCounterpartiesEn counterparties = TranslationsMenuCounterpartiesEn.internal(_root);
 }
 
 // Path: operation
@@ -525,6 +527,45 @@ class TranslationsMenuTypeCounterpartiesEn {
 
 	/// en: 'No counterparty types'
 	String get notFound => 'No counterparty types';
+}
+
+// Path: menu.counterparties
+class TranslationsMenuCounterpartiesEn {
+	TranslationsMenuCounterpartiesEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Counterparties'
+	String get title => 'Counterparties';
+
+	/// en: 'Add counterparty'
+	String get addCounterparty => 'Add counterparty';
+
+	/// en: 'Edit counterparty'
+	String get editCounterparty => 'Edit counterparty';
+
+	/// en: 'Delete counterparty'
+	String get deleteCounterparty => 'Delete counterparty';
+
+	/// en: 'Print'
+	String get print => 'Print';
+
+	/// en: 'Export to Excel'
+	String get export => 'Export to Excel';
+
+	/// en: 'Name'
+	String get name => 'Name';
+
+	/// en: 'Type'
+	String get type => 'Type';
+
+	/// en: 'No counterparties'
+	String get notFound => 'No counterparties';
+
+	/// en: 'Contact information'
+	String get phoneNumber => 'Contact information';
 }
 
 // Path: account.account.account
@@ -716,6 +757,16 @@ extension on Translations {
 			case 'menu.typeCounterparties.notFound': return 'No counterparty types';
 			case 'menu.save': return 'Сохранить';
 			case 'menu.edit': return 'Редактировать';
+			case 'menu.counterparties.title': return 'Counterparties';
+			case 'menu.counterparties.addCounterparty': return 'Add counterparty';
+			case 'menu.counterparties.editCounterparty': return 'Edit counterparty';
+			case 'menu.counterparties.deleteCounterparty': return 'Delete counterparty';
+			case 'menu.counterparties.print': return 'Print';
+			case 'menu.counterparties.export': return 'Export to Excel';
+			case 'menu.counterparties.name': return 'Name';
+			case 'menu.counterparties.type': return 'Type';
+			case 'menu.counterparties.notFound': return 'No counterparties';
+			case 'menu.counterparties.phoneNumber': return 'Contact information';
 			case 'operation.operation': return 'Operations';
 			case 'operation.selectPeriod': return 'Select period';
 			case 'operation.filter': return 'Filter';
