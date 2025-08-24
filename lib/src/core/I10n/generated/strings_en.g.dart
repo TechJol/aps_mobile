@@ -160,6 +160,9 @@ class TranslationsAccountEn {
 
 	/// en: 'Euro'
 	String get euro => 'Euro';
+
+	/// en: 'Account Settings'
+	String get settingsAccounts => 'Account Settings';
 }
 
 // Path: auth
@@ -682,6 +685,9 @@ class TranslationsAccountAccountErrorsEn {
 	/// en: 'Account not found'
 	String get accountNotFound => 'Account not found';
 
+	/// en: 'No accounts'
+	String get notAccounts => 'No accounts';
+
 	/// en: 'An account with this name already exists'
 	String get accountAlreadyExists => 'An account with this name already exists';
 }
@@ -700,6 +706,7 @@ extension on Translations {
 			case 'account.account.messages.accountUpdated': return 'Account successfully updated';
 			case 'account.account.messages.accountDeleted': return 'Account successfully deleted';
 			case 'account.account.errors.accountNotFound': return 'Account not found';
+			case 'account.account.errors.notAccounts': return 'No accounts';
 			case 'account.account.errors.accountAlreadyExists': return 'An account with this name already exists';
 			case 'account.accountManagement': return 'Account Management';
 			case 'account.totalBalances': return 'Total Balances';
@@ -736,6 +743,7 @@ extension on Translations {
 			case 'account.som': return 'Som';
 			case 'account.ruble': return 'Ruble';
 			case 'account.euro': return 'Euro';
+			case 'account.settingsAccounts': return 'Account Settings';
 			case 'auth.welcome': return 'Hello!\nWelcome';
 			case 'auth.login': return 'Login';
 			case 'auth.register': return 'Register';

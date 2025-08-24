@@ -89,6 +89,7 @@ class _TranslationsAccountRu extends TranslationsAccountEn {
 	@override String get som => 'Сом';
 	@override String get ruble => 'Рубль';
 	@override String get euro => 'Евро';
+	@override String get settingsAccounts => 'Настройки счетов';
 }
 
 // Path: auth
@@ -351,6 +352,7 @@ class _TranslationsAccountAccountErrorsRu extends TranslationsAccountAccountErro
 
 	// Translations
 	@override String get accountNotFound => 'Счет не найден';
+	@override String get notAccounts => 'Нет счетов';
 	@override String get accountAlreadyExists => 'Счет с таким именем уже существует';
 }
 
@@ -368,6 +370,7 @@ extension on TranslationsRu {
 			case 'account.account.messages.accountUpdated': return 'Счет успешно обновлен';
 			case 'account.account.messages.accountDeleted': return 'Счет успешно удален';
 			case 'account.account.errors.accountNotFound': return 'Счет не найден';
+			case 'account.account.errors.notAccounts': return 'Нет счетов';
 			case 'account.account.errors.accountAlreadyExists': return 'Счет с таким именем уже существует';
 			case 'account.accountManagement': return 'Управление счетами';
 			case 'account.totalBalances': return 'общий балансы';
@@ -404,6 +407,7 @@ extension on TranslationsRu {
 			case 'account.som': return 'Сом';
 			case 'account.ruble': return 'Рубль';
 			case 'account.euro': return 'Евро';
+			case 'account.settingsAccounts': return 'Настройки счетов';
 			case 'auth.welcome': return 'Привет!\nДобро пожаловать';
 			case 'auth.login': return 'Войти';
 			case 'auth.register': return 'Регистрация';

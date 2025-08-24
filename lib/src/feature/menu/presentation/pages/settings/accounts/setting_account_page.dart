@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dio/dio.dart';
@@ -27,7 +28,7 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: 'Счета',
+        title: t.account.account.account.title,
         backgroundColor: AppColors.backroundColor,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
@@ -37,7 +38,9 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
           }
 
           if (state is MenuError) {
-            return Center(child: Text('Ошибка: ${state.message.toString()}'));
+            return Center(
+              child: Text('${t.menu.error}: ${state.message.toString()}'),
+            );
           }
 
           if (state is DeleteError) {
@@ -46,9 +49,9 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
               final err = state.error as DioException;
               final status = err.response?.statusCode;
               final detail = err.response?.data?.toString() ?? err.message;
-              message = 'Ошибка удаления [$status]: $detail';
+              message = '${t.menu.error} [$status]: $detail';
             } else {
-              message = 'Ошибка при удалении: ${state.error.toString()}';
+              message = '${t.menu.error}: ${state.error.toString()}';
             }
             return Center(child: Text(message));
           }
@@ -94,8 +97,8 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
                               AppRoutes.addSettingAccount,
                             );
                           },
-                          label: const Text(
-                            'Добавить счет',
+                          label: Text(
+                            t.account.addAccount,
                             style: AppTextStyles.f16w500,
                           ),
                           icon: const Icon(Icons.add, size: 20),
@@ -116,7 +119,11 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
                       children: [
                         OutlinedButtonWidget(
                           onPressed: () {
-                            final headers = ['№', 'Название', 'Тип счета'];
+                            final headers = [
+                              '№',
+                              t.account.name,
+                              t.account.typeAccount,
+                            ];
                             final rows =
                                 accounts.asMap().entries.map((entry) {
                                   final index = entry.key + 1;
@@ -130,17 +137,21 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
 
                             _localService.printReportAsPdf(
                               context: context,
-                              title: 'Настройки счетов',
+                              title: t.account.settingsAccounts,
                               headers: headers,
                               rows: rows,
                             );
                           },
-                          text: 'Распечатать',
+                          text: t.account.print,
                         ),
                         12.w,
                         OutlinedButtonWidget(
                           onPressed: () {
-                            final headers = ['№', 'Название', 'Тип счета'];
+                            final headers = [
+                              '№',
+                              t.account.name,
+                              t.account.typeAccount,
+                            ];
                             final rows =
                                 accounts.asMap().entries.map((entry) {
                                   final index = entry.key + 1;
@@ -153,13 +164,13 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
                                 }).toList();
 
                             _localService.exportToExcelGeneric(
-                              fileName: 'Настройки_счетов',
+                              fileName: t.account.settingsAccounts,
                               headers: headers,
                               rows: rows,
                               context: context,
                             );
                           },
-                          text: 'Скачать в Excel',
+                          text: t.account.export,
                         ),
                       ],
                     ),
@@ -221,16 +232,16 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
-                        columns: const [
+                        columns: [
                           DataColumn(
                             label: Text(
-                              'Название',
+                              t.account.name,
                               style: AppTextStyles.f16w500,
                             ),
                           ),
                           DataColumn(
                             label: Text(
-                              'Тип счета',
+                              t.account.typeAccount,
                               style: AppTextStyles.f16w500,
                             ),
                           ),
@@ -285,7 +296,12 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
                                                     .deleteAccount(acc.id!);
                                                 Navigator.pop(context);
                                               },
-                                              title: 'Удалить счет',
+                                              title:
+                                                  t
+                                                      .account
+                                                      .account
+                                                      .actions
+                                                      .deleteAccount,
                                             );
                                           },
                                           tapEdit: () async {
@@ -315,10 +331,13 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
               ),
             )
           else
-            const Center(
+            Center(
               child: Padding(
                 padding: EdgeInsets.only(top: 50),
-                child: Text('Нет счетов', style: AppTextStyles.f16w500),
+                child: Text(
+                  t.account.account.errors.notAccounts,
+                  style: AppTextStyles.f16w500,
+                ),
               ),
             ),
           30.h,
@@ -330,11 +349,11 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
   String _getAccountTypeName(String accountType) {
     switch (accountType) {
       case 'bank':
-        return 'Банк';
+        return t.account.bank;
       case 'cash':
-        return 'Касса';
+        return t.account.cash;
       default:
-        return 'Неизвестно';
+        return t.account.unknownType;
     }
   }
 }

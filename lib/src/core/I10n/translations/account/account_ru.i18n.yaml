@@ -12,6 +12,7 @@ account:
     accountDeleted: "Счет успешно удален"
   errors:
     accountNotFound: "Счет не найден"
+    notAccounts: "Нет счетов"
     accountAlreadyExists: "Счет с таким именем уже существует"
 accountManagement: "Управление счетами"
 totalBalances: "общий балансы"
@@ -48,3 +49,4 @@ dollar: "Доллар"
 som: "Сом"
 ruble: "Рубль"
 euro: "Евро"
+settingsAccounts: "Настройки счетов"
