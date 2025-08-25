@@ -271,6 +271,9 @@ class TranslationsHomeEn {
 
 	/// en: 'Unknown'
 	String get unknown => 'Unknown';
+
+	/// en: 'Other'
+	String get other => 'Other';
 }
 
 // Path: income
@@ -1249,6 +1252,7 @@ extension on Translations {
 			case 'home.loading': return 'Loading...';
 			case 'home.noOperations': return 'No operations';
 			case 'home.unknown': return 'Unknown';
+			case 'home.other': return 'Other';
 			case 'income.incomes': return 'Incomes';
 			case 'income.expenses': return 'Expenses';
 			case 'income.account': return 'Account';

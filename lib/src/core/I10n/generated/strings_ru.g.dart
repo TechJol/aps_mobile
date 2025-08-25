@@ -138,6 +138,7 @@ class _TranslationsHomeRu extends TranslationsHomeEn {
 	@override String get loading => 'Загрузка...';
 	@override String get noOperations => 'Нет операций';
 	@override String get unknown => 'Неизвестно';
+	@override String get other => 'Другое';
 }
 
 // Path: income
@@ -714,6 +715,7 @@ extension on TranslationsRu {
 			case 'home.loading': return 'Загрузка...';
 			case 'home.noOperations': return 'Нет операций';
 			case 'home.unknown': return 'Неизвестно';
+			case 'home.other': return 'Другое';
 			case 'income.incomes': return 'Доходы';
 			case 'income.expenses': return 'Расходы';
 			case 'income.account': return 'Счет';

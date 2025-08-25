@@ -6,14 +6,14 @@ import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-//import 'package:pie_chart_page.dart';
 
 class MainView extends StatelessWidget {
   const MainView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MainScreen([
+    // ⚠️ без const, чтобы при rebuild дерева корня виджет пересоздавался
+    return MainScreen(const [
       HomePage(),
       MainAccountPage(),
       SizedBox(),
@@ -25,17 +25,25 @@ class MainView extends StatelessWidget {
 
 class MainScreen extends StatelessWidget {
   const MainScreen(this.items, {super.key});
-
   final List<Widget> items;
 
   @override
   Widget build(BuildContext context) {
+    // ВАЖНО: создаём зависимость от TranslationProvider
+    final locale = TranslationProvider.of(context).flutterLocale;
+
+    final currentIndex = context.watch<MainCubit>().state;
+
     return Scaffold(
-      body: items[context.watch<MainCubit>().state],
+      // Можно и здесь ключ, но достаточно для BottomNavigationBar
+      // key: ValueKey('scaffold_${locale?.languageCode ?? ''}'),
+      body: items[currentIndex],
       bottomNavigationBar: Container(
         color: AppColors.whiteColor,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: BottomNavigationBar(
+          // Ключ — чтобы бар точно пересобрался при смене языка
+          key: ValueKey('bn_${locale.languageCode}'),
           elevation: 1,
           backgroundColor: AppColors.whiteColor,
           selectedItemColor: AppColors.buttonColor,
@@ -44,16 +52,14 @@ class MainScreen extends StatelessWidget {
           unselectedLabelStyle: const TextStyle(height: 2),
           showSelectedLabels: true,
           showUnselectedLabels: true,
-          currentIndex: context.watch<MainCubit>().state,
+          currentIndex: currentIndex,
           onTap: (index) async {
-            // context.read<MainCubit>().change(index);
             if (index == 2) {
               final result = await IncomePage().showIncomeBottomSheet(
                 context: context,
                 title: t.income.incomes,
                 transactionType: 'income',
               );
-
               if (result == true) {
                 context.read<MenuCubit>().getTransactionsWithAccounts();
               }
@@ -76,7 +82,7 @@ class MainScreen extends StatelessWidget {
               icon: SvgPicture.asset(
                 'assets/icons/main.svg',
                 colorFilter: ColorFilter.mode(
-                  context.watch<MainCubit>().state == 0
+                  currentIndex == 0
                       ? AppColors.buttonColor
                       : AppColors.blackColor,
                   BlendMode.srcIn,
@@ -88,7 +94,7 @@ class MainScreen extends StatelessWidget {
               icon: SvgPicture.asset(
                 'assets/icons/home.svg',
                 colorFilter: ColorFilter.mode(
-                  context.watch<MainCubit>().state == 1
+                  currentIndex == 1
                       ? AppColors.buttonColor
                       : AppColors.blackColor,
                   BlendMode.srcIn,
@@ -100,7 +106,7 @@ class MainScreen extends StatelessWidget {
               icon: SvgPicture.asset(
                 'assets/icons/income.svg',
                 colorFilter: ColorFilter.mode(
-                  context.watch<MainCubit>().state == 2
+                  currentIndex == 2
                       ? AppColors.buttonColor
                       : AppColors.blackColor,
                   BlendMode.srcIn,
@@ -112,7 +118,7 @@ class MainScreen extends StatelessWidget {
               icon: SvgPicture.asset(
                 'assets/icons/comeout.svg',
                 colorFilter: ColorFilter.mode(
-                  context.watch<MainCubit>().state == 3
+                  currentIndex == 3
                       ? AppColors.buttonColor
                       : AppColors.blackColor,
                   BlendMode.srcIn,
@@ -124,7 +130,7 @@ class MainScreen extends StatelessWidget {
               icon: SvgPicture.asset(
                 'assets/icons/operation.svg',
                 colorFilter: ColorFilter.mode(
-                  context.watch<MainCubit>().state == 4
+                  currentIndex == 4
                       ? AppColors.buttonColor
                       : AppColors.blackColor,
                   BlendMode.srcIn,

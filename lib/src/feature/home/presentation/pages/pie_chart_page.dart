@@ -7,6 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+/// Стабильные ключи выбора (не зависят от локали)
+enum ViewType { expense, income, all }
+
+enum PeriodType { day, week, month, year }
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -15,12 +20,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int selectedIndex = 0;
-  String selectedView = t.home.all; // Расходы/Доходы/Общий
-  String selectedPeriod = t.home.day; // День/Неделя/Месяц/Год
-
-  final viewOptions = [t.home.expenses, t.home.income, t.home.all];
-  final periodOptions = [t.home.day, t.home.week, t.home.month, t.home.year];
+  /// текущее состояние фильтров
+  ViewType selectedView = ViewType.all;
+  PeriodType selectedPeriod = PeriodType.day;
 
   /// Полные (сырые) сгруппированные данные по статьям за выбранный период/вид
   Map<String, double> groupedData = {};
@@ -42,6 +44,39 @@ class _HomePageState extends State<HomePage> {
 
   void updateState<T>(T value, void Function(T) updater) =>
       setState(() => updater(value));
+
+  // ---------- Лейблы для enum с учётом текущей локали ----------
+  String viewLabel(ViewType v) {
+    switch (v) {
+      case ViewType.expense:
+        return t.home.expenses;
+      case ViewType.income:
+        return t.home.income;
+      case ViewType.all:
+        return t.home.all;
+    }
+  }
+
+  String periodLabel(PeriodType p) {
+    switch (p) {
+      case PeriodType.day:
+        return t.home.day;
+      case PeriodType.week:
+        return t.home.week;
+      case PeriodType.month:
+        return t.home.month;
+      case PeriodType.year:
+        return t.home.year;
+    }
+  }
+
+  // порядок показа табов периода
+  final _periodOptionsOrder = const [
+    PeriodType.day,
+    PeriodType.week,
+    PeriodType.month,
+    PeriodType.year,
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -138,18 +173,15 @@ class _HomePageState extends State<HomePage> {
       transactions: state.transactions,
       reasons: state.reasons,
       period: selectedPeriod,
-      viewType: _viewTypeFromLabel(selectedView),
+      viewType: selectedView,
     );
 
     // Берём ТОП-3 и строим данные для пончика (ТОП-3 + "Другое")
     final top3 = _topNEntries(groupedData, 3);
-    final chartData = _chartDataFromTop(
-      groupedData,
-      top3,
-    ); // Map в порядке: top3, затем "Другое" (если есть)
+    final chartData = _chartDataFromTop(groupedData, top3);
 
     // Подготовим цвета (по порядку сегментов chartData)
-    final hasOther = chartData.containsKey('Другие');
+    final hasOther = chartData.containsKey(t.home.other); // "Другие"
     final colorsForChart = <Color>[
       ..._topColors.take(top3.length),
       if (hasOther) _otherColor,
@@ -175,12 +207,13 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // Заголовок "День/Неделя/..."
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      selectedPeriod,
+                      periodLabel(selectedPeriod),
                       style: const TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w600,
@@ -190,6 +223,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
 
+                // Диаграмма / заглушка
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 500),
                   switchInCurve: Curves.easeOut,
@@ -223,7 +257,7 @@ class _HomePageState extends State<HomePage> {
                           )
                           : Row(
                             key: ValueKey(
-                              'chart_${selectedPeriod}_${chartData.length}_$selectedView',
+                              'chart_${selectedPeriod}_${chartData.length}_${selectedView.name}',
                             ),
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -234,26 +268,23 @@ class _HomePageState extends State<HomePage> {
                                   size: const Size(112, 112),
                                   painter: PieChartDynamicPainter(
                                     data: chartData,
-                                    colors:
-                                        colorsForChart, // <- цвета сегментов по порядку
+                                    colors: colorsForChart,
                                   ),
                                 ),
                               ),
                               const SizedBox(width: 24),
-                              _legendFromTopAndOther(
-                                top3,
-                                hasOther,
-                              ), // топ-3 + "Другое" (зелёный)
+                              _legendFromTopAndOther(top3, hasOther),
                             ],
                           ),
                 ),
 
                 const SizedBox(height: 18),
 
+                // ------ Табы периода (inline, без отдельного _PeriodTab) ------
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children:
-                      periodOptions.map((p) {
+                      _periodOptionsOrder.map((p) {
                         final isSelected = selectedPeriod == p;
                         return GestureDetector(
                           onTap: () => _onPeriodTap(p),
@@ -270,7 +301,7 @@ class _HomePageState extends State<HomePage> {
                                           ? AppColors.primaryColor
                                           : Colors.grey,
                                 ),
-                                child: Text(p),
+                                child: Text(periodLabel(p)),
                               ),
                               const SizedBox(height: 6),
                               AnimatedContainer(
@@ -292,6 +323,8 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
+
+        // стрелки смены периода
         Positioned(
           left: 10,
           top: 0,
@@ -317,17 +350,20 @@ class _HomePageState extends State<HomePage> {
   // ---------------- Переключатели "Расходы / Доходы / Общий" ----------------
 
   Widget _buildOperationFilters() {
+    final options = [ViewType.expense, ViewType.income, ViewType.all];
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children:
-          viewOptions.map((view) {
+          options.map((view) {
             final isSelected = selectedView == view;
             final icon =
-                view == t.home.all
+                view == ViewType.all
                     ? 'assets/images/vector_all.svg'
-                    : view == t.home.income
+                    : view == ViewType.income
                     ? 'assets/images/vector_down.svg'
                     : 'assets/images/vector_up.svg';
+
             return Column(
               children: [
                 GestureDetector(
@@ -340,7 +376,7 @@ class _HomePageState extends State<HomePage> {
                           transactions: s.transactions,
                           reasons: s.reasons,
                           period: selectedPeriod,
-                          viewType: _viewTypeFromLabel(selectedView),
+                          viewType: selectedView,
                         );
                       } else {
                         groupedData = {};
@@ -368,7 +404,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  view,
+                  viewLabel(view),
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Inter',
@@ -387,6 +423,7 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Заголовок + "смотреть все"
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -394,9 +431,7 @@ class _HomePageState extends State<HomePage> {
             Row(
               children: [
                 GestureDetector(
-                  onTap: () {
-                    context.read<MainCubit>().change(4);
-                  },
+                  onTap: () => context.read<MainCubit>().change(4),
                   child: Text(
                     t.home.seeAll,
                     style: AppTextStyles.f14w500.copyWith(
@@ -425,6 +460,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         const SizedBox(height: 12),
+
         BlocBuilder<MenuCubit, MenuState>(
           builder: (context, state) {
             if (state is MenuTransactionsWithAccountsSuccess) {
@@ -545,7 +581,7 @@ class _HomePageState extends State<HomePage> {
 
   List<AllTransactionsModel> _filterByViewType(
     List<AllTransactionsModel> transactions,
-    String selectedView,
+    ViewType vType,
   ) {
     final sorted = [...transactions]..sort((a, b) {
       final dateA = DateTime.tryParse(a.date ?? '') ?? DateTime.now();
@@ -553,11 +589,19 @@ class _HomePageState extends State<HomePage> {
       return dateB.compareTo(dateA);
     });
 
-    if (selectedView == t.home.all) {
-      return sorted.take(3).toList();
-    } else {
-      final type = selectedView == t.home.income ? 'income' : 'expense';
-      return sorted.where((tx) => tx.transactionType == type).take(3).toList();
+    switch (vType) {
+      case ViewType.all:
+        return sorted.take(3).toList();
+      case ViewType.income:
+        return sorted
+            .where((tx) => tx.transactionType == 'income')
+            .take(3)
+            .toList();
+      case ViewType.expense:
+        return sorted
+            .where((tx) => tx.transactionType == 'expense')
+            .take(3)
+            .toList();
     }
   }
 
@@ -569,7 +613,7 @@ class _HomePageState extends State<HomePage> {
     final items = <_LegendItemData>[
       for (int i = 0; i < top3.length; i++)
         _LegendItemData(label: top3[i].key, color: _topColors[i]),
-      if (hasOther) _LegendItemData(label: 'Другие', color: _otherColor),
+      if (hasOther) _LegendItemData(label: t.home.other, color: _otherColor),
     ];
 
     return Padding(
@@ -617,7 +661,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // единая точка смены периода (используют и табы, и стрелки)
-  void _onPeriodTap(String newPeriod) {
+  void _onPeriodTap(PeriodType newPeriod) {
     if (newPeriod == selectedPeriod) return;
     setState(() {
       selectedPeriod = newPeriod;
@@ -627,7 +671,7 @@ class _HomePageState extends State<HomePage> {
           transactions: state.transactions,
           reasons: state.reasons,
           period: selectedPeriod,
-          viewType: _viewTypeFromLabel(selectedView),
+          viewType: selectedView,
         );
       } else {
         groupedData = {};
@@ -636,26 +680,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _changePeriod(bool forward) {
-    final idx = periodOptions.indexOf(selectedPeriod);
+    final idx = _periodOptionsOrder.indexOf(selectedPeriod);
     final next =
         forward
-            ? (idx + 1) % periodOptions.length
-            : (idx - 1 + periodOptions.length) % periodOptions.length;
-    _onPeriodTap(periodOptions[next]);
-  }
-
-  /// Маппинг локализованной метки на тип транзакции
-  String _viewTypeFromLabel(String label) {
-    if (label == t.home.income) return 'income';
-    if (label == t.home.expenses) return 'expense';
-    return 'all';
-  }
-
-  /// Отсортировать по сумме (по убыванию) и взять top N
-  List<MapEntry<String, double>> _topNEntries(Map<String, double> data, int n) {
-    final entries =
-        data.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
-    return entries.take(n).toList();
+            ? (idx + 1) % _periodOptionsOrder.length
+            : (idx - 1 + _periodOptionsOrder.length) %
+                _periodOptionsOrder.length;
+    _onPeriodTap(_periodOptionsOrder[next]);
   }
 
   /// Построить данные для пончика: ТОП-N + "Другие" (если есть остаток)
@@ -671,38 +702,43 @@ class _HomePageState extends State<HomePage> {
     }
     final total = original.values.fold(0.0, (s, v) => s + v);
     final rest = total - topSum;
-    if (rest > 0.0) res['Другие'] = rest;
+    if (rest > 0.0) res[t.home.other] = rest;
     return res;
+  }
+
+  /// Отсортировать по сумме (по убыванию) и взять top N
+  List<MapEntry<String, double>> _topNEntries(Map<String, double> data, int n) {
+    final entries =
+        data.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+    return entries.take(n).toList();
   }
 
   /// Группировка сумм по статьям с фильтрацией по периоду и виду операции
   Map<String, double> getGroupedReasonData({
     required List<AllTransactionsModel> transactions,
     required List<IncomeExpenseReasons> reasons,
-    required String period,
-    String viewType = 'all',
+    required PeriodType period,
+    required ViewType viewType,
   }) {
     final now = DateTime.now();
 
     bool isInPeriod(DateTime txDate) {
       switch (period) {
-        case 'День':
+        case PeriodType.day:
           return txDate.day == now.day &&
               txDate.month == now.month &&
               txDate.year == now.year;
-        case 'Неделя':
+        case PeriodType.week:
           final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
           final endOfWeek = startOfWeek.add(const Duration(days: 6));
           return txDate.isAfter(
                 startOfWeek.subtract(const Duration(days: 1)),
               ) &&
               txDate.isBefore(endOfWeek.add(const Duration(days: 1)));
-        case 'Месяц':
+        case PeriodType.month:
           return txDate.month == now.month && txDate.year == now.year;
-        case 'Год':
+        case PeriodType.year:
           return txDate.year == now.year;
-        default:
-          return true;
       }
     }
 
@@ -718,10 +754,13 @@ class _HomePageState extends State<HomePage> {
       if (!isInPeriod(date)) continue;
 
       // фильтр по типу операции
-      if (viewType != 'all' && tx.transactionType != viewType) continue;
+      if (viewType != ViewType.all) {
+        final type = viewType == ViewType.income ? 'income' : 'expense';
+        if (tx.transactionType != type) continue;
+      }
 
       final reasonId = tx.incomeExpenseReason!;
-      final reasonName = reasonNames[reasonId] ?? 'Другое';
+      final reasonName = reasonNames[reasonId] ?? t.home.other;
       final amount = double.tryParse(tx.amount ?? '0') ?? 0;
 
       grouped[reasonName] = (grouped[reasonName] ?? 0) + amount;
@@ -771,8 +810,7 @@ class PieChartPainter extends CustomPainter {
 
 class PieChartDynamicPainter extends CustomPainter {
   final Map<String, double> data;
-  final List<Color>
-  colors; // <- передаём готовый список цветов в порядке сегментов
+  final List<Color> colors;
   PieChartDynamicPainter({required this.data, required this.colors});
 
   @override
@@ -790,8 +828,7 @@ class PieChartDynamicPainter extends CustomPainter {
     const gap = 0.27;
     double startAngle = 0.0;
 
-    final segments =
-        data.entries.toList(); // порядок: топ-3, затем "Другие" (если есть)
+    final segments = data.entries.toList(); // порядок: top3, затем "Другие"
 
     for (int i = 0; i < segments.length; i++) {
       final value = segments[i].value;

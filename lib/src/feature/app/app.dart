@@ -11,6 +11,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Текущая локаль и список поддерживаемых — прямо из провайдера
+    final flutterLocale = TranslationProvider.of(context).flutterLocale;
+    // final flutterLocales =
+    //     TranslationProvider.of(context).flutterSupportedLocales;
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => di.sl<MainCubit>()),
@@ -21,7 +26,6 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-
         title: 'Aps Mobile',
         theme: ThemeData(
           useMaterial3: true,
@@ -29,13 +33,25 @@ class MyApp extends StatelessWidget {
             seedColor: const Color.fromARGB(255, 147, 90, 246),
           ),
         ),
-        locale: TranslationProvider.of(context).flutterLocale,
+
+        // Ключевые строки: локаль, список локалей и колбэк резолва
+        locale: flutterLocale,
         supportedLocales: AppLocaleUtils.supportedLocales,
-        localizationsDelegates: [
+        localeResolutionCallback: (locale, supported) {
+          // Дадим шанс провайдеру отрезолвить, иначе — стандартно
+          if (locale == null) return flutterLocale;
+          for (final s in supported) {
+            if (s.languageCode == locale.languageCode) return s;
+          }
+          return flutterLocale;
+        },
+
+        localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
+
         onGenerateRoute: RouteGenerator.onGenerate,
         initialRoute: '/',
         routes: {
@@ -48,7 +64,7 @@ class MyApp extends StatelessWidget {
                 if (state is UnAuthenticated) {
                   return const LoginPage();
                 }
-                return Container();
+                return const SizedBox.shrink();
               },
             );
           },
