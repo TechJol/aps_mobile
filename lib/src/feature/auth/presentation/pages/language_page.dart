@@ -1,7 +1,9 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LanguageSelection extends StatefulWidget {
   const LanguageSelection({super.key});
@@ -11,56 +13,65 @@ class LanguageSelection extends StatefulWidget {
 }
 
 class _LanguageSelectionState extends State<LanguageSelection> {
-  String? selectedLanguage;
+  AppLocale? selected;
 
-  void _onLanguageSelected(String language) {
-    setState(() {
-      selectedLanguage = language;
-    });
+  Future<void> _applyAndGo(AppLocale locale) async {
+    // применяем локаль
+    LocaleSettings.setLocale(locale);
+
+    // сохраняем
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('app_locale', locale.languageTag);
+
+    // в Main
+    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (_) => false);
   }
 
-  Widget _buildLanguageOption(String language, String assetPath) {
-    final isSelected = selectedLanguage == language;
+  void _select(AppLocale locale) => setState(() => selected = locale);
 
+  Widget _option({
+    required String label,
+    required String assetPath,
+    required AppLocale locale,
+  }) {
+    final isSelected = selected == locale;
     return GestureDetector(
-      onTap: () => _onLanguageSelected(language),
+      onTap: () => _select(locale),
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 6),
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           border: Border.all(
-            color: isSelected ? Color(0xFF661EFB) : Colors.grey.shade300,
+            color: isSelected ? const Color(0xFF661EFB) : Colors.grey.shade300,
             width: 1,
           ),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           children: [
-            // Flag icon
             CircleAvatar(radius: 12, backgroundImage: AssetImage(assetPath)),
-            SizedBox(width: 12),
-            // Language text
+            const SizedBox(width: 12),
             Expanded(
               child: Text(
-                language,
-                style: TextStyle(
+                label,
+                style: const TextStyle(
                   fontSize: 16,
                   fontFamily: 'Roboto',
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-            // Custom radio
             Container(
               width: 17,
               height: 17,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? Color(0xFF661EFB) : Colors.grey,
+                  color: isSelected ? const Color(0xFF661EFB) : Colors.grey,
                   width: 1,
                 ),
-                color: isSelected ? Color(0xFF661EFB) : Colors.transparent,
+                color:
+                    isSelected ? const Color(0xFF661EFB) : Colors.transparent,
               ),
               child:
                   isSelected
@@ -68,7 +79,7 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                         child: Container(
                           width: 6.5,
                           height: 6.5,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.white,
                           ),
@@ -84,47 +95,59 @@ class _LanguageSelectionState extends State<LanguageSelection> {
 
   @override
   Widget build(BuildContext context) {
+    // локализуем заголовки
+    final title =
+        t.menu.language.select; // "Выберите язык" / "Select a language"
+    final enLabel = t.menu.language.english;
+    final ruLabel = t.menu.language.russian;
+    // если будет кыргызский – добавишь в YAML и сюда:
+    // final kyLabel = t.menu.language.kyrgyz;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 90),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 90),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Выберите язык",
-              style: TextStyle(
+              title,
+              style: const TextStyle(
                 color: Colors.black,
                 fontFamily: 'Roboto',
                 fontSize: 27,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 20),
-            _buildLanguageOption("English", 'assets/icons/uk.png'),
-            _buildLanguageOption("Русский", 'assets/icons/ru.png'),
-            _buildLanguageOption("Кыргызча", 'assets/icons/kg.png'),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
+            _option(
+              label: enLabel,
+              assetPath: 'assets/icons/uk.png',
+              locale: AppLocale.en,
+            ),
+            _option(
+              label: ruLabel,
+              assetPath: 'assets/icons/ru.png',
+              locale: AppLocale.ru,
+            ),
+            // _option(label: kyLabel, assetPath: 'assets/icons/kg.png', locale: AppLocale.ky),
+            const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed:
-                    selectedLanguage != null
-                        ? () {
-                          Navigator.pushNamed(context, AppRoutes.main);
-                        }
-                        : null,
+                    selected != null ? () => _applyAndGo(selected!) : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF661EFB),
-                  disabledBackgroundColor: Color(0xFFC7C8FF),
-                  padding: EdgeInsets.symmetric(vertical: 14),
+                  backgroundColor: const Color(0xFF661EFB),
+                  disabledBackgroundColor: const Color(0xFFC7C8FF),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
                 child: Text(
-                  "Далее",
-                  style: TextStyle(
+                  t.menu.profile.next, // "Далее"
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,

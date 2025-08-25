@@ -12,7 +12,6 @@ class MainView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ⚠️ без const, чтобы при rebuild дерева корня виджет пересоздавался
     return MainScreen(const [
       HomePage(),
       MainAccountPage(),
@@ -35,14 +34,11 @@ class MainScreen extends StatelessWidget {
     final currentIndex = context.watch<MainCubit>().state;
 
     return Scaffold(
-      // Можно и здесь ключ, но достаточно для BottomNavigationBar
-      // key: ValueKey('scaffold_${locale?.languageCode ?? ''}'),
       body: items[currentIndex],
       bottomNavigationBar: Container(
         color: AppColors.whiteColor,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: BottomNavigationBar(
-          // Ключ — чтобы бар точно пересобрался при смене языка
           key: ValueKey('bn_${locale.languageCode}'),
           elevation: 1,
           backgroundColor: AppColors.whiteColor,

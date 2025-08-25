@@ -1,10 +1,11 @@
-// ignore_for_file: file_names, library_private_types_in_public_api, deprecated_member_use
+// ignore_for_file: file_names, library_private_types_in_public_api, deprecated_member_use, use_build_context_synchronously
 
 import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -36,17 +37,12 @@ class _LoginPageState extends State<LoginPage> {
 
     usernameFocus.addListener(() {
       if (!usernameFocus.hasFocus) {
-        setState(() {
-          usernameTouched = true;
-        });
+        setState(() => usernameTouched = true);
       }
     });
-
     passwordFocus.addListener(() {
       if (!passwordFocus.hasFocus) {
-        setState(() {
-          passwordTouched = true;
-        });
+        setState(() => passwordTouched = true);
       }
     });
   }
@@ -75,27 +71,40 @@ class _LoginPageState extends State<LoginPage> {
       borderSide: BorderSide(
         color:
             touched && text.trim().isNotEmpty
-                ? Color(0xFF661EFB)
+                ? const Color(0xFF661EFB)
                 : Colors.transparent,
       ),
     );
   }
 
+  Future<void> _onLoginSuccessNavigate() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedTag = prefs.getString('app_locale');
+
+    // если язык уже выбран ранее — сразу в Main
+    if (savedTag != null && savedTag.isNotEmpty) {
+      Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (_) => false);
+    } else {
+      // иначе показываем выбор языка
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.languageSelection,
+        (_) => false,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF3F00C0),
+      backgroundColor: const Color(0xFF3F00C0),
       body: BlocListener<CredentialCubit, CredentialState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is CredentialSuccess) {
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              AppRoutes.main,
-              (route) => false,
-            );
+            await _onLoginSuccessNavigate();
           }
           if (state is CredentialFailure) {
-            var snackBar = SnackBar(content: Text(state.errorMessage));
+            final snackBar = SnackBar(content: Text(state.errorMessage));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
         },
@@ -107,14 +116,20 @@ class _LoginPageState extends State<LoginPage> {
   Column _bodyWidget(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 90),
+        const SizedBox(height: 90),
         Padding(
-          padding: EdgeInsets.only(left: 30.0),
+          padding: const EdgeInsets.only(left: 30.0),
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
+              // приветствие можно тоже локализовать: t.auth.welcome
+              // но оставляю как в твоём коде:
+              // t.auth.welcome,
+              // Если у тебя есть ключ, замени строку выше
+              // а эту — убери
+              // ↓
               t.auth.welcome,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
@@ -122,22 +137,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-        // SizedBox(height: 5),
-        // Padding(
-        //   padding: const EdgeInsets.only(left: 30.0),
-        //   child: Align(
-        //     alignment: Alignment.centerLeft,
-        //     child: Text(
-        //       "Добро пожаловать",
-        //       style: TextStyle(
-        //         color: Colors.white,
-        //         fontSize: 26,
-        //         fontWeight: FontWeight.bold,
-        //       ),
-        //     ),
-        //   ),
-        // ),
-        SizedBox(height: 50),
+        const SizedBox(height: 50),
         Expanded(
           child: Container(
             width: double.infinity,
@@ -145,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
               horizontal: 20.0,
               vertical: 20.0,
             ),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
             ),
@@ -156,14 +156,10 @@ class _LoginPageState extends State<LoginPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      // Войти
-                      // Войти
                       GestureDetector(
                         onTap: () => setState(() => isLoginSelected = true),
                         child: Container(
-                          color:
-                              Colors
-                                  .transparent, // Prevents inherited background
+                          color: Colors.transparent,
                           child: Column(
                             children: [
                               Text(
@@ -172,17 +168,17 @@ class _LoginPageState extends State<LoginPage> {
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                   color:
-                                      isLoginSelected || isLoginFormValid
+                                      (isLoginSelected || isLoginFormValid)
                                           ? const Color(0xFF661EFB)
                                           : Colors.grey,
                                 ),
                               ),
-                              SizedBox(height: 4),
+                              const SizedBox(height: 4),
                               Container(
                                 height: 2,
                                 width: 100,
                                 color:
-                                    isLoginSelected || isLoginFormValid
+                                    (isLoginSelected || isLoginFormValid)
                                         ? const Color(0xFF661EFB)
                                         : Colors.transparent,
                               ),
@@ -190,8 +186,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      SizedBox(width: 15),
-                      // Регистрация
+                      const SizedBox(width: 15),
                       GestureDetector(
                         onTap: () async {
                           setState(() => isLoginSelected = false);
@@ -214,7 +209,7 @@ class _LoginPageState extends State<LoginPage> {
                                         : Colors.grey,
                               ),
                             ),
-                            SizedBox(height: 4),
+                            const SizedBox(height: 4),
                             Container(
                               height: 2,
                               width: 120,
@@ -229,9 +224,9 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ),
                 ),
-                SizedBox(height: 70),
+                const SizedBox(height: 70),
 
-                // Username input
+                // Username
                 TextField(
                   controller: usernameController,
                   focusNode: usernameFocus,
@@ -239,7 +234,7 @@ class _LoginPageState extends State<LoginPage> {
                   onSubmitted:
                       (_) => FocusScope.of(context).requestFocus(passwordFocus),
                   decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(
+                    contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 14,
                     ),
@@ -259,16 +254,16 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
 
-                SizedBox(height: 25),
+                const SizedBox(height: 25),
 
-                // Password input
+                // Password
                 TextField(
                   controller: passwordController,
                   focusNode: passwordFocus,
                   obscureText: _obscurePassword,
                   textInputAction: TextInputAction.done,
                   decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(
+                    contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 14,
                     ),
@@ -292,36 +287,16 @@ class _LoginPageState extends State<LoginPage> {
                             : Icons.visibility,
                         color: Colors.grey,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
+                      onPressed:
+                          () => setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          }),
                     ),
                   ),
                 ),
 
-                // Align(
-                //   alignment: Alignment.centerRight,
-                //   child: Padding(
-                //     padding: EdgeInsets.only(left: 150.0),
-                //     child: TextButton(
-                //       onPressed: () {
-                //         Navigator.pushNamed(context, AppRoutes.forgotPassword);
-                //       },
-                //       child: const Text(
-                //         "Забыли пароль?",
-                //         style: TextStyle(
-                //           fontSize: 13,
-                //           color: Color(0xFF661EFB),
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                SizedBox(height: 35),
+                const SizedBox(height: 35),
 
-                // Login button
                 BlocBuilder<CredentialCubit, CredentialState>(
                   builder: (context, state) {
                     if (state is CredentialLoading) {
@@ -340,14 +315,12 @@ class _LoginPageState extends State<LoginPage> {
                                   user.password,
                                 );
                               }
-                              : null, // Disables button if form is not valid
+                              : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
                             isFormValid
-                                ? const Color(0xFF661EFB) // Normal purple
-                                : const Color(
-                                  0xFFC7C8FF,
-                                ), // Desaturated lighter purple for "disabled" look
+                                ? const Color(0xFF661EFB)
+                                : const Color(0xFFC7C8FF),
                         minimumSize: const Size(double.infinity, 50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
@@ -355,7 +328,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       child: Text(
                         t.auth.login,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
