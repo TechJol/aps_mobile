@@ -28,12 +28,14 @@ class DropDownFormField extends StatelessWidget {
       dropdownBuilder:
           (context, selectedItem) =>
               Text(selectedItem ?? '', style: AppTextStyles.f16w500),
+
       suffixProps: DropdownSuffixProps(
         dropdownButtonProps: DropdownButtonProps(
-          iconClosed: Icon(Icons.keyboard_arrow_down_outlined),
-          iconOpened: Icon(Icons.keyboard_arrow_up_outlined),
+          iconClosed: const Icon(Icons.keyboard_arrow_down_outlined),
+          iconOpened: const Icon(Icons.keyboard_arrow_up_outlined),
         ),
       ),
+
       decoratorProps: DropDownDecoratorProps(
         decoration: InputDecoration(
           label: Text(label, style: AppTextStyles.f16w500),
@@ -58,12 +60,17 @@ class DropDownFormField extends StatelessWidget {
           ),
         ),
       ),
+
       popupProps: PopupProps.menu(
         showSelectedItems: true,
+        fit: FlexFit.loose,
+
+        constraints: const BoxConstraints(maxHeight: 320),
+
         itemClickProps: ClickProps(
           splashColor: AppColors.primaryColor.withOpacity(0.3),
         ),
-        fit: FlexFit.loose,
+
         itemBuilder: (
           BuildContext context,
           String item,
@@ -88,11 +95,13 @@ class DropDownFormField extends StatelessWidget {
             ),
           );
         },
-        listViewProps: ListViewProps(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          physics: const BouncingScrollPhysics(),
+
+        listViewProps: const ListViewProps(
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          physics: BouncingScrollPhysics(),
           shrinkWrap: true,
         ),
+
         menuProps: MenuProps(
           backgroundColor: AppColors.whiteColor,
           borderRadius: BorderRadius.circular(16),

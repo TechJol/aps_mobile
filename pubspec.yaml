@@ -3,7 +3,7 @@ description: "Soft KG Pro Mobile Application"
 
 publish_to: 'none'
 
-version: 1.0.8+9
+version: 1.0.9+10
 
 environment:
   sdk: ^3.7.2
@@ -93,7 +93,7 @@ flutter_icons:
   android: true
   ios: true
   remove_alpha_ios: true
-  image_path: "assets/icons/logo_softkg.png"
+  image_path: "assets/icons/logotypenew.jpg"
 
 flutter:
   uses-material-design: true

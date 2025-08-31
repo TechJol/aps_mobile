@@ -117,7 +117,8 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
     );
 
     // Данные
-    for (final acc in paginatedData) {
+    for (int i = 0; i < paginatedData.length; i++) {
+      final acc = paginatedData[i];
       final balance = calculateAccountBalance(
         accountId: acc.id!,
         transactions: transactions,
@@ -125,7 +126,7 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
       tableRows.add(
         TableRow(
           children: [
-            cell('${data.indexOf(acc) + 1}'),
+            cell('${start + i + 1}'),
             cell(acc.name),
             cell('${balance.toString()} с'),
             cell(
@@ -137,6 +138,8 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
         ),
       );
     }
+
+    final pageCount = (data.length / rowsPerPage).ceil();
 
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -241,9 +244,66 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
                 child: Text(t.menu.noData, style: AppTextStyles.f16w500),
               ),
             ),
+          const SizedBox(height: 16),
+          Center(child: _buildPagination(pageCount)),
         ],
       ),
     );
+  }
+
+  Widget _buildPagination(int pageCount) {
+    if (pageCount <= 1) return const SizedBox.shrink();
+
+    int startPage = (currentPage - 5).clamp(1, pageCount);
+    int endPage = (startPage + 9).clamp(startPage, pageCount);
+    if (endPage - startPage < 9) {
+      startPage = (endPage - 9).clamp(1, pageCount);
+    }
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.chevron_left),
+            onPressed:
+                currentPage > 1
+                    ? () => goToPage(currentPage - 1, pageCount)
+                    : null,
+          ),
+          for (int i = startPage; i <= endPage; i++)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2.0),
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  backgroundColor:
+                      i == currentPage ? AppColors.primaryColorLight : null,
+                  foregroundColor:
+                      i == currentPage ? Colors.white : Colors.black,
+                  minimumSize: const Size(36, 36),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                ),
+                onPressed: () => goToPage(i, pageCount),
+                child: Text('$i'),
+              ),
+            ),
+          IconButton(
+            icon: const Icon(Icons.chevron_right),
+            onPressed:
+                currentPage < pageCount
+                    ? () => goToPage(currentPage + 1, pageCount)
+                    : null,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void goToPage(int page, int pageCount) {
+    if (page >= 1 && page <= pageCount) {
+      setState(() => currentPage = page);
+    }
   }
 
   Decimal calculateTotalBalance(List<AllTransactionsModel> transactions) {
