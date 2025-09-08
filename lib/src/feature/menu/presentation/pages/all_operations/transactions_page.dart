@@ -24,8 +24,11 @@ class _TransactionsPageState extends State<TransactionsPage> {
   @override
   void initState() {
     super.initState();
-    // загружаем реальные данные
-    context.read<MenuCubit>().getTransactionsWithAccounts();
+    // Загружаем данные только если их ещё нет — без лишнего лоадера
+    final state = context.read<MenuCubit>().state;
+    if (state is! MenuTransactionsWithAccountsSuccess) {
+      context.read<MenuCubit>().getTransactionsWithAccounts();
+    }
   }
 
   /// перейти на страницу [page]

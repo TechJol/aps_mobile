@@ -1,6 +1,5 @@
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:bloc/bloc.dart';
-import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,14 +23,10 @@ class CredentialCubit extends Cubit<CredentialState> {
   void register(AuthEntity user) async {
     emit(CredentialLoading());
     try {
-      Either result = await registerUsecase.call(user);
+      final result = await registerUsecase.call(user);
       result.fold(
-        (l) {
-          emit(CredentialFailure(errorMessage: l));
-        },
-        (r) {
-          emit(CredentialSuccess());
-        },
+        (l) => emit(CredentialFailure(errorMessage: l.message)),
+        (r) => emit(CredentialSuccess()),
       );
     } catch (e) {
       emit(CredentialFailure(errorMessage: e.toString()));
@@ -41,17 +36,13 @@ class CredentialCubit extends Cubit<CredentialState> {
   void login(String username, String password) async {
     emit(CredentialLoading());
     try {
-      Either result = await loginUsecase.call(
+      final result = await loginUsecase.call(
         username: username,
         password: password,
       );
       result.fold(
-        (l) {
-          emit(CredentialFailure(errorMessage: l));
-        },
-        (r) {
-          emit(CredentialSuccess());
-        },
+        (l) => emit(CredentialFailure(errorMessage: l.message)),
+        (r) => emit(CredentialSuccess()),
       );
     } catch (e) {
       emit(CredentialFailure(errorMessage: e.toString()));
@@ -61,14 +52,10 @@ class CredentialCubit extends Cubit<CredentialState> {
   void logout() async {
     emit(CredentialLoading());
     try {
-      Either result = await logoutUsecase.call();
+      final result = await logoutUsecase.call();
       result.fold(
-        (l) {
-          emit(CredentialFailure(errorMessage: l));
-        },
-        (r) {
-          emit(CredentialSuccess());
-        },
+        (l) => emit(CredentialFailure(errorMessage: l.message)),
+        (r) => emit(CredentialSuccess()),
       );
     } catch (e) {
       emit(CredentialFailure(errorMessage: e.toString()));
@@ -80,16 +67,14 @@ class CredentialCubit extends Cubit<CredentialState> {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
       final id = pref.getInt('userId');
-      Either result = await getUserByIdUsecase.call(id!);
+      if (id == null) {
+        emit(const CredentialFailure(errorMessage: 'User ID is missing'));
+        return;
+      }
+      final result = await getUserByIdUsecase.call(id);
       result.fold(
-        (l) {
-          emit(CredentialFailure(errorMessage: l));
-        },
-        (r) {
-          // 💥 Здесь ты должен эмитить CredentialUserLoaded!
-          final user = AuthModel.fromJson(r);
-          emit(CredentialUserLoaded(user: user));
-        },
+        (l) => emit(CredentialFailure(errorMessage: l.message)),
+        (r) => emit(CredentialUserLoaded(user: r)),
       );
     } catch (e) {
       emit(CredentialFailure(errorMessage: e.toString()));
@@ -101,15 +86,16 @@ class CredentialCubit extends Cubit<CredentialState> {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
       final id = pref.getInt('userId');
-      Either result = await deleteUserByIdUsecase.call(id!);
-      pref.remove('userId');
-      pref.remove('companyId');
-      pref.remove('accessToken');
-      result.fold(
-        (l) {
-          emit(UserFailure(errorMessage: l));
-        },
-        (r) {
+      if (id == null) {
+        emit(const CredentialFailure(errorMessage: 'User ID is missing'));
+        return;
+      }
+      final result = await deleteUserByIdUsecase.call(id);
+      await result.fold(
+        (l) async => emit(UserFailure(errorMessage: l.message)),
+        (r) async {
+          // Полный локальный logout (очистка access/refresh/userId/companyId)
+          await logoutUsecase.call();
           emit(CredentialSuccess());
         },
       );

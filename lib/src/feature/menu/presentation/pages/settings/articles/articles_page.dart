@@ -20,7 +20,10 @@ class _ArticlesPageState extends State<ArticlesPage> {
   @override
   void initState() {
     super.initState();
-    context.read<MenuCubit>().getReasons();
+    // Тихий рефреш общих данных; причины придут вместе
+    context.read<MenuCubit>().getTransactionsWithAccounts(force: true);
+    // Можно дополнительно запросить причины, если нужно спец-состояние
+    // context.read<MenuCubit>().getReasons();
   }
 
   @override
@@ -51,6 +54,10 @@ class _ArticlesPageState extends State<ArticlesPage> {
           }
 
           if (state is MenuReasonsSuccess) {
+            return _buildTableSection(context, state.reasons);
+          }
+
+          if (state is MenuTransactionsWithAccountsSuccess) {
             return _buildTableSection(context, state.reasons);
           }
 

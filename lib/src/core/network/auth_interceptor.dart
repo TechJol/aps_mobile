@@ -47,7 +47,6 @@ class AuthInterceptor extends Interceptor {
       try {
         sl<AuthCubit>().logout();
       } catch (_) {}
-      AppNavigator.toLogin();
       return handler.next(err);
     }
 
@@ -80,7 +79,6 @@ class AuthInterceptor extends Interceptor {
         try {
           sl<AuthCubit>().logout();
         } catch (_) {}
-        AppNavigator.toLogin();
         return handler.next(err);
       }
 
@@ -122,7 +120,6 @@ class AuthInterceptor extends Interceptor {
         try {
           sl<AuthCubit>().logout();
         } catch (_) {}
-        AppNavigator.toLogin();
         return handler.next(err);
       } finally {
         _isRefreshing = false;

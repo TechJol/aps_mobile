@@ -88,6 +88,8 @@ final class MenuReasonsSuccess extends MenuState {
 
 final class PartnerUpdated extends MenuState {}
 
+final class PartnerTypeUpdated extends MenuState {}
+
 final class MenuTransactionsWithAccountsSuccess extends MenuState {
   final List<AllTransactionsModel> transactions;
   final List<AccountModel> accounts;

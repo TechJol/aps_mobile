@@ -57,7 +57,9 @@ class MainScreen extends StatelessWidget {
                 transactionType: 'income',
               );
               if (result == true) {
-                context.read<MenuCubit>().getTransactionsWithAccounts();
+                context
+                    .read<MenuCubit>()
+                    .getTransactionsWithAccounts(force: true);
               }
             } else if (index == 3) {
               final result = await IncomePage().showIncomeBottomSheet(
@@ -66,7 +68,9 @@ class MainScreen extends StatelessWidget {
                 transactionType: 'expense',
               );
               if (result == true) {
-                context.read<MenuCubit>().getTransactionsWithAccounts();
+                context
+                    .read<MenuCubit>()
+                    .getTransactionsWithAccounts(force: true);
               }
             } else {
               context.read<MainCubit>().change(index);

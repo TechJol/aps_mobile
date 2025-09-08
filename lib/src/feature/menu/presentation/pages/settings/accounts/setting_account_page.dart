@@ -20,7 +20,8 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
   @override
   void initState() {
     super.initState();
-    context.read<MenuCubit>().getAccounts();
+    // Всегда тихий рефреш всех данных
+    context.read<MenuCubit>().getTransactionsWithAccounts(force: true);
   }
 
   @override
@@ -57,6 +58,10 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
           }
 
           if (state is MenuAccountsSuccess) {
+            return _buildTableSection(context, state.accounts);
+          }
+
+          if (state is MenuTransactionsWithAccountsSuccess) {
             return _buildTableSection(context, state.accounts);
           }
 

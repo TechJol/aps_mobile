@@ -21,7 +21,10 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
   @override
   void initState() {
     super.initState();
-    context.read<MenuCubit>().getTransactionsWithAccounts();
+    final s = context.read<MenuCubit>().state;
+    if (s is! MenuTransactionsWithAccountsSuccess) {
+      context.read<MenuCubit>().getTransactionsWithAccounts();
+    }
   }
 
   @override

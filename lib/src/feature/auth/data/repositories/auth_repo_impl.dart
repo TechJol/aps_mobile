@@ -1,9 +1,9 @@
 import 'dart:developer';
 
 import 'package:aps_mobile/src/core/core.dart';
+import 'package:aps_mobile/src/core/error/failure.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dartz/dartz.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource authRemoteDataSource;
@@ -15,69 +15,61 @@ class AuthRepositoryImpl implements AuthRepository {
   });
 
   @override
-  Future<Either> login(String username, String password) async {
-    Either result = await authRemoteDataSource.login(username, password);
+  Future<Either<Failure, LoginResponseModel>> login(
+    String username,
+    String password,
+  ) async {
+    final result = await authRemoteDataSource.login(username, password);
 
-    return result.fold((l) => Left(l), (r) async {
-      Map<String, dynamic> response = r;
+    return result.fold<Future<Either<Failure, LoginResponseModel>>>(
+      (l) async => Left(l),
+      (model) async {
+        final access = model.access;
+        final refresh = model.refresh;
 
-      final access = response['access'];
-      final refresh = response['refresh'];
+        if (access != null && refresh != null) {
+          await AuthTokenStorage().saveTokens(access, refresh);
+        } else {
+          log('⚠️ access/refresh token missing in response!');
+        }
 
-      if (access != null && refresh != null) {
-        await AuthTokenStorage().saveTokens(access, refresh);
-      } else {
-        log('⚠️ access/refresh token missing in response!');
-      }
+        await authLocalDataSource.saveUserMeta(
+          companyId: model.companyId,
+          userId: model.userId,
+        );
+        log("✅ Saved company id: ${model.companyId}");
+        log("✅ Saved user id: ${model.userId}");
 
-      SharedPreferences storage = await SharedPreferences.getInstance();
-      storage.setInt('companyId', response['company_id']);
-      storage.setInt('userId', response['user_id']);
-
-      log("✅ Saved company id: ${response['company_id']}");
-      log("✅ Saved user id: ${response['user_id']}");
-      return Right(response);
-    });
+        return Right(model);
+      },
+    );
   }
 
   @override
-  Future<Either> register(AuthEntity user) async {
-    final Either result = await authRemoteDataSource.register(user);
-    return result.fold(
-      (l) {
-        return Left(l);
-      },
-      (r) async {
-        Map<String, dynamic> response = r;
-
-        SharedPreferences storage = await SharedPreferences.getInstance();
-        // storage.setString('accessToken', response['access']);
-        // storage.setString('refreshToken', response['refresh']);
-        storage.setInt('companyId', response['company_id']);
-        storage.setInt('userId', response['user_id']);
-
-        log("Bul company id ${response['company_id']}");
-        log("Bul user id ${response['user_id']}");
-        return Right(response);
-      },
-    );
+  Future<Either<Failure, Unit>> register(AuthEntity user) async {
+    return await authRemoteDataSource.register(user);
   }
 
   @override
   Future<bool> isLoggedIn() async => await authLocalDataSource.isLoggedIn();
 
   @override
-  Future<Either> logOut() async => await authLocalDataSource.logOut();
-
-  @override
-  Future<Either> getUserById(int id) async {
-    return await authRemoteDataSource.getUserById(id);
+  Future<Either<Failure, Unit>> logOut() async {
+    final result = await authLocalDataSource.logOut();
+    return result.fold<Either<Failure, Unit>>(
+      (e) => Left(Failure(e.toString())),
+      (_) => const Right(unit),
+    );
   }
 
   @override
-  Future<Either> deleteUserById(int id) async {
-    // SharedPreferences storage = await SharedPreferences.getInstance();
-    // await storage.clear();
+  Future<Either<Failure, AuthEntity>> getUserById(int id) async {
+    final res = await authRemoteDataSource.getUserById(id);
+    return res.map<AuthEntity>((model) => model);
+  }
+
+  @override
+  Future<Either<Failure, Unit>> deleteUserById(int id) async {
     return await authRemoteDataSource.deleteUserById(id);
   }
 }

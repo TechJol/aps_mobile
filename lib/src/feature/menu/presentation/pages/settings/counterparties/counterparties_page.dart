@@ -20,7 +20,10 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
   @override
   void initState() {
     super.initState();
-    context.read<MenuCubit>().getPartnerData();
+    // Всегда обновляем данные тихо при входе на экран
+    context.read<MenuCubit>().getTransactionsWithAccounts(force: true);
+    // И параллельно обеспечим нужное состояние для экрана
+    context.read<MenuCubit>().getPartnerData(force: true);
   }
 
   @override
@@ -55,6 +58,15 @@ class _CounterpartiesPageState extends State<CounterpartiesPage> {
               context,
               state.partners!,
               state.partnerTypes!,
+            );
+          }
+
+          // Дополнительно поддерживаем общий успех
+          if (state is MenuTransactionsWithAccountsSuccess) {
+            return _buildTableSection(
+              context,
+              state.partners,
+              state.partnerTypes ?? [],
             );
           }
 

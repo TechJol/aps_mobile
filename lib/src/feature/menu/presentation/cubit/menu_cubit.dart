@@ -67,8 +67,14 @@ class MenuCubit extends Cubit<MenuState> {
     );
   }
 
-  Future<void> getTransactionsWithAccounts() async {
-    emit(MenuLoading());
+  Future<void> getTransactionsWithAccounts({bool force = false}) async {
+    // Если данные уже есть и не просили форс‑обновление — ничего не делаем
+    final wasSuccess = state is MenuTransactionsWithAccountsSuccess;
+    if (wasSuccess && !force) return;
+
+    // Тихий рефреш: при force не показываем лоадер, иначе показываем только
+    // если ранее данных не было
+    if (!wasSuccess && !force) emit(MenuLoading());
 
     final transactionsResult = await getTransactionsUsecase();
     final accountsResult = await getAccountsUsecase();
@@ -157,8 +163,23 @@ class MenuCubit extends Cubit<MenuState> {
     );
   }
 
-  Future<void> getPartnerData() async {
-    emit(MenuLoading());
+  Future<void> getPartnerData({bool force = false}) async {
+    // Если уже есть данные в Success — быстро эмитим нужное состояние
+    if (!force && state is MenuTransactionsWithAccountsSuccess) {
+      final s = state as MenuTransactionsWithAccountsSuccess;
+      emit(
+        MenuPartnerDataSuccess(
+          partners: s.partners,
+          partnerTypes: s.partnerTypes,
+        ),
+      );
+      return;
+    }
+
+    final hadData =
+        state is MenuPartnerDataSuccess ||
+        state is MenuTransactionsWithAccountsSuccess;
+    if (!hadData && !force) emit(MenuLoading());
 
     final partnersResult = await getPartnersUsecase();
     final typesResult = await getPartnerTypesUsecase();
@@ -337,7 +358,10 @@ class MenuCubit extends Cubit<MenuState> {
 
   Future<void> deletePartner(int id) async {
     final result = await deletePartnerUsecase.call(id);
-    result.fold((l) => emit(DeleteError(error: l)), (r) => getPartnerData());
+    result.fold(
+      (l) => emit(DeleteError(error: l)),
+      (r) => getPartnerData(force: true),
+    );
   }
 
   Future<void> postPartner(PartnersModel partner) async {
@@ -356,7 +380,7 @@ class MenuCubit extends Cubit<MenuState> {
       (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
       (r) {
         emit(PartnerUpdated());
-        getPartnerData();
+        getPartnerData(force: true);
       },
     );
   }
@@ -377,7 +401,7 @@ class MenuCubit extends Cubit<MenuState> {
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
       (r) {
         emit(PartnerUpdated());
-        getPartnerData();
+        getPartnerData(force: true);
       },
     );
   }
@@ -391,13 +415,19 @@ class MenuCubit extends Cubit<MenuState> {
     final result = await postPartnerTypeUsecase.call(part);
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при добавлении: ${l.toString()}')),
-      (r) => getPartnerData(),
+      (r) {
+        emit(PartnerTypeUpdated());
+        getPartnerData(force: true);
+      },
     );
   }
 
   Future<void> deletePartnerType(int id) async {
     final result = await deletePartnerTypeUsecase.call(id);
-    result.fold((l) => emit(DeleteError(error: l)), (r) => getPartnerData());
+    result.fold(
+      (l) => emit(DeleteError(error: l)),
+      (r) => getPartnerData(force: true),
+    );
   }
 
   Future<void> updatePartnerType(PartnerTypesModel partnerType, int id) async {
@@ -409,7 +439,10 @@ class MenuCubit extends Cubit<MenuState> {
     final result = await updatePartnerTypeUsecase.call(part, id);
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
-      (r) {},
+      (r) {
+        emit(PartnerTypeUpdated());
+        getPartnerData(force: true);
+      },
     );
   }
 

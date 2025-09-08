@@ -11,7 +11,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   }
 
   @override
-  Future<Either> logOut() async {
+  Future<Either<Object, bool>> logOut() async {
     final storage = await SharedPreferences.getInstance();
 
     final appLocale = storage.getString('app_locale');
@@ -26,5 +26,22 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     }
 
     return const Right(true);
+  }
+
+  @override
+  Future<void> saveUserMeta({int? userId, int? companyId}) async {
+    final storage = await SharedPreferences.getInstance();
+    if (companyId != null) {
+      await storage.setInt('companyId', companyId);
+    }
+    if (userId != null) {
+      await storage.setInt('userId', userId);
+    }
+  }
+
+  @override
+  Future<int?> getUserId() async {
+    final storage = await SharedPreferences.getInstance();
+    return storage.getInt('userId');
   }
 }

@@ -20,8 +20,10 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
   @override
   void initState() {
     super.initState();
-    context.read<MenuCubit>().getPartnerData();
-    context.read<MenuCubit>().getTransactionsWithAccounts();
+    final s = context.read<MenuCubit>().state;
+    if (s is! MenuTransactionsWithAccountsSuccess) {
+      context.read<MenuCubit>().getTransactionsWithAccounts();
+    }
   }
 
   @override

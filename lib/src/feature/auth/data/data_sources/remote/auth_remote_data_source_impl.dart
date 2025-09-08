@@ -1,18 +1,21 @@
-import 'package:aps_mobile/injection_container.dart';
 import 'package:aps_mobile/src/core/core.dart';
+import 'package:aps_mobile/src/core/error/failure.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  AuthRemoteDataSourceImpl({required this.dio});
+  AuthRemoteDataSourceImpl({required this.client});
 
-  final Dio dio;
+  final DioClient client;
 
   @override
-  Future<Either> login(String username, String password) async {
+  Future<Either<Failure, LoginResponseModel>> login(
+    String username,
+    String password,
+  ) async {
     try {
-      final response = await sl<DioClient>().post(
+      final response = await client.post(
         AppApi.login,
         options: Options(
           headers: {
@@ -25,19 +28,23 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return Right(response.data);
+        final model = LoginResponseModel.fromJson(
+          response.data as Map<String, dynamic>,
+        );
+        return Right(model);
       } else {
-        throw Exception('Failed to login. Status code: ${response.statusCode}');
+        return Left(Failure('Failed to login', code: response.statusCode));
       }
     } on DioException catch (e) {
-      throw Exception('Login failed: ${e.response?.data}');
+      final msg = e.response?.data?.toString() ?? e.message ?? 'Login failed';
+      return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
 
   @override
-  Future<Either> register(AuthEntity user) async {
+  Future<Either<Failure, Unit>> register(AuthEntity user) async {
     try {
-      final response = await sl<DioClient>().post(
+      final response = await client.post(
         AppApi.register,
         options: Options(
           headers: {
@@ -50,78 +57,61 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return Right(response.data);
+        return const Right(unit);
       } else {
-        throw Exception(
-          'Failed to register. Status code: ${response.statusCode}',
-        );
+        return Left(Failure('Failed to register', code: response.statusCode));
       }
     } on DioException catch (e) {
-      throw Exception('Registration failed: ${e.response?.data}');
+      final msg =
+          e.response?.data?.toString() ?? e.message ?? 'Registration failed';
+      return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
 
   @override
-  Future<Either> getUserById(int id) async {
-    final accessToken = await AuthTokenStorage().getAccessToken();
+  Future<Either<Failure, AuthModel>> getUserById(int id) async {
     try {
-      final response = await sl<DioClient>().get(
-        '${AppApi.users}$id',
+      final response = await client.get(
+        '${AppApi.users}$id/',
         options: Options(
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'Authorization': 'Bearer $accessToken',
             'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
           },
         ),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return Right(response.data);
+        final model = AuthModel.fromJson(response.data as Map<String, dynamic>);
+        return Right(model);
       } else {
-        throw Exception(
-          'Failed to get reason. Status code: ${response.statusCode}',
-        );
+        return Left(Failure('Failed to get user', code: response.statusCode));
       }
-    } catch (e) {
-      // Обработка ошибки 401 (неверный или истёкший токен)
-      if (e is DioException && e.response?.statusCode == 401) {
-        return await AuthError(dio: dio).handleUnauthorized();
-      }
-      return Left(Exception('Something went wrong: ${e.toString()}'));
+    } on DioException catch (e) {
+      final msg = e.response?.data?.toString() ?? e.message ?? 'Request failed';
+      return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
 
   @override
-  Future<Either> deleteUserById(int id) async {
-    final accessToken = await AuthTokenStorage().getAccessToken();
+  Future<Either<Failure, Unit>> deleteUserById(int id) async {
     try {
-      final response = await sl<DioClient>().delete(
+      await client.delete(
         '${AppApi.users}$id/',
         options: Options(
-          headers: {
+          headers: const {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'Authorization': 'Bearer $accessToken',
             'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
           },
         ),
       );
-
-      if (response.statusCode == 204 || response.statusCode == 200) {
-        return Right(response.data);
-      } else {
-        throw Exception(
-          'Failed to delete partner type. Status code: ${response.statusCode}',
-        );
-      }
-    } catch (e) {
-      // Обработка ошибки 401 (неверный или истёкший токен)
-      if (e is DioException && e.response?.statusCode == 401) {
-        return await AuthError(dio: dio).handleUnauthorized();
-      }
-      return Left(Exception('Something went wrong: ${e.toString()}'));
+      // If no exception thrown, treat as success (e.g., 204/200)
+      return const Right(unit);
+    } on DioException catch (e) {
+      final msg = e.response?.data?.toString() ?? e.message ?? 'Delete failed';
+      return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
 }

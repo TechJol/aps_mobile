@@ -143,19 +143,27 @@ class _MenuPageState extends State<MenuPage> {
               onChildTap: (childTitle) async {
                 if (childTitle == t.menu.settingsCounterparties) {
                   await Navigator.pushNamed(context, AppRoutes.counterparties);
-                  context.read<MenuCubit>().getTransactionsWithAccounts();
+                  context
+                      .read<MenuCubit>()
+                      .getTransactionsWithAccounts(force: true);
                 } else if (childTitle == t.menu.settingsCounterpartyTypes) {
                   await Navigator.pushNamed(
                     context,
                     AppRoutes.typeCounterparties,
                   );
-                  context.read<MenuCubit>().getTransactionsWithAccounts();
+                  context
+                      .read<MenuCubit>()
+                      .getTransactionsWithAccounts(force: true);
                 } else if (childTitle == t.menu.settingsAccounts) {
                   await Navigator.pushNamed(context, AppRoutes.settingAccount);
-                  context.read<MenuCubit>().getTransactionsWithAccounts();
+                  context
+                      .read<MenuCubit>()
+                      .getTransactionsWithAccounts(force: true);
                 } else if (childTitle == t.menu.settingsArticles) {
                   await Navigator.pushNamed(context, AppRoutes.articles);
-                  context.read<MenuCubit>().getTransactionsWithAccounts();
+                  context
+                      .read<MenuCubit>()
+                      .getTransactionsWithAccounts(force: true);
                 }
               },
             ),

@@ -20,7 +20,10 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
   @override
   void initState() {
     super.initState();
-    context.read<MenuCubit>().getPartnerData();
+    // Всегда тихо обновляем полные данные
+    context.read<MenuCubit>().getTransactionsWithAccounts(force: true);
+    // И приводим состояние к партнерским данным
+    context.read<MenuCubit>().getPartnerData(force: true);
   }
 
   @override
@@ -59,6 +62,11 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
             return _buildTableSection(context, types);
           }
 
+          if (state is MenuTransactionsWithAccountsSuccess) {
+            final types = state.partnerTypes ?? [];
+            return _buildTableSection(context, types);
+          }
+
           return const SizedBox.shrink();
         },
       ),
@@ -93,8 +101,18 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
                     children: [
                       Expanded(
                         child: ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.pushNamed(context, AppRoutes.addType);
+                          onPressed: () async {
+                            final res = await Navigator.pushNamed(
+                              context,
+                              AppRoutes.addType,
+                            );
+                            if (!mounted) return;
+                            if (res == true) {
+                              // Обновим данные и остаёмся на этом экране
+                              context.read<MenuCubit>().getPartnerData(
+                                force: true,
+                              );
+                            }
                           },
                           label: Text(
                             t.menu.typeCounterparties.addType,

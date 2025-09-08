@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/core/error/failure.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dartz/dartz.dart';
 
@@ -6,7 +7,7 @@ class DeleteUserByIdUsecase {
 
   DeleteUserByIdUsecase({required this.repository});
 
-  Future<Either> call(int id) {
+  Future<Either<Failure, Unit>> call(int id) {
     return repository.deleteUserById(id);
   }
 }

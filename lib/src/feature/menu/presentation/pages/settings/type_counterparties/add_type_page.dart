@@ -45,7 +45,7 @@ class _AddTypePageState extends State<AddTypePage> {
       ),
       body: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {
-          if (state is MenuPartnerDataSuccess) {
+          if (state is PartnerTypeUpdated) {
             Navigator.pop(context);
           }
           if (state is MenuError) {

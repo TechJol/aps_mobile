@@ -15,10 +15,16 @@ class ProfilePage extends StatelessWidget {
       body: BlocListener<CredentialCubit, CredentialState>(
         listener: (context, state) {
           if (state is CredentialSuccess) {
-            Navigator.of(context).pushReplacementNamed('/'); // или '/login'
+            // Явно выходим из Auth и отправляем на корневой маршрут
+            context.read<AuthCubit>().logout();
+            Navigator.of(
+              context,
+            ).pushReplacementNamed('/'); // покажет LoginPage
           }
           if (state is UserFailure) {
-            Center(child: Text('${t.menu.error}: ${state.errorMessage}'));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('${t.menu.error}: ${state.errorMessage}')),
+            );
           }
         },
         child: BlocBuilder<CredentialCubit, CredentialState>(
@@ -107,8 +113,8 @@ class ProfilePage extends StatelessWidget {
                       context,
                       accountName: t.menu.profile.account,
                       onConfirm: () async {
+                        // Только запускаем удаление. Навигацию делает BlocListener.
                         context.read<CredentialCubit>().deleteUserById();
-                        Navigator.of(context).pushReplacementNamed('/');
                       },
                       title: t.menu.profile.deleteAccount,
                     );
