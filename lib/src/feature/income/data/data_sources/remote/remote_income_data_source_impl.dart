@@ -1,5 +1,6 @@
 import 'package:aps_mobile/injection_container.dart';
 import 'package:aps_mobile/src/core/core.dart';
+import 'package:aps_mobile/src/core/error/failure.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -34,12 +35,16 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
           'Failed to get transactions. Status code: ${response.statusCode}',
         );
       }
-    } catch (e) {
+    } on DioException catch (e) {
       // Обработка ошибки 401 (неверный или истёкший токен)
-      if (e is DioException && e.response?.statusCode == 401) {
+      if (e.response?.statusCode == 401) {
         return await AuthError(dio: dio).handleUnauthorized();
       }
-      return Left(Exception('Something went wrong: ${e.toString()}'));
+      final msg = NetworkErrorMapper.toMessage(e);
+      return Left(Failure(msg, code: e.response?.statusCode));
+    } catch (e) {
+      final msg = NetworkErrorMapper.toMessage(e);
+      return Left(Failure(msg));
     }
   }
 
@@ -66,12 +71,16 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
           'Failed to get transactions. Status code: ${response.statusCode}',
         );
       }
-    } catch (e) {
+    } on DioException catch (e) {
       // Обработка ошибки 401 (неверный или истёкший токен)
-      if (e is DioException && e.response?.statusCode == 401) {
+      if (e.response?.statusCode == 401) {
         return await AuthError(dio: dio).handleUnauthorized();
       }
-      return Left(Exception('Something went wrong: ${e.toString()}'));
+      final msg = NetworkErrorMapper.toMessage(e);
+      return Left(Failure(msg, code: e.response?.statusCode));
+    } catch (e) {
+      final msg = NetworkErrorMapper.toMessage(e);
+      return Left(Failure(msg));
     }
   }
 
@@ -98,12 +107,16 @@ class RemoteIncomeDataSourceImpl implements RemoteIncomeDataSource {
           'Failed to get transactions. Status code: ${response.statusCode}',
         );
       }
-    } catch (e) {
+    } on DioException catch (e) {
       // Обработка ошибки 401 (неверный или истёкший токен)
-      if (e is DioException && e.response?.statusCode == 401) {
+      if (e.response?.statusCode == 401) {
         return await AuthError(dio: dio).handleUnauthorized();
       }
-      return Left(Exception('Something went wrong: ${e.toString()}'));
+      final msg = NetworkErrorMapper.toMessage(e);
+      return Left(Failure(msg, code: e.response?.statusCode));
+    } catch (e) {
+      final msg = NetworkErrorMapper.toMessage(e);
+      return Left(Failure(msg));
     }
   }
 }

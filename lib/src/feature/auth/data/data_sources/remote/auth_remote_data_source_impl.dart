@@ -37,7 +37,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         return Left(Failure('Failed to login', code: response.statusCode));
       }
     } on DioException catch (e) {
-      final msg = e.response?.data?.toString() ?? e.message ?? 'Login failed';
+      final msg = NetworkErrorMapper.toMessage(e);
       return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
@@ -63,7 +63,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         return Left(Failure('Failed to register', code: response.statusCode));
       }
     } on DioException catch (e) {
-      final raw = e.response?.data?.toString() ?? e.message ?? 'Registration failed';
+      final raw = NetworkErrorMapper.toMessage(e);
       final friendly = _mapRegistrationError(raw);
       return Left(Failure(friendly, code: e.response?.statusCode));
     }
@@ -121,7 +121,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         return Left(Failure('Failed to get user', code: response.statusCode));
       }
     } on DioException catch (e) {
-      final msg = e.response?.data?.toString() ?? e.message ?? 'Request failed';
+      final msg = NetworkErrorMapper.toMessage(e);
       return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
@@ -142,7 +142,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       // If no exception thrown, treat as success (e.g., 204/200)
       return const Right(unit);
     } on DioException catch (e) {
-      final msg = e.response?.data?.toString() ?? e.message ?? 'Delete failed';
+      final msg = NetworkErrorMapper.toMessage(e);
       return Left(Failure(msg, code: e.response?.statusCode));
     }
   }

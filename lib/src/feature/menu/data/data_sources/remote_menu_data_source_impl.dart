@@ -32,7 +32,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
         );
       }
     } on DioException catch (e) {
-      final msg = e.response?.data?.toString() ?? e.message ?? 'Request failed';
+      final msg = NetworkErrorMapper.toMessage(e);
       return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
@@ -59,7 +59,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
         );
       }
     } on DioException catch (e) {
-      final msg = e.response?.data?.toString() ?? e.message ?? 'Request failed';
+      final msg = NetworkErrorMapper.toMessage(e);
       return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
@@ -79,7 +79,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
       );
       return const Right(unit);
     } on DioException catch (e) {
-      final msg = e.response?.data?.toString() ?? e.message ?? 'Delete failed';
+      final msg = NetworkErrorMapper.toMessage(e);
       return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
@@ -108,7 +108,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
         );
       }
     } on DioException catch (e) {
-      final msg = e.response?.data?.toString() ?? e.message ?? 'Request failed';
+      final msg = NetworkErrorMapper.toMessage(e);
       return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
@@ -138,7 +138,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
         );
       }
     } on DioException catch (e) {
-      final msg = e.response?.data?.toString() ?? e.message ?? 'Request failed';
+      final msg = NetworkErrorMapper.toMessage(e);
       return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
@@ -185,7 +185,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
       );
       return const Right(unit);
     } on DioException catch (e) {
-      final msg = e.response?.data?.toString() ?? e.message ?? 'Delete failed';
+      final msg = NetworkErrorMapper.toMessage(e);
       return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
@@ -215,7 +215,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
         );
       }
     } on DioException catch (e) {
-      final msg = e.response?.data?.toString() ?? e.message ?? 'Request failed';
+      final msg = NetworkErrorMapper.toMessage(e);
       return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
@@ -245,7 +245,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
         );
       }
     } on DioException catch (e) {
-      final msg = e.response?.data?.toString() ?? e.message ?? 'Request failed';
+      final msg = NetworkErrorMapper.toMessage(e);
       return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
@@ -265,7 +265,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
       );
       return const Right(unit);
     } on DioException catch (e) {
-      final msg = e.response?.data?.toString() ?? e.message ?? 'Delete failed';
+      final msg = NetworkErrorMapper.toMessage(e);
       return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
@@ -295,7 +295,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
         );
       }
     } on DioException catch (e) {
-      final msg = e.response?.data?.toString() ?? e.message ?? 'Request failed';
+      final msg = NetworkErrorMapper.toMessage(e);
       return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
@@ -325,7 +325,7 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
         );
       }
     } on DioException catch (e) {
-      final msg = e.response?.data?.toString() ?? e.message ?? 'Request failed';
+      final msg = NetworkErrorMapper.toMessage(e);
       return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
