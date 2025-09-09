@@ -1,6 +1,7 @@
 import 'package:aps_mobile/injection_container.dart' as di;
 import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
+import 'package:aps_mobile/src/feature/auth/presentation/pages/auth_pager_page.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -62,7 +63,7 @@ class MyApp extends StatelessWidget {
                   return const MainView();
                 }
                 if (state is UnAuthenticated) {
-                  return const LoginPage();
+                  return const AuthPagerPage();
                 }
                 return const SizedBox.shrink();
               },

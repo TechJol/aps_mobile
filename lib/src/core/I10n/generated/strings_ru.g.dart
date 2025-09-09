@@ -94,12 +94,13 @@ class _TranslationsAccountRu extends TranslationsAccountEn {
 
 // Path: auth
 class _TranslationsAuthRu extends TranslationsAuthEn {
-	_TranslationsAuthRu._(TranslationsRu root) : this._root = root, super.internal(root);
+    _TranslationsAuthRu._(TranslationsRu root) : this._root = root, super.internal(root);
 
-	final TranslationsRu _root; // ignore: unused_field
+    final TranslationsRu _root; // ignore: unused_field
 
-	// Translations
-	@override String get welcome => 'Привет!\nДобро пожаловать';
+    // Translations
+    @override late final _TranslationsAuthErrorsRu errors = _TranslationsAuthErrorsRu._(_root);
+    @override String get welcome => 'Привет!\nДобро пожаловать';
 	@override String get login => 'Войти';
 	@override String get register => 'Регистрация';
 	@override String get logIn => 'Логин';
@@ -114,6 +115,19 @@ class _TranslationsAuthRu extends TranslationsAuthEn {
 	@override String get registerButton => 'Зарегистрироваться';
 	@override String get loginButton => 'Войти';
 	@override String get forgotPassword => 'Забыли пароль?';
+}
+
+// Path: auth.errors
+class _TranslationsAuthErrorsRu extends TranslationsAuthErrorsEn {
+    _TranslationsAuthErrorsRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+    final TranslationsRu _root; // ignore: unused_field
+
+    // Translations
+    @override String get companyExists => 'Компания с таким названием уже существует';
+    @override String get emailExists => 'Пользователь с таким email уже существует';
+    @override String get usernameExists => 'Пользователь с таким именем уже существует';
+    @override String get unknown => 'Не удалось зарегистрироваться. Попробуйте другое имя компании';
 }
 
 // Path: home
@@ -699,7 +713,11 @@ extension on TranslationsRu {
 			case 'auth.agreement': return 'Принимаю все условии пользовательского соглашения';
 			case 'auth.registerButton': return 'Зарегистрироваться';
 			case 'auth.loginButton': return 'Войти';
-			case 'auth.forgotPassword': return 'Забыли пароль?';
+            case 'auth.forgotPassword': return 'Забыли пароль?';
+            case 'auth.errors.companyExists': return 'Компания с таким названием уже существует';
+            case 'auth.errors.emailExists': return 'Пользователь с таким email уже существует';
+            case 'auth.errors.usernameExists': return 'Пользователь с таким именем уже существует';
+            case 'auth.errors.unknown': return 'Не удалось зарегистрироваться. Попробуйте другое имя компании';
 			case 'home.appbar': return 'SoftkgPro';
 			case 'home.home': return 'Главная';
 			case 'home.day': return 'День';
@@ -905,4 +923,3 @@ extension on TranslationsRu {
 		}
 	}
 }
-

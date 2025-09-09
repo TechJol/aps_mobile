@@ -1,5 +1,6 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/core/error/failure.dart';
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -62,10 +63,41 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         return Left(Failure('Failed to register', code: response.statusCode));
       }
     } on DioException catch (e) {
-      final msg =
-          e.response?.data?.toString() ?? e.message ?? 'Registration failed';
-      return Left(Failure(msg, code: e.response?.statusCode));
+      final raw = e.response?.data?.toString() ?? e.message ?? 'Registration failed';
+      final friendly = _mapRegistrationError(raw);
+      return Left(Failure(friendly, code: e.response?.statusCode));
     }
+  }
+
+  /// Преобразуем «шумные» ошибки бэкенда (HTML/stacktrace)
+  /// в понятные пользователю сообщения на русском.
+  String _mapRegistrationError(String raw) {
+    final text = raw.toLowerCase();
+
+    // Частые кейсы уникальности
+    if (text.contains('duplicate') || text.contains('unique constraint')) {
+      // Компания уже существует
+      if (text.contains("main_company.name") ||
+          text.contains('company') && text.contains('name')) {
+        return t.auth.errors.companyExists;
+      }
+      // Email
+      if (text.contains('email')) {
+        return t.auth.errors.emailExists;
+      }
+      // Username / user
+      if (text.contains('username') || text.contains('users_user.username')) {
+        return t.auth.errors.usernameExists;
+      }
+    }
+
+    // Если сервер отдал HTML от Django — уберём лишнее и вернём общий текст
+    if (text.contains('integrityerror')) {
+      return t.auth.errors.unknown;
+    }
+
+    // По умолчанию — общий текст
+    return t.auth.errors.unknown;
   }
 
   @override

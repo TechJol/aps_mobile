@@ -167,11 +167,12 @@ class TranslationsAccountEn {
 
 // Path: auth
 class TranslationsAuthEn {
-	TranslationsAuthEn.internal(this._root);
+    TranslationsAuthEn.internal(this._root);
 
-	final Translations _root; // ignore: unused_field
+    final Translations _root; // ignore: unused_field
 
-	// Translations
+    // Translations
+    late final TranslationsAuthErrorsEn errors = TranslationsAuthErrorsEn.internal(_root);
 
 	/// en: 'Hello!\nWelcome'
 	String get welcome => 'Hello!\nWelcome';
@@ -217,6 +218,26 @@ class TranslationsAuthEn {
 
 	/// en: 'Forgot password?'
 	String get forgotPassword => 'Forgot password?';
+}
+
+// Path: auth.errors
+class TranslationsAuthErrorsEn {
+    TranslationsAuthErrorsEn.internal(this._root);
+
+    final Translations _root; // ignore: unused_field
+
+    // Translations
+    /// en: 'A company with this name already exists'
+    String get companyExists => 'A company with this name already exists';
+
+    /// en: 'A user with this email already exists'
+    String get emailExists => 'A user with this email already exists';
+
+    /// en: 'A user with this username already exists'
+    String get usernameExists => 'A user with this username already exists';
+
+    /// en: 'Registration failed. Try another company name'
+    String get unknown => 'Registration failed. Try another company name';
 }
 
 // Path: home
@@ -1236,7 +1257,11 @@ extension on Translations {
 			case 'auth.agreement': return 'I accept all terms of the user agreement';
 			case 'auth.registerButton': return 'Register';
 			case 'auth.loginButton': return 'Login';
-			case 'auth.forgotPassword': return 'Forgot password?';
+            case 'auth.forgotPassword': return 'Forgot password?';
+            case 'auth.errors.companyExists': return 'A company with this name already exists';
+            case 'auth.errors.emailExists': return 'A user with this email already exists';
+            case 'auth.errors.usernameExists': return 'A user with this username already exists';
+            case 'auth.errors.unknown': return 'Registration failed. Try another company name';
 			case 'home.appbar': return 'SoftkgPro';
 			case 'home.home': return 'Home';
 			case 'home.day': return 'Day';
@@ -1442,4 +1467,3 @@ extension on Translations {
 		}
 	}
 }
-

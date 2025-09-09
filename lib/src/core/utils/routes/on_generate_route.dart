@@ -1,4 +1,5 @@
 import 'package:aps_mobile/src/feature/feature.dart';
+import 'package:aps_mobile/src/feature/auth/presentation/pages/auth_pager_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'app_routes.dart';
 import 'unknown_page.dart';
@@ -12,10 +13,7 @@ class RouteGenerator {
     switch (route) {
       //! Registration
       case AppRoutes.login:
-        return CupertinoPageRoute(builder: (_) => LoginPage());
-
-      case AppRoutes.registration:
-        return CupertinoPageRoute(builder: (_) => Registration());
+        return CupertinoPageRoute(builder: (_) => const AuthPagerPage());
 
       case AppRoutes.forgotPassword:
         return CupertinoPageRoute(builder: (_) => ForgotPassPage());
