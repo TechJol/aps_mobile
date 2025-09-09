@@ -61,7 +61,12 @@ class _MenuPageState extends State<MenuPage> {
       body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is UnAuthenticated) {
-            Navigator.pushReplacementNamed(context, AppRoutes.login);
+            // Полностью очищаем стек и переходим на логин
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              AppRoutes.login,
+              (route) => false,
+            );
           }
         },
         child: ListView(

@@ -101,6 +101,9 @@ class _LoginPageState extends State<LoginPage> {
       body: BlocListener<CredentialCubit, CredentialState>(
         listener: (context, state) async {
           if (state is CredentialSuccess) {
+            // После успешного логина синхронизируем глобальное состояние авторизации,
+            // чтобы дальнейший Logout корректно отрабатывал.
+            context.read<AuthCubit>().appStarted();
             await _onLoginSuccessNavigate();
           }
           if (state is CredentialFailure) {
