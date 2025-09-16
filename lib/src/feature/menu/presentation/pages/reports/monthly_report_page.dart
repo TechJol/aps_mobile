@@ -500,14 +500,18 @@ class MonthlyReportChart extends StatelessWidget {
     final List<BarChartGroupData> barGroups = [];
     double maxDaySum = 0;
 
-    for (final entry in data.entries) {
-      final day = entry.key;
-      final segments = entry.value;
+    // Ensure days are in ascending order
+    final sortedDays = data.keys.toList()..sort();
+    for (final day in sortedDays) {
+      final segments = data[day] ?? const {};
 
       double sum = 0;
       final rods = <BarChartRodStackItem>[];
 
-      for (final seg in segments.entries) {
+      // Stabilize stack order by reason id
+      final segEntries =
+          segments.entries.toList()..sort((a, b) => a.key.compareTo(b.key));
+      for (final seg in segEntries) {
         final reasonIndex = reasonIdToIndex[seg.key] ?? 0;
         final color = reasonColors[reasonIndex % reasonColors.length];
 
