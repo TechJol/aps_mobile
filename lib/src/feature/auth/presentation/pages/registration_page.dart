@@ -2,6 +2,7 @@
 
 import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
+import 'package:aps_mobile/src/core/utils/reg_exp/app_reg_exp.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +30,9 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
   String? companyError;
   String? usernameError;
   String? emailError;
+  String? nameError;
+  String? surnameError;
+  String? passwordError;
 
   @override
   void initState() {
@@ -61,15 +65,65 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
   }
 
   void _validateForm() {
+    final company = firmController.text.trim();
+    final username = usernameController.text.trim();
+    final email = emailController.text.trim();
+    final firstName = nameController.text.trim();
+    final lastName = surnameController.text.trim();
+    final password = passwordController.text.trim();
+
+    String? localCompanyError;
+    String? localUsernameError;
+    String? localEmailError;
+    String? localNameError;
+    String? localSurnameError;
+    String? localPasswordError;
+
+    // Only show errors for non-empty invalid fields
+    if (company.isNotEmpty && !AppRegExp.companyName.hasMatch(company)) {
+      localCompanyError = 'Некорректное название компании';
+    }
+    if (username.isNotEmpty && !AppRegExp.username.hasMatch(username)) {
+      localUsernameError = 'Допустимы латиница, цифры и _ (3–20)';
+    }
+    if (email.isNotEmpty && !AppRegExp.email.hasMatch(email)) {
+      localEmailError = 'Некорректный email';
+    }
+    if (firstName.isNotEmpty && !AppRegExp.personName.hasMatch(firstName)) {
+      localNameError = 'Только буквы, дефис и пробел (2–50)';
+    }
+    if (lastName.isNotEmpty && !AppRegExp.personName.hasMatch(lastName)) {
+      localSurnameError = 'Только буквы, дефис и пробел (2–50)';
+    }
+    if (password.isNotEmpty && !AppRegExp.password.hasMatch(password)) {
+      localPasswordError = 'Минимум 8 символов, буква и цифра';
+    }
+
+    final allNonEmpty =
+        company.isNotEmpty &&
+        username.isNotEmpty &&
+        email.isNotEmpty &&
+        firstName.isNotEmpty &&
+        lastName.isNotEmpty &&
+        password.isNotEmpty;
+
+    final allValid =
+        (localCompanyError == null) &&
+        (localUsernameError == null) &&
+        (localEmailError == null) &&
+        (localNameError == null) &&
+        (localSurnameError == null) &&
+        (localPasswordError == null);
+
     setState(() {
-      isFormValid =
-          firmController.text.trim().isNotEmpty &&
-          usernameController.text.trim().isNotEmpty &&
-          emailController.text.trim().isNotEmpty &&
-          nameController.text.trim().isNotEmpty &&
-          surnameController.text.trim().isNotEmpty &&
-          passwordController.text.trim().isNotEmpty &&
-          isAgreementChecked;
+      companyError = localCompanyError;
+      usernameError = localUsernameError;
+      emailError = localEmailError;
+      nameError = localNameError;
+      surnameError = localSurnameError;
+      passwordError = localPasswordError;
+
+      isFormValid = allNonEmpty && allValid && isAgreementChecked;
     });
   }
 
@@ -195,14 +249,23 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
                 errorText: emailError,
               ),
               const SizedBox(height: 24),
-              _buildField(controller: nameController, hint: t.auth.name),
+              _buildField(
+                controller: nameController,
+                hint: t.auth.name,
+                errorText: nameError,
+              ),
               const SizedBox(height: 24),
-              _buildField(controller: surnameController, hint: t.auth.surname),
+              _buildField(
+                controller: surnameController,
+                hint: t.auth.surname,
+                errorText: surnameError,
+              ),
               const SizedBox(height: 24),
               _buildField(
                 controller: passwordController,
                 hint: t.auth.password,
                 isPassword: true,
+                errorText: passwordError,
               ),
               const SizedBox(height: 15),
               Row(
