@@ -242,31 +242,33 @@ class _MetricsPageState extends State<MetricsPage> {
 
     final List<String> years =
         yearlyData.map((e) => e['year'].toString()).toList();
+    // Use net income (balance = income - expense) for the chart
     final List<double> values =
-        yearlyData.map((e) {
-          final income =
-              Decimal.tryParse(e['income'].toString()) ?? Decimal.zero;
-          return income.toDouble();
-        }).toList();
+        yearlyData
+            .map(
+              (e) =>
+                  (Decimal.tryParse(e['balance'].toString()) ?? Decimal.zero)
+                      .toDouble(),
+            )
+            .toList();
 
     // Автоподбор красивого максимума и шага
     final double rawMax =
         values.isNotEmpty ? values.reduce((a, b) => a > b ? a : b) : 0;
-    final double niceMax = _niceCeil(rawMax * 1.15); // +15% запас сверху
-    final double tickStep = _niceStep(niceMax, targetTicks: 6);
+    final double rawMin =
+        values.isNotEmpty ? values.reduce((a, b) => a < b ? a : b) : 0;
+    final double niceMax = _niceCeil((rawMax.abs()) * 1.15);
+    final double niceMin = rawMin < 0 ? -_niceCeil((rawMin.abs()) * 1.15) : 0;
+    final double axisSpan = max(niceMax, niceMin.abs());
+    final double tickStep = _niceStep(axisSpan, targetTicks: 6);
 
     // Компактное форматирование по текущей локали
     final locale = Localizations.localeOf(context).languageCode;
     final compact = NumberFormat.compact(locale: locale);
 
-    final colors = const [
-      Color(0xFF7B37B5),
-      Color(0xFFF219A2),
-      Color(0xFF156CB1),
-      Color(0xFFCCC9AA),
-      Color(0xFF1EBF93),
-      Color(0xFFFCA12C),
-    ];
+    // Colors for positive / negative net income
+    const positiveColor = Color(0xFF7B37B5); // greenish
+    const negativeColor = Color(0xFFE85445); // reddish
 
     double chartWidth =
         years.length * barWidth + (years.length - 1) * groupSpacing + 40;
@@ -278,16 +280,17 @@ class _MetricsPageState extends State<MetricsPage> {
         height: 400,
         child: BarChart(
           BarChartData(
-            minY: 0,
+            minY: niceMin < 0 ? niceMin : 0,
             maxY: niceMax > 0 ? niceMax : 1,
             groupsSpace: groupSpacing,
             barGroups: List.generate(years.length, (index) {
+              final v = values[index];
               return BarChartGroupData(
                 x: index,
                 barRods: [
                   BarChartRodData(
-                    toY: values[index],
-                    color: colors[index % colors.length],
+                    toY: v,
+                    color: v >= 0 ? positiveColor : negativeColor,
                     width: barWidth,
                     borderRadius: BorderRadius.circular(6),
                   ),
