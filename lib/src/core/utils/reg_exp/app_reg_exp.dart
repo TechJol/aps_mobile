@@ -16,6 +16,7 @@ class AppRegExp {
   static final personName = RegExp('^[A-Za-zА-Яа-яЁё\\-\'\\s]{2,50}\$');
 
   // Company: allow letters (RU/EN), digits, spaces and common punctuation; 2-100 chars
-  static final companyName = RegExp('^[A-Za-zА-Яа-яЁё0-9\\s\\.,&\'()\\-]{2,100}\$');
+  static final companyName = RegExp(
+    '^[A-Za-zА-Яа-яЁё0-9\\s\\.,&\'()\\-]{2,100}\$',
+  );
 }
-

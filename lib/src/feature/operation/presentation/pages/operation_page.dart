@@ -421,13 +421,14 @@ class _OperationPageState extends State<OperationPage>
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
-        DateTime startDate = _customStartDate ?? DateTime.now();
-        DateTime endDate = _customEndDate ?? DateTime.now();
+        DateTime? startDate = _customStartDate;
+        DateTime? endDate = _customEndDate;
         String? selectedPeriod =
             _selectedPeriod; // локализованный текст или null
 
         return StatefulBuilder(
           builder: (context, setStateModal) {
+            final bool datesEnabled = selectedPeriod == null;
             return Padding(
               padding: MediaQuery.of(context).viewInsets,
               child: Padding(
@@ -450,11 +451,13 @@ class _OperationPageState extends State<OperationPage>
                       children: [
                         _dateField(
                           label: t.operation.start,
-                          date: startDate,
+                          date: datesEnabled ? (startDate ?? DateTime.now()) : null,
+                          enabled: datesEnabled,
                           onTap: () async {
+                            if (!datesEnabled) return;
                             final picked = await showDatePicker(
                               context: context,
-                              initialDate: startDate,
+                              initialDate: (startDate ?? DateTime.now()),
                               firstDate: DateTime(2020),
                               lastDate: DateTime(2100),
                             );
@@ -466,11 +469,13 @@ class _OperationPageState extends State<OperationPage>
                         const SizedBox(width: 10),
                         _dateField(
                           label: t.operation.end,
-                          date: endDate,
+                          date: datesEnabled ? (endDate ?? DateTime.now()) : null,
+                          enabled: datesEnabled,
                           onTap: () async {
+                            if (!datesEnabled) return;
                             final picked = await showDatePicker(
                               context: context,
-                              initialDate: endDate,
+                              initialDate: (endDate ?? DateTime.now()),
                               firstDate: DateTime(2020),
                               lastDate: DateTime(2100),
                             );
@@ -486,17 +491,46 @@ class _OperationPageState extends State<OperationPage>
                     _periodOption(
                       t.operation.week,
                       selectedPeriod,
-                      (val) => setStateModal(() => selectedPeriod = val!),
+                      (val) => setStateModal(() {
+                        selectedPeriod = val;
+                        if (val != null) {
+                          // период выбран — сбрасываем даты и дизейблим поля
+                          startDate = null;
+                          endDate = null;
+                        } else {
+                          // период снят — включаем поля дат с дефолтным сегодня
+                          startDate ??= DateTime.now();
+                          endDate ??= DateTime.now();
+                        }
+                      }),
                     ),
                     _periodOption(
                       t.operation.oneMonth,
                       selectedPeriod,
-                      (val) => setStateModal(() => selectedPeriod = val!),
+                      (val) => setStateModal(() {
+                        selectedPeriod = val;
+                        if (val != null) {
+                          startDate = null;
+                          endDate = null;
+                        } else {
+                          startDate ??= DateTime.now();
+                          endDate ??= DateTime.now();
+                        }
+                      }),
                     ),
                     _periodOption(
                       t.operation.threeMonth,
                       selectedPeriod,
-                      (val) => setStateModal(() => selectedPeriod = val!),
+                      (val) => setStateModal(() {
+                        selectedPeriod = val;
+                        if (val != null) {
+                          startDate = null;
+                          endDate = null;
+                        } else {
+                          startDate ??= DateTime.now();
+                          endDate ??= DateTime.now();
+                        }
+                      }),
                     ),
 
                     const SizedBox(height: 20),
@@ -505,8 +539,8 @@ class _OperationPageState extends State<OperationPage>
                         Navigator.pop(context, {
                           'period':
                               selectedPeriod, // локализованный текст или null
-                          'start': selectedPeriod == null ? startDate : null,
-                          'end': selectedPeriod == null ? endDate : null,
+                          'start': selectedPeriod == null ? (startDate ?? DateTime.now()) : null,
+                          'end': selectedPeriod == null ? (endDate ?? DateTime.now()) : null,
                         });
                       },
                       style: ElevatedButton.styleFrom(
@@ -540,17 +574,18 @@ class _OperationPageState extends State<OperationPage>
 
   Widget _dateField({
     required String label,
-    required DateTime date,
+    required DateTime? date,
     required VoidCallback onTap,
+    bool enabled = true,
   }) {
     return Expanded(
       child: GestureDetector(
-        onTap: onTap,
+        onTap: enabled ? onTap : null,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: AppColors.backroundColor,
+            color: AppColors.backroundColor.withOpacity(enabled ? 1.0 : 0.6),
             border: Border.all(color: Colors.grey.shade300, width: 1),
           ),
           child: Row(
@@ -561,10 +596,18 @@ class _OperationPageState extends State<OperationPage>
                 children: [
                   Text(label, style: AppTextStyles.f12w400),
                   2.h,
-                  Text(
-                    '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}',
-                    style: AppTextStyles.f14w500,
-                  ),
+                  if (date != null)
+                    Text(
+                      '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year}',
+                      style: AppTextStyles.f14w500,
+                    )
+                  else
+                    Text(
+                      '—',
+                      style: AppTextStyles.f14w500.copyWith(
+                        color: AppColors.greyerColorLight,
+                      ),
+                    ),
                 ],
               ),
               SvgPicture.asset('assets/icons/calendar.svg'),
@@ -583,7 +626,7 @@ class _OperationPageState extends State<OperationPage>
     final bool isSelected = label == selected;
 
     return GestureDetector(
-      onTap: () => onChanged(label),
+      onTap: () => onChanged(isSelected ? null : label),
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 6),
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -616,7 +659,7 @@ class _OperationPageState extends State<OperationPage>
               ),
               child: Checkbox(
                 value: isSelected,
-                onChanged: (_) => onChanged(label),
+                onChanged: (_) => onChanged(isSelected ? null : label),
               ),
             ),
           ],

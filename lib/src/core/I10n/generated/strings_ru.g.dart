@@ -94,13 +94,12 @@ class _TranslationsAccountRu extends TranslationsAccountEn {
 
 // Path: auth
 class _TranslationsAuthRu extends TranslationsAuthEn {
-    _TranslationsAuthRu._(TranslationsRu root) : this._root = root, super.internal(root);
+	_TranslationsAuthRu._(TranslationsRu root) : this._root = root, super.internal(root);
 
-    final TranslationsRu _root; // ignore: unused_field
+	final TranslationsRu _root; // ignore: unused_field
 
-    // Translations
-    @override late final _TranslationsAuthErrorsRu errors = _TranslationsAuthErrorsRu._(_root);
-    @override String get welcome => 'Привет!\nДобро пожаловать';
+	// Translations
+	@override String get welcome => 'Привет!\nДобро пожаловать';
 	@override String get login => 'Войти';
 	@override String get register => 'Регистрация';
 	@override String get logIn => 'Логин';
@@ -115,19 +114,8 @@ class _TranslationsAuthRu extends TranslationsAuthEn {
 	@override String get registerButton => 'Зарегистрироваться';
 	@override String get loginButton => 'Войти';
 	@override String get forgotPassword => 'Забыли пароль?';
-}
-
-// Path: auth.errors
-class _TranslationsAuthErrorsRu extends TranslationsAuthErrorsEn {
-    _TranslationsAuthErrorsRu._(TranslationsRu root) : this._root = root, super.internal(root);
-
-    final TranslationsRu _root; // ignore: unused_field
-
-    // Translations
-    @override String get companyExists => 'Компания с таким названием уже существует';
-    @override String get emailExists => 'Пользователь с таким email уже существует';
-    @override String get usernameExists => 'Пользователь с таким именем уже существует';
-    @override String get unknown => 'Не удалось зарегистрироваться. Попробуйте другое имя компании';
+	@override late final _TranslationsAuthValidationRu validation = _TranslationsAuthValidationRu._(_root);
+	@override late final _TranslationsAuthErrorsRu errors = _TranslationsAuthErrorsRu._(_root);
 }
 
 // Path: home
@@ -267,6 +255,34 @@ class _TranslationsAccountAccountRu extends TranslationsAccountAccountEn {
 	@override late final _TranslationsAccountAccountActionsRu actions = _TranslationsAccountAccountActionsRu._(_root);
 	@override late final _TranslationsAccountAccountMessagesRu messages = _TranslationsAccountAccountMessagesRu._(_root);
 	@override late final _TranslationsAccountAccountErrorsRu errors = _TranslationsAccountAccountErrorsRu._(_root);
+}
+
+// Path: auth.validation
+class _TranslationsAuthValidationRu extends TranslationsAuthValidationEn {
+	_TranslationsAuthValidationRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get companyInvalid => 'Некорректное название компании';
+	@override String get usernameInvalid => 'Допустимы латиница, цифры и _ (3–20)';
+	@override String get emailInvalid => 'Некорректный email';
+	@override String get nameInvalid => 'Только буквы, дефис и пробел (2–50)';
+	@override String get surnameInvalid => 'Только буквы, дефис и пробел (2–50)';
+	@override String get passwordInvalid => 'Минимум 8 символов, буква и цифра';
+}
+
+// Path: auth.errors
+class _TranslationsAuthErrorsRu extends TranslationsAuthErrorsEn {
+	_TranslationsAuthErrorsRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get companyExists => 'Компания с таким названием уже существует';
+	@override String get emailExists => 'Пользователь с таким email уже существует';
+	@override String get usernameExists => 'Пользователь с таким именем уже существует';
+	@override String get unknown => 'Не удалось зарегистрироваться. Попробуйте другое имя компании';
 }
 
 // Path: menu.profile
@@ -713,11 +729,17 @@ extension on TranslationsRu {
 			case 'auth.agreement': return 'Принимаю все условии пользовательского соглашения';
 			case 'auth.registerButton': return 'Зарегистрироваться';
 			case 'auth.loginButton': return 'Войти';
-            case 'auth.forgotPassword': return 'Забыли пароль?';
-            case 'auth.errors.companyExists': return 'Компания с таким названием уже существует';
-            case 'auth.errors.emailExists': return 'Пользователь с таким email уже существует';
-            case 'auth.errors.usernameExists': return 'Пользователь с таким именем уже существует';
-            case 'auth.errors.unknown': return 'Не удалось зарегистрироваться. Попробуйте другое имя компании';
+			case 'auth.forgotPassword': return 'Забыли пароль?';
+			case 'auth.validation.companyInvalid': return 'Некорректное название компании';
+			case 'auth.validation.usernameInvalid': return 'Допустимы латиница, цифры и _ (3–20)';
+			case 'auth.validation.emailInvalid': return 'Некорректный email';
+			case 'auth.validation.nameInvalid': return 'Только буквы, дефис и пробел (2–50)';
+			case 'auth.validation.surnameInvalid': return 'Только буквы, дефис и пробел (2–50)';
+			case 'auth.validation.passwordInvalid': return 'Минимум 8 символов, буква и цифра';
+			case 'auth.errors.companyExists': return 'Компания с таким названием уже существует';
+			case 'auth.errors.emailExists': return 'Пользователь с таким email уже существует';
+			case 'auth.errors.usernameExists': return 'Пользователь с таким именем уже существует';
+			case 'auth.errors.unknown': return 'Не удалось зарегистрироваться. Попробуйте другое имя компании';
 			case 'home.appbar': return 'SoftkgPro';
 			case 'home.home': return 'Главная';
 			case 'home.day': return 'День';
@@ -923,3 +945,4 @@ extension on TranslationsRu {
 		}
 	}
 }
+

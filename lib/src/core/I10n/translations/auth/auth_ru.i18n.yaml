@@ -13,3 +13,15 @@ agreement: Принимаю все условии пользовательско
 registerButton: Зарегистрироваться
 loginButton: Войти
 forgotPassword: Забыли пароль?
+validation:
+  companyInvalid: Некорректное название компании
+  usernameInvalid: Допустимы латиница, цифры и _ (3–20)
+  emailInvalid: Некорректный email
+  nameInvalid: Только буквы, дефис и пробел (2–50)
+  surnameInvalid: Только буквы, дефис и пробел (2–50)
+  passwordInvalid: Минимум 8 символов, буква и цифра
+errors:
+  companyExists: Компания с таким названием уже существует
+  emailExists: Пользователь с таким email уже существует
+  usernameExists: Пользователь с таким именем уже существует
+  unknown: Не удалось зарегистрироваться. Попробуйте другое имя компании

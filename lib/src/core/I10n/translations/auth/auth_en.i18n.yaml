@@ -13,3 +13,15 @@ agreement: I accept all terms of the user agreement
 registerButton: Register
 loginButton: Login
 forgotPassword: Forgot password?
+validation:
+  companyInvalid: Invalid company name
+  usernameInvalid: Letters, digits and _ only (3–20)
+  emailInvalid: Invalid email
+  nameInvalid: Letters, hyphen and space only (2–50)
+  surnameInvalid: Letters, hyphen and space only (2–50)
+  passwordInvalid: At least 8 chars, one letter and one digit
+errors:
+  companyExists: A company with this name already exists
+  emailExists: A user with this email already exists
+  usernameExists: A user with this username already exists
+  unknown: Registration failed. Try another company name

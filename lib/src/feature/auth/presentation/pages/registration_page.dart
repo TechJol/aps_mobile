@@ -81,22 +81,22 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
 
     // Only show errors for non-empty invalid fields
     if (company.isNotEmpty && !AppRegExp.companyName.hasMatch(company)) {
-      localCompanyError = 'Некорректное название компании';
+      localCompanyError = t.auth.validation.companyInvalid;
     }
     if (username.isNotEmpty && !AppRegExp.username.hasMatch(username)) {
-      localUsernameError = 'Допустимы латиница, цифры и _ (3–20)';
+      localUsernameError = t.auth.validation.usernameInvalid;
     }
     if (email.isNotEmpty && !AppRegExp.email.hasMatch(email)) {
-      localEmailError = 'Некорректный email';
+      localEmailError = t.auth.validation.emailInvalid;
     }
     if (firstName.isNotEmpty && !AppRegExp.personName.hasMatch(firstName)) {
-      localNameError = 'Только буквы, дефис и пробел (2–50)';
+      localNameError = t.auth.validation.nameInvalid;
     }
     if (lastName.isNotEmpty && !AppRegExp.personName.hasMatch(lastName)) {
-      localSurnameError = 'Только буквы, дефис и пробел (2–50)';
+      localSurnameError = t.auth.validation.surnameInvalid;
     }
     if (password.isNotEmpty && !AppRegExp.password.hasMatch(password)) {
-      localPasswordError = 'Минимум 8 символов, буква и цифра';
+      localPasswordError = t.auth.validation.passwordInvalid;
     }
 
     final allNonEmpty =

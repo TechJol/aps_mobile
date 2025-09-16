@@ -167,12 +167,11 @@ class TranslationsAccountEn {
 
 // Path: auth
 class TranslationsAuthEn {
-    TranslationsAuthEn.internal(this._root);
+	TranslationsAuthEn.internal(this._root);
 
-    final Translations _root; // ignore: unused_field
+	final Translations _root; // ignore: unused_field
 
-    // Translations
-    late final TranslationsAuthErrorsEn errors = TranslationsAuthErrorsEn.internal(_root);
+	// Translations
 
 	/// en: 'Hello!\nWelcome'
 	String get welcome => 'Hello!\nWelcome';
@@ -218,26 +217,9 @@ class TranslationsAuthEn {
 
 	/// en: 'Forgot password?'
 	String get forgotPassword => 'Forgot password?';
-}
 
-// Path: auth.errors
-class TranslationsAuthErrorsEn {
-    TranslationsAuthErrorsEn.internal(this._root);
-
-    final Translations _root; // ignore: unused_field
-
-    // Translations
-    /// en: 'A company with this name already exists'
-    String get companyExists => 'A company with this name already exists';
-
-    /// en: 'A user with this email already exists'
-    String get emailExists => 'A user with this email already exists';
-
-    /// en: 'A user with this username already exists'
-    String get usernameExists => 'A user with this username already exists';
-
-    /// en: 'Registration failed. Try another company name'
-    String get unknown => 'Registration failed. Try another company name';
+	late final TranslationsAuthValidationEn validation = TranslationsAuthValidationEn.internal(_root);
+	late final TranslationsAuthErrorsEn errors = TranslationsAuthErrorsEn.internal(_root);
 }
 
 // Path: home
@@ -531,6 +513,54 @@ class TranslationsAccountAccountEn {
 	late final TranslationsAccountAccountActionsEn actions = TranslationsAccountAccountActionsEn.internal(_root);
 	late final TranslationsAccountAccountMessagesEn messages = TranslationsAccountAccountMessagesEn.internal(_root);
 	late final TranslationsAccountAccountErrorsEn errors = TranslationsAccountAccountErrorsEn.internal(_root);
+}
+
+// Path: auth.validation
+class TranslationsAuthValidationEn {
+	TranslationsAuthValidationEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Invalid company name'
+	String get companyInvalid => 'Invalid company name';
+
+	/// en: 'Letters, digits and _ only (3–20)'
+	String get usernameInvalid => 'Letters, digits and _ only (3–20)';
+
+	/// en: 'Invalid email'
+	String get emailInvalid => 'Invalid email';
+
+	/// en: 'Letters, hyphen and space only (2–50)'
+	String get nameInvalid => 'Letters, hyphen and space only (2–50)';
+
+	/// en: 'Letters, hyphen and space only (2–50)'
+	String get surnameInvalid => 'Letters, hyphen and space only (2–50)';
+
+	/// en: 'At least 8 chars, one letter and one digit'
+	String get passwordInvalid => 'At least 8 chars, one letter and one digit';
+}
+
+// Path: auth.errors
+class TranslationsAuthErrorsEn {
+	TranslationsAuthErrorsEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'A company with this name already exists'
+	String get companyExists => 'A company with this name already exists';
+
+	/// en: 'A user with this email already exists'
+	String get emailExists => 'A user with this email already exists';
+
+	/// en: 'A user with this username already exists'
+	String get usernameExists => 'A user with this username already exists';
+
+	/// en: 'Registration failed. Try another company name'
+	String get unknown => 'Registration failed. Try another company name';
 }
 
 // Path: menu.profile
@@ -1257,11 +1287,17 @@ extension on Translations {
 			case 'auth.agreement': return 'I accept all terms of the user agreement';
 			case 'auth.registerButton': return 'Register';
 			case 'auth.loginButton': return 'Login';
-            case 'auth.forgotPassword': return 'Forgot password?';
-            case 'auth.errors.companyExists': return 'A company with this name already exists';
-            case 'auth.errors.emailExists': return 'A user with this email already exists';
-            case 'auth.errors.usernameExists': return 'A user with this username already exists';
-            case 'auth.errors.unknown': return 'Registration failed. Try another company name';
+			case 'auth.forgotPassword': return 'Forgot password?';
+			case 'auth.validation.companyInvalid': return 'Invalid company name';
+			case 'auth.validation.usernameInvalid': return 'Letters, digits and _ only (3–20)';
+			case 'auth.validation.emailInvalid': return 'Invalid email';
+			case 'auth.validation.nameInvalid': return 'Letters, hyphen and space only (2–50)';
+			case 'auth.validation.surnameInvalid': return 'Letters, hyphen and space only (2–50)';
+			case 'auth.validation.passwordInvalid': return 'At least 8 chars, one letter and one digit';
+			case 'auth.errors.companyExists': return 'A company with this name already exists';
+			case 'auth.errors.emailExists': return 'A user with this email already exists';
+			case 'auth.errors.usernameExists': return 'A user with this username already exists';
+			case 'auth.errors.unknown': return 'Registration failed. Try another company name';
 			case 'home.appbar': return 'SoftkgPro';
 			case 'home.home': return 'Home';
 			case 'home.day': return 'Day';
@@ -1467,3 +1503,4 @@ extension on Translations {
 		}
 	}
 }
+
