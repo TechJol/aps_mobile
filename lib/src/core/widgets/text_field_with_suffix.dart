@@ -2,16 +2,24 @@ import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
 class TextFieldWid extends StatelessWidget {
-  const TextFieldWid({super.key, this.controller, required this.label});
+  const TextFieldWid({
+    super.key,
+    this.controller,
+    required this.label,
+    this.suffixIcon,
+  });
 
   final TextEditingController? controller;
   final String label;
+  final Widget? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+
       decoration: InputDecoration(
+        suffixIcon: suffixIcon,
         floatingLabelBehavior: FloatingLabelBehavior.never,
         filled: true,
         labelStyle: AppTextStyles.f16w500,

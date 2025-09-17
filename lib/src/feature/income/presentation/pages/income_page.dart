@@ -20,6 +20,16 @@ class IncomePage {
     final TextEditingController amountController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
 
+    final List<_CurrencyOption> currencyOptions = const [
+      _CurrencyOption(label: 'KGS', code: 'kgs'),
+      _CurrencyOption(label: 'USD', code: 'usd'),
+      _CurrencyOption(label: 'EUR', code: 'eur'),
+      _CurrencyOption(label: 'RUB', code: 'rub'),
+    ];
+    final ValueNotifier<_CurrencyOption> selectedCurrency =
+        ValueNotifier<_CurrencyOption>(currencyOptions.first);
+    final currencyButtonKey = GlobalKey();
+
     String? selectedAccountName;
     int? selectedAccountId;
     String? selectedReasonName;
@@ -31,6 +41,7 @@ class IncomePage {
     final result = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
@@ -190,9 +201,54 @@ class IncomePage {
                           const SizedBox(height: 12),
 
                           // Сумма
-                          TextFieldWid(
-                            label: t.income.sum, // "Сумма" / "Sum"
-                            controller: amountController,
+                          ValueListenableBuilder<_CurrencyOption>(
+                            valueListenable: selectedCurrency,
+                            builder:
+                                (context, currency, _) => TextFieldWid(
+                                  label: t.income.sum, // "Сумма" / "Sum"
+                                  controller: amountController,
+                                  suffixIcon: GestureDetector(
+                                    key: currencyButtonKey,
+                                    onTap:
+                                        () => _showCurrencyMenu(
+                                          context,
+                                          currencyButtonKey,
+                                          selectedCurrency,
+                                          currencyOptions,
+                                        ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          SizedBox(
+                                            height: 18,
+                                            width: 18,
+                                            child: Image.asset(
+                                              'assets/icons/currencies.png',
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            currency.label,
+                                            style: AppTextStyles.f14w500
+                                                .copyWith(
+                                                  color: AppColors.blackColor,
+                                                ),
+                                          ),
+                                          const Icon(
+                                            Icons.expand_more,
+                                            size: 18,
+                                            color: AppColors.blackColor,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
                           ),
                           const SizedBox(height: 12),
 
@@ -282,8 +338,9 @@ class IncomePage {
                                     return;
                                   }
 
+                                  final currency = selectedCurrency.value;
                                   final income = IncomeAndComeoutModel(
-                                    currency: 'kgs',
+                                    currency: currency.code,
                                     date:
                                         selectedDateNotifier.value
                                             .toUtc()
@@ -292,7 +349,10 @@ class IncomePage {
                                     transactionType: transactionType,
                                     account: selectedAccountId!,
                                     description: descriptionController.text,
-                                    kgsCurrencyAmount: "1",
+                                    kgsCurrencyAmount:
+                                        currency.code == 'kgs'
+                                            ? amountController.text
+                                            : null,
                                     incomeExpenseReason: selectedReasonId!,
                                   );
                                   context.read<IncomeCubit>().addIncome(income);
@@ -404,4 +464,49 @@ class IncomePage {
       },
     );
   }
+
+  Future<void> _showCurrencyMenu(
+    BuildContext context,
+    GlobalKey iconKey,
+    ValueNotifier<_CurrencyOption> selectedCurrency,
+    List<_CurrencyOption> options,
+  ) async {
+    final RenderBox? button =
+        iconKey.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox?;
+    if (button == null || overlay == null) return;
+
+    final position = button.localToGlobal(Offset.zero, ancestor: overlay);
+    final rect = RelativeRect.fromLTRB(
+      position.dx,
+      position.dy + button.size.height,
+      overlay.size.width - position.dx - button.size.width,
+      overlay.size.height - position.dy,
+    );
+
+    final selected = await showMenu<_CurrencyOption>(
+      context: context,
+      position: rect,
+      color: AppColors.whiteColor,
+      items:
+          options.map((option) {
+            return PopupMenuItem<_CurrencyOption>(
+              value: option,
+              child: Text(option.label),
+            );
+          }).toList(),
+    );
+
+    if (selected != null) {
+      selectedCurrency.value = selected;
+    }
+  }
+}
+
+class _CurrencyOption {
+  const _CurrencyOption({required this.label, required this.code});
+
+  final String label;
+  final String code;
 }

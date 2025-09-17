@@ -28,9 +28,11 @@ class AppColors {
 
   static const Color nextbackColor = Color(0xFFF2EFFF);
   static const Color redColor = Color(0xFFD81112);
+  static const Color redColor50 = Color(0xFFE85445);
   static const Color redColorLight = Color(0xFFFFE0E0);
 
   static const Color greenColor = Color(0xFF0F913F);
+  static const Color greenColor50 = Color(0xFF56BC60);
   static const Color greenColorLight = Color(0xFFE6FFF0);
 
   static const Color solePropColor = Color(0xFF7B37B5);

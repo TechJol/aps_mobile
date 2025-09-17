@@ -1,12 +1,24 @@
 import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
+import 'package:decimal/decimal.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:decimal/decimal.dart';
 
 class IncomeExpenseSummaryPage extends StatelessWidget {
   const IncomeExpenseSummaryPage({super.key});
+
+  Future<Map<String, double>> _loadRates() async {
+    final dio = Dio(
+      BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+      ),
+    );
+    final service = NbkrRatesService(dio);
+    return service.fetchRates();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,68 +39,35 @@ class IncomeExpenseSummaryPage extends StatelessWidget {
             if (state is MenuTransactionsWithAccountsSuccess) {
               final transactions = state.transactions;
 
-              // Агрегируем данные по валютам
-              final Map<String, Map<String, Decimal>> aggregatedData = {};
+              // Агрегация доходов/расходов по валютам
+              final Map<String, Map<String, Decimal>> aggregated = {};
 
-              for (var tx in transactions) {
-                final currency = tx.currency;
+              for (final tx in transactions) {
+                final currency = (tx.currency ?? 'KGS').toUpperCase();
                 final amount =
                     Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
                 final type = tx.transactionType;
 
-                if (!aggregatedData.containsKey(currency)) {
-                  aggregatedData[currency!] = {
-                    'income': Decimal.zero,
-                    'expense': Decimal.zero,
-                    'balance': Decimal.zero,
-                    'rate': Decimal.zero,
-                  };
-                }
+                aggregated.putIfAbsent(
+                  currency,
+                  () => {'income': Decimal.zero, 'expense': Decimal.zero},
+                );
 
                 if (type == 'income') {
-                  aggregatedData[currency]?['income'] =
-                      (aggregatedData[currency]?['income'] ?? Decimal.zero) +
+                  aggregated[currency]!['income'] =
+                      (aggregated[currency]!['income'] ?? Decimal.zero) +
                       amount;
                 } else if (type == 'expense') {
-                  aggregatedData[currency]?['expense'] =
-                      (aggregatedData[currency]?['expense'] ?? Decimal.zero) +
+                  aggregated[currency]!['expense'] =
+                      (aggregated[currency]!['expense'] ?? Decimal.zero) +
                       amount;
                 }
               }
 
-              // Баланс + курс валюты
-              aggregatedData.forEach((currency, data) {
-                data['balance'] = data['income']! - data['expense']!;
-                if (currency == 'USD') {
-                  data['rate'] = Decimal.parse('87.45');
-                } else if (currency == 'EUR') {
-                  data['rate'] = Decimal.parse('99.46');
-                } else if (currency == 'RUB') {
-                  data['rate'] = Decimal.parse('1.1');
-                } else {
-                  data['rate'] = Decimal.zero;
-                }
-              });
-
-              final data =
-                  aggregatedData.entries.map((entry) {
-                    return {
-                      'currency': entry.key,
-                      'income': entry.value['income'].toString(),
-                      'expense': entry.value['expense'].toString(),
-                      'balance': entry.value['balance'].toString(),
-                      'rate': entry.value['rate'].toString(),
-                    };
-                  }).toList();
-
-              final hasData = data.isNotEmpty;
-
-              return ListView(
-                children: [
-                  20.h,
-                  if (hasData)
-                    DataTableSectionA(data: data)
-                  else
+              if (aggregated.isEmpty) {
+                return ListView(
+                  children: [
+                    20.h,
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.only(top: 50),
@@ -98,7 +77,80 @@ class IncomeExpenseSummaryPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                ],
+                  ],
+                );
+              }
+
+              // Тянем курсы и строим таблицу
+              return FutureBuilder<Map<String, double>>(
+                future: _loadRates(),
+                builder: (context, snap) {
+                  final loading =
+                      snap.connectionState == ConnectionState.waiting;
+                  final rates = (snap.data ?? const {'KGS': 1.0}).map(
+                    (k, v) => MapEntry(k.toUpperCase(), v),
+                  );
+
+                  // Готовим данные для таблицы
+                  final List<RowData> rows = [];
+                  aggregated.forEach((cur, map) {
+                    final income = map['income'] ?? Decimal.zero;
+                    final expense = map['expense'] ?? Decimal.zero;
+                    final balance = income - expense;
+
+                    // курс за 1 ед. валюты -> Decimal
+                    Decimal rateDec;
+                    if (cur == 'KGS') {
+                      rateDec = Decimal.zero; // для KGS показываем "-"
+                    } else {
+                      final r = rates[cur] ?? 0.0;
+                      rateDec = Decimal.parse(r.toString());
+                    }
+
+                    // баланс в KGS
+                    final balanceKgz =
+                        (cur == 'KGS')
+                            ? balance // <- для KGS показываем сам баланс
+                            : (rateDec == Decimal.zero
+                                ? null
+                                : (balance * rateDec));
+
+                    rows.add(
+                      RowData(
+                        currency: cur,
+                        income: income,
+                        expense: expense,
+                        balance: balance,
+                        rate: rateDec,
+                        balanceKgz: balanceKgz,
+                      ),
+                    );
+                  });
+
+                  return ListView(
+                    children: [
+                      20.h,
+                      if (loading)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12),
+                          child: Row(
+                            children: [
+                              const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              // Text(t.menu.incomeExpenseSummary.loadingRates),
+                            ],
+                          ),
+                        ),
+                      DataTableSectionA(rows: rows),
+                    ],
+                  );
+                },
               );
             }
 
@@ -110,13 +162,31 @@ class IncomeExpenseSummaryPage extends StatelessWidget {
   }
 }
 
+class RowData {
+  final String currency;
+  final Decimal income;
+  final Decimal expense;
+  final Decimal balance;
+  final Decimal rate; // KGS -> 0 (чтобы выводить "-")
+  final Decimal? balanceKgz; // null для KGS
+
+  RowData({
+    required this.currency,
+    required this.income,
+    required this.expense,
+    required this.balance,
+    required this.rate,
+    required this.balanceKgz,
+  });
+}
+
 class DataTableSectionA extends StatelessWidget {
-  const DataTableSectionA({super.key, required this.data});
-  final List<Map<String, String>> data;
+  const DataTableSectionA({super.key, required this.rows});
+  final List<RowData> rows;
 
   @override
   Widget build(BuildContext context) {
-    if (data.isEmpty) return const SizedBox.shrink();
+    if (rows.isEmpty) return const SizedBox.shrink();
 
     const curW = 100.0;
     const incW = 140.0;
@@ -131,75 +201,51 @@ class DataTableSectionA extends StatelessWidget {
     final totalFixedW =
         curW + incW + expW + balW + balKGZW + rateW + cellHPad * 2 * 6;
 
+    TableRow header() => TableRow(
+      decoration: const BoxDecoration(color: AppColors.primaryColorLight),
+      children: [
+        _cell(
+          t.menu.incomeExpenseSummary.currency,
+          isHeader: true,
+          width: curW,
+        ),
+        _cell(t.menu.incomeExpenseSummary.income, isHeader: true, width: incW),
+        _cell(t.menu.incomeExpenseSummary.expense, isHeader: true, width: expW),
+        _cell(t.menu.incomeExpenseSummary.balance, isHeader: true, width: balW),
+        _cell(
+          t.menu.incomeExpenseSummary.balanceKgz,
+          isHeader: true,
+          width: balKGZW,
+        ),
+        _cell(
+          t.menu.incomeExpenseSummary.exchangeRate,
+          isHeader: true,
+          width: rateW,
+        ),
+      ],
+    );
+
+    List<TableRow> dataRows() =>
+        rows.map((r) {
+          return TableRow(
+            children: [
+              _cell(r.currency, width: curW),
+              _cell(r.income.toString(), width: incW),
+              _cell(r.expense.toString(), width: expW),
+              _cell(r.balance.toString(), width: balW),
+              _cell(r.balanceKgz?.toString() ?? '-', width: balKGZW),
+              _cell(
+                r.currency == 'KGS' ? '-' : r.rate.toString(),
+                width: rateW,
+              ),
+            ],
+          );
+        }).toList();
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final screenW = constraints.maxWidth;
         final tableMinWidth = totalFixedW < screenW ? screenW : totalFixedW;
-
-        TableRow header() => TableRow(
-          decoration: const BoxDecoration(color: AppColors.primaryColorLight),
-          children: [
-            _cell(
-              t.menu.incomeExpenseSummary.currency,
-              isHeader: true,
-              width: curW,
-            ),
-            _cell(
-              t.menu.incomeExpenseSummary.income,
-              isHeader: true,
-              width: incW,
-            ),
-            _cell(
-              t.menu.incomeExpenseSummary.expense,
-              isHeader: true,
-              width: expW,
-            ),
-            _cell(
-              t.menu.incomeExpenseSummary.balance,
-              isHeader: true,
-              width: balW,
-            ),
-            _cell(
-              t.menu.incomeExpenseSummary.balanceKgz,
-              isHeader: true,
-              width: balKGZW,
-            ),
-            _cell(
-              t.menu.incomeExpenseSummary.exchangeRate,
-              isHeader: true,
-              width: rateW,
-            ),
-          ],
-        );
-
-        List<TableRow> rows() =>
-            data.map((row) {
-              Decimal income =
-                  Decimal.tryParse(row['income'] ?? '') ?? Decimal.zero;
-              Decimal expense =
-                  Decimal.tryParse(row['expense'] ?? '') ?? Decimal.zero;
-              Decimal balance =
-                  Decimal.tryParse(row['balance'] ?? '') ?? (income - expense);
-              Decimal rate =
-                  Decimal.tryParse(row['rate'] ?? '') ?? Decimal.zero;
-
-              final balanceKgz =
-                  (rate == Decimal.zero) ? null : (balance * rate);
-
-              return TableRow(
-                children: [
-                  _cell((row['currency'] ?? '').toUpperCase(), width: curW),
-                  _cell(income.toString(), width: incW),
-                  _cell(expense.toString(), width: expW),
-                  _cell(balance.toString(), width: balW),
-                  _cell(balanceKgz?.toString() ?? '-', width: balKGZW),
-                  _cell(
-                    rate == Decimal.zero ? '-' : rate.toString(),
-                    width: rateW,
-                  ),
-                ],
-              );
-            }).toList();
 
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -215,7 +261,7 @@ class DataTableSectionA extends StatelessWidget {
                 4: FixedColumnWidth(balKGZW),
                 5: FixedColumnWidth(rateW),
               },
-              children: [header(), ...rows()],
+              children: [header(), ...dataRows()],
             ),
           ),
         );

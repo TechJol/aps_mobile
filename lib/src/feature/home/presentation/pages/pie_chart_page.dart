@@ -6,6 +6,7 @@ import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 /// Стабильные ключи выбора (не зависят от локали)
 enum ViewType { expense, income, all }
@@ -24,26 +25,12 @@ class _HomePageState extends State<HomePage> {
   ViewType selectedView = ViewType.all;
   PeriodType selectedPeriod = PeriodType.day;
 
-  /// Полные (сырые) сгруппированные данные по статьям за выбранный период/вид
-  Map<String, double> groupedData = {};
-
-  // цвета для ТОП-3 и для "Другое"
-  static const _topColors = [
-    Color(0xFF4600D7), // фиолетовый
-    Color(0xFFBC6FF8), // лиловый
-    Color(0xFF8385F2), // синий
-  ];
-  static const _otherColor = Color(0xFF1EBF93); // зелёный для "Другое"
-
   @override
   void initState() {
     context.read<MenuCubit>().getTransactionsWithAccounts();
     context.read<CredentialCubit>().getUserById();
     super.initState();
   }
-
-  void updateState<T>(T value, void Function(T) updater) =>
-      setState(() => updater(value));
 
   // ---------- Лейблы для enum с учётом текущей локали ----------
   String viewLabel(ViewType v) {
@@ -165,27 +152,30 @@ class _HomePageState extends State<HomePage> {
   Widget _buildTopSection() {
     final state = context.watch<MenuCubit>().state;
     if (state is! MenuTransactionsWithAccountsSuccess) {
-      return SizedBox(height: 240, child: Text(t.home.loading));
+      return SizedBox(height: 240, child: Text(t.home.noOperations));
     }
 
-    // Сырые данные под выбранный период + вид (расход/доход/все)
-    groupedData = getGroupedReasonData(
+    final totals = _calculateIncomeExpenseTotals(
       transactions: state.transactions,
-      reasons: state.reasons,
       period: selectedPeriod,
-      viewType: selectedView,
     );
 
-    // Берём ТОП-3 и строим данные для пончика (ТОП-3 + "Другое")
-    final top3 = _topNEntries(groupedData, 3);
-    final chartData = _chartDataFromTop(groupedData, top3);
-
-    // Подготовим цвета (по порядку сегментов chartData)
-    final hasOther = chartData.containsKey(t.home.other); // "Другие"
-    final colorsForChart = <Color>[
-      ..._topColors.take(top3.length),
-      if (hasOther) _otherColor,
+    final legendItems = [
+      _LegendItemData(
+        label: t.home.income,
+        color: AppColors.greenColor50,
+        value: totals.income,
+      ),
+      _LegendItemData(
+        label: t.home.expenses,
+        color: AppColors.redColor50,
+        value: totals.expense,
+      ),
     ];
+
+    final chartItems = legendItems.where((item) => item.value > 0).toList();
+    final chartData = {for (final item in chartItems) item.label: item.value};
+    final colorsForChart = [for (final item in chartItems) item.color];
 
     return Stack(
       children: [
@@ -239,7 +229,7 @@ class _HomePageState extends State<HomePage> {
                     );
                   },
                   child:
-                      chartData.isEmpty
+                      chartItems.isEmpty
                           ? SizedBox(
                             key: ValueKey('empty_$selectedPeriod'),
                             height: 140,
@@ -257,7 +247,7 @@ class _HomePageState extends State<HomePage> {
                           )
                           : Row(
                             key: ValueKey(
-                              'chart_${selectedPeriod}_${chartData.length}_${selectedView.name}',
+                              'chart_${selectedPeriod.name}_${totals.income}_${totals.expense}',
                             ),
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -273,7 +263,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               const SizedBox(width: 24),
-                              _legendFromTopAndOther(top3, hasOther),
+                              _incomeExpenseLegend(legendItems),
                             ],
                           ),
                 ),
@@ -370,17 +360,6 @@ class _HomePageState extends State<HomePage> {
                   onTap: () {
                     setState(() {
                       selectedView = view;
-                      final s = context.read<MenuCubit>().state;
-                      if (s is MenuTransactionsWithAccountsSuccess) {
-                        groupedData = getGroupedReasonData(
-                          transactions: s.transactions,
-                          reasons: s.reasons,
-                          period: selectedPeriod,
-                          viewType: selectedView,
-                        );
-                      } else {
-                        groupedData = {};
-                      }
                     });
                   },
                   child: Container(
@@ -518,16 +497,16 @@ class _HomePageState extends State<HomePage> {
                             decoration: BoxDecoration(
                               color:
                                   isIncome
-                                      ? const Color(0xFFDFF7E2)
-                                      : const Color(0xFFF9DCDC),
+                                      ? AppColors.greenColorLight
+                                      : AppColors.redColorLight,
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
                               isIncome ? Icons.call_received : Icons.north_west,
                               color:
                                   isIncome
-                                      ? const Color(0xFF56BC60)
-                                      : const Color(0xFFE85445),
+                                      ? AppColors.greenColor50
+                                      : AppColors.redColor50,
                               size: 20,
                             ),
                           ),
@@ -552,8 +531,8 @@ class _HomePageState extends State<HomePage> {
                             style: AppTextStyles.f16w600.copyWith(
                               color:
                                   isIncome
-                                      ? const Color(0xFF56BC60)
-                                      : const Color(0xFFE85445),
+                                      ? AppColors.greenColor50
+                                      : AppColors.redColor50,
                             ),
                           ),
                         ],
@@ -605,16 +584,10 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  /// Легенда: ТОП-3 + "Другое" (если есть)
-  Widget _legendFromTopAndOther(
-    List<MapEntry<String, double>> top3,
-    bool hasOther,
-  ) {
-    final items = <_LegendItemData>[
-      for (int i = 0; i < top3.length; i++)
-        _LegendItemData(label: top3[i].key, color: _topColors[i]),
-      if (hasOther) _LegendItemData(label: t.home.other, color: _otherColor),
-    ];
+  /// Легенда "Доход / Расход" с суммами
+  Widget _incomeExpenseLegend(List<_LegendItemData> items) {
+    final localeName = Localizations.localeOf(context).toLanguageTag();
+    final formatter = NumberFormat.decimalPattern(localeName);
 
     return Padding(
       padding: const EdgeInsets.only(top: 22, right: 30),
@@ -623,13 +596,16 @@ class _HomePageState extends State<HomePage> {
         children:
             items
                 .map(
-                  (it) => Padding(
+                  (item) => Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Row(
                       children: [
-                        CircleAvatar(backgroundColor: it.color, radius: 5.5),
+                        CircleAvatar(backgroundColor: item.color, radius: 5.5),
                         const SizedBox(width: 6),
-                        Text(it.label),
+                        Text(
+                          '${item.label}: ${formatter.format(item.value)} с',
+                          style: const TextStyle(fontSize: 13),
+                        ),
                       ],
                     ),
                   ),
@@ -665,17 +641,6 @@ class _HomePageState extends State<HomePage> {
     if (newPeriod == selectedPeriod) return;
     setState(() {
       selectedPeriod = newPeriod;
-      final state = context.read<MenuCubit>().state;
-      if (state is MenuTransactionsWithAccountsSuccess) {
-        groupedData = getGroupedReasonData(
-          transactions: state.transactions,
-          reasons: state.reasons,
-          period: selectedPeriod,
-          viewType: selectedView,
-        );
-      } else {
-        groupedData = {};
-      }
     });
   }
 
@@ -689,124 +654,92 @@ class _HomePageState extends State<HomePage> {
     _onPeriodTap(_periodOptionsOrder[next]);
   }
 
-  /// Построить данные для пончика: ТОП-N + "Другие" (если есть остаток)
-  Map<String, double> _chartDataFromTop(
-    Map<String, double> original,
-    List<MapEntry<String, double>> top,
-  ) {
-    final res = <String, double>{};
-    double topSum = 0;
-    for (final e in top) {
-      res[e.key] = e.value; // порядок сохраняем
-      topSum += e.value;
-    }
-    final total = original.values.fold(0.0, (s, v) => s + v);
-    final rest = total - topSum;
-    if (rest > 0.0) res[t.home.other] = rest;
-    return res;
-  }
-
-  /// Отсортировать по сумме (по убыванию) и взять top N
-  List<MapEntry<String, double>> _topNEntries(Map<String, double> data, int n) {
-    final entries =
-        data.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
-    return entries.take(n).toList();
-  }
-
-  /// Группировка сумм по статьям с фильтрацией по периоду и виду операции
-  Map<String, double> getGroupedReasonData({
+  ({double income, double expense}) _calculateIncomeExpenseTotals({
     required List<AllTransactionsModel> transactions,
-    required List<IncomeExpenseReasons> reasons,
     required PeriodType period,
-    required ViewType viewType,
   }) {
     final now = DateTime.now();
-
-    bool isInPeriod(DateTime txDate) {
-      switch (period) {
-        case PeriodType.day:
-          return txDate.day == now.day &&
-              txDate.month == now.month &&
-              txDate.year == now.year;
-        case PeriodType.week:
-          final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-          final endOfWeek = startOfWeek.add(const Duration(days: 6));
-          return txDate.isAfter(
-                startOfWeek.subtract(const Duration(days: 1)),
-              ) &&
-              txDate.isBefore(endOfWeek.add(const Duration(days: 1)));
-        case PeriodType.month:
-          return txDate.month == now.month && txDate.year == now.year;
-        case PeriodType.year:
-          return txDate.year == now.year;
-      }
-    }
-
-    // Map<reasonId, reasonName>
-    final Map<int, String> reasonNames = {for (var r in reasons) r.id!: r.name};
-
-    // Итоговая группировка: Map<Название статьи, сумма>
-    final Map<String, double> grouped = {};
+    double income = 0;
+    double expense = 0;
 
     for (final tx in transactions) {
       final date = DateTime.tryParse(tx.date ?? '');
-      if (date == null || tx.incomeExpenseReason == null) continue;
-      if (!isInPeriod(date)) continue;
+      if (date == null) continue;
+      if (!_isInPeriod(date, now, period)) continue;
 
-      // фильтр по типу операции
-      if (viewType != ViewType.all) {
-        final type = viewType == ViewType.income ? 'income' : 'expense';
-        if (tx.transactionType != type) continue;
-      }
-
-      final reasonId = tx.incomeExpenseReason!;
-      final reasonName = reasonNames[reasonId] ?? t.home.other;
       final amount = double.tryParse(tx.amount ?? '0') ?? 0;
-
-      grouped[reasonName] = (grouped[reasonName] ?? 0) + amount;
+      if (tx.transactionType == 'income') {
+        income += amount;
+      } else if (tx.transactionType == 'expense') {
+        expense += amount;
+      }
     }
 
-    return grouped;
+    return (income: income, expense: expense);
+  }
+
+  bool _isInPeriod(DateTime txDate, DateTime reference, PeriodType period) {
+    switch (period) {
+      case PeriodType.day:
+        return txDate.year == reference.year &&
+            txDate.month == reference.month &&
+            txDate.day == reference.day;
+      case PeriodType.week:
+        final startOfWeek = reference.subtract(
+          Duration(days: reference.weekday - 1),
+        );
+        final endOfWeek = startOfWeek.add(const Duration(days: 6));
+        return !txDate.isBefore(startOfWeek) && !txDate.isAfter(endOfWeek);
+      case PeriodType.month:
+        return txDate.year == reference.year && txDate.month == reference.month;
+      case PeriodType.year:
+        return txDate.year == reference.year;
+    }
   }
 }
 
 class _LegendItemData {
   final String label;
   final Color color;
-  _LegendItemData({required this.label, required this.color});
+  final double value;
+  const _LegendItemData({
+    required this.label,
+    required this.color,
+    required this.value,
+  });
 }
 
 // ---------------- Рисовальщики пончика ----------------
 
-class PieChartPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 9.5
-          ..strokeCap = StrokeCap.round;
+// class PieChartPainter extends CustomPainter {
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     final paint =
+//         Paint()
+//           ..style = PaintingStyle.stroke
+//           ..strokeWidth = 9.5
+//           ..strokeCap = StrokeCap.round;
 
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    const segments = [
-      {'color': Color(0xFF4600D7), 'sweep': 2.0},
-      {'color': Color(0xFFBC6FF8), 'sweep': 2.1},
-      {'color': Color(0xFF8385F2), 'sweep': 2.18},
-    ];
-    const gap = 0.27;
-    double start = 0;
+//     final rect = Rect.fromLTWH(0, 0, size.width, size.height);
+//     const segments = [
+//       {'color': Color(0xFF4600D7), 'sweep': 2.0},
+//       {'color': Color(0xFFBC6FF8), 'sweep': 2.1},
+//       {'color': Color(0xFF8385F2), 'sweep': 2.18},
+//     ];
+//     const gap = 0.27;
+//     double start = 0;
 
-    for (var seg in segments) {
-      paint.color = seg['color'] as Color;
-      final sweep = (seg['sweep'] as double) - gap;
-      canvas.drawArc(rect, start, sweep, false, paint);
-      start += seg['sweep'] as double;
-    }
-  }
+//     for (var seg in segments) {
+//       paint.color = seg['color'] as Color;
+//       final sweep = (seg['sweep'] as double) - gap;
+//       canvas.drawArc(rect, start, sweep, false, paint);
+//       start += seg['sweep'] as double;
+//     }
+//   }
 
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
-}
+//   @override
+//   bool shouldRepaint(CustomPainter oldDelegate) => false;
+// }
 
 class PieChartDynamicPainter extends CustomPainter {
   final Map<String, double> data;
@@ -832,12 +765,13 @@ class PieChartDynamicPainter extends CustomPainter {
 
     for (int i = 0; i < segments.length; i++) {
       final value = segments[i].value;
-      final sweepAngle = (value / total) * 2 * 3.14159 - gap;
+      final rawSweep = (value / total) * 2 * 3.14159;
+      final sweepAngle = rawSweep > gap ? rawSweep - gap : rawSweep;
 
       paint.color = colors[i % colors.length];
       canvas.drawArc(rect, startAngle, sweepAngle, false, paint);
 
-      startAngle += (value / total) * 2 * 3.14159;
+      startAngle += rawSweep;
     }
   }
 
