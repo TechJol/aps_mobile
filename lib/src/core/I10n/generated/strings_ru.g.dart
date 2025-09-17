@@ -282,7 +282,7 @@ class _TranslationsAuthErrorsRu extends TranslationsAuthErrorsEn {
 	@override String get companyExists => 'Компания с таким названием уже существует';
 	@override String get emailExists => 'Пользователь с таким email уже существует';
 	@override String get usernameExists => 'Пользователь с таким именем уже существует';
-	@override String get unknown => 'Не удалось зарегистрироваться. Попробуйте другое имя компании';
+	@override String get unknown => 'Не удалось зарегистрироваться';
 }
 
 // Path: menu.profile
@@ -739,7 +739,7 @@ extension on TranslationsRu {
 			case 'auth.errors.companyExists': return 'Компания с таким названием уже существует';
 			case 'auth.errors.emailExists': return 'Пользователь с таким email уже существует';
 			case 'auth.errors.usernameExists': return 'Пользователь с таким именем уже существует';
-			case 'auth.errors.unknown': return 'Не удалось зарегистрироваться. Попробуйте другое имя компании';
+			case 'auth.errors.unknown': return 'Не удалось зарегистрироваться';
 			case 'home.appbar': return 'SoftkgPro';
 			case 'home.home': return 'Главная';
 			case 'home.day': return 'День';

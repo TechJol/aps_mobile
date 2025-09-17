@@ -198,22 +198,33 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
           );
         }
         if (state is CredentialFailure) {
-          final msg = state.errorMessage.toLowerCase();
           setState(() {
             companyError = null;
             usernameError = null;
             emailError = null;
-            if (msg.contains('company')) {
-              companyError = t.auth.errors.companyExists;
-            } else if (msg.contains('email')) {
-              emailError = t.auth.errors.emailExists;
-            } else if (msg.contains('user') || msg.contains('username')) {
-              usernameError = t.auth.errors.usernameExists;
+
+            switch (state.errorCode) {
+              case AuthErrorCodes.companyExists:
+                companyError = state.errorMessage;
+                break;
+              case AuthErrorCodes.emailExists:
+                emailError = state.errorMessage;
+                break;
+              case AuthErrorCodes.usernameExists:
+                usernameError = state.errorMessage;
+                break;
+              default:
+                break;
             }
           });
-          if (companyError == null &&
-              usernameError == null &&
-              emailError == null) {
+
+          final handledCodes = <String>{
+            AuthErrorCodes.companyExists,
+            AuthErrorCodes.emailExists,
+            AuthErrorCodes.usernameExists,
+          };
+
+          if (!handledCodes.contains(state.errorCode)) {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(state.errorMessage)));

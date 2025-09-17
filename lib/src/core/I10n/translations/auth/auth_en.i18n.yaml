@@ -24,4 +24,4 @@ errors:
   companyExists: A company with this name already exists
   emailExists: A user with this email already exists
   usernameExists: A user with this username already exists
-  unknown: Registration failed. Try another company name
+  unknown: Registration failed

@@ -1,7 +1,9 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/core/error/failure.dart';
-import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
-import 'package:aps_mobile/src/feature/feature.dart';
+import 'package:aps_mobile/src/feature/auth/data/data_sources/remote/auth_remote_data_source.dart';
+import 'package:aps_mobile/src/feature/auth/data/models/auth_model.dart';
+import 'package:aps_mobile/src/feature/auth/data/models/login_response_model.dart';
+import 'package:aps_mobile/src/feature/auth/domain/entities/auth_error_codes.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
@@ -43,7 +45,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<Either<Failure, Unit>> register(AuthEntity user) async {
+  Future<Either<Failure, Unit>> register(AuthModel user) async {
     try {
       final response = await client.post(
         AppApi.register,
@@ -54,7 +56,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
             'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
           },
         ),
-        data: (user as AuthModel).toJson(),
+        data: user.toJson(),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -70,7 +72,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   /// Преобразуем «шумные» ошибки бэкенда (HTML/stacktrace)
-  /// в понятные пользователю сообщения на русском.
+  /// в унифицированные коды ошибок, которые можно обработать выше.
   String _mapRegistrationError(String raw) {
     final text = raw.toLowerCase();
 
@@ -79,25 +81,25 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       // Компания уже существует
       if (text.contains("main_company.name") ||
           text.contains('company') && text.contains('name')) {
-        return t.auth.errors.companyExists;
+        return AuthErrorCodes.companyExists;
       }
       // Email
       if (text.contains('email')) {
-        return t.auth.errors.emailExists;
+        return AuthErrorCodes.emailExists;
       }
       // Username / user
       if (text.contains('username') || text.contains('users_user.username')) {
-        return t.auth.errors.usernameExists;
+        return AuthErrorCodes.usernameExists;
       }
     }
 
     // Если сервер отдал HTML от Django — уберём лишнее и вернём общий текст
     if (text.contains('integrityerror')) {
-      return t.auth.errors.unknown;
+      return AuthErrorCodes.unknown;
     }
 
     // По умолчанию — общий текст
-    return t.auth.errors.unknown;
+    return AuthErrorCodes.unknown;
   }
 
   @override

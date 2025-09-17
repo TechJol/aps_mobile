@@ -1,4 +1,4 @@
-import 'package:aps_mobile/src/feature/auth/auth.dart';
+import 'package:aps_mobile/src/feature/auth/domain/entities/auth_entity.dart';
 
 class AuthModel extends AuthEntity {
   const AuthModel({
@@ -30,4 +30,14 @@ class AuthModel extends AuthEntity {
     'last_name': lastName,
     'company_name': companyName,
   };
+
+  factory AuthModel.fromEntity(AuthEntity entity) => AuthModel(
+        id: entity.id,
+        username: entity.username,
+        password: entity.password,
+        email: entity.email,
+        firstName: entity.firstName,
+        lastName: entity.lastName,
+        companyName: entity.companyName,
+      );
 }

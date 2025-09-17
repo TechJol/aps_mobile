@@ -2,11 +2,19 @@ import 'dart:developer';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthTokenStorage {
+abstract class TokenStorage {
+  Future<void> saveTokens(String accessToken, String refreshToken);
+  Future<String?> getAccessToken();
+  Future<String?> getRefreshToken();
+  Future<void> clearTokens();
+}
+
+class AuthTokenStorage implements TokenStorage {
   // final _storage = const FlutterSecureStorage();
   // final sheredPref = SharedPreferences.getInstance();
 
   // Сохраняем токены
+  @override
   Future<void> saveTokens(String accessToken, String refreshToken) async {
     SharedPreferences storage = await SharedPreferences.getInstance();
     log(
@@ -17,6 +25,7 @@ class AuthTokenStorage {
   }
 
   // Получаем токен доступа
+  @override
   Future<String?> getAccessToken() async {
     SharedPreferences storage = await SharedPreferences.getInstance();
     var accessToken = storage.getString('accessToken');
@@ -24,12 +33,14 @@ class AuthTokenStorage {
   }
 
   // Получаем refresh токен
+  @override
   Future<String?> getRefreshToken() async {
     SharedPreferences storage = await SharedPreferences.getInstance();
     var refreshToken = storage.getString('refreshToken');
     return refreshToken;
   }
 
+  @override
   Future<void> clearTokens() async {
     SharedPreferences storage = await SharedPreferences.getInstance();
     await storage.remove('accessToken');

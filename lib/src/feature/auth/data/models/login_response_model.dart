@@ -1,3 +1,5 @@
+import 'package:aps_mobile/src/feature/auth/domain/entities/auth_session.dart';
+
 class LoginResponseModel {
   final String? access;
   final String? refresh;
@@ -19,5 +21,11 @@ class LoginResponseModel {
       userId: json['user_id'] is int ? json['user_id'] as int? : null,
     );
   }
-}
 
+  AuthSession toSession() => AuthSession(
+        accessToken: access,
+        refreshToken: refresh,
+        companyId: companyId,
+        userId: userId,
+      );
+}

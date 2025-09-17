@@ -18,6 +18,7 @@ Future<void> init() async {
       logoutUsecase: sl.call(),
       getUserByIdUsecase: sl.call(),
       deleteUserByIdUsecase: sl.call(),
+      getStoredUserIdUsecase: sl.call(),
     ),
   );
 
@@ -92,12 +93,14 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateReasonUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => PostReasonUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => DeleteUserByIdUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => GetStoredUserIdUsecase(repository: sl.call()));
 
   //! Repository
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
       authRemoteDataSource: sl.call(),
       authLocalDataSource: sl.call(),
+      tokenStorage: sl.call(),
     ),
   );
 
@@ -137,6 +140,7 @@ Future<void> init() async {
 
   sl.registerLazySingleton(() => dio);
   sl.registerLazySingleton(() => storage);
-  sl.registerLazySingleton(() => authTokenStorage);
+  sl.registerLazySingleton<AuthTokenStorage>(() => authTokenStorage);
+  sl.registerLazySingleton<TokenStorage>(() => authTokenStorage);
   sl.registerLazySingleton(() => sharedPreferences);
 }

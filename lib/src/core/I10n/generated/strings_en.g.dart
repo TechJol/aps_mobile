@@ -559,8 +559,8 @@ class TranslationsAuthErrorsEn {
 	/// en: 'A user with this username already exists'
 	String get usernameExists => 'A user with this username already exists';
 
-	/// en: 'Registration failed. Try another company name'
-	String get unknown => 'Registration failed. Try another company name';
+	/// en: 'Registration failed'
+	String get unknown => 'Registration failed';
 }
 
 // Path: menu.profile
@@ -1297,7 +1297,7 @@ extension on Translations {
 			case 'auth.errors.companyExists': return 'A company with this name already exists';
 			case 'auth.errors.emailExists': return 'A user with this email already exists';
 			case 'auth.errors.usernameExists': return 'A user with this username already exists';
-			case 'auth.errors.unknown': return 'Registration failed. Try another company name';
+			case 'auth.errors.unknown': return 'Registration failed';
 			case 'home.appbar': return 'SoftkgPro';
 			case 'home.home': return 'Home';
 			case 'home.day': return 'Day';

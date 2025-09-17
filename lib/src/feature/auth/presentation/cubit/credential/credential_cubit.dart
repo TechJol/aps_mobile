@@ -1,35 +1,45 @@
+import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'credential_state.dart';
 
 class CredentialCubit extends Cubit<CredentialState> {
-  final LoginUsecase loginUsecase;
-  final RegisterUsecase registerUsecase;
-  final LogoutUsecase logoutUsecase;
-  final GetUserByIdUsecase getUserByIdUsecase;
-  final DeleteUserByIdUsecase deleteUserByIdUsecase;
-
   CredentialCubit({
     required this.loginUsecase,
     required this.registerUsecase,
     required this.logoutUsecase,
     required this.getUserByIdUsecase,
     required this.deleteUserByIdUsecase,
+    required this.getStoredUserIdUsecase,
   }) : super(CredentialInitial());
+
+  final LoginUsecase loginUsecase;
+  final RegisterUsecase registerUsecase;
+  final LogoutUsecase logoutUsecase;
+  final GetUserByIdUsecase getUserByIdUsecase;
+  final DeleteUserByIdUsecase deleteUserByIdUsecase;
+  final GetStoredUserIdUsecase getStoredUserIdUsecase;
 
   void register(AuthEntity user) async {
     emit(CredentialLoading());
     try {
       final result = await registerUsecase.call(user);
-      result.fold(
-        (l) => emit(CredentialFailure(errorMessage: l.message)),
-        (r) => emit(CredentialSuccess()),
-      );
+      result.fold((failure) {
+        final mapped = _mapFailure(failure.message);
+        emit(
+          CredentialFailure(
+            errorMessage: mapped.message,
+            errorCode: mapped.code,
+          ),
+        );
+      }, (_) => emit(CredentialSuccess()));
     } catch (e) {
-      emit(CredentialFailure(errorMessage: e.toString()));
+      final mapped = _mapFailure(e.toString());
+      emit(
+        CredentialFailure(errorMessage: mapped.message, errorCode: mapped.code),
+      );
     }
   }
 
@@ -40,12 +50,20 @@ class CredentialCubit extends Cubit<CredentialState> {
         username: username,
         password: password,
       );
-      result.fold(
-        (l) => emit(CredentialFailure(errorMessage: l.message)),
-        (r) => emit(CredentialSuccess()),
-      );
+      result.fold((failure) {
+        final mapped = _mapFailure(failure.message);
+        emit(
+          CredentialFailure(
+            errorMessage: mapped.message,
+            errorCode: mapped.code,
+          ),
+        );
+      }, (_) => emit(CredentialSuccess()));
     } catch (e) {
-      emit(CredentialFailure(errorMessage: e.toString()));
+      final mapped = _mapFailure(e.toString());
+      emit(
+        CredentialFailure(errorMessage: mapped.message, errorCode: mapped.code),
+      );
     }
   }
 
@@ -53,54 +71,149 @@ class CredentialCubit extends Cubit<CredentialState> {
     emit(CredentialLoading());
     try {
       final result = await logoutUsecase.call();
-      result.fold(
-        (l) => emit(CredentialFailure(errorMessage: l.message)),
-        (r) => emit(CredentialSuccess()),
-      );
+      result.fold((failure) {
+        final mapped = _mapFailure(failure.message);
+        emit(
+          CredentialFailure(
+            errorMessage: mapped.message,
+            errorCode: mapped.code,
+          ),
+        );
+      }, (_) => emit(CredentialSuccess()));
     } catch (e) {
-      emit(CredentialFailure(errorMessage: e.toString()));
+      final mapped = _mapFailure(e.toString());
+      emit(
+        CredentialFailure(errorMessage: mapped.message, errorCode: mapped.code),
+      );
     }
   }
 
   void getUserById() async {
     emit(CredentialLoading());
     try {
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      final id = pref.getInt('userId');
+      final id = await getStoredUserIdUsecase.call();
       if (id == null) {
-        emit(const CredentialFailure(errorMessage: 'User ID is missing'));
+        final mapped = _mapFailure(AuthErrorCodes.userIdMissing);
+        emit(
+          CredentialFailure(
+            errorMessage: mapped.message,
+            errorCode: mapped.code,
+          ),
+        );
         return;
       }
       final result = await getUserByIdUsecase.call(id);
-      result.fold(
-        (l) => emit(CredentialFailure(errorMessage: l.message)),
-        (r) => emit(CredentialUserLoaded(user: r)),
-      );
+      result.fold((failure) {
+        final mapped = _mapFailure(failure.message);
+        emit(
+          CredentialFailure(
+            errorMessage: mapped.message,
+            errorCode: mapped.code,
+          ),
+        );
+      }, (user) => emit(CredentialUserLoaded(user: user)));
     } catch (e) {
-      emit(CredentialFailure(errorMessage: e.toString()));
+      final mapped = _mapFailure(e.toString());
+      emit(
+        CredentialFailure(errorMessage: mapped.message, errorCode: mapped.code),
+      );
     }
   }
 
   void deleteUserById() async {
     emit(CredentialLoading());
     try {
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      final id = pref.getInt('userId');
+      final id = await getStoredUserIdUsecase.call();
       if (id == null) {
-        emit(const CredentialFailure(errorMessage: 'User ID is missing'));
+        final mapped = _mapFailure(AuthErrorCodes.userIdMissing);
+        emit(
+          CredentialFailure(
+            errorMessage: mapped.message,
+            errorCode: mapped.code,
+          ),
+        );
         return;
       }
       final result = await deleteUserByIdUsecase.call(id);
       await result.fold(
-        (l) async => emit(UserFailure(errorMessage: l.message)),
-        (r) async {
-          // Полный локальный logout (очистка access/refresh/userId/companyId)
-          await logoutUsecase.call();
-          emit(CredentialSuccess());
+        (failure) async {
+          final mapped = _mapFailure(failure.message);
+          emit(
+            UserFailure(errorMessage: mapped.message, errorCode: mapped.code),
+          );
+        },
+        (_) async {
+          final logoutResult = await logoutUsecase.call();
+          logoutResult.fold((failure) {
+            final mapped = _mapFailure(failure.message);
+            emit(
+              CredentialFailure(
+                errorMessage: mapped.message,
+                errorCode: mapped.code,
+              ),
+            );
+          }, (_) => emit(CredentialSuccess()));
         },
       );
     } catch (e) {
-      emit(CredentialFailure(errorMessage: e.toString()));
+      final mapped = _mapFailure(e.toString());
+      emit(
+        CredentialFailure(errorMessage: mapped.message, errorCode: mapped.code),
+      );
     }
+  }
+
+  ({String code, String message}) _mapFailure(String raw) {
+    final normalized = raw.trim();
+    final lower = normalized.toLowerCase();
+
+    final companyText = t.auth.errors.companyExists.toLowerCase();
+    final emailText = t.auth.errors.emailExists.toLowerCase();
+    final usernameText = t.auth.errors.usernameExists.toLowerCase();
+
+    if (normalized == AuthErrorCodes.companyExists ||
+        lower.contains('main_company') ||
+        lower.contains('company name') ||
+        lower.contains('company') ||
+        lower.contains(companyText)) {
+      return (
+        code: AuthErrorCodes.companyExists,
+        message: t.auth.errors.companyExists,
+      );
+    }
+
+    if (normalized == AuthErrorCodes.emailExists ||
+        lower.contains('email') ||
+        lower.contains('mail') ||
+        lower.contains(emailText)) {
+      return (
+        code: AuthErrorCodes.emailExists,
+        message: t.auth.errors.emailExists,
+      );
+    }
+
+    if (normalized == AuthErrorCodes.usernameExists ||
+        lower.contains('username') ||
+        lower.contains('user name') ||
+        lower.contains('users_user') ||
+        lower.contains(usernameText)) {
+      return (
+        code: AuthErrorCodes.usernameExists,
+        message: t.auth.errors.usernameExists,
+      );
+    }
+
+    if (normalized == AuthErrorCodes.userIdMissing) {
+      return (
+        code: AuthErrorCodes.userIdMissing,
+        message: t.auth.errors.unknown,
+      );
+    }
+
+    if (normalized == AuthErrorCodes.unknown) {
+      return (code: AuthErrorCodes.unknown, message: t.auth.errors.unknown);
+    }
+
+    return (code: AuthErrorCodes.unknown, message: normalized);
   }
 }
