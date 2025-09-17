@@ -1,5 +1,6 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
+import 'package:aps_mobile/src/core/utils/currency_utils.dart';
 import 'package:flutter/material.dart';
 
 class TransactionItem extends StatelessWidget {
@@ -15,8 +16,9 @@ class TransactionItem extends StatelessWidget {
     final formattedDate =
         '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year} - ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
 
-    final String amount = tx.amount ?? '';
-    final String amountText = '$amount с';
+    final formatted = formatAmountWithCurrency(tx.amount, tx.currency);
+    final String amountText =
+        formatted.isEmpty ? formatted : (isIncome ? formatted : '-$formatted');
 
     final Color bgColor = isIncome ? Color(0xFFDFF7E2) : Color(0xFFF9DCDC);
     final Color arrowColor = isIncome ? Color(0xFF56BC60) : Color(0xFFE85445);
@@ -58,7 +60,7 @@ class TransactionItem extends StatelessWidget {
             ),
           ),
           Text(
-            '${isIncome ? '' : '-'}$amountText',
+            amountText,
             style: AppTextStyles.f16w600.copyWith(
               color:
                   isIncome ? const Color(0xFF56BC60) : const Color(0xFFE85445),

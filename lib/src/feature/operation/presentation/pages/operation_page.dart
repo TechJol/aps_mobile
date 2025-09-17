@@ -3,6 +3,7 @@
 import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
+import 'package:aps_mobile/src/core/utils/currency_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -349,8 +350,9 @@ class _OperationPageState extends State<OperationPage>
     final formattedDate =
         '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year} - ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
 
-    final String amount = tx.amount ?? '';
-    final String amountText = '$amount с';
+    final formatted = formatAmountWithCurrency(tx.amount, tx.currency);
+    final String amountText =
+        formatted.isEmpty ? formatted : (isIncome ? formatted : '-$formatted');
 
     final Color bgColor =
         isIncome ? const Color(0xFFDFF7E2) : const Color(0xFFF9DCDC);
@@ -399,7 +401,7 @@ class _OperationPageState extends State<OperationPage>
             ),
           ),
           Text(
-            '${isIncome ? '' : '-'}$amountText',
+            amountText,
             style: AppTextStyles.f16w600.copyWith(
               color:
                   isIncome ? const Color(0xFF56BC60) : const Color(0xFFE85445),
@@ -451,7 +453,10 @@ class _OperationPageState extends State<OperationPage>
                       children: [
                         _dateField(
                           label: t.operation.start,
-                          date: datesEnabled ? (startDate ?? DateTime.now()) : null,
+                          date:
+                              datesEnabled
+                                  ? (startDate ?? DateTime.now())
+                                  : null,
                           enabled: datesEnabled,
                           onTap: () async {
                             if (!datesEnabled) return;
@@ -469,7 +474,8 @@ class _OperationPageState extends State<OperationPage>
                         const SizedBox(width: 10),
                         _dateField(
                           label: t.operation.end,
-                          date: datesEnabled ? (endDate ?? DateTime.now()) : null,
+                          date:
+                              datesEnabled ? (endDate ?? DateTime.now()) : null,
                           enabled: datesEnabled,
                           onTap: () async {
                             if (!datesEnabled) return;
@@ -539,8 +545,14 @@ class _OperationPageState extends State<OperationPage>
                         Navigator.pop(context, {
                           'period':
                               selectedPeriod, // локализованный текст или null
-                          'start': selectedPeriod == null ? (startDate ?? DateTime.now()) : null,
-                          'end': selectedPeriod == null ? (endDate ?? DateTime.now()) : null,
+                          'start':
+                              selectedPeriod == null
+                                  ? (startDate ?? DateTime.now())
+                                  : null,
+                          'end':
+                              selectedPeriod == null
+                                  ? (endDate ?? DateTime.now())
+                                  : null,
                         });
                       },
                       style: ElevatedButton.styleFrom(

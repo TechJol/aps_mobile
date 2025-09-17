@@ -3,6 +3,7 @@
 import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
+import 'package:aps_mobile/src/core/utils/currency_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -457,7 +458,11 @@ class _HomePageState extends State<HomePage> {
                 children: List.generate(txList.length, (index) {
                   final tx = txList[index];
                   final isIncome = tx.transactionType == 'income';
-                  final amountText = '${tx.amount} с';
+                  final amountText = _formatAmount(
+                    tx.amount,
+                    tx.currency,
+                    isIncome,
+                  );
 
                   final date =
                       DateTime.tryParse(tx.date ?? '') ?? DateTime.now();
@@ -527,7 +532,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Text(
-                            '${isIncome ? '' : '-'}$amountText',
+                            amountText,
                             style: AppTextStyles.f16w600.copyWith(
                               color:
                                   isIncome
@@ -695,6 +700,12 @@ class _HomePageState extends State<HomePage> {
       case PeriodType.year:
         return txDate.year == reference.year;
     }
+  }
+
+  String _formatAmount(String? amount, String? currency, bool isIncome) {
+    final formatted = formatAmountWithCurrency(amount, currency);
+    if (formatted.isEmpty) return formatted;
+    return isIncome ? formatted : '-$formatted';
   }
 }
 
