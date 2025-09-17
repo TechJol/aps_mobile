@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
-import 'package:intl/intl.dart'; // <— добавлено для форматирования оси Y
+import 'package:intl/intl.dart';
 
 class MetricsPage extends StatefulWidget {
   const MetricsPage({super.key});
@@ -235,14 +235,12 @@ class _MetricsPageState extends State<MetricsPage> {
     );
   }
 
-  /// === НОВЫЙ график с «умной» осью Y (как в Monthly report) ===
   Widget _buildGraphic() {
     const double barWidth = 170;
     const double groupSpacing = 20;
 
     final List<String> years =
         yearlyData.map((e) => e['year'].toString()).toList();
-    // Use net income (balance = income - expense) for the chart
     final List<double> values =
         yearlyData
             .map(
@@ -252,7 +250,6 @@ class _MetricsPageState extends State<MetricsPage> {
             )
             .toList();
 
-    // Автоподбор красивого максимума и шага
     final double rawMax =
         values.isNotEmpty ? values.reduce((a, b) => a > b ? a : b) : 0;
     final double rawMin =
@@ -262,13 +259,11 @@ class _MetricsPageState extends State<MetricsPage> {
     final double axisSpan = max(niceMax, niceMin.abs());
     final double tickStep = _niceStep(axisSpan, targetTicks: 6);
 
-    // Компактное форматирование по текущей локали
     final locale = Localizations.localeOf(context).languageCode;
     final compact = NumberFormat.compact(locale: locale);
 
-    // Colors for positive / negative net income
-    const positiveColor = Color(0xFF7B37B5); // greenish
-    const negativeColor = Color(0xFFE85445); // reddish
+    const positiveColor = Color(0xFF7B37B5);
+    const negativeColor = Color(0xFFE85445);
 
     double chartWidth =
         years.length * barWidth + (years.length - 1) * groupSpacing + 40;
@@ -339,7 +334,6 @@ class _MetricsPageState extends State<MetricsPage> {
     );
   }
 
-  // === Вспомогательные функции для красивых делений оси Y ===
   double _niceCeil(double x) {
     if (x <= 0) return 1;
     final exp = (log(x) / ln10).floor();
