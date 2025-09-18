@@ -1,9 +1,13 @@
 import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
+import 'package:aps_mobile/src/feature/menu/data/data_sources/nbkr_rate_service.dart';
+import 'package:aps_mobile/src/core/utils/currency_utils.dart';
 import 'package:decimal/decimal.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class MenuAccountsPage extends StatefulWidget {
   const MenuAccountsPage({super.key});
@@ -14,6 +18,7 @@ class MenuAccountsPage extends StatefulWidget {
 
 class _MenuAccountsPageState extends State<MenuAccountsPage> {
   final LocalService _localService = LocalService();
+  late final Future<Map<String, double>> _ratesFuture;
 
   final int rowsPerPage = 10;
   int currentPage = 1;
@@ -24,6 +29,23 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
     final s = context.read<MenuCubit>().state;
     if (s is! MenuTransactionsWithAccountsSuccess) {
       context.read<MenuCubit>().getTransactionsWithAccounts();
+    }
+    _ratesFuture = _loadRates();
+  }
+
+  Future<Map<String, double>> _loadRates() async {
+    try {
+      final dio = Dio(
+        BaseOptions(
+          connectTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 10),
+        ),
+      );
+      final service = NbkrRatesService(dio);
+      final rates = await service.fetchRates();
+      return rates.map((key, value) => MapEntry(key.toUpperCase(), value));
+    } catch (_) {
+      return const {'KGS': 1.0};
     }
   }
 
@@ -49,13 +71,37 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
             final transactions = state.transactions;
             final accounts = state.accounts;
 
-            final totalBalance = calculateTotalBalance(transactions);
+            final totalsByCurrency = _calculateTotalsByCurrency(transactions);
+            for (final account in accounts) {
+              final code = (account.currency ?? 'KGS').toUpperCase();
+              totalsByCurrency.putIfAbsent(code, () => Decimal.zero);
+            }
 
-            return _buildTableWithPagination(
-              context,
-              accounts,
-              totalBalance,
-              transactions,
+            return FutureBuilder<Map<String, double>>(
+              future: _ratesFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting &&
+                    !snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                final rates =
+                    (snapshot.data ?? const {'KGS': 1.0}).map(
+                  (key, value) => MapEntry(key.toUpperCase(), value),
+                );
+
+                final totalBalance = calculateTotalBalance(transactions, rates);
+
+                return _buildTableWithPagination(
+                  context,
+                  accounts,
+                  totalBalance,
+                  transactions,
+                  totalsByCurrency,
+                  isLoading:
+                      snapshot.connectionState == ConnectionState.waiting,
+                );
+              },
             );
           }
 
@@ -70,11 +116,32 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
     List<AccountModel> data,
     Decimal total,
     List<AllTransactionsModel> transactions,
-  ) {
+    Map<String, Decimal> totalsByCurrency, {
+    bool isLoading = false,
+  }) {
     final start = (currentPage - 1) * rowsPerPage;
     final end = (start + rowsPerPage).clamp(0, data.length);
     final paginatedData = data.sublist(start, end);
     final hasData = paginatedData.isNotEmpty;
+
+    final localeTag = Localizations.localeOf(context).toLanguageTag();
+    final formatter = NumberFormat.currency(
+      locale: localeTag,
+      symbol: '',
+      decimalDigits: 2,
+    );
+
+    String formatKgs(Decimal value) {
+      final doubleVal = double.tryParse(value.toString()) ?? 0.0;
+      return formatNumericAmountWithCurrency(doubleVal, 'KGS',
+          formatter: formatter);
+    }
+
+    String formatOriginal(Decimal value, String? code) {
+      final doubleVal = double.tryParse(value.toString()) ?? 0.0;
+      return formatNumericAmountWithCurrency(doubleVal, code,
+          formatter: formatter);
+    }
 
     const borderColor = Color(0xFFE6E6E6);
     const colW = {
@@ -122,7 +189,7 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
     // Данные
     for (int i = 0; i < paginatedData.length; i++) {
       final acc = paginatedData[i];
-      final balance = calculateAccountBalance(
+      final balance = calculateAccountBalanceOriginal(
         accountId: acc.id!,
         transactions: transactions,
       );
@@ -131,7 +198,7 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
           children: [
             cell('${start + i + 1}'),
             cell(acc.name),
-            cell('${balance.toString()} с'),
+            cell(formatOriginal(balance, acc.currency)),
             cell(
               acc.accountType == 'cash'
                   ? t.menu.accounts.type.cash
@@ -149,12 +216,21 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (hasData) Text('$total с', style: AppTextStyles.f24w600),
-          if (hasData)
+          if (hasData) ...[
             Text(
-              t.menu.accounts.total, // "общий баланс"
-              style: AppTextStyles.f14w500.copyWith(color: AppColors.greyColor),
+              formatKgs(total),
+              style: AppTextStyles.f24w600,
             ),
+            Text(
+              t.menu.accounts.total,
+              style: AppTextStyles.f14w500.copyWith(
+                color: AppColors.greyColor,
+              ),
+            ),
+            const SizedBox(height: 8),
+            ..._buildCurrencyBreakdown(totalsByCurrency, formatter),
+            12.h,
+          ],
           20.h,
           if (hasData)
             Row(
@@ -168,23 +244,22 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
                       t.menu.accounts.headers.balance,
                       t.menu.accounts.headers.accountType,
                     ];
-                    final rows =
-                        data.asMap().entries.map<List<String>>((entry) {
-                          final index = entry.key + 1;
-                          final acc = entry.value;
-                          final balance = calculateAccountBalance(
-                            accountId: acc.id!,
-                            transactions: transactions,
-                          );
-                          return [
-                            '$index',
-                            acc.name,
-                            balance.toString(),
-                            acc.accountType == 'cash'
-                                ? t.menu.accounts.type.cash
-                                : t.menu.accounts.type.bank,
-                          ];
-                        }).toList();
+                    final rows = data.asMap().entries.map((entry) {
+                      final index = entry.key + 1;
+                      final acc = entry.value;
+                      final balance = calculateAccountBalanceOriginal(
+                        accountId: acc.id!,
+                        transactions: transactions,
+                      );
+                      return [
+                        '$index',
+                        acc.name,
+                        formatOriginal(balance, acc.currency),
+                        acc.accountType == 'cash'
+                            ? t.menu.accounts.type.cash
+                            : t.menu.accounts.type.bank,
+                      ];
+                    }).toList();
                     _localService.printReportAsPdf(
                       context: context,
                       title: t.menu.accounts.printTitle,
@@ -203,23 +278,22 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
                       t.menu.accounts.headers.balance,
                       t.menu.accounts.headers.accountType,
                     ];
-                    final rows =
-                        data.asMap().entries.map<List<String>>((entry) {
-                          final index = entry.key + 1;
-                          final acc = entry.value;
-                          final balance = calculateAccountBalance(
-                            accountId: acc.id!,
-                            transactions: transactions,
-                          );
-                          return [
-                            '$index',
-                            acc.name,
-                            balance.toString(),
-                            acc.accountType == 'cash'
-                                ? t.menu.accounts.type.cash
-                                : t.menu.accounts.type.bank,
-                          ];
-                        }).toList();
+                    final rows = data.asMap().entries.map((entry) {
+                      final index = entry.key + 1;
+                      final acc = entry.value;
+                      final balance = calculateAccountBalanceOriginal(
+                        accountId: acc.id!,
+                        transactions: transactions,
+                      );
+                      return [
+                        '$index',
+                        acc.name,
+                        formatOriginal(balance, acc.currency),
+                        acc.accountType == 'cash'
+                            ? t.menu.accounts.type.cash
+                            : t.menu.accounts.type.bank,
+                      ];
+                    }).toList();
                     _localService.exportToExcelGeneric(
                       fileName: t.menu.accounts.fileName,
                       headers: headers,
@@ -309,12 +383,14 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
     }
   }
 
-  Decimal calculateTotalBalance(List<AllTransactionsModel> transactions) {
+  Decimal calculateTotalBalance(
+    List<AllTransactionsModel> transactions,
+    Map<String, double> rates,
+  ) {
     Decimal total = Decimal.zero;
 
-    for (var tx in transactions) {
-      final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
-
+    for (final tx in transactions) {
+      final amount = _amountInKgs(tx, rates);
       if (tx.transactionType == 'income') {
         total += amount;
       } else if (tx.transactionType == 'expense') {
@@ -325,16 +401,15 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
     return total;
   }
 
-  Decimal calculateAccountBalance({
+  Decimal calculateAccountBalanceOriginal({
     required int accountId,
     required List<AllTransactionsModel> transactions,
   }) {
     Decimal total = Decimal.zero;
 
-    for (var tx in transactions) {
+    for (final tx in transactions) {
       if (tx.account == accountId) {
         final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
-
         if (tx.transactionType == 'income') {
           total += amount;
         } else if (tx.transactionType == 'expense') {
@@ -345,4 +420,102 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
 
     return total;
   }
+
+  Map<String, Decimal> _calculateTotalsByCurrency(
+    List<AllTransactionsModel> transactions,
+  ) {
+    final Map<String, Decimal> totals = {'KGS': Decimal.zero};
+
+    for (final tx in transactions) {
+      final code = (tx.currency ?? 'KGS').toUpperCase();
+      final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
+
+      totals.putIfAbsent(code, () => Decimal.zero);
+
+      if (tx.transactionType == 'income') {
+        totals[code] = totals[code]! + amount;
+      } else if (tx.transactionType == 'expense') {
+        totals[code] = totals[code]! - amount;
+      }
+    }
+
+    return totals;
+  }
+
+  Decimal _amountInKgs(
+    AllTransactionsModel tx,
+    Map<String, double> rates,
+  ) {
+    final currency = (tx.currency ?? 'KGS').toUpperCase();
+    final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
+
+    if (currency == 'KGS') {
+      return amount;
+    }
+
+    final kgsAmountStr = tx.kgsCurrencyAmount;
+    if (kgsAmountStr != null && kgsAmountStr.trim().isNotEmpty) {
+      return Decimal.tryParse(kgsAmountStr) ?? amount;
+    }
+
+    final rate = rates[currency];
+    if (rate == null || rate == 0) {
+      return amount;
+    }
+
+    return amount * Decimal.parse(rate.toString());
+  }
+}
+
+
+List<Widget> _buildCurrencyBreakdown(
+  Map<String, Decimal> totalsByCurrency,
+  NumberFormat formatter,
+) {
+  final order = ['KGS', 'USD', 'EUR', 'RUB'];
+  final keys = totalsByCurrency.keys.toSet();
+  keys.addAll(order);
+  final sorted = keys.toList()
+    ..sort((a, b) {
+      final ia = order.indexOf(a);
+      final ib = order.indexOf(b);
+      if (ia != -1 && ib != -1) return ia.compareTo(ib);
+      if (ia != -1) return -1;
+      if (ib != -1) return 1;
+      return a.compareTo(b);
+    });
+
+  final widgets = <Widget>[];
+
+  for (final code in sorted) {
+    final amount = totalsByCurrency[code] ?? Decimal.zero;
+    if (amount == Decimal.zero) continue;
+
+    final doubleVal = double.tryParse(amount.toString()) ?? 0.0;
+    final formatted = formatNumericAmountWithCurrency(
+      doubleVal,
+      code,
+      formatter: formatter,
+    );
+
+    widgets.add(
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              code,
+              style: AppTextStyles.f14w500.copyWith(
+                color: AppColors.greyColor,
+              ),
+            ),
+            Text(formatted, style: AppTextStyles.f16w600),
+          ],
+        ),
+      ),
+    );
+  }
+
+  return widgets;
 }

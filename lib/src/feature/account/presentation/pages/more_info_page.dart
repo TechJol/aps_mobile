@@ -2,6 +2,7 @@
 import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
+import 'package:aps_mobile/src/core/utils/currency_utils.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,23 +42,45 @@ class MoreInfoPage extends StatelessWidget {
               txAll.where((t) => t.account == account.id).toList();
 
           // агрегаты по выбранному счёту
-          Decimal income = Decimal.zero;
-          Decimal expense = Decimal.zero;
-
-          for (final tx in txByAccount) {
-            final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
-            if (tx.transactionType == 'income') income += amount;
-            if (tx.transactionType == 'expense') expense += amount;
-          }
-          final balance = income - expense;
-
-          final currency =
-              account.currency ??
-              (txByAccount.isNotEmpty
-                  ? (txByAccount.first.currency ?? 'KGS')
-                  : 'KGS');
-
+          final summaries = _buildCurrencySummaries(txByAccount);
           final service = LocalService();
+
+          final localeTag = Localizations.localeOf(context).toLanguageTag();
+          final formatter = NumberFormat.currency(
+            locale: localeTag,
+            symbol: '',
+            decimalDigits: 2,
+          );
+
+          final currencyOrder = ['KGS', 'USD', 'EUR', 'RUB'];
+          final sortedKeys =
+              summaries.keys.toList()..sort((a, b) {
+                final ia = currencyOrder.indexOf(a);
+                final ib = currencyOrder.indexOf(b);
+                if (ia != -1 && ib != -1) return ia.compareTo(ib);
+                if (ia != -1) return -1;
+                if (ib != -1) return 1;
+                return a.compareTo(b);
+              });
+
+          String formatOriginal(Decimal value, String code) {
+            final doubleVal = double.tryParse(value.toString()) ?? 0.0;
+            return formatNumericAmountWithCurrency(
+              doubleVal,
+              code,
+              formatter: formatter,
+            );
+          }
+
+          String formatKgs(Decimal? value) {
+            if (value == null) return '-';
+            final doubleVal = double.tryParse(value.toString()) ?? 0.0;
+            return formatNumericAmountWithCurrency(
+              doubleVal,
+              'KGS',
+              formatter: formatter,
+            );
+          }
 
           return ListView(
             children: [
@@ -83,15 +106,19 @@ class MoreInfoPage extends StatelessWidget {
                             t.account.totalSumIncome,
                             t.account.totalSumExpense,
                             t.account.currentBalance,
+                            '${t.account.currentBalance} (KGS)',
                           ];
-                          final rows1 = [
-                            [
-                              currency,
-                              income.toString(),
-                              expense.toString(),
-                              balance.toString(),
-                            ],
-                          ];
+                          final rows1 =
+                              sortedKeys.map((code) {
+                                final summary = summaries[code]!;
+                                return [
+                                  code,
+                                  summary.income.toString(),
+                                  summary.expense.toString(),
+                                  summary.balance.toString(),
+                                  summary.balanceKgs?.toString() ?? '-',
+                                ];
+                              }).toList();
 
                           final headers2 = [
                             'ID',
@@ -142,15 +169,19 @@ class MoreInfoPage extends StatelessWidget {
                             t.account.totalSumIncome,
                             t.account.totalSumExpense,
                             t.account.currentBalance,
+                            '${t.account.currentBalance} (KGS)',
                           ];
-                          final rows1 = [
-                            [
-                              currency,
-                              income.toString(),
-                              expense.toString(),
-                              balance.toString(),
-                            ],
-                          ];
+                          final rows1 =
+                              sortedKeys.map((code) {
+                                final summary = summaries[code]!;
+                                return [
+                                  code,
+                                  summary.income.toString(),
+                                  summary.expense.toString(),
+                                  summary.balance.toString(),
+                                  summary.balanceKgs?.toString() ?? '-',
+                                ];
+                              }).toList();
 
                           final headers2 = [
                             'ID',
@@ -206,7 +237,7 @@ class MoreInfoPage extends StatelessWidget {
                   children: [
                     // Таблица №1 — сводка по счёту
                     Text(
-                      '${t.account.balanceAllSummary} ($currency):',
+                      '${t.account.balanceAllSummary}:',
                       style: AppTextStyles.f16w500,
                     ),
                     12.h,
@@ -218,15 +249,20 @@ class MoreInfoPage extends StatelessWidget {
                         t.account.totalSumIncome,
                         t.account.totalSumExpense,
                         t.account.currentBalance,
+                        '${t.account.currentBalance} (KGS)',
                       ],
-                      rows: [
-                        [
-                          currency,
-                          income.toString(),
-                          expense.toString(),
-                          balance.toString(),
-                        ],
-                      ],
+                      rows:
+                          summaries.entries.map((entry) {
+                            final code = entry.key;
+                            final summary = entry.value;
+                            return [
+                              code,
+                              formatOriginal(summary.income, code),
+                              formatOriginal(summary.expense, code),
+                              formatOriginal(summary.balance, code),
+                              formatKgs(summary.balanceKgs),
+                            ];
+                          }).toList(),
                     ),
 
                     28.h,
@@ -273,6 +309,48 @@ class MoreInfoPage extends StatelessWidget {
         },
       ),
     );
+  }
+}
+
+Map<String, _CurrencySummary> _buildCurrencySummaries(
+  List<AllTransactionsModel> transactions,
+) {
+  final map = <String, _CurrencySummary>{};
+
+  for (final tx in transactions) {
+    final code = (tx.currency ?? 'KGS').toUpperCase();
+    final summary = map.putIfAbsent(code, () => _CurrencySummary());
+    final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
+    final kgsRaw = Decimal.tryParse(tx.kgsCurrencyAmount ?? '');
+    final kgsAmount = kgsRaw ?? (code == 'KGS' ? amount : Decimal.zero);
+
+    if (tx.transactionType == 'income') {
+      summary.income += amount;
+      summary.incomeKgs += kgsAmount;
+    } else if (tx.transactionType == 'expense') {
+      summary.expense += amount;
+      summary.expenseKgs += kgsAmount;
+    }
+  }
+
+  for (final code in const ['KGS', 'USD', 'EUR', 'RUB']) {
+    map.putIfAbsent(code, () => _CurrencySummary());
+  }
+  return map;
+}
+
+class _CurrencySummary {
+  Decimal income = Decimal.zero;
+  Decimal expense = Decimal.zero;
+  Decimal incomeKgs = Decimal.zero;
+  Decimal expenseKgs = Decimal.zero;
+
+  Decimal get balance => income - expense;
+  Decimal? get balanceKgs {
+    if (incomeKgs == Decimal.zero && expenseKgs == Decimal.zero) {
+      return null;
+    }
+    return incomeKgs - expenseKgs;
   }
 }
 

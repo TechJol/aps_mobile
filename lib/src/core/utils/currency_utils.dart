@@ -40,7 +40,8 @@ String formatNumericAmountWithCurrency(
   NumberFormat? formatter,
 }) {
   final code = currencyCode?.toUpperCase() ?? 'KGS';
-  final numberFormatter = formatter ??
+  final numberFormatter =
+      formatter ??
       NumberFormat.currency(locale: 'ru', symbol: '', decimalDigits: 2);
   final formattedNumber = numberFormatter.format(value.abs());
   final sign = value < 0 ? '-' : '';
