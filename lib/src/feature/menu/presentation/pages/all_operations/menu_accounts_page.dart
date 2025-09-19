@@ -109,7 +109,7 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
     );
   }
 
-  Padding _buildTableWithPagination(
+  Widget _buildTableWithPagination(
     BuildContext context,
     List<AccountModel> data,
     Decimal total,
@@ -147,7 +147,6 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
       );
     }
 
-    const borderColor = Color(0xFFE6E6E6);
     const colW = {
       0: FixedColumnWidth(50), // №
       1: FixedColumnWidth(200), // Название
@@ -214,9 +213,11 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
     }
 
     final pageCount = (data.length / rowsPerPage).ceil();
+    final bottomInset = MediaQuery.of(context).padding.bottom;
 
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
+    // ✅ ВЕРТИКАЛЬНЫЙ СКРОЛЛ ДЛЯ ВСЕГО КОНТЕНТА
+    return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + bottomInset),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -307,10 +308,14 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
             ),
           20.h,
           if (hasData)
+            // Горизонтальный скролл только для таблицы
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Table(
-                border: TableBorder.all(color: borderColor, width: 1),
+                border: TableBorder.all(
+                  color: const Color(0xFFE6E6E6),
+                  width: 1,
+                ),
                 columnWidths: colW,
                 children: tableRows,
               ),

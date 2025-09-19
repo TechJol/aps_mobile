@@ -18,6 +18,8 @@ class MetricsPage extends StatefulWidget {
   State<MetricsPage> createState() => _MetricsPageState();
 }
 
+const String _kgs = 'KGS';
+
 class _MetricsPageState extends State<MetricsPage> {
   List<Map<String, dynamic>> yearlyData = [];
 
@@ -360,12 +362,17 @@ class _MetricsPageState extends State<MetricsPage> {
     final Map<String, Map<String, Decimal>> grouped = {};
 
     for (final tx in transactions) {
-      final date = tx.date;
-      final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
-      final type = tx.transactionType;
-      if (date == null || type == null) continue;
+      final isKgs = (tx.currency ?? '').toUpperCase() == _kgs;
+      if (!isKgs) continue;
 
-      final year = date.substring(0, 4);
+      final dateStr = tx.date;
+      final type = tx.transactionType;
+      if (dateStr == null || type == null) continue;
+
+      final dt = DateTime.tryParse(dateStr);
+      final year = dt != null ? dt.year.toString() : dateStr.substring(0, 4);
+
+      final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
 
       grouped.putIfAbsent(
         year,
@@ -376,6 +383,8 @@ class _MetricsPageState extends State<MetricsPage> {
         grouped[year]!['income'] = grouped[year]!['income']! + amount;
       } else if (type == 'expense') {
         grouped[year]!['expense'] = grouped[year]!['expense']! + amount;
+        // если расходы у тебя приходят со знаком "-", используй:
+        // grouped[year]!['expense'] = grouped[year]!['expense']! + amount.abs();
       }
     }
 

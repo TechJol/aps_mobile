@@ -19,6 +19,8 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
   final LocalService _localService = LocalService();
   String selectedMonth = DateTime.now().month.toString();
 
+  static const String _kgs = 'KGS';
+
   @override
   Widget build(BuildContext context) {
     final months = _localizedMonths();
@@ -41,6 +43,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
               state.reasons,
               type: 'income',
               month: selectedMonth,
+              currency: _kgs,
             );
 
             final expenseData = _calculateTop6Reasons(
@@ -48,6 +51,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
               state.reasons,
               type: 'expense',
               month: selectedMonth,
+              currency: _kgs,
             );
 
             final hasIncomeData = incomeData.isNotEmpty;
@@ -167,11 +171,8 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // --- INCOME ---
                         if (hasIncomeData) ...[
-                          TitleSection(
-                            title: t.menu.reportsByArticle.sections.incomeTitle,
-                          ),
+                          const TitleSection(title: 'Основные статьи доходов'),
                           PieChartSection(data: incomeData),
                           20.h,
                           LegendSection(data: incomeData),
@@ -183,13 +184,8 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                           ),
                           40.h,
                         ],
-
-                        // --- EXPENSE ---
                         if (hasExpenseData) ...[
-                          TitleSection(
-                            title:
-                                t.menu.reportsByArticle.sections.expenseTitle,
-                          ),
+                          const TitleSection(title: 'Основные статьи расходов'),
                           PieChartSection(data: expenseData),
                           20.h,
                           LegendSection(data: expenseData),
@@ -216,68 +212,70 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
   List<Map<String, dynamic>> _calculateTop6Reasons(
     List<AllTransactionsModel> transactions,
     List<IncomeExpenseReasons> reasons, {
-    required String type,
-    required String month,
+    required String type, // 'income' | 'expense'
+    required String month, // '1'..'12'
+    required String currency, //  'KGS'
   }) {
-    final Map<String, Map<int, Decimal>> monthlyTotals = {};
+    final Map<int, Decimal> totalsByReason = {};
 
-    for (var tx in transactions) {
-      if (tx.transactionType == type && tx.incomeExpenseReason != null) {
-        final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
-        final txMonth = DateTime.parse(tx.date!).month.toString();
+    for (final tx in transactions) {
+      final txTypeOk = tx.transactionType == type;
+      final txMonthOk = DateTime.parse(tx.date!).month.toString() == month;
+      final txCurrOk =
+          (_txCurrency(tx)?.toUpperCase() ?? '') == currency.toUpperCase();
+      final hasReason = tx.incomeExpenseReason != null;
 
-        if (txMonth == month) {
-          monthlyTotals.putIfAbsent(month, () => {});
-          monthlyTotals[month]![tx.incomeExpenseReason!] =
-              (monthlyTotals[month]![tx.incomeExpenseReason!] ?? Decimal.zero) +
-              amount;
-        }
-      }
+      if (!(txTypeOk && txMonthOk && txCurrOk && hasReason)) continue;
+
+      final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
+      final val = (type == 'expense') ? amount.abs() : amount;
+
+      totalsByReason[tx.incomeExpenseReason!] =
+          (totalsByReason[tx.incomeExpenseReason!] ?? Decimal.zero) + val;
     }
 
-    if (monthlyTotals.isEmpty || monthlyTotals[month] == null) {
-      return [];
-    }
+    if (totalsByReason.isEmpty) return [];
 
-    final sortedMonths = monthlyTotals.keys.toList()..sort();
+    final top =
+        totalsByReason.entries.toList()
+          ..sort((a, b) => b.value.compareTo(a.value));
+    final top6 = top.take(6).toList();
 
-    return sortedMonths.expand((m) {
-      final monthlyData = monthlyTotals[m]!;
-      Decimal totalAmount = Decimal.zero;
+    final Decimal top6Total = top6.fold(
+      Decimal.zero,
+      (acc, e) => acc + e.value,
+    );
+    if (top6Total == Decimal.zero) return [];
 
-      monthlyData.forEach((_, value) => totalAmount += value);
+    return top6.map((entry) {
+      final reason = reasons.firstWhere(
+        (r) => r.id == entry.key,
+        orElse:
+            () => IncomeExpenseReasons(
+              id: entry.key,
+              name: t.menu.common.untitled,
+              type: type,
+              company: null,
+            ),
+      );
 
-      final sorted =
-          monthlyData.entries.toList()
-            ..sort((a, b) => b.value.compareTo(a.value));
+      final Decimal value = entry.value;
+      final Decimal percent = Decimal.parse(
+        ((value / top6Total) * Decimal.fromInt(100).toRational())
+            .toDouble()
+            .toStringAsFixed(2),
+      );
 
-      return sorted.take(6).map((entry) {
-        final reason = reasons.firstWhere(
-          (r) => r.id == entry.key,
-          orElse:
-              () => IncomeExpenseReasons(
-                id: entry.key,
-                name: t.menu.common.untitled,
-                type: type,
-                company: null,
-              ),
-        );
-
-        final Decimal value = entry.value;
-        final Decimal percent = Decimal.parse(
-          ((value / totalAmount) * Decimal.fromInt(100).toRational())
-              .toDouble()
-              .toStringAsFixed(2),
-        );
-
-        return {
-          'month': m,
-          'name': reason.name,
-          'amount': type == 'expense' ? (-value).toString() : value.toString(),
-          'percent': percent,
-        };
-      }).toList();
+      return {
+        'name': reason.name,
+        'amount': value.toString(),
+        'percent': percent,
+      };
     }).toList();
+  }
+
+  String? _txCurrency(AllTransactionsModel tx) {
+    return tx.currency ?? 'KGS';
   }
 
   List<String> _localizedMonths() => [
@@ -479,10 +477,7 @@ class DataTableSection extends StatelessWidget {
         final tableMinWidth =
             requiredTableW < screenW ? screenW : requiredTableW;
 
-        final nameColW = (screenW - fixedPartW).clamp(
-          120.0,
-          800.0,
-        ); // stretched width
+        final nameColW = (screenW - fixedPartW).clamp(120.0, 800.0);
 
         TableRow headerRow() => TableRow(
           decoration: const BoxDecoration(color: AppColors.primaryColorLight),

@@ -15,6 +15,8 @@ class MonthlyReportPage extends StatefulWidget {
   State<MonthlyReportPage> createState() => _MonthlyReportPageState();
 }
 
+const String _kgs = 'KGS';
+
 class _MonthlyReportPageState extends State<MonthlyReportPage> {
   final LocalService _localService = LocalService();
   String _selectedMonth = DateTime.now().month.toString();
@@ -54,7 +56,9 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
                 _selectedMonth,
               );
 
-              final legendData = _getLegendDataFromAPI(reasons);
+              // ✅ легенда только по фактическим данным (после фильтра KGS)
+              final legendData = _buildLegend(chartData, reasons);
+
               final hasData = tableData.isNotEmpty;
 
               return ListView(
@@ -96,18 +100,23 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
     );
   }
 
-  /// ====== чистые функции (не виджеты) ======
-
+  /// График: учитываем только KGS
   Map<int, Map<int, Decimal>> _buildChartData(
     List<AllTransactionsModel> transactions,
     List<IncomeExpenseReasons> reasons,
     String month,
   ) {
     final Map<int, Map<int, Decimal>> chartData = {};
-    for (var tx in transactions) {
+
+    for (final tx in transactions) {
       if (tx.date == null || tx.incomeExpenseReason == null) continue;
+
       final date = DateTime.tryParse(tx.date!);
       if (date == null || date.month.toString() != month) continue;
+
+      // ✅ только сомовые транзакции
+      final isKgs = (tx.currency ?? '').toUpperCase() == _kgs;
+      if (!isKgs) continue;
 
       final day = date.day;
       final reasonId = tx.incomeExpenseReason!;
@@ -117,11 +126,12 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
       chartData[day]![reasonId] =
           (chartData[day]![reasonId] ?? Decimal.zero) + amount;
     }
+
     return chartData;
   }
 }
 
-/// Подсчёт агрегатов за выбранный месяц для таблицы
+/// Таблица: Доход/Расход/Чистый доход только по KGS
 List<Map<String, String>> _calculateMonthlyData(
   List<AllTransactionsModel> transactions,
   String month,
@@ -129,14 +139,22 @@ List<Map<String, String>> _calculateMonthlyData(
   Decimal income = Decimal.zero;
   Decimal expense = Decimal.zero;
 
-  for (var tx in transactions) {
-    if (tx.date != null && DateTime.parse(tx.date!).month.toString() == month) {
-      final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
-      if (tx.transactionType == 'income') {
-        income += amount;
-      } else if (tx.transactionType == 'expense') {
-        expense += amount;
-      }
+  for (final tx in transactions) {
+    if (tx.date == null) continue;
+
+    final sameMonth = DateTime.parse(tx.date!).month.toString() == month;
+    if (!sameMonth) continue;
+
+    // ✅ только сомовые транзакции
+    final isKgs = (tx.currency ?? '').toUpperCase() == _kgs;
+    if (!isKgs) continue;
+
+    final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
+
+    if (tx.transactionType == 'income') {
+      income += amount;
+    } else if (tx.transactionType == 'expense') {
+      expense += amount; // если расходы со знаком "-", используй amount.abs()
     }
   }
 
@@ -156,11 +174,18 @@ List<Map<String, String>> _calculateMonthlyData(
   ];
 }
 
-/// Генерация легенды (имя статьи + цвет)
-List<Map<String, String>> _getLegendDataFromAPI(
+/// Легенда только для статей, реально присутствующих в chartData
+List<Map<String, String>> _buildLegend(
+  Map<int, Map<int, Decimal>> chartData,
   List<IncomeExpenseReasons> reasons,
 ) {
-  final List<Map<String, String>> legendData = [];
+  // id причин, попавших на график
+  final presentIds = <int>{};
+  for (final dayMap in chartData.values) {
+    presentIds.addAll(dayMap.keys);
+  }
+
+  // та же палитра, что в графике (приведём к строке для _LegendItem)
   final List<String> colors = [
     '0xFF7B37B5',
     '0xFFF219A2',
@@ -170,16 +195,19 @@ List<Map<String, String>> _getLegendDataFromAPI(
     '0xFFFCA12C',
   ];
 
-  for (var i = 0; i < reasons.length; i++) {
-    legendData.add({
-      'name': reasons[i].name,
-      'color': colors[i % colors.length],
-    });
-  }
-  return legendData;
-}
+  // фиксируем сопоставление reasonId -> индекс (как в графике)
+  final reasonIdToIndex = {
+    for (var i = 0; i < reasons.length; i++) reasons[i].id!: i,
+  };
 
-/// ====== виджеты ======
+  // только присутствующие причины + правильный цвет
+  return reasons.where((r) => r.id != null && presentIds.contains(r.id)).map((
+    r,
+  ) {
+    final idx = reasonIdToIndex[r.id] ?? 0;
+    return {'name': r.name, 'color': colors[idx % colors.length]};
+  }).toList();
+}
 
 class _ActionButtons extends StatelessWidget {
   const _ActionButtons({
@@ -413,7 +441,6 @@ class _MonthlyDataTable extends StatelessWidget {
                 3: FixedColumnWidth(balanceW),
               },
               children: [
-                // Шапка
                 TableRow(
                   decoration: const BoxDecoration(
                     color: AppColors.primaryColorLight,
@@ -425,7 +452,6 @@ class _MonthlyDataTable extends StatelessWidget {
                     _cell(t.menu.monthlyReport.table.balance, isHeader: true),
                   ],
                 ),
-                // Данные
                 ...data.map((row) {
                   return TableRow(
                     children: [
@@ -478,8 +504,6 @@ class _NoDataStub extends StatelessWidget {
   }
 }
 
-/// ===== график с «умной» осью Y =====
-
 class MonthlyReportChart extends StatelessWidget {
   final Map<int, Map<int, Decimal>> data;
   final List<IncomeExpenseReasons> reasons;
@@ -500,7 +524,6 @@ class MonthlyReportChart extends StatelessWidget {
     final List<BarChartGroupData> barGroups = [];
     double maxDaySum = 0;
 
-    // Ensure days are in ascending order
     final sortedDays = data.keys.toList()..sort();
     for (final day in sortedDays) {
       final segments = data[day] ?? const {};
@@ -508,7 +531,6 @@ class MonthlyReportChart extends StatelessWidget {
       double sum = 0;
       final rods = <BarChartRodStackItem>[];
 
-      // Stabilize stack order by reason id
       final segEntries =
           segments.entries.toList()..sort((a, b) => a.key.compareTo(b.key));
       for (final seg in segEntries) {
@@ -537,9 +559,9 @@ class MonthlyReportChart extends StatelessWidget {
       );
     }
 
-    final double niceMax = _niceCeil(maxDaySum * 1.15); // +15% запаса
+    final double niceMax = _niceCeil(maxDaySum * 1.15);
     final double tickStep = _niceStep(niceMax, targetTicks: 5);
-    final compact = NumberFormat.compact(locale: 'ru'); // формат 23K, 1,2M
+    final compact = NumberFormat.compact(locale: 'ru');
 
     return SizedBox(
       height: 350,
