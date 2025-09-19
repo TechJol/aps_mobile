@@ -1,7 +1,6 @@
 import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
-import 'package:aps_mobile/src/feature/menu/data/data_sources/nbkr_rate_service.dart';
 import 'package:aps_mobile/src/core/utils/currency_utils.dart';
 import 'package:decimal/decimal.dart';
 import 'package:dio/dio.dart';
@@ -85,8 +84,7 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                final rates =
-                    (snapshot.data ?? const {'KGS': 1.0}).map(
+                final rates = (snapshot.data ?? const {'KGS': 1.0}).map(
                   (key, value) => MapEntry(key.toUpperCase(), value),
                 );
 
@@ -133,14 +131,20 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
 
     String formatKgs(Decimal value) {
       final doubleVal = double.tryParse(value.toString()) ?? 0.0;
-      return formatNumericAmountWithCurrency(doubleVal, 'KGS',
-          formatter: formatter);
+      return formatNumericAmountWithCurrency(
+        doubleVal,
+        'KGS',
+        formatter: formatter,
+      );
     }
 
     String formatOriginal(Decimal value, String? code) {
       final doubleVal = double.tryParse(value.toString()) ?? 0.0;
-      return formatNumericAmountWithCurrency(doubleVal, code,
-          formatter: formatter);
+      return formatNumericAmountWithCurrency(
+        doubleVal,
+        code,
+        formatter: formatter,
+      );
     }
 
     const borderColor = Color(0xFFE6E6E6);
@@ -217,15 +221,10 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (hasData) ...[
-            Text(
-              formatKgs(total),
-              style: AppTextStyles.f24w600,
-            ),
+            Text(formatKgs(total), style: AppTextStyles.f24w600),
             Text(
               t.menu.accounts.total,
-              style: AppTextStyles.f14w500.copyWith(
-                color: AppColors.greyColor,
-              ),
+              style: AppTextStyles.f14w500.copyWith(color: AppColors.greyColor),
             ),
             const SizedBox(height: 8),
             ..._buildCurrencyBreakdown(totalsByCurrency, formatter),
@@ -244,22 +243,23 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
                       t.menu.accounts.headers.balance,
                       t.menu.accounts.headers.accountType,
                     ];
-                    final rows = data.asMap().entries.map((entry) {
-                      final index = entry.key + 1;
-                      final acc = entry.value;
-                      final balance = calculateAccountBalanceOriginal(
-                        accountId: acc.id!,
-                        transactions: transactions,
-                      );
-                      return [
-                        '$index',
-                        acc.name,
-                        formatOriginal(balance, acc.currency),
-                        acc.accountType == 'cash'
-                            ? t.menu.accounts.type.cash
-                            : t.menu.accounts.type.bank,
-                      ];
-                    }).toList();
+                    final rows =
+                        data.asMap().entries.map((entry) {
+                          final index = entry.key + 1;
+                          final acc = entry.value;
+                          final balance = calculateAccountBalanceOriginal(
+                            accountId: acc.id!,
+                            transactions: transactions,
+                          );
+                          return [
+                            '$index',
+                            acc.name,
+                            formatOriginal(balance, acc.currency),
+                            acc.accountType == 'cash'
+                                ? t.menu.accounts.type.cash
+                                : t.menu.accounts.type.bank,
+                          ];
+                        }).toList();
                     _localService.printReportAsPdf(
                       context: context,
                       title: t.menu.accounts.printTitle,
@@ -278,22 +278,23 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
                       t.menu.accounts.headers.balance,
                       t.menu.accounts.headers.accountType,
                     ];
-                    final rows = data.asMap().entries.map((entry) {
-                      final index = entry.key + 1;
-                      final acc = entry.value;
-                      final balance = calculateAccountBalanceOriginal(
-                        accountId: acc.id!,
-                        transactions: transactions,
-                      );
-                      return [
-                        '$index',
-                        acc.name,
-                        formatOriginal(balance, acc.currency),
-                        acc.accountType == 'cash'
-                            ? t.menu.accounts.type.cash
-                            : t.menu.accounts.type.bank,
-                      ];
-                    }).toList();
+                    final rows =
+                        data.asMap().entries.map((entry) {
+                          final index = entry.key + 1;
+                          final acc = entry.value;
+                          final balance = calculateAccountBalanceOriginal(
+                            accountId: acc.id!,
+                            transactions: transactions,
+                          );
+                          return [
+                            '$index',
+                            acc.name,
+                            formatOriginal(balance, acc.currency),
+                            acc.accountType == 'cash'
+                                ? t.menu.accounts.type.cash
+                                : t.menu.accounts.type.bank,
+                          ];
+                        }).toList();
                     _localService.exportToExcelGeneric(
                       fileName: t.menu.accounts.fileName,
                       headers: headers,
@@ -442,10 +443,7 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
     return totals;
   }
 
-  Decimal _amountInKgs(
-    AllTransactionsModel tx,
-    Map<String, double> rates,
-  ) {
+  Decimal _amountInKgs(AllTransactionsModel tx, Map<String, double> rates) {
     final currency = (tx.currency ?? 'KGS').toUpperCase();
     final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
 
@@ -467,7 +465,6 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
   }
 }
 
-
 List<Widget> _buildCurrencyBreakdown(
   Map<String, Decimal> totalsByCurrency,
   NumberFormat formatter,
@@ -475,15 +472,15 @@ List<Widget> _buildCurrencyBreakdown(
   final order = ['KGS', 'USD', 'EUR', 'RUB'];
   final keys = totalsByCurrency.keys.toSet();
   keys.addAll(order);
-  final sorted = keys.toList()
-    ..sort((a, b) {
-      final ia = order.indexOf(a);
-      final ib = order.indexOf(b);
-      if (ia != -1 && ib != -1) return ia.compareTo(ib);
-      if (ia != -1) return -1;
-      if (ib != -1) return 1;
-      return a.compareTo(b);
-    });
+  final sorted =
+      keys.toList()..sort((a, b) {
+        final ia = order.indexOf(a);
+        final ib = order.indexOf(b);
+        if (ia != -1 && ib != -1) return ia.compareTo(ib);
+        if (ia != -1) return -1;
+        if (ib != -1) return 1;
+        return a.compareTo(b);
+      });
 
   final widgets = <Widget>[];
 
@@ -506,9 +503,7 @@ List<Widget> _buildCurrencyBreakdown(
           children: [
             Text(
               code,
-              style: AppTextStyles.f14w500.copyWith(
-                color: AppColors.greyColor,
-              ),
+              style: AppTextStyles.f14w500.copyWith(color: AppColors.greyColor),
             ),
             Text(formatted, style: AppTextStyles.f16w600),
           ],
