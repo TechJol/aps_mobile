@@ -36,11 +36,9 @@ class _AccountPageState extends State<AccountPage> {
           if (state is MenuLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (state is MenuError) {
             return Center(child: Text('Ошибка: ${state.message.toString()}'));
           }
-
           if (state is DeleteError) {
             String message;
             if (state.error is DioException) {
@@ -53,12 +51,9 @@ class _AccountPageState extends State<AccountPage> {
             }
             return Center(child: Text(message));
           }
-
           if (state is MenuAccountsSuccess) {
-            final accounts = state.accounts;
-            return _buildTableSection(context, accounts);
+            return _buildTableSection(context, state.accounts);
           }
-
           return const SizedBox.shrink();
         },
       ),
@@ -72,7 +67,6 @@ class _AccountPageState extends State<AccountPage> {
       physics: const BouncingScrollPhysics(),
       child: Column(
         children: [
-          // верхняя панель с кнопками
           DecoratedBox(
             decoration: BoxDecoration(
               color: AppColors.backroundColor,
@@ -90,8 +84,13 @@ class _AccountPageState extends State<AccountPage> {
                     children: [
                       Expanded(
                         child: ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.pushNamed(context, AppRoutes.addAccount);
+                          onPressed: () async {
+                            await Navigator.pushNamed(
+                              context,
+                              AppRoutes.addAccount,
+                            );
+                            if (!mounted) return; // ✅ важно
+                            context.read<MenuCubit>().getAccounts();
                           },
                           label: Text(
                             t.account.account.actions.addAccount,
@@ -180,7 +179,6 @@ class _AccountPageState extends State<AccountPage> {
           ),
           12.h,
 
-          // таблица
           if (hasAccount)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -194,27 +192,15 @@ class _AccountPageState extends State<AccountPage> {
                   const minTypeW = 110.0;
                   const maxTypeW = 180.0;
 
-                  double typeW = maxW * 0.33; // ширина колонки "Тип счета"
+                  double typeW = maxW * 0.33;
                   if (typeW < minTypeW) typeW = minTypeW;
                   if (typeW > maxTypeW) typeW = maxTypeW;
 
-                  // оставшееся пространство — под "Название"
                   final nameW = maxW - menuW - typeW - margin * 2 - spacing * 2;
 
                   final isSmall = maxW < 360;
                   final headingH = isSmall ? 44.0 : 52.0;
                   final rowMinH = isSmall ? 44.0 : 52.0;
-
-                  // String typeName(String t) {
-                  //   switch (t) {
-                  //     case 'bank':
-                  //       return 'Банк';
-                  //     case 'cash':
-                  //       return 'Касса';
-                  //     default:
-                  //       return 'Неизвестно';
-                  //   }
-                  // }
 
                   String cut(String s, int max) =>
                       s.length > max ? '${s.substring(0, max)}…' : s;
@@ -253,7 +239,7 @@ class _AccountPageState extends State<AccountPage> {
                               style: AppTextStyles.f16w500,
                             ),
                           ),
-                          DataColumn(label: Text('')), // колонка меню
+                          const DataColumn(label: Text('')), // меню
                         ],
                         rows:
                             accounts.map((acc) {
@@ -319,6 +305,7 @@ class _AccountPageState extends State<AccountPage> {
                                                   AppRoutes.editAccount,
                                                   arguments: acc,
                                                 );
+                                            if (!mounted) return; // ✅ важно
                                             if (result == true) {
                                               context
                                                   .read<MenuCubit>()
@@ -341,7 +328,7 @@ class _AccountPageState extends State<AccountPage> {
           else
             Center(
               child: Padding(
-                padding: EdgeInsets.only(top: 50),
+                padding: const EdgeInsets.only(top: 50),
                 child: Text(
                   t.account.account.errors.accountNotFound,
                   style: AppTextStyles.f16w500,
@@ -357,11 +344,11 @@ class _AccountPageState extends State<AccountPage> {
   String _getAccountTypeName(String accountType) {
     switch (accountType) {
       case 'bank':
-        return t.account.bank; // i18n
+        return t.account.bank;
       case 'cash':
-        return t.account.cash; // i18n
+        return t.account.cash;
       default:
-        return t.account.unknownType; // i18n (fallback)
+        return t.account.unknownType;
     }
   }
 }

@@ -2,8 +2,8 @@
 
 import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
-import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:aps_mobile/src/core/utils/currency_utils.dart';
+import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:decimal/decimal.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -22,9 +22,9 @@ class _MainAccountPageState extends State<MainAccountPage> {
 
   @override
   void initState() {
+    super.initState();
     context.read<MenuCubit>().getTransactionsWithAccounts();
     _ratesFuture = _loadRates();
-    super.initState();
   }
 
   Future<Map<String, double>> _loadRates() async {
@@ -37,7 +37,7 @@ class _MainAccountPageState extends State<MainAccountPage> {
       );
       final service = NbkrRatesService(dio);
       final rates = await service.fetchRates();
-      return rates.map((key, value) => MapEntry(key.toUpperCase(), value));
+      return rates.map((k, v) => MapEntry(k.toUpperCase(), v));
     } catch (_) {
       return const {'KGS': 1.0};
     }
@@ -73,7 +73,7 @@ class _MainAccountPageState extends State<MainAccountPage> {
                     context,
                     AppRoutes.menu,
                   );
-
+                  if (!mounted) return; // ✅ важно
                   if (result == true) {
                     context.read<MenuCubit>().getTransactionsWithAccounts();
                   }
@@ -89,18 +89,16 @@ class _MainAccountPageState extends State<MainAccountPage> {
           if (state is MenuLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (state is MenuError) {
             return Center(child: Text('Ошибка: ${state.message}'));
           }
-
           if (state is MenuTransactionsWithAccountsSuccess) {
             final transactions = state.transactions;
             final accounts = state.accounts;
 
             final totalsByCurrency = _calculateTotalsByCurrency(transactions);
-            for (final account in accounts) {
-              final code = (account.currency ?? 'KGS').toUpperCase();
+            for (final a in accounts) {
+              final code = (a.currency ?? 'KGS').toUpperCase();
               totalsByCurrency.putIfAbsent(code, () => Decimal.zero);
             }
 
@@ -113,39 +111,42 @@ class _MainAccountPageState extends State<MainAccountPage> {
                 }
 
                 final rates = (snapshot.data ?? const {'KGS': 1.0}).map(
-                  (key, value) => MapEntry(key.toUpperCase(), value),
+                  (k, v) => MapEntry(k.toUpperCase(), v),
                 );
 
-                final totalBalance = calculateTotalBalance(transactions, rates);
+                final totalBalanceKgs = _calculateTotalBalanceKgs(
+                  transactions,
+                  rates,
+                );
 
                 return _buildAccountSection(
-                  context,
-                  accounts,
-                  totalBalance,
-                  transactions,
-                  totalsByCurrency,
+                  context: context,
+                  accounts: accounts,
+                  totalKgs: totalBalanceKgs,
+                  transactions: transactions,
+                  totalsByCurrency: totalsByCurrency,
                   isLoading:
                       snapshot.connectionState == ConnectionState.waiting,
                 );
               },
             );
           }
-
           return const SizedBox.shrink();
         },
       ),
     );
   }
 
-  Padding _buildAccountSection(
-    BuildContext context,
-    List<AccountModel> data,
-    Decimal total,
-    List<AllTransactionsModel> transactions,
-    Map<String, Decimal> totalsByCurrency, {
-    bool isLoading = false,
+  Widget _buildAccountSection({
+    required BuildContext context,
+    required List<AccountModel> accounts,
+    required Decimal totalKgs,
+    required List<AllTransactionsModel> transactions,
+    required Map<String, Decimal> totalsByCurrency,
+    required bool isLoading,
   }) {
-    final hasAccount = data.isNotEmpty;
+    final hasAccount = accounts.isNotEmpty;
+
     final localeTag = Localizations.localeOf(context).toLanguageTag();
     final formatter = NumberFormat.currency(
       locale: localeTag,
@@ -153,30 +154,24 @@ class _MainAccountPageState extends State<MainAccountPage> {
       decimalDigits: 2,
     );
 
-    String formatKgs(Decimal value) {
-      final doubleVal = double.tryParse(value.toString()) ?? 0.0;
-      return formatNumericAmountWithCurrency(
-        doubleVal,
-        'KGS',
-        formatter: formatter,
-      );
-    }
+    String formatKgs(Decimal v) => formatNumericAmountWithCurrency(
+      double.tryParse(v.toString()) ?? 0.0,
+      'KGS',
+      formatter: formatter,
+    );
 
-    String formatOriginal(Decimal value, String? currency) {
-      final doubleVal = double.tryParse(value.toString()) ?? 0.0;
-      return formatNumericAmountWithCurrency(
-        doubleVal,
-        currency,
-        formatter: formatter,
-      );
-    }
+    String formatOriginal(Decimal v, String? code) =>
+        formatNumericAmountWithCurrency(
+          double.tryParse(v.toString()) ?? 0.0,
+          code,
+          formatter: formatter,
+        );
 
     final currencyOrder = ['KGS', 'USD', 'EUR', 'RUB'];
     final breakdownKeys = {
       ...currencyOrder,
       ...totalsByCurrency.keys.map((e) => e.toUpperCase()),
     };
-
     final sortedKeys =
         breakdownKeys.toList()..sort((a, b) {
           final ia = currencyOrder.indexOf(a);
@@ -206,7 +201,7 @@ class _MainAccountPageState extends State<MainAccountPage> {
                     )
                   else
                     Text(
-                      formatKgs(total),
+                      formatKgs(totalKgs),
                       style: AppTextStyles.f24w600.copyWith(
                         fontFamily: 'Inter',
                       ),
@@ -226,6 +221,7 @@ class _MainAccountPageState extends State<MainAccountPage> {
                 ),
                 onPressed: () async {
                   await Navigator.pushNamed(context, AppRoutes.account);
+                  if (!mounted) return; // ✅ важно
                   context.read<MenuCubit>().getTransactionsWithAccounts();
                 },
                 child: Row(
@@ -248,6 +244,8 @@ class _MainAccountPageState extends State<MainAccountPage> {
               ),
             ],
           ),
+
+          // Разбивка по валютам
           if (sortedKeys.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 16),
@@ -282,36 +280,43 @@ class _MainAccountPageState extends State<MainAccountPage> {
                     }).toList(),
               ),
             ),
+
           const SizedBox(height: 24),
+
+          // Карточки счетов
           if (hasAccount)
             ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: data.length,
+              itemCount: accounts.length,
               separatorBuilder: (_, __) => const SizedBox(height: 20),
               itemBuilder: (context, index) {
-                final account = data[index];
+                final account = accounts[index];
+
                 final gradientColors =
                     index.isEven
-                        ? [
-                          const Color(0xFF783BE0),
-                          const Color(0xFF8657F5),
-                          const Color(0xFF492BAB),
-                          const Color(0xFF462BA0),
-                          const Color(0xFF27175A),
+                        ? const [
+                          Color(0xFF783BE0),
+                          Color(0xFF8657F5),
+                          Color(0xFF492BAB),
+                          Color(0xFF462BA0),
+                          Color(0xFF27175A),
                         ]
-                        : [
-                          const Color.fromARGB(255, 6, 34, 105),
-                          const Color(0xFF0A0AC8),
-                          const Color(0xFF0A0AC8),
-                          const Color.fromARGB(255, 25, 25, 185),
-                          const Color.fromARGB(255, 11, 29, 117),
+                        : const [
+                          Color.fromARGB(255, 6, 34, 105),
+                          Color(0xFF0A0AC8),
+                          Color(0xFF0A0AC8),
+                          Color.fromARGB(255, 25, 25, 185),
+                          Color.fromARGB(255, 11, 29, 117),
                         ];
 
-                final originalBalance = calculateAccountBalanceOriginal(
-                  accountId: account.id!,
-                  transactions: transactions,
-                );
+                // Только сумма в валюте этого счёта
+                final balanceInAccCurrency =
+                    _calculateAccountBalanceInAccountCurrency(
+                      accountId: account.id!,
+                      accountCurrency: account.currency,
+                      transactions: transactions,
+                    );
 
                 return CardWidget(
                   onTap: () {
@@ -321,7 +326,7 @@ class _MainAccountPageState extends State<MainAccountPage> {
                       arguments: account,
                     );
                   },
-                  price: formatOriginal(originalBalance, account.currency),
+                  price: formatOriginal(balanceInAccCurrency, account.currency),
                   office: account.name,
                   cardColor: gradientColors,
                   currency: (account.currency ?? 'KGS').toUpperCase(),
@@ -343,41 +348,44 @@ class _MainAccountPageState extends State<MainAccountPage> {
     );
   }
 
-  Decimal calculateTotalBalance(
+  // ===== Helpers
+
+  Decimal _calculateTotalBalanceKgs(
     List<AllTransactionsModel> transactions,
     Map<String, double> rates,
   ) {
     Decimal total = Decimal.zero;
+    for (final tx in transactions) {
+      final amtKgs = _amountInKgs(tx, rates);
+      if (tx.transactionType == 'income') {
+        total += amtKgs;
+      } else if (tx.transactionType == 'expense') {
+        total -= amtKgs;
+      }
+    }
+    return total;
+  }
+
+  Decimal _calculateAccountBalanceInAccountCurrency({
+    required int accountId,
+    required String? accountCurrency,
+    required List<AllTransactionsModel> transactions,
+  }) {
+    final curr = (accountCurrency ?? 'KGS').toUpperCase();
+    Decimal total = Decimal.zero;
 
     for (final tx in transactions) {
-      final amount = _amountInKgs(tx, rates);
+      final sameAccount = tx.account == accountId;
+      final sameCurrency = (tx.currency ?? '').toUpperCase() == curr;
+      if (!sameAccount || !sameCurrency) continue;
+
+      final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
       if (tx.transactionType == 'income') {
         total += amount;
       } else if (tx.transactionType == 'expense') {
         total -= amount;
       }
     }
-
-    return total;
-  }
-
-  Decimal calculateAccountBalanceOriginal({
-    required int accountId,
-    required List<AllTransactionsModel> transactions,
-  }) {
-    Decimal total = Decimal.zero;
-
-    for (final tx in transactions) {
-      if (tx.account == accountId) {
-        final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
-        if (tx.transactionType == 'income') {
-          total += amount;
-        } else if (tx.transactionType == 'expense') {
-          total -= amount;
-        }
-      }
-    }
-
     return total;
   }
 
@@ -385,20 +393,16 @@ class _MainAccountPageState extends State<MainAccountPage> {
     List<AllTransactionsModel> transactions,
   ) {
     final Map<String, Decimal> totals = {'KGS': Decimal.zero};
-
     for (final tx in transactions) {
       final code = (tx.currency ?? 'KGS').toUpperCase();
       final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
-
       totals.putIfAbsent(code, () => Decimal.zero);
-
       if (tx.transactionType == 'income') {
         totals[code] = totals[code]! + amount;
       } else if (tx.transactionType == 'expense') {
         totals[code] = totals[code]! - amount;
       }
     }
-
     return totals;
   }
 
@@ -406,9 +410,7 @@ class _MainAccountPageState extends State<MainAccountPage> {
     final currency = (tx.currency ?? 'KGS').toUpperCase();
     final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
 
-    if (currency == 'KGS') {
-      return amount;
-    }
+    if (currency == 'KGS') return amount;
 
     final kgsAmountStr = tx.kgsCurrencyAmount;
     if (kgsAmountStr != null && kgsAmountStr.trim().isNotEmpty) {
@@ -416,9 +418,7 @@ class _MainAccountPageState extends State<MainAccountPage> {
     }
 
     final rate = rates[currency];
-    if (rate == null || rate == 0) {
-      return amount;
-    }
+    if (rate == null || rate == 0) return amount;
 
     return amount * Decimal.parse(rate.toString());
   }
