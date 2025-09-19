@@ -1,6 +1,7 @@
 import 'package:aps_mobile/injection_container.dart' as di;
 import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
+import 'package:aps_mobile/src/core/network/in_app_date_service.dart';
 import 'package:aps_mobile/src/feature/auth/presentation/pages/auth_pager_page.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
@@ -12,10 +13,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Текущая локаль и список поддерживаемых — прямо из провайдера
     final flutterLocale = TranslationProvider.of(context).flutterLocale;
-    // final flutterLocales =
-    //     TranslationProvider.of(context).flutterSupportedLocales;
 
     return MultiBlocProvider(
       providers: [
@@ -34,43 +32,68 @@ class MyApp extends StatelessWidget {
             seedColor: const Color.fromARGB(255, 147, 90, 246),
           ),
         ),
-
-        // Ключевые строки: локаль, список локалей и колбэк резолва
         locale: flutterLocale,
         supportedLocales: AppLocaleUtils.supportedLocales,
         localeResolutionCallback: (locale, supported) {
-          // Дадим шанс провайдеру отрезолвить, иначе — стандартно
           if (locale == null) return flutterLocale;
           for (final s in supported) {
             if (s.languageCode == locale.languageCode) return s;
           }
           return flutterLocale;
         },
-
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
-
         onGenerateRoute: RouteGenerator.onGenerate,
         initialRoute: '/',
+
+        // ✅ Важно: оборачиваем корневой экран в _UpdateOnce,
+        // чтобы один раз за запуск проверить обновление.
         routes: {
-          '/': (context) {
-            return BlocBuilder<AuthCubit, AuthState>(
-              builder: (context, state) {
-                if (state is Authenticated) {
-                  return const MainView();
-                }
-                if (state is UnAuthenticated) {
-                  return const AuthPagerPage();
-                }
-                return const SizedBox.shrink();
-              },
-            );
-          },
+          '/':
+              (context) => _UpdateOnce(
+                child: BlocBuilder<AuthCubit, AuthState>(
+                  builder: (context, state) {
+                    if (state is Authenticated) return const MainView();
+                    if (state is UnAuthenticated) return const AuthPagerPage();
+                    return const SizedBox.shrink();
+                  },
+                ),
+              ),
         },
       ),
     );
   }
+}
+
+/// Небольшой stateful-хук, который вызывает проверку обновлений один раз.
+class _UpdateOnce extends StatefulWidget {
+  final Widget child;
+  const _UpdateOnce({required this.child});
+
+  @override
+  State<_UpdateOnce> createState() => _UpdateOnceState();
+}
+
+class _UpdateOnceState extends State<_UpdateOnce> {
+  bool _called = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_called) return;
+    _called = true;
+
+    // Ждём первый кадр, чтобы context был полностью валиден.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      // Гибкое обновление (не блокирует UI). Если нужно принудительно — поставь immediate: true.
+      InAppUpdateService.checkAndPrompt(context: context, immediate: false);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

@@ -13,6 +13,7 @@ class AddAccountPage extends StatefulWidget {
 
 class _AddAccountPageState extends State<AddAccountPage> {
   final nameController = TextEditingController();
+  bool _isSubmitting = false;
 
   final List<String> currencies = [
     t.account.dollar,
@@ -71,10 +72,15 @@ class _AddAccountPageState extends State<AddAccountPage> {
       ),
       body: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {
+          if (!_isSubmitting) return;
+
+          if (!mounted) return;
+
           if (state is MenuAccountsSuccess) {
-            Navigator.pop(context);
-          }
-          if (state is MenuError) {
+            setState(() => _isSubmitting = false);
+            Navigator.pop(context, true);
+          } else if (state is MenuError) {
+            setState(() => _isSubmitting = false);
             var snackBar = SnackBar(content: Text(state.message));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }
@@ -137,18 +143,19 @@ class _AddAccountPageState extends State<AddAccountPage> {
 
                   BlocBuilder<MenuCubit, MenuState>(
                     builder: (context, state) {
-                      if (state is MenuLoading) {
+                      if (state is MenuLoading && _isSubmitting) {
                         return const CircularProgressIndicator();
                       }
                       return ElevatedButton(
                         onPressed:
-                            isFormValid
+                            isFormValid && !_isSubmitting
                                 ? () {
                                   final account = AccountModel(
                                     name: nameController.text.trim(),
                                     accountType: selectedTypeCode ?? '',
                                     currency: selectedCurrencyCode,
                                   );
+                                  setState(() => _isSubmitting = true);
                                   context.read<MenuCubit>().postAccount(
                                     account,
                                   );

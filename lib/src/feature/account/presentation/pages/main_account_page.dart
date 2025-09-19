@@ -220,9 +220,10 @@ class _MainAccountPageState extends State<MainAccountPage> {
                   minimumSize: const Size(140, 48),
                 ),
                 onPressed: () async {
+                  final menuCubit = context.read<MenuCubit>();
                   await Navigator.pushNamed(context, AppRoutes.account);
                   if (!mounted) return; // ✅ важно
-                  context.read<MenuCubit>().getTransactionsWithAccounts();
+                  menuCubit.getTransactionsWithAccounts();
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

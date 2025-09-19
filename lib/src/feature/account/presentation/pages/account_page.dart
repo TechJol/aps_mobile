@@ -85,12 +85,13 @@ class _AccountPageState extends State<AccountPage> {
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: () async {
+                            final menuCubit = context.read<MenuCubit>();
                             await Navigator.pushNamed(
                               context,
                               AppRoutes.addAccount,
                             );
                             if (!mounted) return; // ✅ важно
-                            context.read<MenuCubit>().getAccounts();
+                            menuCubit.getAccounts();
                           },
                           label: Text(
                             t.account.account.actions.addAccount,
@@ -299,6 +300,7 @@ class _AccountPageState extends State<AccountPage> {
                                             );
                                           },
                                           tapEdit: () async {
+                                            final menuCubit = context.read<MenuCubit>();
                                             final result =
                                                 await Navigator.pushNamed(
                                                   context,
@@ -307,9 +309,7 @@ class _AccountPageState extends State<AccountPage> {
                                                 );
                                             if (!mounted) return; // ✅ важно
                                             if (result == true) {
-                                              context
-                                                  .read<MenuCubit>()
-                                                  .getAccounts();
+                                              menuCubit.getAccounts();
                                             }
                                           },
                                         ),
