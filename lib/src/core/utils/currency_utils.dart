@@ -38,6 +38,7 @@ String formatNumericAmountWithCurrency(
   double value,
   String? currencyCode, {
   NumberFormat? formatter,
+  bool showKgsSuffix = false,
 }) {
   final code = currencyCode?.toUpperCase() ?? 'KGS';
   final numberFormatter =
@@ -51,7 +52,8 @@ String formatNumericAmountWithCurrency(
   }
 
   if (_suffixCurrencySymbols.containsKey(code)) {
-    return '$sign$formattedNumber ${_suffixCurrencySymbols[code]}';
+    final suffix = showKgsSuffix ? ' ${_suffixCurrencySymbols[code]}' : '';
+    return '$sign$formattedNumber$suffix';
   }
 
   return '$sign$formattedNumber $code';
