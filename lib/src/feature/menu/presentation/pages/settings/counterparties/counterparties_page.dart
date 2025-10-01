@@ -5,7 +5,6 @@ import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 
 class CounterpartiesPage extends StatefulWidget {
   const CounterpartiesPage({super.key});

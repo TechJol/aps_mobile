@@ -1,6 +1,5 @@
 // ignore_for_file: file_names, library_private_types_in_public_api, deprecated_member_use, use_build_context_synchronously
 
-import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';

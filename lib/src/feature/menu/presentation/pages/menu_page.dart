@@ -4,7 +4,6 @@ import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 
 class MenuPage extends StatefulWidget {
   const MenuPage({super.key});
@@ -148,27 +147,27 @@ class _MenuPageState extends State<MenuPage> {
               onChildTap: (childTitle) async {
                 if (childTitle == t.menu.settingsCounterparties) {
                   await Navigator.pushNamed(context, AppRoutes.counterparties);
-                  context
-                      .read<MenuCubit>()
-                      .getTransactionsWithAccounts(force: true);
+                  context.read<MenuCubit>().getTransactionsWithAccounts(
+                    force: true,
+                  );
                 } else if (childTitle == t.menu.settingsCounterpartyTypes) {
                   await Navigator.pushNamed(
                     context,
                     AppRoutes.typeCounterparties,
                   );
-                  context
-                      .read<MenuCubit>()
-                      .getTransactionsWithAccounts(force: true);
+                  context.read<MenuCubit>().getTransactionsWithAccounts(
+                    force: true,
+                  );
                 } else if (childTitle == t.menu.settingsAccounts) {
                   await Navigator.pushNamed(context, AppRoutes.settingAccount);
-                  context
-                      .read<MenuCubit>()
-                      .getTransactionsWithAccounts(force: true);
+                  context.read<MenuCubit>().getTransactionsWithAccounts(
+                    force: true,
+                  );
                 } else if (childTitle == t.menu.settingsArticles) {
                   await Navigator.pushNamed(context, AppRoutes.articles);
-                  context
-                      .read<MenuCubit>()
-                      .getTransactionsWithAccounts(force: true);
+                  context.read<MenuCubit>().getTransactionsWithAccounts(
+                    force: true,
+                  );
                 }
               },
             ),

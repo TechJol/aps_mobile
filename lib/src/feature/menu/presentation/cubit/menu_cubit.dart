@@ -57,29 +57,25 @@ class MenuCubit extends Cubit<MenuState> {
   }
 
   void filterPartnersByType(int selectedTypeId) {
-    final allPartners = (state as MenuPartnerDataSuccess).partners;
+    if (state is! MenuPartnerDataSuccess) return;
+    final current = state as MenuPartnerDataSuccess;
+    final partners = current.partners ?? [];
 
     filteredPartners =
-        allPartners!.where((partner) {
-          return partner.type == selectedTypeId;
-        }).toList();
+        partners.where((partner) => partner.type == selectedTypeId).toList();
 
     emit(
       MenuPartnerDataSuccess(
-        partners: allPartners,
-        partnerTypes: (state as MenuPartnerDataSuccess).partnerTypes,
+        partners: partners,
+        partnerTypes: current.partnerTypes,
         filteredPartners: filteredPartners,
       ),
     );
   }
 
   Future<void> getTransactionsWithAccounts({bool force = false}) async {
-    // Если данные уже есть и не просили форс‑обновление — ничего не делаем
     final wasSuccess = state is MenuTransactionsWithAccountsSuccess;
     if (wasSuccess && !force) return;
-
-    // Тихий рефреш: при force не показываем лоадер, иначе показываем только
-    // если ранее данных не было
     if (!wasSuccess && !force) emit(MenuLoading());
 
     final transactionsResult = await getTransactionsUsecase();
@@ -119,14 +115,11 @@ class MenuCubit extends Cubit<MenuState> {
       return;
     }
 
-    // Получаем companyId из SharedPreferences
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    final companyId = storage.getInt('companyId');
+    final companyId = await _companyId();
 
     final transactions =
         (transactionsResult.getOrElse(() => []) as List)
             .map((e) => AllTransactionsModel.fromMap(e))
-            // Фильтруем транзакции по companyId
             .where((tx) => tx.company == companyId)
             .toList();
 
@@ -170,7 +163,6 @@ class MenuCubit extends Cubit<MenuState> {
   }
 
   Future<void> getPartnerData({bool force = false}) async {
-    // Если уже есть данные в Success — быстро эмитим нужное состояние
     if (!force && state is MenuTransactionsWithAccountsSuccess) {
       final s = state as MenuTransactionsWithAccountsSuccess;
       emit(
@@ -210,11 +202,8 @@ class MenuCubit extends Cubit<MenuState> {
             .map((e) => PartnerTypesModel.fromMap(e))
             .toList();
 
-    // Get companyId from SharedPreferences
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    final companyId = storage.getInt('companyId');
+    final companyId = await _companyId();
 
-    // Filter partners and types by companyId
     final filteredPartners =
         partners.where((partner) => partner.company == companyId).toList();
     final filteredTypes =
@@ -249,12 +238,7 @@ class MenuCubit extends Cubit<MenuState> {
 
     result.fold((l) => emit(MenuError(message: l.message)), (r) async {
       final accounts = (r as List).map((e) => AccountModel.fromMap(e)).toList();
-
-      // Получаем companyId из SharedPreferences
-      SharedPreferences storage = await SharedPreferences.getInstance();
-      final companyId = storage.getInt('companyId');
-
-      // Фильтруем счета по companyId
+      final companyId = await _companyId();
       final filteredAccounts =
           accounts.where((account) => account.company == companyId).toList();
 
@@ -263,14 +247,13 @@ class MenuCubit extends Cubit<MenuState> {
   }
 
   Future<void> postAccount(AccountModel account) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    final companyId = storage.getInt('companyId');
+    final companyId = await _companyId();
 
     final acc = AccountModel(
       name: account.name,
       accountType: account.accountType,
       currency: account.currency,
-      company: companyId, // Обязательно указываем companyId
+      company: companyId,
     );
 
     final result = await postAccountUsecase.call(acc);
@@ -286,8 +269,7 @@ class MenuCubit extends Cubit<MenuState> {
   }
 
   Future<void> updateAccount(AccountModel account, int id) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    final companyId = storage.getInt('companyId');
+    final companyId = await _companyId();
 
     final acc = AccountModel(
       name: account.name,
@@ -310,12 +292,7 @@ class MenuCubit extends Cubit<MenuState> {
     result.fold((l) => emit(MenuError(message: l.message)), (r) async {
       final reasons =
           (r as List).map((e) => IncomeExpenseReasons.fromMap(e)).toList();
-
-      // Get companyId from SharedPreferences
-      SharedPreferences storage = await SharedPreferences.getInstance();
-      final companyId = storage.getInt('companyId');
-
-      // Filter reasons by companyId
+      final companyId = await _companyId();
       final filteredReasons =
           reasons.where((reason) => reason.company == companyId).toList();
 
@@ -324,8 +301,7 @@ class MenuCubit extends Cubit<MenuState> {
   }
 
   Future<void> postReason(IncomeExpenseReasons reasons) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    final companyId = storage.getInt('companyId');
+    final companyId = await _companyId();
 
     final part = IncomeExpenseReasons(
       name: reasons.name,
@@ -341,8 +317,7 @@ class MenuCubit extends Cubit<MenuState> {
   }
 
   Future<void> updateReason(IncomeExpenseReasons reasons, int id) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    final companyId = storage.getInt('companyId');
+    final companyId = await _companyId();
 
     final part = IncomeExpenseReasons(
       name: reasons.name,
@@ -371,8 +346,7 @@ class MenuCubit extends Cubit<MenuState> {
   }
 
   Future<void> postPartner(PartnersModel partner) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    final companyId = storage.getInt('companyId');
+    final companyId = await _companyId();
 
     final part = PartnersModel(
       name: partner.name,
@@ -392,8 +366,7 @@ class MenuCubit extends Cubit<MenuState> {
   }
 
   Future<void> updatePartner(PartnersModel partner, int id) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    final companyId = storage.getInt('companyId');
+    final companyId = await _companyId();
 
     final part = PartnersModel(
       name: partner.name,
@@ -413,8 +386,7 @@ class MenuCubit extends Cubit<MenuState> {
   }
 
   Future<void> postPartnerType(PartnerTypesModel partnerType) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    final companyId = storage.getInt('companyId');
+    final companyId = await _companyId();
 
     final part = PartnerTypesModel(name: partnerType.name, company: companyId);
 
@@ -437,8 +409,7 @@ class MenuCubit extends Cubit<MenuState> {
   }
 
   Future<void> updatePartnerType(PartnerTypesModel partnerType, int id) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    final companyId = storage.getInt('companyId');
+    final companyId = await _companyId();
 
     final part = PartnerTypesModel(name: partnerType.name, company: companyId);
 
@@ -456,8 +427,7 @@ class MenuCubit extends Cubit<MenuState> {
     AllTransactionsModel transaction,
     int id,
   ) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    final companyId = storage.getInt('companyId');
+    final companyId = await _companyId();
 
     final trans = AllTransactionsModel(
       amount: transaction.amount,
@@ -514,5 +484,10 @@ class MenuCubit extends Cubit<MenuState> {
     } catch (e) {
       emit(MenuError(message: 'Ошибка: \${e.toString()}'));
     }
+  }
+
+  Future<int?> _companyId() async {
+    final storage = await SharedPreferences.getInstance();
+    return storage.getInt('companyId');
   }
 }

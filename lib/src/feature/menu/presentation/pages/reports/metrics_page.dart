@@ -2,7 +2,6 @@
 
 import 'dart:math';
 
-import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';

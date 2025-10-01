@@ -1,5 +1,4 @@
 import 'package:aps_mobile/src/feature/feature.dart';
-import 'package:aps_mobile/src/feature/auth/presentation/pages/auth_pager_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'app_routes.dart';
 import 'unknown_page.dart';

@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,9 +56,9 @@ class MainScreen extends StatelessWidget {
                 transactionType: 'income',
               );
               if (result == true) {
-                context
-                    .read<MenuCubit>()
-                    .getTransactionsWithAccounts(force: true);
+                context.read<MenuCubit>().getTransactionsWithAccounts(
+                  force: true,
+                );
               }
             } else if (index == 3) {
               final result = await IncomePage().showIncomeBottomSheet(
@@ -68,9 +67,9 @@ class MainScreen extends StatelessWidget {
                 transactionType: 'expense',
               );
               if (result == true) {
-                context
-                    .read<MenuCubit>()
-                    .getTransactionsWithAccounts(force: true);
+                context.read<MenuCubit>().getTransactionsWithAccounts(
+                  force: true,
+                );
               }
             } else {
               context.read<MainCubit>().change(index);

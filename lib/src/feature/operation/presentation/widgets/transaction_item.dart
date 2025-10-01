@@ -1,6 +1,5 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
-import 'package:aps_mobile/src/core/utils/currency_utils.dart';
 import 'package:flutter/material.dart';
 
 class TransactionItem extends StatelessWidget {

@@ -1,4 +1,5 @@
 export 'utils/routes/routes.dart';
+export 'utils/utils.dart';
 export 'utils/padding.dart';
 export 'constants/constants.dart';
 export 'widgets/widgets.dart';
@@ -7,3 +8,6 @@ export 'utils/apis/apis.dart';
 export 'network/network.dart';
 export 'utils/errors/errors.dart';
 export 'utils/local_service.dart';
+export 'enums/enums.dart';
+export 'I10n/i10n.dart';
+export 'error/error.dart';

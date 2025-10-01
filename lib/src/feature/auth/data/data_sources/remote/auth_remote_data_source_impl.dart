@@ -1,9 +1,5 @@
 import 'package:aps_mobile/src/core/core.dart';
-import 'package:aps_mobile/src/core/error/failure.dart';
-import 'package:aps_mobile/src/feature/auth/data/data_sources/remote/auth_remote_data_source.dart';
-import 'package:aps_mobile/src/feature/auth/data/models/auth_model.dart';
-import 'package:aps_mobile/src/feature/auth/data/models/login_response_model.dart';
-import 'package:aps_mobile/src/feature/auth/domain/entities/auth_error_codes.dart';
+import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 

@@ -1,8 +1,5 @@
-// lib/src/feature/menu/presentation/pages/more_info_page.dart
-import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
-import 'package:aps_mobile/src/core/utils/currency_utils.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

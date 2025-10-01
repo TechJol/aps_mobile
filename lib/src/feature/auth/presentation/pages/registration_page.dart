@@ -1,8 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api, deprecated_member_use
 
-import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
 import 'package:aps_mobile/src/core/core.dart';
-import 'package:aps_mobile/src/core/utils/reg_exp/app_reg_exp.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

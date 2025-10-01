@@ -1,7 +1,6 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:aps_mobile/src/feature/income/presentation/cubit/income_state.dart';
-import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart'; // <— t.*
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
