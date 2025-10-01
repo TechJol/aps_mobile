@@ -25,9 +25,6 @@ class _AddAccountPageState extends State<AddAccountPage> {
   final List<String> types = [t.account.bank, t.account.cash];
   final List<String> typesCodes = ['bank', 'cash'];
 
-  // final List<String> names = ['Бакай банк', 'Офис касса'];
-
-  // String? selectedName;
   String? selectedType;
   String? selectedCurrency;
   String? selectedCurrencyCode;
@@ -38,10 +35,8 @@ class _AddAccountPageState extends State<AddAccountPage> {
   void checkFormValidity() {
     setState(() {
       isFormValid =
-          // selectedName != null &&
           selectedType != null &&
           selectedCurrency != null &&
-          // selectedName!.isNotEmpty &&
           selectedType!.isNotEmpty &&
           selectedCurrency!.isNotEmpty;
       isFormValid = nameController.text.isNotEmpty;

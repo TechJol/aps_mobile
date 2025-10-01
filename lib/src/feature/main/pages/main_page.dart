@@ -27,7 +27,6 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ВАЖНО: создаём зависимость от TranslationProvider
     final locale = TranslationProvider.of(context).flutterLocale;
 
     final currentIndex = context.watch<MainCubit>().state;

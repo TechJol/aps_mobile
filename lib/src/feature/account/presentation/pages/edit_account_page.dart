@@ -53,7 +53,6 @@ class _EditAccountPageState extends State<EditAccountPage> {
     nameController.text = widget.account.name;
     nameController.addListener(checkFormValidity);
 
-    // Устанавливаем отображаемые значения (поиск по кодам)
     final currencyIndex = currenciesCodes.indexOf(
       widget.account.currency ?? '',
     );

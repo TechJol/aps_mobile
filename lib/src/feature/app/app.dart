@@ -46,8 +46,6 @@ class MyApp extends StatelessWidget {
         onGenerateRoute: RouteGenerator.onGenerate,
         initialRoute: '/',
 
-        // ✅ Важно: оборачиваем корневой экран в _UpdateOnce,
-        // чтобы один раз за запуск проверить обновление.
         routes: {
           '/':
               (context) => _UpdateOnce(
@@ -75,7 +73,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/// Небольшой stateful-хук, который вызывает проверку обновлений один раз.
 class _UpdateOnce extends StatefulWidget {
   final Widget child;
   const _UpdateOnce({required this.child});
@@ -93,10 +90,8 @@ class _UpdateOnceState extends State<_UpdateOnce> {
     if (_called) return;
     _called = true;
 
-    // Ждём первый кадр, чтобы context был полностью валиден.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      // Гибкое обновление (не блокирует UI). Если нужно принудительно — поставь immediate: true.
       InAppUpdateService.checkAndPrompt(context: context, immediate: false);
     });
   }

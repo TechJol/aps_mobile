@@ -10,7 +10,7 @@ class ForgotPassPage extends StatefulWidget {
 }
 
 class _ForgotPassPageState extends State<ForgotPassPage> {
-  String email = "example@gmail.com"; // Replace with actual user email
+  String email = "example@gmail.com";
   List<String> otpDigits = List.filled(4, '');
   late final List<FocusNode> focusNodes;
 
@@ -52,7 +52,6 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
   }
 
   void _resendCode() {
-    // Resend OTP logic here
     _startCountdown();
   }
 
@@ -72,7 +71,6 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // App Bar Row with Back Arrow
             Row(
               children: [
                 IconButton(
@@ -101,7 +99,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            //SizedBox(height: 0),
+
             Text(
               _maskEmail(email),
               style: TextStyle(
@@ -113,7 +111,6 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
 
             SizedBox(height: 10),
 
-            // OTP Fields
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(4, (index) {
@@ -164,7 +161,6 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
 
             SizedBox(height: 20),
 
-            // Resend Code Text
             Center(
               child: GestureDetector(
                 onTap: _canResend ? _resendCode : null,
@@ -183,11 +179,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
               ),
             ),
 
-            //Spacer(),
-            //SizedBox(height: 390),
-            SizedBox(
-              height: 425,
-            ), // 👈 Adjust this value to move the button lower
+            SizedBox(height: 425),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(

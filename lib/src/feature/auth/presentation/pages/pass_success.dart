@@ -28,10 +28,9 @@ class _PassSuccessPageState extends State<PassSuccessPage> {
           children: [
             const SizedBox(height: 200),
 
-            // Centered Success Image
             Center(
               child: Image.asset(
-                'assets/icons/success_check.png', // Ensure this asset is declared in pubspec.yaml
+                'assets/icons/success_check.png',
                 width: 98,
                 height: 98,
               ),
@@ -39,7 +38,6 @@ class _PassSuccessPageState extends State<PassSuccessPage> {
 
             const SizedBox(height: 20),
 
-            // Success message text
             Center(
               child: Text(
                 "Вы успешно изменили пароль!",
@@ -54,7 +52,6 @@ class _PassSuccessPageState extends State<PassSuccessPage> {
 
             const SizedBox(height: 8),
 
-            // Masked email confirmation text
             Text(
               'На почту ${_maskEmail(email)} отправлено подтверждение',
               textAlign: TextAlign.center,
@@ -67,14 +64,12 @@ class _PassSuccessPageState extends State<PassSuccessPage> {
 
             const SizedBox(height: 32),
 
-            // Button with horizontal padding
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigate to home page after password reset success
                     Navigator.pushReplacementNamed(context, AppRoutes.main);
                   },
                   style: ElevatedButton.styleFrom(

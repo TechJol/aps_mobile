@@ -67,34 +67,28 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     }
   }
 
-  /// Преобразуем «шумные» ошибки бэкенда (HTML/stacktrace)
-  /// в унифицированные коды ошибок, которые можно обработать выше.
   String _mapRegistrationError(String raw) {
     final text = raw.toLowerCase();
 
-    // Частые кейсы уникальности
     if (text.contains('duplicate') || text.contains('unique constraint')) {
-      // Компания уже существует
       if (text.contains("main_company.name") ||
           text.contains('company') && text.contains('name')) {
         return AuthErrorCodes.companyExists;
       }
-      // Email
+
       if (text.contains('email')) {
         return AuthErrorCodes.emailExists;
       }
-      // Username / user
+
       if (text.contains('username') || text.contains('users_user.username')) {
         return AuthErrorCodes.usernameExists;
       }
     }
 
-    // Если сервер отдал HTML от Django — уберём лишнее и вернём общий текст
     if (text.contains('integrityerror')) {
       return AuthErrorCodes.unknown;
     }
 
-    // По умолчанию — общий текст
     return AuthErrorCodes.unknown;
   }
 
@@ -137,7 +131,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           },
         ),
       );
-      // If no exception thrown, treat as success (e.g., 204/200)
+
       return const Right(unit);
     } on DioException catch (e) {
       final msg = NetworkErrorMapper.toMessage(e);

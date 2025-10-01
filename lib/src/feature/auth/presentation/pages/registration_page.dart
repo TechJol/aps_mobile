@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api, deprecated_member_use
+// ignore_for_file: deprecated_member_use
 
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
@@ -77,7 +77,6 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
     String? localSurnameError;
     String? localPasswordError;
 
-    // Only show errors for non-empty invalid fields
     if (company.isNotEmpty && !AppRegExp.companyName.hasMatch(company)) {
       localCompanyError = t.auth.validation.companyInvalid;
     }

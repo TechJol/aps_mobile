@@ -61,7 +61,6 @@ class _NewPassPageState extends State<NewPassPage> {
     final isValid =
         newPass.isNotEmpty && confirmPass.isNotEmpty && newPass == confirmPass;
 
-    // Only call setState if validation result changes to avoid unnecessary rebuilds
     if (isFormValid != isValid) {
       setState(() {
         isFormValid = isValid;

@@ -48,11 +48,9 @@ class IncomeCubit extends Cubit<IncomeState> {
               .map((e) => AccountModel.fromMap(e as Map<String, dynamic>))
               .toList();
 
-      // Get companyId from SharedPreferences
       SharedPreferences storage = await SharedPreferences.getInstance();
       final companyId = storage.getInt('companyId');
 
-      // Filter accounts by companyId
       final filteredAccounts =
           accounts.where((account) => account.company == companyId).toList();
 
@@ -73,11 +71,9 @@ class IncomeCubit extends Cubit<IncomeState> {
               )
               .toList();
 
-      // Get companyId from SharedPreferences
       SharedPreferences storage = await SharedPreferences.getInstance();
       final companyId = storage.getInt('companyId');
 
-      // Filter reasons by companyId
       final filteredReasons =
           reasons.where((reason) => reason.company == companyId).toList();
 

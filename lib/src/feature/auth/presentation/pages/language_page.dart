@@ -15,14 +15,11 @@ class _LanguageSelectionState extends State<LanguageSelection> {
   AppLocale? selected;
 
   Future<void> _applyAndGo(AppLocale locale) async {
-    // применяем локаль
     LocaleSettings.setLocale(locale);
 
-    // сохраняем
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('app_locale', locale.languageTag);
 
-    // в Main
     Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (_) => false);
   }
 
@@ -94,13 +91,9 @@ class _LanguageSelectionState extends State<LanguageSelection> {
 
   @override
   Widget build(BuildContext context) {
-    // локализуем заголовки
-    final title =
-        t.menu.language.select; // "Выберите язык" / "Select a language"
+    final title = t.menu.language.select;
     final enLabel = t.menu.language.english;
     final ruLabel = t.menu.language.russian;
-    // если будет кыргызский – добавишь в YAML и сюда:
-    // final kyLabel = t.menu.language.kyrgyz;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -129,7 +122,7 @@ class _LanguageSelectionState extends State<LanguageSelection> {
               assetPath: 'assets/icons/ru.png',
               locale: AppLocale.ru,
             ),
-            // _option(label: kyLabel, assetPath: 'assets/icons/kg.png', locale: AppLocale.ky),
+
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
@@ -145,7 +138,7 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                   ),
                 ),
                 child: Text(
-                  t.menu.profile.next, // "Далее"
+                  t.menu.profile.next,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

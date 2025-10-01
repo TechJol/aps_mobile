@@ -29,7 +29,6 @@ class PopupMenuWid extends StatelessWidget {
               ancestor: overlay,
             );
 
-            // Смещение меню (например, вниз на 10 пикселей, вправо на 10)
             final RelativeRect positionRect = RelativeRect.fromLTRB(
               position.dx,
               position.dy + button.size.height,
@@ -44,7 +43,7 @@ class PopupMenuWid extends StatelessWidget {
               elevation: 8,
               color: AppColors.whiteColor,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12), // нужный радиус
+                borderRadius: BorderRadius.circular(12),
               ),
               items: [
                 PopupMenuItem(
@@ -73,10 +72,7 @@ class PopupMenuWid extends StatelessWidget {
             );
 
             if (selected == 'edit') {
-              // обработка редактирования
-            } else if (selected == 'delete') {
-              // обработка удаления
-            }
+            } else if (selected == 'delete') {}
           },
         );
       },

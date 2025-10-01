@@ -29,7 +29,6 @@ class MoreInfoPage extends StatelessWidget {
           }
 
           if (state is! MenuTransactionsWithAccountsSuccess) {
-            // подстрахуемся: загрузим необходимые данные
             context.read<MenuCubit>().getTransactionsWithAccounts();
             return const SizedBox.shrink();
           }
@@ -38,7 +37,6 @@ class MoreInfoPage extends StatelessWidget {
           final txByAccount =
               txAll.where((t) => t.account == account.id).toList();
 
-          // агрегаты по выбранному счёту
           final summaries = _buildCurrencySummaries(txByAccount);
           final service = LocalService();
 
@@ -81,7 +79,6 @@ class MoreInfoPage extends StatelessWidget {
 
           return ListView(
             children: [
-              // Кнопки
               Container(
                 padding: const EdgeInsets.only(top: 20, bottom: 20),
                 decoration: BoxDecoration(
@@ -131,7 +128,7 @@ class MoreInfoPage extends StatelessWidget {
                                           'yyyy-MM-dd',
                                         ).format(DateTime.parse(tx.date!))
                                         : '';
-                                // ✅ локализация типа транзакции
+
                                 final type =
                                     (tx.transactionType == 'income')
                                         ? t.account.income
@@ -194,7 +191,6 @@ class MoreInfoPage extends StatelessWidget {
                                           'yyyy-MM-dd',
                                         ).format(DateTime.parse(tx.date!))
                                         : '';
-                                // ✅ локализация типа транзакции
                                 final type =
                                     (tx.transactionType == 'income')
                                         ? t.account.income
@@ -232,7 +228,6 @@ class MoreInfoPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Таблица №1 — сводка по счёту
                     Text(
                       '${t.account.balanceAllSummary}:',
                       style: AppTextStyles.f16w500,
@@ -264,7 +259,6 @@ class MoreInfoPage extends StatelessWidget {
 
                     28.h,
 
-                    // Таблица №2 — все транзакции
                     Text(
                       '${t.account.allTransactionsWithAccount} ${account.name}',
                       style: AppTextStyles.f16w500,
@@ -287,7 +281,7 @@ class MoreInfoPage extends StatelessWidget {
                                       'yyyy-MM-dd',
                                     ).format(DateTime.parse(tx.date!))
                                     : '';
-                            // ✅ локализация типа транзакции
+
                             final type =
                                 (tx.transactionType == 'income')
                                     ? t.account.income
@@ -351,7 +345,6 @@ class _CurrencySummary {
   }
 }
 
-/// Универсальная таблица с горизонтальными и вертикальными границами.
 class _BoxedTable extends StatelessWidget {
   const _BoxedTable({
     required this.headers,
@@ -393,7 +386,6 @@ class _BoxedTable extends StatelessWidget {
             ),
           ),
           children: [
-            // заголовок
             TableRow(
               decoration: BoxDecoration(color: headerBg),
               children:
@@ -414,7 +406,7 @@ class _BoxedTable extends StatelessWidget {
                       )
                       .toList(),
             ),
-            // строки
+
             ...rows.map(
               (r) => TableRow(
                 decoration: const BoxDecoration(color: Colors.white),
