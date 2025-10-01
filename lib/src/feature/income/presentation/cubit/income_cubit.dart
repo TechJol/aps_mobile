@@ -88,4 +88,8 @@ class IncomeCubit extends Cubit<IncomeState> {
   void resetState() {
     emit(state.copyWith(incomeSaved: false, error: null));
   }
+
+  void clearAll() {
+    emit(const IncomeState());
+  }
 }

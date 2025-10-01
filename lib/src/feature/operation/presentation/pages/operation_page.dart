@@ -212,6 +212,8 @@ class _OperationPageState extends State<OperationPage>
                 final grouped = _groupTransactionsByDate(filtered);
                 _controller.forward();
 
+                int globalIndex = 0;
+
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
@@ -222,11 +224,13 @@ class _OperationPageState extends State<OperationPage>
                       ...grouped.entries.expand((entry) {
                         final dailyTxs = entry.value;
                         return List.generate(dailyTxs.length, (index) {
+                          final begin = (globalIndex * 0.08).clamp(0.0, 0.92);
+                          globalIndex += 1;
                           return FadeTransition(
                             opacity: CurvedAnimation(
                               parent: _controller,
                               curve: Interval(
-                                index * 0.1,
+                                begin,
                                 1.0,
                                 curve: Curves.easeOut,
                               ),

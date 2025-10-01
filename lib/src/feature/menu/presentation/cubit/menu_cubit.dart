@@ -50,6 +50,12 @@ class MenuCubit extends Cubit<MenuState> {
     required this.deleteReasonUsecase,
   }) : super(MenuInitial());
 
+  void reset() {
+    filteredPartners = [];
+    partnerBalances = {};
+    if (state is! MenuInitial) emit(MenuInitial());
+  }
+
   void filterPartnersByType(int selectedTypeId) {
     final allPartners = (state as MenuPartnerDataSuccess).partners;
 

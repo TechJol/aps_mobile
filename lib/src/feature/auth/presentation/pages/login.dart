@@ -70,6 +70,7 @@ class _LoginFormEmbeddedState extends State<LoginFormEmbedded> {
 
   Future<void> _onLoginSuccessNavigate() async {
     final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
     final savedTag = prefs.getString('app_locale');
     if (savedTag != null && savedTag.isNotEmpty) {
       Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (_) => false);
@@ -87,7 +88,12 @@ class _LoginFormEmbeddedState extends State<LoginFormEmbedded> {
     return BlocListener<CredentialCubit, CredentialState>(
       listener: (context, state) async {
         if (state is CredentialSuccess) {
+          final menuCubit = context.read<MenuCubit>()..reset();
+          context.read<IncomeCubit>().clearAll();
+          context.read<MainCubit>().reset();
           context.read<AuthCubit>().appStarted();
+          await menuCubit.getTransactionsWithAccounts(force: true);
+          if (!mounted) return;
           await _onLoginSuccessNavigate();
         }
         if (state is CredentialFailure) {
