@@ -69,17 +69,14 @@ class ExpandableMenuItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 for (int i = 0; i < children.length; i++) ...[
-                  SizedBox(
-                    width: double.infinity,
-                    child: GestureDetector(
-                      onTap: () => onChildTap?.call(children[i]),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 16,
-                          horizontal: 24,
-                        ),
-                        child: Text(children[i], style: AppTextStyles.f14w400),
+                  GestureDetector(
+                    onTap: () => onChildTap?.call(children[i]),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 24,
                       ),
+                      child: Text(children[i], style: AppTextStyles.f14w400),
                     ),
                   ),
                   if (i != children.length - 1)
