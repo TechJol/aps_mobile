@@ -32,12 +32,12 @@ class AuthModel extends AuthEntity {
   };
 
   factory AuthModel.fromEntity(AuthEntity entity) => AuthModel(
-        id: entity.id,
-        username: entity.username,
-        password: entity.password,
-        email: entity.email,
-        firstName: entity.firstName,
-        lastName: entity.lastName,
-        companyName: entity.companyName,
-      );
+    id: entity.id,
+    username: entity.username,
+    password: entity.password,
+    email: entity.email,
+    firstName: entity.firstName,
+    lastName: entity.lastName,
+    companyName: entity.companyName,
+  );
 }

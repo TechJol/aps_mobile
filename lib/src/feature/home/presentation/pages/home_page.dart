@@ -35,8 +35,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final menuState = context.watch<MenuCubit>().state;
-    final transactionsState =
-        menuState is MenuTransactionsWithAccountsSuccess ? menuState : null;
+    final transactionsState = menuState is MenuTransactionsWithAccountsSuccess
+        ? menuState
+        : null;
 
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
@@ -117,11 +118,9 @@ class _HomePageState extends State<HomePage> {
 
   void _changePeriod(bool forward) {
     final index = _periodOptionsOrder.indexOf(selectedPeriod);
-    final nextIndex =
-        forward
-            ? (index + 1) % _periodOptionsOrder.length
-            : (index - 1 + _periodOptionsOrder.length) %
-                _periodOptionsOrder.length;
+    final nextIndex = forward
+        ? (index + 1) % _periodOptionsOrder.length
+        : (index - 1 + _periodOptionsOrder.length) % _periodOptionsOrder.length;
     _handlePeriodTap(_periodOptionsOrder[nextIndex]);
   }
 }

@@ -20,7 +20,27 @@ class RecentOperationsSection extends StatelessWidget {
             Row(
               children: [
                 GestureDetector(
-                  onTap: () => context.read<MainCubit>().change(4),
+                  onTap: () {
+                    switch (selectedView) {
+                      case ViewType.all:
+                        context.read<MainCubit>().change(4);
+                        break;
+                      case ViewType.income:
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const IncomeTransactionsPage(),
+                          ),
+                        );
+                        break;
+                      case ViewType.expense:
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const ExpenseTransactionsPage(),
+                          ),
+                        );
+                        break;
+                    }
+                  },
                   child: Text(
                     t.home.seeAll,
                     style: AppTextStyles.f14w500.copyWith(
@@ -72,13 +92,12 @@ class RecentOperationsSection extends StatelessWidget {
                       '${date.hour.toString().padLeft(2, '0')}:'
                       '${date.minute.toString().padLeft(2, '0')}';
 
-                  final partnerName =
-                      partners
-                          .firstWhere(
-                            (partner) => partner.id == tx.partners,
-                            orElse: () => PartnersModel(name: t.home.unknown),
-                          )
-                          .name;
+                  final partnerName = partners
+                      .firstWhere(
+                        (partner) => partner.id == tx.partners,
+                        orElse: () => PartnersModel(name: t.home.unknown),
+                      )
+                      .name;
 
                   return TweenAnimationBuilder(
                     duration: Duration(milliseconds: 400 + index * 100),
@@ -87,14 +106,10 @@ class RecentOperationsSection extends StatelessWidget {
                       end: Offset.zero,
                     ),
                     curve: Curves.easeOut,
-                    builder:
-                        (context, offset, child) => Transform.translate(
-                          offset: offset * 30,
-                          child: Opacity(
-                            opacity: 1.0 - offset.dy,
-                            child: child,
-                          ),
-                        ),
+                    builder: (context, offset, child) => Transform.translate(
+                      offset: offset * 30,
+                      child: Opacity(opacity: 1.0 - offset.dy, child: child),
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Row(
@@ -103,18 +118,16 @@ class RecentOperationsSection extends StatelessWidget {
                             width: 40,
                             height: 40,
                             decoration: BoxDecoration(
-                              color:
-                                  isIncome
-                                      ? AppColors.greenColorLight
-                                      : AppColors.redColorLight,
+                              color: isIncome
+                                  ? AppColors.greenColorLight
+                                  : AppColors.redColorLight,
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
                               isIncome ? Icons.call_received : Icons.north_west,
-                              color:
-                                  isIncome
-                                      ? AppColors.greenColor50
-                                      : AppColors.redColor50,
+                              color: isIncome
+                                  ? AppColors.greenColor50
+                                  : AppColors.redColor50,
                               size: 20,
                             ),
                           ),
@@ -137,10 +150,9 @@ class RecentOperationsSection extends StatelessWidget {
                           Text(
                             amountText,
                             style: AppTextStyles.f16w600.copyWith(
-                              color:
-                                  isIncome
-                                      ? AppColors.greenColor50
-                                      : AppColors.redColor50,
+                              color: isIncome
+                                  ? AppColors.greenColor50
+                                  : AppColors.redColor50,
                             ),
                           ),
                         ],
@@ -170,11 +182,12 @@ class RecentOperationsSection extends StatelessWidget {
     List<AllTransactionsModel> transactions,
     ViewType type,
   ) {
-    final sorted = [...transactions]..sort((a, b) {
-      final dateA = DateTime.tryParse(a.date ?? '') ?? DateTime.now();
-      final dateB = DateTime.tryParse(b.date ?? '') ?? DateTime.now();
-      return dateB.compareTo(dateA);
-    });
+    final sorted = [...transactions]
+      ..sort((a, b) {
+        final dateA = DateTime.tryParse(a.date ?? '') ?? DateTime.now();
+        final dateB = DateTime.tryParse(b.date ?? '') ?? DateTime.now();
+        return dateB.compareTo(dateA);
+      });
 
     switch (type) {
       case ViewType.all:

@@ -18,9 +18,16 @@ class OperationFilterChip extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 12, left: 30, right: 30),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('${t.operation.filter}: $label', style: AppTextStyles.f14w500),
+          Expanded(
+            child: Text(
+              '${t.operation.filter}: $label',
+              style: AppTextStyles.f14w500,
+              softWrap: true,
+            ),
+          ),
+          const SizedBox(width: 12),
           TextButton(onPressed: onReset, child: Text(t.operation.resetFilter)),
         ],
       ),
