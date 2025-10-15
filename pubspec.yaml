@@ -3,7 +3,7 @@ description: "Soft KG Pro Mobile Application"
 
 publish_to: 'none'
 
-version: 1.0.12+13
+version: 1.0.13+14
 
 environment:
   sdk: '^3.9.2'
@@ -41,6 +41,8 @@ dependencies:
   image_picker: ^1.1.2
   google_fonts: ^6.2.1
   cached_network_image: ^3.4.1
+  new_version_plus: ^0.1.1
+  url_launcher: ^6.3.0
 
   # -- Json -- #
   json_annotation: ^4.9.0
