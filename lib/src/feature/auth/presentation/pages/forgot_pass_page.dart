@@ -138,10 +138,9 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
-                            color:
-                                otpDigits[index].isNotEmpty
-                                    ? Color(0xFF661EFB)
-                                    : Colors.grey.shade300,
+                            color: otpDigits[index].isNotEmpty
+                                ? Color(0xFF661EFB)
+                                : Colors.grey.shade300,
                             width: otpDigits[index].isNotEmpty ? 1.5 : 1,
                           ),
                         ),
@@ -183,11 +182,9 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed:
-                    otpDigits.every((d) => d.isNotEmpty)
-                        ? () =>
-                            Navigator.pushNamed(context, AppRoutes.newPassword)
-                        : null,
+                onPressed: otpDigits.every((d) => d.isNotEmpty)
+                    ? () => Navigator.pushNamed(context, AppRoutes.newPassword)
+                    : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF661EFB),
                   disabledBackgroundColor: Color(0xFFC7C8FF),

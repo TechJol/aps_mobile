@@ -77,14 +77,16 @@ class _TransactionsPageState extends State<TransactionsPage> {
         listener: (context, state) {
           if (state is MenuTransactionUpdatedSuccess) {
             final label = _transactionLabel(state.updatedTransaction);
+            final statusText = t.menu.transactions.table.edited;
             ScaffoldMessenger.of(
               context,
-            ).showSnackBar(SnackBar(content: Text('${t.menu.edit}: $label')));
+            ).showSnackBar(SnackBar(content: Text('$statusText: $label')));
           } else if (state is MenuTransactionDeletedSuccess) {
             final label = state.transactionLabel ?? '#${state.transactionId}';
+            final statusText = t.menu.transactions.table.deleted;
             ScaffoldMessenger.of(
               context,
-            ).showSnackBar(SnackBar(content: Text('${t.menu.delete}: $label')));
+            ).showSnackBar(SnackBar(content: Text('$statusText: $label')));
           } else if (state is DeleteError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('${t.menu.error}: ${state.error}')),

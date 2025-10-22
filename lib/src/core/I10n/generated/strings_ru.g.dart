@@ -638,6 +638,8 @@ class _TranslationsMenuTransactionsTableRu extends TranslationsMenuTransactionsT
 	@override String get article => 'Статья';
 	@override String get counterparty => 'Контрагент';
 	@override String get comment => 'Комментарий';
+	@override String get deleted => 'Удалено';
+	@override String get edited => 'Изменено';
 }
 
 // Path: menu.accounts.headers
@@ -894,6 +896,8 @@ extension on TranslationsRu {
 			case 'menu.transactions.table.article': return 'Статья';
 			case 'menu.transactions.table.counterparty': return 'Контрагент';
 			case 'menu.transactions.table.comment': return 'Комментарий';
+			case 'menu.transactions.table.deleted': return 'Удалено';
+			case 'menu.transactions.table.edited': return 'Изменено';
 			case 'menu.forCounterparties.title': return 'Категории контрагентов';
 			case 'menu.forCounterparties.noTypes': return 'Нет доступных категорий';
 			case 'menu.forCounterparties.noPartnersInType': return 'Нет контрагентов в этой категории';

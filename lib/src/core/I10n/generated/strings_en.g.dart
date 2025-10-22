@@ -1186,6 +1186,12 @@ class TranslationsMenuTransactionsTableEn {
 
 	/// en: 'Comment'
 	String get comment => 'Comment';
+
+	/// en: 'Deleted'
+	String get deleted => 'Deleted';
+
+	/// en: 'Edited'
+	String get edited => 'Edited';
 }
 
 // Path: menu.accounts.headers
@@ -1452,6 +1458,8 @@ extension on Translations {
 			case 'menu.transactions.table.article': return 'Article';
 			case 'menu.transactions.table.counterparty': return 'Counterparty';
 			case 'menu.transactions.table.comment': return 'Comment';
+			case 'menu.transactions.table.deleted': return 'Deleted';
+			case 'menu.transactions.table.edited': return 'Edited';
 			case 'menu.forCounterparties.title': return 'Counterparty categories';
 			case 'menu.forCounterparties.noTypes': return 'No categories available';
 			case 'menu.forCounterparties.noPartnersInType': return 'No counterparties in this category';

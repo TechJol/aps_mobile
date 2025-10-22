@@ -156,6 +156,8 @@ transactions:
     article: "Статья"
     counterparty: "Контрагент"
     comment: "Комментарий"
+    deleted: "Удалено"
+    edited: "Изменено" 
 
 forCounterparties:
   title: "Категории контрагентов"
