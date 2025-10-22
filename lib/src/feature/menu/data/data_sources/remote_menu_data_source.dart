@@ -6,6 +6,8 @@ abstract class RemoteMenuDataSource {
 
   Future<Either> updateTransaction(AllTransactionsModel transaction, int id);
 
+  Future<Either> deleteTransaction(int id);
+
   Future<Either> getPartners();
 
   Future<Either> deletePartner(int id);

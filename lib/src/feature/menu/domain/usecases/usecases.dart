@@ -16,3 +16,4 @@ export 'post_reason_usecase.dart';
 export 'delete_reason_usecase.dart';
 export 'update_reason_usecase.dart';
 export 'update_transaction_usecase.dart';
+export 'delete_transaction_usecase.dart';

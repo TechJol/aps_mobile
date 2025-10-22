@@ -129,6 +129,18 @@ final class MenuTransactionUpdatedSuccess extends MenuState {
   List<Object> get props => [updatedTransaction];
 }
 
+final class MenuTransactionDeletedSuccess extends MenuState {
+  final int transactionId;
+  final String? transactionLabel;
+  const MenuTransactionDeletedSuccess({
+    required this.transactionId,
+    this.transactionLabel,
+  });
+
+  @override
+  List<Object?> get props => [transactionId, transactionLabel];
+}
+
 final class MenuPartnerBalancesCalculated extends MenuState {
   final Map<int, Decimal> partnerBalances;
 

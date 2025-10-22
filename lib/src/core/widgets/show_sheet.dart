@@ -7,6 +7,7 @@ class ShowSheet {
     String? accountName,
     required void Function()? onConfirm,
     required String title,
+    String? message,
   }) {
     return showDialog(
       context: context,
@@ -20,7 +21,7 @@ class ShowSheet {
           contentPadding: const EdgeInsets.all(20),
           title: Text(title, style: AppTextStyles.f22w500),
           content: Text(
-            '${t.account.confirmDelete} "$accountName"?',
+            message ?? '${t.account.confirmDelete} "$accountName"?',
             style: AppTextStyles.f16w500.copyWith(
               color: AppColors.greyerColorLight,
             ),

@@ -489,4 +489,24 @@ class RemoteMenuDataSourceImpl implements RemoteMenuDataSource {
       return Left(Failure(msg, code: e.response?.statusCode));
     }
   }
+
+  @override
+  Future<Either> deleteTransaction(int id) async {
+    try {
+      await sl<DioClient>().delete(
+        '${AppApi.transactions}$id/',
+        options: Options(
+          headers: const {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRFTOKEN': 'uelFJVVgrTDO43VmKZBl9yF18vO7AGVE',
+          },
+        ),
+      );
+      return const Right(unit);
+    } on DioException catch (e) {
+      final msg = NetworkErrorMapper.toMessage(e);
+      return Left(Failure(msg, code: e.response?.statusCode));
+    }
+  }
 }

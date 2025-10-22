@@ -9,6 +9,7 @@ part 'menu_state.dart';
 class MenuCubit extends Cubit<MenuState> {
   final GetTransactionsUsecase getTransactionsUsecase;
   final UpdateTransactionUsecase updateTransactionUsecase;
+  final DeleteTransactionUsecase deleteTransactionUsecase;
   final GetPartnersUsecase getPartnersUsecase;
   final DeletePartnerUsecase deletePartnerUsecase;
   final PostPartnerUsecase postPartnerUsecase;
@@ -32,6 +33,7 @@ class MenuCubit extends Cubit<MenuState> {
   MenuCubit({
     required this.getTransactionsUsecase,
     required this.updateTransactionUsecase,
+    required this.deleteTransactionUsecase,
     required this.getPartnersUsecase,
     required this.deletePartnerUsecase,
     required this.postPartnerUsecase,
@@ -61,8 +63,9 @@ class MenuCubit extends Cubit<MenuState> {
     final current = state as MenuPartnerDataSuccess;
     final partners = current.partners ?? [];
 
-    filteredPartners =
-        partners.where((partner) => partner.type == selectedTypeId).toList();
+    filteredPartners = partners
+        .where((partner) => partner.type == selectedTypeId)
+        .toList();
 
     emit(
       MenuPartnerDataSuccess(
@@ -117,35 +120,30 @@ class MenuCubit extends Cubit<MenuState> {
 
     final companyId = await _companyId();
 
-    final transactions =
-        (transactionsResult.getOrElse(() => []) as List)
-            .map((e) => AllTransactionsModel.fromMap(e))
-            .where((tx) => tx.company == companyId)
-            .toList();
+    final transactions = (transactionsResult.getOrElse(() => []) as List)
+        .map((e) => AllTransactionsModel.fromMap(e))
+        .where((tx) => tx.company == companyId)
+        .toList();
 
-    final accounts =
-        (accountsResult.getOrElse(() => []) as List)
-            .map((e) => AccountModel.fromMap(e))
-            .where((tx) => tx.company == companyId)
-            .toList();
+    final accounts = (accountsResult.getOrElse(() => []) as List)
+        .map((e) => AccountModel.fromMap(e))
+        .where((tx) => tx.company == companyId)
+        .toList();
 
-    final reasons =
-        (reasonsResult.getOrElse(() => []) as List)
-            .map((e) => IncomeExpenseReasons.fromMap(e))
-            .where((reason) => reason.company == companyId)
-            .toList();
+    final reasons = (reasonsResult.getOrElse(() => []) as List)
+        .map((e) => IncomeExpenseReasons.fromMap(e))
+        .where((reason) => reason.company == companyId)
+        .toList();
 
-    final partners =
-        (partnersResult.getOrElse(() => []) as List)
-            .map((e) => PartnersModel.fromMap(e))
-            .where((partner) => partner.company == companyId)
-            .toList();
+    final partners = (partnersResult.getOrElse(() => []) as List)
+        .map((e) => PartnersModel.fromMap(e))
+        .where((partner) => partner.company == companyId)
+        .toList();
 
-    final partnerTypes =
-        (partnerTypesResult.getOrElse(() => []) as List)
-            .map((e) => PartnerTypesModel.fromMap(e))
-            .where((type) => type.company == companyId)
-            .toList();
+    final partnerTypes = (partnerTypesResult.getOrElse(() => []) as List)
+        .map((e) => PartnerTypesModel.fromMap(e))
+        .where((type) => type.company == companyId)
+        .toList();
 
     final balances = calculatePartnerBalances(transactions);
     partnerBalances = balances;
@@ -192,22 +190,22 @@ class MenuCubit extends Cubit<MenuState> {
       return;
     }
 
-    final partners =
-        (partnersResult.getOrElse(() => []) as List)
-            .map((e) => PartnersModel.fromMap(e))
-            .toList();
+    final partners = (partnersResult.getOrElse(() => []) as List)
+        .map((e) => PartnersModel.fromMap(e))
+        .toList();
 
-    final types =
-        (typesResult.getOrElse(() => []) as List)
-            .map((e) => PartnerTypesModel.fromMap(e))
-            .toList();
+    final types = (typesResult.getOrElse(() => []) as List)
+        .map((e) => PartnerTypesModel.fromMap(e))
+        .toList();
 
     final companyId = await _companyId();
 
-    final filteredPartners =
-        partners.where((partner) => partner.company == companyId).toList();
-    final filteredTypes =
-        types.where((type) => type.company == companyId).toList();
+    final filteredPartners = partners
+        .where((partner) => partner.company == companyId)
+        .toList();
+    final filteredTypes = types
+        .where((type) => type.company == companyId)
+        .toList();
 
     emit(
       MenuPartnerDataSuccess(
@@ -239,8 +237,9 @@ class MenuCubit extends Cubit<MenuState> {
     result.fold((l) => emit(MenuError(message: l.message)), (r) async {
       final accounts = (r as List).map((e) => AccountModel.fromMap(e)).toList();
       final companyId = await _companyId();
-      final filteredAccounts =
-          accounts.where((account) => account.company == companyId).toList();
+      final filteredAccounts = accounts
+          .where((account) => account.company == companyId)
+          .toList();
 
       emit(MenuAccountsSuccess(accounts: filteredAccounts));
     });
@@ -290,11 +289,13 @@ class MenuCubit extends Cubit<MenuState> {
     final result = await getReasonsUsecase();
 
     result.fold((l) => emit(MenuError(message: l.message)), (r) async {
-      final reasons =
-          (r as List).map((e) => IncomeExpenseReasons.fromMap(e)).toList();
+      final reasons = (r as List)
+          .map((e) => IncomeExpenseReasons.fromMap(e))
+          .toList();
       final companyId = await _companyId();
-      final filteredReasons =
-          reasons.where((reason) => reason.company == companyId).toList();
+      final filteredReasons = reasons
+          .where((reason) => reason.company == companyId)
+          .toList();
 
       emit(MenuReasonsSuccess(reasons: filteredReasons));
     });
@@ -445,8 +446,25 @@ class MenuCubit extends Cubit<MenuState> {
     final result = await updateTransactionUsecase.call(trans, id);
     result.fold(
       (l) => emit(MenuError(message: 'Ошибка при обновлении: ${l.toString()}')),
-      (r) {},
+      (r) async {
+        final updated = trans.copyWith(id: id);
+        emit(MenuTransactionUpdatedSuccess(updatedTransaction: updated));
+        await getTransactionsWithAccounts(force: true);
+      },
     );
+  }
+
+  Future<void> deleteTransaction(int id, {String? label}) async {
+    final result = await deleteTransactionUsecase.call(id);
+    await result.fold((l) async => emit(DeleteError(error: l)), (_) async {
+      emit(
+        MenuTransactionDeletedSuccess(
+          transactionId: id,
+          transactionLabel: label,
+        ),
+      );
+      await getTransactionsWithAccounts(force: true);
+    });
   }
 
   Future<void> updatePartnerInTransaction(
