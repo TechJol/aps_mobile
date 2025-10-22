@@ -88,12 +88,11 @@ class _TransactionsPageState extends State<TransactionsPage> {
       return accounts
           .firstWhere(
             (acc) => acc.id == id,
-            orElse:
-                () => AccountModel(
-                  name: t.menu.common.unknown,
-                  accountType: '',
-                  company: 0,
-                ),
+            orElse: () => AccountModel(
+              name: t.menu.common.unknown,
+              accountType: '',
+              company: 0,
+            ),
           )
           .name;
     }
@@ -102,12 +101,11 @@ class _TransactionsPageState extends State<TransactionsPage> {
       return reasons
           .firstWhere(
             (reason) => reason.id == id,
-            orElse:
-                () => IncomeExpenseReasons(
-                  name: t.menu.common.unknown,
-                  type: '',
-                  company: 0,
-                ),
+            orElse: () => IncomeExpenseReasons(
+              name: t.menu.common.unknown,
+              type: '',
+              company: 0,
+            ),
           )
           .name;
     }
@@ -116,8 +114,8 @@ class _TransactionsPageState extends State<TransactionsPage> {
       return partners
           .firstWhere(
             (p) => p.id == id,
-            orElse:
-                () => PartnersModel(name: t.menu.common.unknown, company: 0),
+            orElse: () =>
+                PartnersModel(name: t.menu.common.unknown, company: 0),
           )
           .name;
     }
@@ -146,15 +144,14 @@ class _TransactionsPageState extends State<TransactionsPage> {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
         child: Text(
           text,
-          style:
-              isHeader
-                  ? const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  )
-                  : AppTextStyles.f14w500.copyWith(
-                    color: color ?? AppColors.blackColor,
-                  ),
+          style: isHeader
+              ? const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                )
+              : AppTextStyles.f14w500.copyWith(
+                  color: color ?? AppColors.blackColor,
+                ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -230,28 +227,27 @@ class _TransactionsPageState extends State<TransactionsPage> {
                     t.menu.transactions.table.comment,
                   ];
 
-                  final rows =
-                      data.asMap().entries.map<List<String>>((entry) {
-                        final tx = entry.value;
-                        final index = entry.key + 1;
-                        return [
-                          '$index',
-                          tx.amount?.toString() ?? '',
-                          tx.currency ?? '',
-                          tx.date != null
-                              ? DateFormat(
-                                'dd.MM.yyyy',
-                              ).format(DateTime.parse(tx.date!))
-                              : '',
-                          tx.transactionType == 'income'
-                              ? t.menu.articles.income
-                              : t.menu.articles.expense,
-                          getAccountName(tx.account ?? 0),
-                          getReasonName(tx.incomeExpenseReason ?? 0),
-                          getPartnerName(tx.partners ?? 0),
-                          tx.description ?? '',
-                        ];
-                      }).toList();
+                  final rows = data.asMap().entries.map<List<String>>((entry) {
+                    final tx = entry.value;
+                    final index = entry.key + 1;
+                    return [
+                      '$index',
+                      tx.amount?.toString() ?? '',
+                      tx.currency ?? '',
+                      tx.date != null
+                          ? DateFormat(
+                              'dd.MM.yyyy',
+                            ).format(DateTime.parse(tx.date!))
+                          : '',
+                      tx.transactionType == 'income'
+                          ? t.menu.articles.income
+                          : t.menu.articles.expense,
+                      getAccountName(tx.account ?? 0),
+                      getReasonName(tx.incomeExpenseReason ?? 0),
+                      getPartnerName(tx.partners ?? 0),
+                      tx.description ?? '',
+                    ];
+                  }).toList();
 
                   _localService.printReportAsPdf(
                     context: context,
@@ -277,28 +273,27 @@ class _TransactionsPageState extends State<TransactionsPage> {
                     t.menu.transactions.table.comment,
                   ];
 
-                  final rows =
-                      data.asMap().entries.map<List<String>>((entry) {
-                        final tx = entry.value;
-                        final index = entry.key + 1;
-                        return [
-                          '$index',
-                          tx.amount?.toString() ?? '',
-                          tx.currency ?? '',
-                          tx.date != null
-                              ? DateFormat(
-                                'dd.MM.yyyy',
-                              ).format(DateTime.parse(tx.date!))
-                              : '',
-                          tx.transactionType == 'income'
-                              ? t.menu.articles.income
-                              : t.menu.articles.expense,
-                          getAccountName(tx.account ?? 0),
-                          getReasonName(tx.incomeExpenseReason ?? 0),
-                          getPartnerName(tx.partners ?? 0),
-                          tx.description ?? '',
-                        ];
-                      }).toList();
+                  final rows = data.asMap().entries.map<List<String>>((entry) {
+                    final tx = entry.value;
+                    final index = entry.key + 1;
+                    return [
+                      '$index',
+                      tx.amount?.toString() ?? '',
+                      tx.currency ?? '',
+                      tx.date != null
+                          ? DateFormat(
+                              'dd.MM.yyyy',
+                            ).format(DateTime.parse(tx.date!))
+                          : '',
+                      tx.transactionType == 'income'
+                          ? t.menu.articles.income
+                          : t.menu.articles.expense,
+                      getAccountName(tx.account ?? 0),
+                      getReasonName(tx.incomeExpenseReason ?? 0),
+                      getPartnerName(tx.partners ?? 0),
+                      tx.description ?? '',
+                    ];
+                  }).toList();
 
                   _localService.exportToExcelGeneric(
                     fileName: t.menu.transactions.fileName,
@@ -349,18 +344,16 @@ class _TransactionsPageState extends State<TransactionsPage> {
         children: [
           IconButton(
             icon: const Icon(Icons.chevron_left),
-            onPressed:
-                currentPage > 1
-                    ? () => goToPage(currentPage - 1, pageCount)
-                    : null,
+            onPressed: currentPage > 1
+                ? () => goToPage(currentPage - 1, pageCount)
+                : null,
           ),
           for (int i = startPage; i <= endPage; i++) _pageButton(i, pageCount),
           IconButton(
             icon: const Icon(Icons.chevron_right),
-            onPressed:
-                currentPage < pageCount
-                    ? () => goToPage(currentPage + 1, pageCount)
-                    : null,
+            onPressed: currentPage < pageCount
+                ? () => goToPage(currentPage + 1, pageCount)
+                : null,
           ),
         ],
       ),
@@ -372,8 +365,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
       padding: const EdgeInsets.symmetric(horizontal: 2.0),
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
-          backgroundColor:
-              page == currentPage ? AppColors.primaryColorLight : null,
+          backgroundColor: page == currentPage
+              ? AppColors.primaryColorLight
+              : null,
           foregroundColor: page == currentPage ? Colors.white : Colors.black,
           minimumSize: const Size(36, 36),
           padding: const EdgeInsets.symmetric(horizontal: 8),
