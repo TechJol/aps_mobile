@@ -121,6 +121,8 @@ class SettingsAppPage extends StatelessWidget {
         return t.menu.language.russian;
       case AppLocale.en:
         return t.menu.language.english;
+      case AppLocale.ky:
+        return t.menu.language.kyrgyz;
     }
   }
 
@@ -170,13 +172,12 @@ class SettingsAppPage extends StatelessWidget {
                   onTap: () => _applyLocale(ctx, AppLocale.en),
                 ),
 
-                // KY (опционально, если есть)
-                // _LanguageTile(
-                //   leading: const Text('🇰🇬', style: TextStyle(fontSize: 22)),
-                //   title: t.menu.language.kyrgyz,
-                //   selected: current == AppLocale.ky,
-                //   onTap: () => _applyLocale(ctx, AppLocale.ky),
-                // ),
+                _LanguageTile(
+                  leading: const Text('🇰🇬', style: TextStyle(fontSize: 22)),
+                  title: t.menu.language.kyrgyz,
+                  selected: current == AppLocale.ky,
+                  onTap: () => _applyLocale(ctx, AppLocale.ky),
+                ),
               ],
             ),
           ),

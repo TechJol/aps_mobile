@@ -1,0 +1,27 @@
+welcome: Салам!\nКош келдиңиз
+login: Кирүү
+register: Катталуу
+logIn: Логин
+password: Сырсөз
+company: Компания
+username: Колдонуучу аты
+email: E-mail
+name: Аты
+surname: Фамилиясы
+thingPassword: Сырсөз түзүү
+agreement: Мен колдонуучу келишиминин бардык шарттарына макулмун
+registerButton: Катталуу
+loginButton: Кирүү
+forgotPassword: Сырсөздү унуттуңузбу?
+validation:
+  companyInvalid: Компаниянын аталышы туура эмес
+  usernameInvalid: Тамга, сан жана _ гана (3–20)
+  emailInvalid: E-mail туура эмес
+  nameInvalid: Тамга, дефис жана боштук гана (2–50)
+  surnameInvalid: Тамга, дефис жана боштук гана (2–50)
+  passwordInvalid: Кеминде 8 символ, бир тамга жана бир сан болсун
+errors:
+  companyExists: Мындай аталыштагы компания мурунтан бар
+  emailExists: Бул E-mail менен колдонуучу мурунтан бар
+  usernameExists: Бул логин менен колдонуучу мурунтан бар
+  unknown: Катталууда ката кетти

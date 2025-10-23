@@ -3,10 +3,10 @@
 /// Source: lib/src/core/I10n/translations
 /// To regenerate, run: `dart run slang`
 ///
-/// Locales: 2
-/// Strings: 550 (275 per locale)
+/// Locales: 3
+/// Strings: 591 (197 per locale)
 ///
-/// Built on 2025-10-22 at 08:29 UTC
+/// Built on 2025-10-22 at 08:48 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint, unused_import
@@ -17,6 +17,7 @@ import 'package:slang/generated.dart';
 import 'package:slang_flutter/slang_flutter.dart';
 export 'package:slang_flutter/slang_flutter.dart';
 
+import 'strings_ky.g.dart' deferred as l_ky;
 import 'strings_ru.g.dart' deferred as l_ru;
 part 'strings_en.g.dart';
 
@@ -28,6 +29,7 @@ part 'strings_en.g.dart';
 /// - if (LocaleSettings.currentLocale == AppLocale.en) // locale check
 enum AppLocale with BaseAppLocale<AppLocale, Translations> {
 	en(languageCode: 'en'),
+	ky(languageCode: 'ky'),
 	ru(languageCode: 'ru');
 
 	const AppLocale({
@@ -53,6 +55,13 @@ enum AppLocale with BaseAppLocale<AppLocale, Translations> {
 					cardinalResolver: cardinalResolver,
 					ordinalResolver: ordinalResolver,
 				);
+			case AppLocale.ky:
+				await l_ky.loadLibrary();
+				return l_ky.TranslationsKy(
+					overrides: overrides,
+					cardinalResolver: cardinalResolver,
+					ordinalResolver: ordinalResolver,
+				);
 			case AppLocale.ru:
 				await l_ru.loadLibrary();
 				return l_ru.TranslationsRu(
@@ -72,6 +81,12 @@ enum AppLocale with BaseAppLocale<AppLocale, Translations> {
 		switch (this) {
 			case AppLocale.en:
 				return TranslationsEn(
+					overrides: overrides,
+					cardinalResolver: cardinalResolver,
+					ordinalResolver: ordinalResolver,
+				);
+			case AppLocale.ky:
+				return l_ky.TranslationsKy(
 					overrides: overrides,
 					cardinalResolver: cardinalResolver,
 					ordinalResolver: ordinalResolver,

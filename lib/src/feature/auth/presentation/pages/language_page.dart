@@ -14,6 +14,12 @@ class LanguageSelection extends StatefulWidget {
 class _LanguageSelectionState extends State<LanguageSelection> {
   AppLocale? selected;
 
+  @override
+  void initState() {
+    super.initState();
+    selected = LocaleSettings.currentLocale;
+  }
+
   Future<void> _applyAndGo(AppLocale locale) async {
     LocaleSettings.setLocale(locale);
 
@@ -66,22 +72,22 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                   color: isSelected ? const Color(0xFF661EFB) : Colors.grey,
                   width: 1,
                 ),
-                color:
-                    isSelected ? const Color(0xFF661EFB) : Colors.transparent,
+                color: isSelected
+                    ? const Color(0xFF661EFB)
+                    : Colors.transparent,
               ),
-              child:
-                  isSelected
-                      ? Center(
-                        child: Container(
-                          width: 6.5,
-                          height: 6.5,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
+              child: isSelected
+                  ? Center(
+                      child: Container(
+                        width: 6.5,
+                        height: 6.5,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
                         ),
-                      )
-                      : null,
+                      ),
+                    )
+                  : null,
             ),
           ],
         ),
@@ -94,6 +100,7 @@ class _LanguageSelectionState extends State<LanguageSelection> {
     final title = t.menu.language.select;
     final enLabel = t.menu.language.english;
     final ruLabel = t.menu.language.russian;
+    final kyLabel = t.menu.language.kyrgyz;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -122,13 +129,19 @@ class _LanguageSelectionState extends State<LanguageSelection> {
               assetPath: 'assets/icons/ru.png',
               locale: AppLocale.ru,
             ),
+            _option(
+              label: kyLabel,
+              assetPath: 'assets/icons/kg.png',
+              locale: AppLocale.ky,
+            ),
 
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed:
-                    selected != null ? () => _applyAndGo(selected!) : null,
+                onPressed: selected != null
+                    ? () => _applyAndGo(selected!)
+                    : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF661EFB),
                   disabledBackgroundColor: const Color(0xFFC7C8FF),
