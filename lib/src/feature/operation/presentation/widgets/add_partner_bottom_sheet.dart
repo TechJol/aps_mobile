@@ -56,10 +56,9 @@ class AddPartnerBottomSheet {
                     value: selectedType ?? '',
                     onChanged: (value) {
                       selectedType = value;
-                      final id =
-                          state.partnerTypes
-                              ?.firstWhere((type) => type.name == value)
-                              .id;
+                      final id = state.partnerTypes
+                          ?.firstWhere((type) => type.name == value)
+                          .id;
                       if (id != null) cubit.filterPartnersByType(id);
                     },
                   ),
@@ -116,15 +115,12 @@ class AddPartnerBottomSheet {
                             return;
                           }
 
-                          final partnerId =
-                              state.filteredPartners
-                                  ?.firstWhere(
-                                    (partner) =>
-                                        partner.name == selectedPartner,
-                                    orElse:
-                                        () => PartnersModel(id: null, name: ''),
-                                  )
-                                  .id;
+                          final partnerId = state.filteredPartners
+                              ?.firstWhere(
+                                (partner) => partner.name == selectedPartner,
+                                orElse: () => PartnersModel(id: null, name: ''),
+                              )
+                              .id;
 
                           if (partnerId == null) {
                             ScaffoldMessenger.of(dialogContext).showSnackBar(

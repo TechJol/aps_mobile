@@ -22,7 +22,7 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(
+  sl.registerLazySingleton(
     () => AuthCubit(isLoggedInUsecase: sl.call(), logoutUsecase: sl.call()),
   );
 
