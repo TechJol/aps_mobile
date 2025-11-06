@@ -141,7 +141,17 @@ class _OperationPageState extends State<OperationPage>
               );
 
               final groups = OperationTransactionsHelper.groupByDate(filtered)
-                ..sort((a, b) => b.label.compareTo(a.label));
+                ..sort((a, b) {
+                  final aDate = DateTime.tryParse(
+                        a.items.isNotEmpty ? a.items.first.date ?? '' : '',
+                      ) ??
+                      DateTime.fromMillisecondsSinceEpoch(0);
+                  final bDate = DateTime.tryParse(
+                        b.items.isNotEmpty ? b.items.first.date ?? '' : '',
+                      ) ??
+                      DateTime.fromMillisecondsSinceEpoch(0);
+                  return bDate.compareTo(aDate);
+                });
 
               return OperationTransactionList(
                 groups: groups,

@@ -328,7 +328,6 @@ class IncomePage {
                               final income = IncomeAndComeoutModel(
                                 currency: currency.code,
                                 date: selectedDateNotifier.value
-                                    .toUtc()
                                     .toIso8601String(),
                                 amount: amountController.text,
                                 transactionType: transactionType,
