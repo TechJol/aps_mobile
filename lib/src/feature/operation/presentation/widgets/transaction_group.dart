@@ -48,19 +48,19 @@ class OperationTransactionsHelper {
     return transactions.where((tx) {
       final date = DateTime.tryParse(tx.date ?? '');
       if (date == null) return false;
-      return date.isAfter(start!.subtract(const Duration(days: 1))) &&
-          date.isBefore(end!.add(const Duration(days: 1)));
+      return !date.isBefore(start!) && !date.isAfter(end!);
     }).toList();
   }
 
   static List<TransactionGroup> groupByDate(
     List<AllTransactionsModel> transactions,
   ) {
-    final sorted = List<AllTransactionsModel>.from(transactions)..sort((a, b) {
-      final aDate = DateTime.tryParse(a.date ?? '') ?? DateTime.now();
-      final bDate = DateTime.tryParse(b.date ?? '') ?? DateTime.now();
-      return bDate.compareTo(aDate);
-    });
+    final sorted = List<AllTransactionsModel>.from(transactions)
+      ..sort((a, b) {
+        final aDate = DateTime.tryParse(a.date ?? '') ?? DateTime.now();
+        final bDate = DateTime.tryParse(b.date ?? '') ?? DateTime.now();
+        return bDate.compareTo(aDate);
+      });
 
     final Map<String, List<AllTransactionsModel>> grouped = {};
 
