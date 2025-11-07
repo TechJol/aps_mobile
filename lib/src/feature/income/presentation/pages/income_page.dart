@@ -18,6 +18,9 @@ class IncomePage {
     );
     final TextEditingController amountController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
+    final ValueNotifier<bool> isFormValidNotifier = ValueNotifier<bool>(false);
+    final ValueNotifier<bool> showValidationErrors = ValueNotifier<bool>(false);
+    final ValueNotifier<int> formStateVersionNotifier = ValueNotifier<int>(0);
 
     final List<_CurrencyOption> currencyOptions = const [
       _CurrencyOption(label: 'KGS', code: 'kgs'),
@@ -34,6 +37,25 @@ class IncomePage {
     String? selectedReasonName;
     int? selectedReasonId;
 
+    void updateFormValidity() {
+      final isValid =
+          selectedAccountId != null &&
+          selectedReasonId != null &&
+          amountController.text.trim().isNotEmpty;
+
+      if (isFormValidNotifier.value != isValid) {
+        isFormValidNotifier.value = isValid;
+      }
+
+      if (showValidationErrors.value && isValid) {
+        showValidationErrors.value = false;
+      }
+
+      formStateVersionNotifier.value++;
+    }
+
+    amountController.addListener(updateFormValidity);
+
     context.read<IncomeCubit>().getAccount();
     context.read<IncomeCubit>().getIncomeExpenseReasons();
 
@@ -45,323 +67,411 @@ class IncomePage {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (context) => BlocListener<IncomeCubit, IncomeState>(
-        listenWhen: (previous, current) {
-          // реагируем только на сохранение/ошибку
-          return current.incomeSaved || current.error != null;
-        },
-        listener: (context, state) {
-          if (state.error != null) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.error!)));
-          }
-          if (state.incomeSaved) {
-            Navigator.pop(context, true);
-            context.read<IncomeCubit>().resetState();
-          }
-        },
-        child: Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: DraggableScrollableSheet(
-            initialChildSize: 0.65,
-            maxChildSize: 0.9,
-            minChildSize: 0.4,
-            expand: false,
-            builder: (context, scrollController) {
-              return SingleChildScrollView(
-                controller: scrollController,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      Center(
-                        child: Container(
-                          width: 100,
-                          height: 4,
-                          margin: const EdgeInsets.only(bottom: 16),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: DraggableScrollableSheet(
+          initialChildSize: 0.65,
+          maxChildSize: 0.9,
+          minChildSize: 0.4,
+          expand: false,
+          builder: (context, scrollController) {
+            return SingleChildScrollView(
+              controller: scrollController,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 100,
+                        height: 4,
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const SizedBox(width: 40),
-                          Center(
-                            child: Text(
-                              title,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const SizedBox(width: 40),
+                        Center(
+                          child: Text(
+                            title,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.close),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Дата/время
+                    TextFormField(
+                      readOnly: true,
+                      controller: dateController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        labelStyle: AppTextStyles.f16w500,
+                        fillColor: AppColors.backroundColor,
+                        suffixIcon: GestureDetector(
+                          onTap: () {
+                            _showCustomDateTimePicker(
+                              context,
+                              selectedDateNotifier.value,
+                              (picked) {
+                                selectedDateNotifier.value = picked;
+                                dateController.text = DateFormat(
+                                  'dd.MM.yyyy – HH:mm',
+                                ).format(picked);
+                              },
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: SizedBox(
+                              height: 24,
+                              child: SvgPicture.asset(
+                                'assets/icons/calendar.svg',
+                                fit: BoxFit.contain,
                               ),
                             ),
                           ),
-                          IconButton(
-                            onPressed: () => Navigator.pop(context),
-                            icon: const Icon(Icons.close),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: const BorderSide(
+                            color: AppColors.backroundColor,
                           ),
-                        ],
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: const BorderSide(
+                            color: AppColors.backroundColor,
+                          ),
+                        ),
                       ),
-                      const SizedBox(height: 16),
+                    ),
+                    const SizedBox(height: 12),
 
-                      // Дата/время
-                      TextFormField(
-                        readOnly: true,
-                        controller: dateController,
-                        decoration: InputDecoration(
-                          filled: true,
-                          labelStyle: AppTextStyles.f16w500,
-                          fillColor: AppColors.backroundColor,
-                          suffixIcon: GestureDetector(
-                            onTap: () {
-                              _showCustomDateTimePicker(
-                                context,
-                                selectedDateNotifier.value,
-                                (picked) {
-                                  selectedDateNotifier.value = picked;
-                                  dateController.text = DateFormat(
-                                    'dd.MM.yyyy – HH:mm',
-                                  ).format(picked);
-                                },
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
+                    /// Dropdown: Account
+                    BlocConsumer<IncomeCubit, IncomeState>(
+                      listener: (context, state) {
+                        if (state.error != null) {
+                          final messenger = ScaffoldMessenger.of(context);
+                          messenger.clearSnackBars();
+                          messenger.showSnackBar(
+                            SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              margin: EdgeInsets.only(
+                                left: 16,
+                                right: 16,
+                                bottom:
+                                    MediaQuery.of(context).size.height * 0.35,
                               ),
-                              child: SizedBox(
-                                height: 24,
-                                child: SvgPicture.asset(
-                                  'assets/icons/calendar.svg',
-                                  fit: BoxFit.contain,
+                              content: Text(state.error!),
+                            ),
+                          );
+                        }
+                        if (state.incomeSaved) {
+                          Navigator.pop(context, true);
+                          context.read<IncomeCubit>().resetState();
+                        }
+                      },
+                      builder: (context, state) {
+                        if (state.isLoading && state.accounts.isEmpty) {
+                          return const CircularProgressIndicator();
+                        }
+
+                        if (state.accounts.isEmpty) {
+                          return DropDownFormField(
+                            items: const [],
+                            label: t.income.account, // "Счет" / "Account"
+                            value: t
+                                .income
+                                .notAccount, // "Нет счетов.." / "No accounts.."
+                            onChanged: (_) {},
+                          );
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            DropDownFormField(
+                              items: state.accounts.map((e) => e.name).toList(),
+                              label: t.income.account,
+                              value: selectedAccountName,
+                              onChanged: (val) {
+                                selectedAccountName = val;
+                                selectedAccountId = state.accounts
+                                    .firstWhere((e) => e.name == val)
+                                    .id;
+                                updateFormValidity();
+                              },
+                            ),
+                            const SizedBox(height: 4),
+                            ValueListenableBuilder<bool>(
+                              valueListenable: showValidationErrors,
+                              builder: (_, showErrors, __) {
+                                if (!showErrors) {
+                                  return const SizedBox.shrink();
+                                }
+                                return ValueListenableBuilder<int>(
+                                  valueListenable: formStateVersionNotifier,
+                                  builder: (_, __, ___) {
+                                    if (selectedAccountId != null) {
+                                      return const SizedBox.shrink();
+                                    }
+                                    return Text(
+                                      t.income.pleaseFillInAllFields,
+                                      style: AppTextStyles.f14w500.copyWith(
+                                        color: AppColors.redColor,
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Сумма
+                    ValueListenableBuilder<_CurrencyOption>(
+                      valueListenable: selectedCurrency,
+                      builder: (context, currency, _) => Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextFieldWid(
+                            label: t.income.sum, // "Сумма" / "Sum"
+                            controller: amountController,
+                            suffixIcon: GestureDetector(
+                              key: currencyButtonKey,
+                              onTap: () => _showCurrencyMenu(
+                                context,
+                                currencyButtonKey,
+                                selectedCurrency,
+                                currencyOptions,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      height: 18,
+                                      width: 18,
+                                      child: Image.asset(
+                                        'assets/icons/currencies.png',
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      currency.label,
+                                      style: AppTextStyles.f14w500.copyWith(
+                                        color: AppColors.blackColor,
+                                      ),
+                                    ),
+                                    const Icon(
+                                      Icons.expand_more,
+                                      size: 18,
+                                      color: AppColors.blackColor,
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
                           ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: const BorderSide(
-                              color: AppColors.backroundColor,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: const BorderSide(
-                              color: AppColors.backroundColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-
-                      /// Dropdown: Account
-                      BlocBuilder<IncomeCubit, IncomeState>(
-                        builder: (context, state) {
-                          if (state.isLoading && state.accounts.isEmpty) {
-                            return const CircularProgressIndicator();
-                          }
-
-                          if (state.accounts.isEmpty) {
-                            return DropDownFormField(
-                              items: const [],
-                              label: t.income.account, // "Счет" / "Account"
-                              value: t
-                                  .income
-                                  .notAccount, // "Нет счетов.." / "No accounts.."
-                              onChanged: (_) {},
-                            );
-                          }
-
-                          return DropDownFormField(
-                            items: state.accounts.map((e) => e.name).toList(),
-                            label: t.income.account,
-                            value: selectedAccountName,
-                            onChanged: (val) {
-                              selectedAccountName = val;
-                              selectedAccountId = state.accounts
-                                  .firstWhere((e) => e.name == val)
-                                  .id;
-                            },
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 12),
-
-                      // Сумма
-                      ValueListenableBuilder<_CurrencyOption>(
-                        valueListenable: selectedCurrency,
-                        builder: (context, currency, _) => TextFieldWid(
-                          label: t.income.sum, // "Сумма" / "Sum"
-                          controller: amountController,
-                          suffixIcon: GestureDetector(
-                            key: currencyButtonKey,
-                            onTap: () => _showCurrencyMenu(
-                              context,
-                              currencyButtonKey,
-                              selectedCurrency,
-                              currencyOptions,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SizedBox(
-                                    height: 18,
-                                    width: 18,
-                                    child: Image.asset(
-                                      'assets/icons/currencies.png',
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    currency.label,
-                                    style: AppTextStyles.f14w500.copyWith(
-                                      color: AppColors.blackColor,
-                                    ),
-                                  ),
-                                  const Icon(
-                                    Icons.expand_more,
-                                    size: 18,
-                                    color: AppColors.blackColor,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-
-                      /// Dropdown: Reason
-                      BlocBuilder<IncomeCubit, IncomeState>(
-                        builder: (context, state) {
-                          if (state.isLoading && state.reasons.isEmpty) {
-                            return const CircularProgressIndicator();
-                          }
-
-                          if (state.reasons.isEmpty) {
-                            return DropDownFormField(
-                              items: const [],
-                              label: t.income.article, // "Статья" / "Article"
-                              value: t
-                                  .income
-                                  .notArticle, // "Нет статей.." / "No articles.."
-                              onChanged: (_) {},
-                            );
-                          }
-
-                          final filteredReasons = state.reasons
-                              .where((e) => e.type == transactionType)
-                              .toList();
-
-                          return DropDownFormField(
-                            items: filteredReasons.map((e) => e.name).toList(),
-                            label: t.income.article,
-                            value: selectedReasonName,
-                            onChanged: (val) {
-                              selectedReasonName = val;
-                              selectedReasonId = state.reasons
-                                  .firstWhere((e) => e.name == val)
-                                  .id;
-                            },
-                            // bottomGap:
-                            //     (filteredReasons.length < 2) ? 200 : 20,
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 12),
-
-                      // Описание
-                      TextFormField(
-                        maxLength: 160,
-                        maxLines: 3,
-                        controller: descriptionController,
-                        decoration: InputDecoration(
-                          filled: true,
-                          labelStyle: AppTextStyles.f16w500,
-                          fillColor: AppColors.backroundColor,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          hintText: t
-                              .income
-                              .description, // "Описание" / "Description"
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-
-                      /// Save button
-                      BlocBuilder<IncomeCubit, IncomeState>(
-                        builder: (context, state) {
-                          if (state.isLoading) {
-                            return const CircularProgressIndicator();
-                          }
-
-                          return ElevatedButton(
-                            onPressed: () {
-                              if (selectedAccountId == null ||
-                                  selectedReasonId == null ||
-                                  amountController.text.isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      t.income.pleaseFillInAllFields,
-                                    ),
-                                  ), // "Пожалуйста, заполните все поля."
-                                );
-                                return;
+                          const SizedBox(height: 4),
+                          ValueListenableBuilder<bool>(
+                            valueListenable: showValidationErrors,
+                            builder: (_, showErrors, __) {
+                              if (!showErrors) {
+                                return const SizedBox.shrink();
                               }
-
-                              final currency = selectedCurrency.value;
-                              final income = IncomeAndComeoutModel(
-                                currency: currency.code,
-                                date: selectedDateNotifier.value
-                                    .toIso8601String(),
-                                amount: amountController.text,
-                                transactionType: transactionType,
-                                account: selectedAccountId!,
-                                description: descriptionController.text,
-                                kgsCurrencyAmount: currency.code == 'kgs'
-                                    ? amountController.text
-                                    : null,
-                                incomeExpenseReason: selectedReasonId!,
+                              return ValueListenableBuilder<int>(
+                                valueListenable: formStateVersionNotifier,
+                                builder: (_, __, ___) {
+                                  if (amountController.text.trim().isNotEmpty) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  return Text(
+                                    t.income.pleaseFillInAllFields,
+                                    style: AppTextStyles.f14w500.copyWith(
+                                      color: AppColors.redColor,
+                                    ),
+                                  );
+                                },
                               );
-                              context.read<IncomeCubit>().addIncome(income);
                             },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary200Color,
-                              minimumSize: const Size(double.infinity, 50),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                            ),
-                            child: Text(
-                              t.income.save, // "Сохранить" / "Save"
-                              style: AppTextStyles.f16w500.copyWith(
-                                color: AppColors.whiteColor,
-                              ),
-                            ),
-                          );
-                        },
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    /// Dropdown: Reason
+                    BlocBuilder<IncomeCubit, IncomeState>(
+                      builder: (context, state) {
+                        if (state.isLoading && state.reasons.isEmpty) {
+                          return const CircularProgressIndicator();
+                        }
+
+                        if (state.reasons.isEmpty) {
+                          return DropDownFormField(
+                            items: const [],
+                            label: t.income.article, // "Статья" / "Article"
+                            value: t
+                                .income
+                                .notArticle, // "Нет статей.." / "No articles.."
+                            onChanged: (_) {},
+                          );
+                        }
+
+                        final filteredReasons = state.reasons
+                            .where((e) => e.type == transactionType)
+                            .toList();
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            DropDownFormField(
+                              items: filteredReasons
+                                  .map((e) => e.name)
+                                  .toList(),
+                              label: t.income.article,
+                              value: selectedReasonName,
+                              onChanged: (val) {
+                                selectedReasonName = val;
+                                selectedReasonId = state.reasons
+                                    .firstWhere((e) => e.name == val)
+                                    .id;
+                                updateFormValidity();
+                              },
+                            ),
+                            const SizedBox(height: 4),
+                            ValueListenableBuilder<bool>(
+                              valueListenable: showValidationErrors,
+                              builder: (_, showErrors, __) {
+                                if (!showErrors) {
+                                  return const SizedBox.shrink();
+                                }
+                                return ValueListenableBuilder<int>(
+                                  valueListenable: formStateVersionNotifier,
+                                  builder: (_, __, ___) {
+                                    if (selectedReasonId != null) {
+                                      return const SizedBox.shrink();
+                                    }
+                                    return Text(
+                                      t.income.pleaseFillInAllFields,
+                                      style: AppTextStyles.f14w500.copyWith(
+                                        color: AppColors.redColor,
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Описание
+                    TextFormField(
+                      maxLength: 160,
+                      maxLines: 3,
+                      controller: descriptionController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        labelStyle: AppTextStyles.f16w500,
+                        fillColor: AppColors.backroundColor,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        hintText:
+                            t.income.description, // "Описание" / "Description"
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    /// Save button
+                    BlocBuilder<IncomeCubit, IncomeState>(
+                      builder: (context, state) {
+                        if (state.isLoading) {
+                          return const CircularProgressIndicator();
+                        }
+
+                        return ValueListenableBuilder<bool>(
+                          valueListenable: isFormValidNotifier,
+                          builder: (context, isFormValid, _) {
+                            return ElevatedButton(
+                              onPressed: () {
+                                if (!isFormValid) {
+                                  showValidationErrors.value = true;
+                                  formStateVersionNotifier.value++;
+                                  return;
+                                }
+
+                                final currency = selectedCurrency.value;
+                                final income = IncomeAndComeoutModel(
+                                  currency: currency.code,
+                                  date: selectedDateNotifier.value
+                                      .toIso8601String(),
+                                  amount: amountController.text,
+                                  transactionType: transactionType,
+                                  account: selectedAccountId!,
+                                  description: descriptionController.text,
+                                  kgsCurrencyAmount: currency.code == 'kgs'
+                                      ? amountController.text
+                                      : null,
+                                  incomeExpenseReason: selectedReasonId!,
+                                );
+                                context.read<IncomeCubit>().addIncome(income);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: isFormValid
+                                    ? AppColors.primary200Color
+                                    : AppColors.greyColorLight,
+                                minimumSize: const Size(double.infinity, 50),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                              child: Text(
+                                t.income.save, // "Сохранить" / "Save"
+                                style: AppTextStyles.f16w500.copyWith(
+                                  color: AppColors.whiteColor,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
