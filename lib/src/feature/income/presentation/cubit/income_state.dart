@@ -4,6 +4,8 @@ import 'package:equatable/equatable.dart';
 class IncomeState extends Equatable {
   final List<AccountModel> accounts;
   final List<IncomeExpenseReasons> reasons;
+  final List<PartnerTypesModel> partnerTypes;
+  final List<PartnersModel> partners;
   final bool isLoading;
   final bool incomeSaved;
   final String? error;
@@ -11,6 +13,8 @@ class IncomeState extends Equatable {
   const IncomeState({
     this.accounts = const [],
     this.reasons = const [],
+    this.partnerTypes = const [],
+    this.partners = const [],
     this.isLoading = false,
     this.incomeSaved = false,
     this.error,
@@ -19,6 +23,8 @@ class IncomeState extends Equatable {
   IncomeState copyWith({
     List<AccountModel>? accounts,
     List<IncomeExpenseReasons>? reasons,
+    List<PartnerTypesModel>? partnerTypes,
+    List<PartnersModel>? partners,
     bool? isLoading,
     bool? incomeSaved,
     String? error,
@@ -26,6 +32,8 @@ class IncomeState extends Equatable {
     return IncomeState(
       accounts: accounts ?? this.accounts,
       reasons: reasons ?? this.reasons,
+      partnerTypes: partnerTypes ?? this.partnerTypes,
+      partners: partners ?? this.partners,
       isLoading: isLoading ?? this.isLoading,
       incomeSaved: incomeSaved ?? this.incomeSaved,
       error: error,
@@ -33,5 +41,13 @@ class IncomeState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [accounts, reasons, isLoading, incomeSaved, error];
+  List<Object?> get props => [
+    accounts,
+    reasons,
+    partnerTypes,
+    partners,
+    isLoading,
+    incomeSaved,
+    error,
+  ];
 }

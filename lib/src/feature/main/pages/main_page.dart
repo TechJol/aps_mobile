@@ -49,27 +49,17 @@ class MainScreen extends StatelessWidget {
           currentIndex: currentIndex,
           onTap: (index) async {
             if (index == 2) {
-              final result = await IncomePage().showIncomeBottomSheet(
-                context: context,
+              await _openTransactionSheet(
+                context,
                 title: t.income.incomes,
                 transactionType: 'income',
               );
-              if (result == true) {
-                context.read<MenuCubit>().getTransactionsWithAccounts(
-                  force: true,
-                );
-              }
             } else if (index == 3) {
-              final result = await IncomePage().showIncomeBottomSheet(
-                context: context,
+              await _openTransactionSheet(
+                context,
                 title: t.income.expenses,
                 transactionType: 'expense',
               );
-              if (result == true) {
-                context.read<MenuCubit>().getTransactionsWithAccounts(
-                  force: true,
-                );
-              }
             } else {
               context.read<MainCubit>().change(index);
             }
@@ -140,5 +130,36 @@ class MainScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _openTransactionSheet(
+    BuildContext context, {
+    required String title,
+    required String transactionType,
+  }) async {
+    final menuState = context.read<MenuCubit>().state;
+    if (menuState is! MenuTransactionsWithAccountsSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(t.operation.error)),
+      );
+      context.read<MenuCubit>().getTransactionsWithAccounts(force: true);
+      return;
+    }
+
+    context.read<IncomeCubit>().preloadFormData(
+          accounts: menuState.accounts,
+          reasons: menuState.reasons,
+          partnerTypes: menuState.partnerTypes ?? [],
+          partners: menuState.partners,
+        );
+
+    final result = await IncomePage().showIncomeBottomSheet(
+      context: context,
+      title: title,
+      transactionType: transactionType,
+    );
+    if (result == true) {
+      context.read<MenuCubit>().getTransactionsWithAccounts(force: true);
+    }
   }
 }

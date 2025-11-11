@@ -28,6 +28,8 @@ class IncomeCubit extends Cubit<IncomeState> {
       description: income.description,
       kgsCurrencyAmount: income.kgsCurrencyAmount,
       incomeExpenseReason: income.incomeExpenseReason,
+      partner: income.partner,
+      partners: income.partners,
     );
     emit(state.copyWith(isLoading: true, incomeSaved: false, error: null));
     final result = await addIncomeUsecase(inc);
@@ -43,16 +45,16 @@ class IncomeCubit extends Cubit<IncomeState> {
     res.fold((l) => emit(state.copyWith(isLoading: false, error: l.message)), (
       r,
     ) async {
-      final accounts =
-          (r as List)
-              .map((e) => AccountModel.fromMap(e as Map<String, dynamic>))
-              .toList();
+      final accounts = (r as List)
+          .map((e) => AccountModel.fromMap(e as Map<String, dynamic>))
+          .toList();
 
       SharedPreferences storage = await SharedPreferences.getInstance();
       final companyId = storage.getInt('companyId');
 
-      final filteredAccounts =
-          accounts.where((account) => account.company == companyId).toList();
+      final filteredAccounts = accounts
+          .where((account) => account.company == companyId)
+          .toList();
 
       emit(state.copyWith(isLoading: false, accounts: filteredAccounts));
     });
@@ -64,21 +66,37 @@ class IncomeCubit extends Cubit<IncomeState> {
     res.fold((l) => emit(state.copyWith(isLoading: false, error: l.message)), (
       r,
     ) async {
-      final reasons =
-          (r as List)
-              .map(
-                (e) => IncomeExpenseReasons.fromMap(e as Map<String, dynamic>),
-              )
-              .toList();
+      final reasons = (r as List)
+          .map((e) => IncomeExpenseReasons.fromMap(e as Map<String, dynamic>))
+          .toList();
 
       SharedPreferences storage = await SharedPreferences.getInstance();
       final companyId = storage.getInt('companyId');
 
-      final filteredReasons =
-          reasons.where((reason) => reason.company == companyId).toList();
+      final filteredReasons = reasons
+          .where((reason) => reason.company == companyId)
+          .toList();
 
       emit(state.copyWith(isLoading: false, reasons: filteredReasons));
     });
+  }
+
+  void preloadFormData({
+    required List<AccountModel> accounts,
+    required List<IncomeExpenseReasons> reasons,
+    required List<PartnerTypesModel> partnerTypes,
+    required List<PartnersModel> partners,
+  }) {
+    emit(
+      state.copyWith(
+        accounts: accounts,
+        reasons: reasons,
+        partnerTypes: partnerTypes,
+        partners: partners,
+        isLoading: false,
+        error: null,
+      ),
+    );
   }
 
   void resetState() {

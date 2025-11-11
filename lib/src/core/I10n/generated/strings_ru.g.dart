@@ -157,6 +157,10 @@ class _TranslationsIncomeRu extends TranslationsIncomeEn {
 	@override String get sum => 'Сумма';
 	@override String get article => 'Статья';
 	@override String get notArticle => 'Нет статей..';
+	@override String get partnerType => 'Тип контрагента';
+	@override String get notPartnerType => 'Нет типов контрагентов';
+	@override String get partner => 'Контрагент';
+	@override String get notPartner => 'Нет контрагентов';
 	@override String get description => 'Описание';
 	@override String get pleaseFillInAllFields => 'Пожалуйста, заполните все поля';
 	@override String get save => 'Сохранить';
@@ -765,6 +769,10 @@ extension on TranslationsRu {
 			case 'income.sum': return 'Сумма';
 			case 'income.article': return 'Статья';
 			case 'income.notArticle': return 'Нет статей..';
+			case 'income.partnerType': return 'Тип контрагента';
+			case 'income.notPartnerType': return 'Нет типов контрагентов';
+			case 'income.partner': return 'Контрагент';
+			case 'income.notPartner': return 'Нет контрагентов';
 			case 'income.description': return 'Описание';
 			case 'income.pleaseFillInAllFields': return 'Пожалуйста, заполните все поля';
 			case 'income.save': return 'Сохранить';

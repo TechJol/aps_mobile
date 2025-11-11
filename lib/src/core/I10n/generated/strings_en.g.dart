@@ -308,6 +308,18 @@ class TranslationsIncomeEn {
 	/// en: 'No articles..'
 	String get notArticle => 'No articles..';
 
+	/// en: 'Counterparty type'
+	String get partnerType => 'Counterparty type';
+
+	/// en: 'No counterparty types'
+	String get notPartnerType => 'No counterparty types';
+
+	/// en: 'Counterparty'
+	String get partner => 'Counterparty';
+
+	/// en: 'No counterparties'
+	String get notPartner => 'No counterparties';
+
 	/// en: 'Description'
 	String get description => 'Description';
 
@@ -1327,6 +1339,10 @@ extension on Translations {
 			case 'income.sum': return 'Sum';
 			case 'income.article': return 'Article';
 			case 'income.notArticle': return 'No articles..';
+			case 'income.partnerType': return 'Counterparty type';
+			case 'income.notPartnerType': return 'No counterparty types';
+			case 'income.partner': return 'Counterparty';
+			case 'income.notPartner': return 'No counterparties';
 			case 'income.description': return 'Description';
 			case 'income.pleaseFillInAllFields': return 'Please fill in all fields';
 			case 'income.save': return 'Save';
