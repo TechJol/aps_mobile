@@ -1,9 +1,9 @@
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:aps_mobile/src/feature/income/presentation/cubit/income_state.dart';
+import 'package:aps_mobile/src/feature/income/presentation/widgets/income_form_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
 class IncomePage {
@@ -86,86 +86,27 @@ class IncomePage {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    Center(
-                      child: Container(
-                        width: 100,
-                        height: 4,
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const SizedBox(width: 40),
-                        Center(
-                          child: Text(
-                            title,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () => Navigator.pop(context),
-                          icon: const Icon(Icons.close),
-                        ),
-                      ],
+                    const IncomeSheetHandle(),
+                    IncomeSheetHeader(
+                      title: title,
+                      onClose: () => Navigator.pop(context),
                     ),
                     const SizedBox(height: 16),
 
-                    // Дата/время
-                    TextFormField(
-                      readOnly: true,
+                    IncomeDateField(
                       controller: dateController,
-                      decoration: InputDecoration(
-                        filled: true,
-                        labelStyle: AppTextStyles.f16w500,
-                        fillColor: AppColors.backroundColor,
-                        suffixIcon: GestureDetector(
-                          onTap: () {
-                            _showCustomDateTimePicker(
-                              context,
-                              selectedDateNotifier.value,
-                              (picked) {
-                                selectedDateNotifier.value = picked;
-                                dateController.text = DateFormat(
-                                  'dd.MM.yyyy – HH:mm',
-                                ).format(picked);
-                              },
-                            );
+                      onTap: () {
+                        _showCustomDateTimePicker(
+                          context,
+                          selectedDateNotifier.value,
+                          (picked) {
+                            selectedDateNotifier.value = picked;
+                            dateController.text = DateFormat(
+                              'dd.MM.yyyy – HH:mm',
+                            ).format(picked);
                           },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: SizedBox(
-                              height: 24,
-                              child: SvgPicture.asset(
-                                'assets/icons/calendar.svg',
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          borderSide: const BorderSide(
-                            color: AppColors.backroundColor,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          borderSide: const BorderSide(
-                            color: AppColors.backroundColor,
-                          ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 12),
 
@@ -198,24 +139,14 @@ class IncomePage {
                           return const CircularProgressIndicator();
                         }
 
-                        if (state.accounts.isEmpty) {
-                          return DropDownFormField(
-                            items: const [],
-                            label: t.income.account, // "Счет" / "Account"
-                            value: t
-                                .income
-                                .notAccount, // "Нет счетов.." / "No accounts.."
-                            onChanged: (_) {},
-                          );
-                        }
-
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            DropDownFormField(
+                            IncomeDropdownField(
                               items: state.accounts.map((e) => e.name).toList(),
                               label: t.income.account,
                               value: selectedAccountName,
+                              placeholder: t.income.notAccount,
                               onChanged: (val) {
                                 selectedAccountName = val;
                                 selectedAccountId = state.accounts
@@ -225,27 +156,10 @@ class IncomePage {
                               },
                             ),
                             const SizedBox(height: 4),
-                            ValueListenableBuilder<bool>(
-                              valueListenable: showValidationErrors,
-                              builder: (_, showErrors, __) {
-                                if (!showErrors) {
-                                  return const SizedBox.shrink();
-                                }
-                                return ValueListenableBuilder<int>(
-                                  valueListenable: formStateVersionNotifier,
-                                  builder: (_, __, ___) {
-                                    if (selectedAccountId != null) {
-                                      return const SizedBox.shrink();
-                                    }
-                                    return Text(
-                                      t.income.pleaseFillInAllFields,
-                                      style: AppTextStyles.f14w500.copyWith(
-                                        color: AppColors.redColor,
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
+                            IncomeValidationMessage(
+                              showValidationErrors: showValidationErrors,
+                              validationTrigger: formStateVersionNotifier,
+                              isFieldValid: () => selectedAccountId != null,
                             ),
                           ],
                         );
@@ -253,77 +167,35 @@ class IncomePage {
                     ),
                     const SizedBox(height: 12),
 
-                    // Сумма
                     ValueListenableBuilder<_CurrencyOption>(
                       valueListenable: selectedCurrency,
                       builder: (context, currency, _) => Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TextFieldWid(
-                            label: t.income.sum, // "Сумма" / "Sum"
+                          IncomeAmountField(
                             controller: amountController,
-                            suffixIcon: GestureDetector(
-                              key: currencyButtonKey,
-                              onTap: () => _showCurrencyMenu(
-                                context,
-                                currencyButtonKey,
-                                selectedCurrency,
-                                currencyOptions,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SizedBox(
-                                      height: 18,
-                                      width: 18,
-                                      child: Image.asset(
-                                        'assets/icons/currencies.png',
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      currency.label,
-                                      style: AppTextStyles.f14w500.copyWith(
-                                        color: AppColors.blackColor,
-                                      ),
-                                    ),
-                                    const Icon(
-                                      Icons.expand_more,
-                                      size: 18,
-                                      color: AppColors.blackColor,
-                                    ),
-                                  ],
-                                ),
+                            currencyLabel: currency.label,
+                            onCurrencyTap: () => _showCurrencyMenu(
+                              context,
+                              currencyButtonKey,
+                              selectedCurrency,
+                              currencyOptions,
+                            ),
+                            currencyIcon: SizedBox(
+                              height: 18,
+                              width: 18,
+                              child: Image.asset(
+                                'assets/icons/currencies.png',
+                                fit: BoxFit.contain,
                               ),
                             ),
                           ),
                           const SizedBox(height: 4),
-                          ValueListenableBuilder<bool>(
-                            valueListenable: showValidationErrors,
-                            builder: (_, showErrors, __) {
-                              if (!showErrors) {
-                                return const SizedBox.shrink();
-                              }
-                              return ValueListenableBuilder<int>(
-                                valueListenable: formStateVersionNotifier,
-                                builder: (_, __, ___) {
-                                  if (amountController.text.trim().isNotEmpty) {
-                                    return const SizedBox.shrink();
-                                  }
-                                  return Text(
-                                    t.income.pleaseFillInAllFields,
-                                    style: AppTextStyles.f14w500.copyWith(
-                                      color: AppColors.redColor,
-                                    ),
-                                  );
-                                },
-                              );
-                            },
+                          IncomeValidationMessage(
+                            showValidationErrors: showValidationErrors,
+                            validationTrigger: formStateVersionNotifier,
+                            isFieldValid: () =>
+                                amountController.text.trim().isNotEmpty,
                           ),
                         ],
                       ),
@@ -337,17 +209,6 @@ class IncomePage {
                           return const CircularProgressIndicator();
                         }
 
-                        if (state.reasons.isEmpty) {
-                          return DropDownFormField(
-                            items: const [],
-                            label: t.income.article, // "Статья" / "Article"
-                            value: t
-                                .income
-                                .notArticle, // "Нет статей.." / "No articles.."
-                            onChanged: (_) {},
-                          );
-                        }
-
                         final filteredReasons = state.reasons
                             .where((e) => e.type == transactionType)
                             .toList();
@@ -355,12 +216,13 @@ class IncomePage {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            DropDownFormField(
+                            IncomeDropdownField(
                               items: filteredReasons
                                   .map((e) => e.name)
                                   .toList(),
                               label: t.income.article,
                               value: selectedReasonName,
+                              placeholder: t.income.notArticle,
                               onChanged: (val) {
                                 selectedReasonName = val;
                                 selectedReasonId = state.reasons
@@ -370,27 +232,10 @@ class IncomePage {
                               },
                             ),
                             const SizedBox(height: 4),
-                            ValueListenableBuilder<bool>(
-                              valueListenable: showValidationErrors,
-                              builder: (_, showErrors, __) {
-                                if (!showErrors) {
-                                  return const SizedBox.shrink();
-                                }
-                                return ValueListenableBuilder<int>(
-                                  valueListenable: formStateVersionNotifier,
-                                  builder: (_, __, ___) {
-                                    if (selectedReasonId != null) {
-                                      return const SizedBox.shrink();
-                                    }
-                                    return Text(
-                                      t.income.pleaseFillInAllFields,
-                                      style: AppTextStyles.f14w500.copyWith(
-                                        color: AppColors.redColor,
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
+                            IncomeValidationMessage(
+                              showValidationErrors: showValidationErrors,
+                              validationTrigger: formStateVersionNotifier,
+                              isFieldValid: () => selectedReasonId != null,
                             ),
                           ],
                         );
@@ -405,63 +250,34 @@ class IncomePage {
                           return const CircularProgressIndicator();
                         }
 
-                        if (state.partnerTypes.isEmpty) {
-                          return DropDownFormField(
-                            items: const [],
-                            label: t.income.partnerType,
-                            value: t.income.notPartnerType,
-                            onChanged: (_) {},
-                          );
-                        }
-
-                        return ValueListenableBuilder<int>(
-                          valueListenable: formStateVersionNotifier,
-                          builder: (_, __, ___) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                DropDownFormField(
-                                  items: state.partnerTypes
-                                      .map((e) => e.name)
-                                      .toList(),
-                                  label: t.income.partnerType,
-                                  value: selectedPartnerTypeName,
-                                  onChanged: (val) {
-                                    selectedPartnerTypeName = val;
-                                    selectedPartnerTypeId = state.partnerTypes
-                                        .firstWhere((e) => e.name == val)
-                                        .id;
-                                    selectedPartnerName = null;
-                                    selectedPartnerId = null;
-                                    updateFormValidity();
-                                  },
-                                ),
-                                const SizedBox(height: 4),
-                                ValueListenableBuilder<bool>(
-                                  valueListenable: showValidationErrors,
-                                  builder: (_, showErrors, __) {
-                                    if (!showErrors) {
-                                      return const SizedBox.shrink();
-                                    }
-                                    return ValueListenableBuilder<int>(
-                                      valueListenable: formStateVersionNotifier,
-                                      builder: (_, __, ___) {
-                                        if (selectedPartnerTypeId != null) {
-                                          return const SizedBox.shrink();
-                                        }
-                                        return Text(
-                                          t.income.pleaseFillInAllFields,
-                                          style: AppTextStyles.f14w500.copyWith(
-                                            color: AppColors.redColor,
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                              ],
-                            );
-                          },
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            IncomeDropdownField(
+                              items: state.partnerTypes
+                                  .map((e) => e.name)
+                                  .toList(),
+                              label: t.income.partnerType,
+                              value: selectedPartnerTypeName,
+                              placeholder: t.income.notPartnerType,
+                              onChanged: (val) {
+                                if (val == null) return;
+                                selectedPartnerTypeName = val;
+                                selectedPartnerTypeId = state.partnerTypes
+                                    .firstWhere((e) => e.name == val)
+                                    .id;
+                                selectedPartnerName = null;
+                                selectedPartnerId = null;
+                                updateFormValidity();
+                              },
+                            ),
+                            const SizedBox(height: 4),
+                            IncomeValidationMessage(
+                              showValidationErrors: showValidationErrors,
+                              validationTrigger: formStateVersionNotifier,
+                              isFieldValid: () => selectedPartnerTypeId != null,
+                            ),
+                          ],
                         );
                       },
                     ),
@@ -489,37 +305,22 @@ class IncomePage {
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  DropDownFormField(
+                                  IncomeDropdownField(
                                     items: const [],
                                     label: t.income.partner,
-                                    value: t.income.notPartner,
-                                    onChanged: (_) {},
+                                    value: selectedPartnerName,
+                                    placeholder: t.income.notPartner,
+                                    onChanged: null,
                                   ),
                                   const SizedBox(height: 4),
-                                  ValueListenableBuilder<bool>(
-                                    valueListenable: showValidationErrors,
-                                    builder: (_, showErrors, __) {
-                                      if (!showErrors) {
-                                        return const SizedBox.shrink();
-                                      }
-                                      return ValueListenableBuilder<int>(
-                                        valueListenable:
-                                            formStateVersionNotifier,
-                                        builder: (_, __, ___) {
-                                          if (selectedPartnerId != null &&
-                                              selectedPartnerTypeId != null) {
-                                            return const SizedBox.shrink();
-                                          }
-                                          return Text(
-                                            t.income.pleaseFillInAllFields,
-                                            style: AppTextStyles.f14w500
-                                                .copyWith(
-                                                  color: AppColors.redColor,
-                                                ),
-                                          );
-                                        },
-                                      );
-                                    },
+                                  IncomeValidationMessage(
+                                    showValidationErrors:
+                                        showValidationErrors,
+                                    validationTrigger:
+                                        formStateVersionNotifier,
+                                    isFieldValid: () =>
+                                        selectedPartnerId != null &&
+                                        selectedPartnerTypeId != null,
                                   ),
                                 ],
                               );
@@ -528,12 +329,13 @@ class IncomePage {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                DropDownFormField(
+                                IncomeDropdownField(
                                   items: partnersForType
                                       .map((e) => e.name)
                                       .toList(),
                                   label: t.income.partner,
                                   value: selectedPartnerName,
+                                  placeholder: t.income.notPartner,
                                   onChanged: (val) {
                                     selectedPartnerName = val;
                                     selectedPartnerId = partnersForType
@@ -543,27 +345,10 @@ class IncomePage {
                                   },
                                 ),
                                 const SizedBox(height: 4),
-                                ValueListenableBuilder<bool>(
-                                  valueListenable: showValidationErrors,
-                                  builder: (_, showErrors, __) {
-                                    if (!showErrors) {
-                                      return const SizedBox.shrink();
-                                    }
-                                    return ValueListenableBuilder<int>(
-                                      valueListenable: formStateVersionNotifier,
-                                      builder: (_, __, ___) {
-                                        if (selectedPartnerId != null) {
-                                          return const SizedBox.shrink();
-                                        }
-                                        return Text(
-                                          t.income.pleaseFillInAllFields,
-                                          style: AppTextStyles.f14w500.copyWith(
-                                            color: AppColors.redColor,
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
+                                IncomeValidationMessage(
+                                  showValidationErrors: showValidationErrors,
+                                  validationTrigger: formStateVersionNotifier,
+                                  isFieldValid: () => selectedPartnerId != null,
                                 ),
                               ],
                             );
@@ -573,21 +358,10 @@ class IncomePage {
                     ),
                     const SizedBox(height: 12),
 
-                    // Описание
-                    TextFormField(
-                      maxLength: 160,
-                      maxLines: 3,
+                    const SizedBox(height: 12),
+
+                    IncomeDescriptionField(
                       controller: descriptionController,
-                      decoration: InputDecoration(
-                        filled: true,
-                        labelStyle: AppTextStyles.f16w500,
-                        fillColor: AppColors.backroundColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        hintText:
-                            t.income.description, // "Описание" / "Description"
-                      ),
                     ),
                     const SizedBox(height: 24),
 
