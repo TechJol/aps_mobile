@@ -65,7 +65,6 @@ class IncomePage {
     final result = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-
       backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
@@ -314,10 +313,8 @@ class IncomePage {
                                   ),
                                   const SizedBox(height: 4),
                                   IncomeValidationMessage(
-                                    showValidationErrors:
-                                        showValidationErrors,
-                                    validationTrigger:
-                                        formStateVersionNotifier,
+                                    showValidationErrors: showValidationErrors,
+                                    validationTrigger: formStateVersionNotifier,
                                     isFieldValid: () =>
                                         selectedPartnerId != null &&
                                         selectedPartnerTypeId != null,
@@ -360,9 +357,7 @@ class IncomePage {
 
                     const SizedBox(height: 12),
 
-                    IncomeDescriptionField(
-                      controller: descriptionController,
-                    ),
+                    IncomeDescriptionField(controller: descriptionController),
                     const SizedBox(height: 24),
 
                     /// Save button
