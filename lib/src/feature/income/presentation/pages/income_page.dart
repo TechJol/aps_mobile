@@ -146,6 +146,7 @@ class IncomePage {
                               label: t.income.account,
                               value: selectedAccountName,
                               placeholder: t.income.notAccount,
+
                               onChanged: (val) {
                                 selectedAccountName = val;
                                 selectedAccountId = state.accounts
