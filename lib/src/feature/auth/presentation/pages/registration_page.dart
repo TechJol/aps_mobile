@@ -4,6 +4,7 @@ import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegistrationFormEmbedded extends StatefulWidget {
   const RegistrationFormEmbedded({super.key});
@@ -124,6 +125,21 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
     });
   }
 
+  Future<void> _onAuthSuccessNavigate() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    final savedTag = prefs.getString('app_locale');
+    if (savedTag != null && savedTag.isNotEmpty) {
+      Navigator.pushNamedAndRemoveUntil(context, AppRoutes.main, (_) => false);
+    } else {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.languageSelection,
+        (_) => false,
+      );
+    }
+  }
+
   OutlineInputBorder _getBorder(bool hasText, {bool isError = false}) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(30),
@@ -181,18 +197,19 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<CredentialCubit, CredentialState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is CredentialSuccess) {
           setState(() {
             companyError = null;
             usernameError = null;
             emailError = null;
           });
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            AppRoutes.main,
-            (route) => false,
-          );
+          final menuCubit = context.read<MenuCubit>()..reset();
+          context.read<IncomeCubit>().clearAll();
+          context.read<MainCubit>().reset();
+          context.read<AuthCubit>().appStarted();
+          await menuCubit.getTransactionsWithAccounts(force: true);
+          await _onAuthSuccessNavigate();
         }
         if (state is CredentialFailure) {
           setState(() {

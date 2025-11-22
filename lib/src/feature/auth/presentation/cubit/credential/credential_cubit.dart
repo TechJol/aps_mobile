@@ -26,7 +26,7 @@ class CredentialCubit extends Cubit<CredentialState> {
     emit(CredentialLoading());
     try {
       final result = await registerUsecase.call(user);
-      result.fold((failure) {
+      await result.fold((failure) async {
         final mapped = _mapFailure(failure.message);
         emit(
           CredentialFailure(
@@ -34,7 +34,21 @@ class CredentialCubit extends Cubit<CredentialState> {
             errorCode: mapped.code,
           ),
         );
-      }, (_) => emit(CredentialSuccess()));
+      }, (_) async {
+        final loginResult = await loginUsecase.call(
+          username: user.username,
+          password: user.password,
+        );
+        loginResult.fold((failure) {
+          final mapped = _mapFailure(failure.message);
+          emit(
+            CredentialFailure(
+              errorMessage: mapped.message,
+              errorCode: mapped.code,
+            ),
+          );
+        }, (_) => emit(CredentialSuccess()));
+      });
     } catch (e) {
       final mapped = _mapFailure(e.toString());
       emit(
