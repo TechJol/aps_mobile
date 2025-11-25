@@ -40,13 +40,14 @@ class IncomePage {
     int? selectedPartnerTypeId;
     String? selectedPartnerName;
     int? selectedPartnerId;
+    final ValueNotifier<bool> includePartnerNotifier = ValueNotifier<bool>(
+      false,
+    );
 
     void updateFormValidity() {
       final isValid =
           selectedAccountId != null &&
           selectedReasonId != null &&
-          selectedPartnerTypeId != null &&
-          selectedPartnerId != null &&
           amountController.text.trim().isNotEmpty;
 
       if (isFormValidNotifier.value != isValid) {
@@ -243,117 +244,177 @@ class IncomePage {
                     ),
                     const SizedBox(height: 12),
 
-                    /// Dropdown: Partner type
-                    BlocBuilder<IncomeCubit, IncomeState>(
-                      builder: (context, state) {
-                        if (state.isLoading && state.partnerTypes.isEmpty) {
-                          return const CircularProgressIndicator();
-                        }
-
+                    ValueListenableBuilder<bool>(
+                      valueListenable: includePartnerNotifier,
+                      builder: (context, includePartner, _) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            IncomeDropdownField(
-                              items: state.partnerTypes
-                                  .map((e) => e.name)
-                                  .toList(),
-                              label: t.income.partnerType,
-                              value: selectedPartnerTypeName,
-                              placeholder: t.income.notPartnerType,
-                              onChanged: (val) {
-                                if (val == null) return;
-                                selectedPartnerTypeName = val;
-                                selectedPartnerTypeId = state.partnerTypes
-                                    .firstWhere((e) => e.name == val)
-                                    .id;
-                                selectedPartnerName = null;
-                                selectedPartnerId = null;
-                                updateFormValidity();
-                              },
+                            Row(
+                              children: [
+                                Checkbox(
+                                  value: includePartner,
+                                  side: BorderSide(
+                                    color: AppColors.primary200Color,
+                                  ),
+                                  onChanged: (v) {
+                                    includePartnerNotifier.value = v ?? false;
+                                    if (!(v ?? false)) {
+                                      selectedPartnerTypeName = null;
+                                      selectedPartnerTypeId = null;
+                                      selectedPartnerName = null;
+                                      selectedPartnerId = null;
+                                      updateFormValidity();
+                                    }
+                                    formStateVersionNotifier.value++;
+                                  },
+                                  visualDensity: VisualDensity.compact,
+                                  activeColor: AppColors.primary200Color,
+                                  checkColor: Colors.white,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  t.income.addPartner,
+                                  style: AppTextStyles.f12w600.copyWith(
+                                    color: AppColors.primary200Color,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 4),
-                            IncomeValidationMessage(
-                              showValidationErrors: showValidationErrors,
-                              validationTrigger: formStateVersionNotifier,
-                              isFieldValid: () => selectedPartnerTypeId != null,
-                            ),
+                            if (includePartner) ...[
+                              const SizedBox(height: 12),
+
+                              /// Dropdown: Partner type
+                              BlocBuilder<IncomeCubit, IncomeState>(
+                                builder: (context, state) {
+                                  if (state.isLoading &&
+                                      state.partnerTypes.isEmpty) {
+                                    return const CircularProgressIndicator();
+                                  }
+
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      IncomeDropdownField(
+                                        items: state.partnerTypes
+                                            .map((e) => e.name)
+                                            .toList(),
+                                        label: t.income.partnerType,
+                                        value: selectedPartnerTypeName,
+                                        placeholder: t.income.notPartnerType,
+                                        onChanged: (val) {
+                                          if (val == null) return;
+                                          selectedPartnerTypeName = val;
+                                          selectedPartnerTypeId = state
+                                              .partnerTypes
+                                              .firstWhere((e) => e.name == val)
+                                              .id;
+                                          selectedPartnerName = null;
+                                          selectedPartnerId = null;
+                                          updateFormValidity();
+                                        },
+                                      ),
+                                      const SizedBox(height: 4),
+                                      IncomeValidationMessage(
+                                        showValidationErrors:
+                                            showValidationErrors,
+                                        validationTrigger:
+                                            formStateVersionNotifier,
+                                        isFieldValid: () => true,
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                              const SizedBox(height: 12),
+
+                              /// Dropdown: Partner
+                              BlocBuilder<IncomeCubit, IncomeState>(
+                                builder: (context, state) {
+                                  if (state.isLoading &&
+                                      state.partners.isEmpty) {
+                                    return const CircularProgressIndicator();
+                                  }
+
+                                  return ValueListenableBuilder<int>(
+                                    valueListenable: formStateVersionNotifier,
+                                    builder: (_, __, ___) {
+                                      final partnersForType = state.partners
+                                          .where(
+                                            (partner) =>
+                                                partner.type ==
+                                                selectedPartnerTypeId,
+                                          )
+                                          .toList();
+
+                                      if (selectedPartnerTypeId == null ||
+                                          partnersForType.isEmpty) {
+                                        return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            IncomeDropdownField(
+                                              items: const [],
+                                              label: t.income.partner,
+                                              value: selectedPartnerName,
+                                              placeholder: t.income.notPartner,
+                                              onChanged: null,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            IncomeValidationMessage(
+                                              showValidationErrors:
+                                                  showValidationErrors,
+                                              validationTrigger:
+                                                  formStateVersionNotifier,
+                                              isFieldValid: () => true,
+                                            ),
+                                          ],
+                                        );
+                                      }
+
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          IncomeDropdownField(
+                                            items: partnersForType
+                                                .map((e) => e.name)
+                                                .toList(),
+                                            label: t.income.partner,
+                                            value: selectedPartnerName,
+                                            placeholder: t.income.notPartner,
+                                            onChanged: (val) {
+                                              selectedPartnerName = val;
+                                              selectedPartnerId =
+                                                  partnersForType
+                                                      .firstWhere(
+                                                        (e) => e.name == val,
+                                                      )
+                                                      .id;
+                                              updateFormValidity();
+                                            },
+                                          ),
+                                          const SizedBox(height: 4),
+                                          IncomeValidationMessage(
+                                            showValidationErrors:
+                                                showValidationErrors,
+                                            validationTrigger:
+                                                formStateVersionNotifier,
+                                            isFieldValid: () => true,
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
                           ],
                         );
                       },
                     ),
-                    const SizedBox(height: 12),
 
-                    /// Dropdown: Partner
-                    BlocBuilder<IncomeCubit, IncomeState>(
-                      builder: (context, state) {
-                        if (state.isLoading && state.partners.isEmpty) {
-                          return const CircularProgressIndicator();
-                        }
-
-                        return ValueListenableBuilder<int>(
-                          valueListenable: formStateVersionNotifier,
-                          builder: (_, __, ___) {
-                            final partnersForType = state.partners
-                                .where(
-                                  (partner) =>
-                                      partner.type == selectedPartnerTypeId,
-                                )
-                                .toList();
-
-                            if (selectedPartnerTypeId == null ||
-                                partnersForType.isEmpty) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  IncomeDropdownField(
-                                    items: const [],
-                                    label: t.income.partner,
-                                    value: selectedPartnerName,
-                                    placeholder: t.income.notPartner,
-                                    onChanged: null,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  IncomeValidationMessage(
-                                    showValidationErrors: showValidationErrors,
-                                    validationTrigger: formStateVersionNotifier,
-                                    isFieldValid: () =>
-                                        selectedPartnerId != null &&
-                                        selectedPartnerTypeId != null,
-                                  ),
-                                ],
-                              );
-                            }
-
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                IncomeDropdownField(
-                                  items: partnersForType
-                                      .map((e) => e.name)
-                                      .toList(),
-                                  label: t.income.partner,
-                                  value: selectedPartnerName,
-                                  placeholder: t.income.notPartner,
-                                  onChanged: (val) {
-                                    selectedPartnerName = val;
-                                    selectedPartnerId = partnersForType
-                                        .firstWhere((e) => e.name == val)
-                                        .id;
-                                    updateFormValidity();
-                                  },
-                                ),
-                                const SizedBox(height: 4),
-                                IncomeValidationMessage(
-                                  showValidationErrors: showValidationErrors,
-                                  validationTrigger: formStateVersionNotifier,
-                                  isFieldValid: () => selectedPartnerId != null,
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                    ),
                     const SizedBox(height: 12),
 
                     const SizedBox(height: 12),

@@ -320,6 +320,9 @@ class TranslationsIncomeEn {
 	/// en: 'No counterparties'
 	String get notPartner => 'No counterparties';
 
+	/// en: 'Add counterparty'
+	String get addPartner => 'Add counterparty';
+
 	/// en: 'Description'
 	String get description => 'Description';
 
@@ -1343,6 +1346,7 @@ extension on Translations {
 			case 'income.notPartnerType': return 'No counterparty types';
 			case 'income.partner': return 'Counterparty';
 			case 'income.notPartner': return 'No counterparties';
+			case 'income.addPartner': return 'Add counterparty';
 			case 'income.description': return 'Description';
 			case 'income.pleaseFillInAllFields': return 'Please fill in all fields';
 			case 'income.save': return 'Save';

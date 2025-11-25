@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
@@ -143,12 +143,11 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
   OutlineInputBorder _getBorder(bool hasText, {bool isError = false}) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(30),
-      borderSide:
-          isError
-              ? const BorderSide(color: Colors.red, width: 1.5)
-              : hasText
-              ? const BorderSide(color: Color(0xFF661EFB), width: 1.5)
-              : BorderSide.none,
+      borderSide: isError
+          ? const BorderSide(color: Colors.red, width: 1.5)
+          : hasText
+          ? const BorderSide(color: Color(0xFF661EFB), width: 1.5)
+          : BorderSide.none,
     );
   }
 
@@ -175,21 +174,16 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
         errorText: errorText,
         filled: true,
         fillColor: Colors.grey.shade50,
-        suffixIcon:
-            isPassword
-                ? IconButton(
-                  icon: Icon(
-                    _obscureRegPassword
-                        ? Icons.visibility_off
-                        : Icons.visibility,
-                    color: Colors.grey,
-                  ),
-                  onPressed:
-                      () => setState(
-                        () => _obscureRegPassword = !_obscureRegPassword,
-                      ),
-                )
-                : null,
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  _obscureRegPassword ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.grey,
+                ),
+                onPressed: () =>
+                    setState(() => _obscureRegPassword = !_obscureRegPassword),
+              )
+            : null,
       ),
     );
   }
@@ -346,25 +340,23 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
                     return const CircularProgressIndicator();
                   }
                   return ElevatedButton(
-                    onPressed:
-                        isFormValid
-                            ? () {
-                              final user = AuthModel(
-                                username: usernameController.text,
-                                password: passwordController.text,
-                                email: emailController.text,
-                                firstName: nameController.text,
-                                lastName: surnameController.text,
-                                companyName: firmController.text,
-                              );
-                              context.read<CredentialCubit>().register(user);
-                            }
-                            : null,
+                    onPressed: isFormValid
+                        ? () {
+                            final user = AuthModel(
+                              username: usernameController.text,
+                              password: passwordController.text,
+                              email: emailController.text,
+                              firstName: nameController.text,
+                              lastName: surnameController.text,
+                              companyName: firmController.text,
+                            );
+                            context.read<CredentialCubit>().register(user);
+                          }
+                        : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          isFormValid
-                              ? const Color(0xFF661EFB)
-                              : const Color(0xFFC7C8FF),
+                      backgroundColor: isFormValid
+                          ? const Color(0xFF661EFB)
+                          : const Color(0xFFC7C8FF),
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),

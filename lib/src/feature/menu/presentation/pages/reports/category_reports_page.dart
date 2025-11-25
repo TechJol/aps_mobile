@@ -17,8 +17,23 @@ class CategoryReportsPage extends StatefulWidget {
 class _CategoryReportsPageState extends State<CategoryReportsPage> {
   final LocalService _localService = LocalService();
   String selectedMonth = DateTime.now().month.toString();
+  final ScrollController _monthsController = ScrollController();
 
   static const String _kgs = 'KGS';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToCurrentMonth();
+    });
+  }
+
+  @override
+  void dispose() {
+    _monthsController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,6 +173,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                   MonthsTabs(
                     months: months,
                     selectedMonth: selectedMonth,
+                    scrollController: _monthsController,
                     onMonthSelected: (month) {
                       setState(() => selectedMonth = month);
                     },
@@ -291,6 +307,16 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
     t.menu.months.november,
     t.menu.months.december,
   ];
+
+  void _scrollToCurrentMonth() {
+    if (!_monthsController.hasClients) return;
+    final idx = DateTime.now().month - 1; // 0-based
+    // Примерная ширина вкладки с отступами ~70
+    final approxTabWidth = 70.0;
+    final offset = (idx - 2) * approxTabWidth;
+    final max = _monthsController.position.maxScrollExtent;
+    _monthsController.jumpTo(offset.clamp(0.0, max));
+  }
 }
 
 class MonthsTabs extends StatelessWidget {
@@ -299,16 +325,19 @@ class MonthsTabs extends StatelessWidget {
     required this.onMonthSelected,
     required this.selectedMonth,
     required this.months,
+    this.scrollController,
   });
 
   final Function(String) onMonthSelected;
   final String selectedMonth;
   final List<String> months;
+  final ScrollController? scrollController;
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
+      controller: scrollController,
       child: Row(
         children:
             months.asMap().entries.map((entry) {

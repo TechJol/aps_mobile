@@ -19,6 +19,21 @@ const String _kgs = 'KGS';
 class _MonthlyReportPageState extends State<MonthlyReportPage> {
   final LocalService _localService = LocalService();
   String _selectedMonth = DateTime.now().month.toString();
+  final ScrollController _monthsController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _scrollToCurrentMonth(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _monthsController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,22 +86,23 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
                   20.h,
                   _MonthsTabs(
                     selectedMonth: _selectedMonth,
+                    scrollController: _monthsController,
                     onMonthSelected: (m) => setState(() => _selectedMonth = m),
                   ),
                   20.h,
                   hasData
                       ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _SectionTitle(text: t.menu.monthlyReport.title),
-                          20.h,
-                          _ChartSection(data: chartData, reasons: reasons),
-                          20.h,
-                          _LegendList(legendData: legendData),
-                          40.h,
-                          _MonthlyDataTable(data: tableData),
-                        ],
-                      )
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _SectionTitle(text: t.menu.monthlyReport.title),
+                            20.h,
+                            _ChartSection(data: chartData, reasons: reasons),
+                            20.h,
+                            _LegendList(legendData: legendData),
+                            40.h,
+                            _MonthlyDataTable(data: tableData),
+                          ],
+                        )
                       : const _NoDataStub(),
                 ],
               );
@@ -127,6 +143,15 @@ class _MonthlyReportPageState extends State<MonthlyReportPage> {
     }
 
     return chartData;
+  }
+
+  void _scrollToCurrentMonth() {
+    if (!_monthsController.hasClients) return;
+    final idx = DateTime.now().month - 1; // 0-based
+    const approxTabWidth = 70.0; // текст + отступы
+    final offset = (idx - 2) * approxTabWidth;
+    final max = _monthsController.position.maxScrollExtent;
+    _monthsController.jumpTo(offset.clamp(0.0, max));
   }
 }
 
@@ -232,17 +257,16 @@ class _ActionButtons extends StatelessWidget {
               t.menu.monthlyReport.table.expense,
               t.menu.monthlyReport.table.balance,
             ];
-            final rows =
-                tableData
-                    .map(
-                      (row) => [
-                        row['month'] ?? '',
-                        row['income'] ?? '',
-                        row['expense'] ?? '',
-                        row['balance'] ?? '',
-                      ],
-                    )
-                    .toList();
+            final rows = tableData
+                .map(
+                  (row) => [
+                    row['month'] ?? '',
+                    row['income'] ?? '',
+                    row['expense'] ?? '',
+                    row['balance'] ?? '',
+                  ],
+                )
+                .toList();
 
             localService.printReportAsPdf(
               context: context,
@@ -262,17 +286,16 @@ class _ActionButtons extends StatelessWidget {
               t.menu.monthlyReport.table.expense,
               t.menu.monthlyReport.table.balance,
             ];
-            final rows =
-                tableData
-                    .map(
-                      (row) => [
-                        row['month']!,
-                        row['income']!,
-                        row['expense']!,
-                        row['balance']!,
-                      ],
-                    )
-                    .toList();
+            final rows = tableData
+                .map(
+                  (row) => [
+                    row['month']!,
+                    row['income']!,
+                    row['expense']!,
+                    row['balance']!,
+                  ],
+                )
+                .toList();
 
             localService.exportToExcelGeneric(
               fileName: '${t.menu.monthlyReport.filenamePrefix}$selectedMonth',
@@ -291,10 +314,12 @@ class _MonthsTabs extends StatelessWidget {
   const _MonthsTabs({
     required this.selectedMonth,
     required this.onMonthSelected,
+    this.scrollController,
   });
 
   final String selectedMonth;
   final ValueChanged<String> onMonthSelected;
+  final ScrollController? scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -315,30 +340,28 @@ class _MonthsTabs extends StatelessWidget {
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
+      controller: scrollController,
       child: Row(
-        children:
-            months.asMap().entries.map((entry) {
-              final monthNumber = (entry.key + 1).toString();
-              final isSelected = monthNumber == selectedMonth;
+        children: months.asMap().entries.map((entry) {
+          final monthNumber = (entry.key + 1).toString();
+          final isSelected = monthNumber == selectedMonth;
 
-              return Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: GestureDetector(
-                  onTap: () => onMonthSelected(monthNumber),
-                  child: Text(
-                    entry.value,
-                    style: AppTextStyles.f12w400.copyWith(
-                      color:
-                          isSelected
-                              ? AppColors.primaryColor
-                              : AppColors.greyColor,
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.normal,
-                    ),
-                  ),
+          return Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: GestureDetector(
+              onTap: () => onMonthSelected(monthNumber),
+              child: Text(
+                entry.value,
+                style: AppTextStyles.f12w400.copyWith(
+                  color: isSelected
+                      ? AppColors.primaryColor
+                      : AppColors.greyColor,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
-              );
-            }).toList(),
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }
@@ -375,13 +398,11 @@ class _LegendList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children:
-          legendData
-              .map(
-                (item) =>
-                    _LegendItem(color: item['color']!, text: item['name']!),
-              )
-              .toList(),
+      children: legendData
+          .map(
+            (item) => _LegendItem(color: item['color']!, text: item['name']!),
+          )
+          .toList(),
     );
   }
 }
@@ -424,8 +445,9 @@ class _MonthlyDataTable extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final totalW = monthW + incomeW + expenseW + balanceW + 16 * 2 * 4;
-        final minWidth =
-            totalW < constraints.maxWidth ? constraints.maxWidth : totalW;
+        final minWidth = totalW < constraints.maxWidth
+            ? constraints.maxWidth
+            : totalW;
 
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -470,12 +492,9 @@ class _MonthlyDataTable extends StatelessWidget {
   }
 
   Widget _cell(String text, {bool isHeader = false, Color? color}) {
-    final style =
-        isHeader
-            ? const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)
-            : AppTextStyles.f16w500.copyWith(
-              color: color ?? AppColors.blackColor,
-            );
+    final style = isHeader
+        ? const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)
+        : AppTextStyles.f16w500.copyWith(color: color ?? AppColors.blackColor);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
@@ -530,8 +549,8 @@ class MonthlyReportChart extends StatelessWidget {
       double sum = 0;
       final rods = <BarChartRodStackItem>[];
 
-      final segEntries =
-          segments.entries.toList()..sort((a, b) => a.key.compareTo(b.key));
+      final segEntries = segments.entries.toList()
+        ..sort((a, b) => a.key.compareTo(b.key));
       for (final seg in segEntries) {
         final reasonIndex = reasonIdToIndex[seg.key] ?? 0;
         final color = reasonColors[reasonIndex % reasonColors.length];
@@ -596,8 +615,8 @@ class MonthlyReportChart extends StatelessWidget {
             show: true,
             drawVerticalLine: false,
             horizontalInterval: tickStep,
-            getDrawingHorizontalLine:
-                (_) => const FlLine(color: Color(0xFFEAEAEA), strokeWidth: 1),
+            getDrawingHorizontalLine: (_) =>
+                const FlLine(color: Color(0xFFEAEAEA), strokeWidth: 1),
           ),
           borderData: FlBorderData(show: false),
         ),
@@ -630,9 +649,8 @@ class MonthlyReportChart extends StatelessWidget {
     final raw = maxValue / targetTicks;
     final exp = (log(raw) / ln10).floor();
     final base = pow(10, exp).toDouble();
-    final candidates =
-        [1, 2, 5, 10].map((m) => m * base).toList()
-          ..sort((a, b) => (a - raw).abs().compareTo((b - raw).abs()));
+    final candidates = [1, 2, 5, 10].map((m) => m * base).toList()
+      ..sort((a, b) => (a - raw).abs().compareTo((b - raw).abs()));
     return candidates.first.toDouble();
   }
 }
