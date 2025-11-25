@@ -11,10 +11,36 @@ class AddPartnerBottomSheet {
     AllTransactionsModel transaction,
   ) async {
     final cubit = context.read<MenuCubit>();
-    cubit.getPartnerData();
+    final currentState = cubit.state;
+
+    List<PartnersModel> partners = [];
+    List<PartnerTypesModel> partnerTypes = [];
+
+    if (currentState is MenuTransactionsWithAccountsSuccess) {
+      partners = currentState.partners;
+      partnerTypes = currentState.partnerTypes!;
+    } else if (currentState is MenuPartnerDataSuccess) {
+      partners = currentState.partners ?? [];
+      partnerTypes = currentState.partnerTypes ?? [];
+    } else {
+      await cubit.getPartnerData(force: true);
+      final newState = cubit.state;
+      if (newState is MenuPartnerDataSuccess) {
+        partners = newState.partners ?? [];
+        partnerTypes = newState.partnerTypes ?? [];
+      }
+    }
+
+    if (partners.isEmpty && partnerTypes.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(t.operation.notFoundPartner)));
+      return null;
+    }
 
     String? selectedType;
     String? selectedPartner;
+    List<PartnersModel> filteredPartners = partners;
 
     return showModalBottomSheet<bool>(
       context: context,
@@ -22,15 +48,8 @@ class AddPartnerBottomSheet {
       isDismissible: true,
       enableDrag: true,
       builder: (dialogContext) {
-        return BlocBuilder<MenuCubit, MenuState>(
-          builder: (context, state) {
-            if (state is MenuLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (state is! MenuPartnerDataSuccess) {
-              return const SizedBox.shrink();
-            }
-
+        return StatefulBuilder(
+          builder: (context, setState) {
             return AlertDialog(
               backgroundColor: AppColors.whiteColor,
               shape: RoundedRectangleBorder(
@@ -50,28 +69,30 @@ class AddPartnerBottomSheet {
                   const SizedBox(height: 12),
                   DropDownFormField(
                     label: t.operation.selectType,
-                    items:
-                        state.partnerTypes?.map((type) => type.name).toList() ??
-                        [],
+                    items: partnerTypes.map((type) => type.name).toList(),
                     value: selectedType ?? '',
                     onChanged: (value) {
-                      selectedType = value;
-                      final id = state.partnerTypes
-                          ?.firstWhere((type) => type.name == value)
-                          .id;
-                      if (id != null) cubit.filterPartnersByType(id);
+                      setState(() {
+                        selectedType = value;
+                        final id = partnerTypes
+                            .firstWhere((type) => type.name == value)
+                            .id;
+                        filteredPartners = partners
+                            .where((p) => p.type == id)
+                            .toList();
+                      });
                     },
                   ),
                   const SizedBox(height: 12),
                   DropDownFormField(
                     label: t.operation.selectPartner,
-                    items:
-                        state.filteredPartners
-                            ?.map((partner) => partner.name)
-                            .toList() ??
-                        [],
+                    items: filteredPartners
+                        .map((partner) => partner.name)
+                        .toList(),
                     value: selectedPartner ?? '',
-                    onChanged: (value) => selectedPartner = value,
+                    onChanged: (value) => setState(() {
+                      selectedPartner = value;
+                    }),
                   ),
                 ],
               ),
@@ -115,8 +136,8 @@ class AddPartnerBottomSheet {
                             return;
                           }
 
-                          final partnerId = state.filteredPartners
-                              ?.firstWhere(
+                          final partnerId = filteredPartners
+                              .firstWhere(
                                 (partner) => partner.name == selectedPartner,
                                 orElse: () => PartnersModel(id: null, name: ''),
                               )
@@ -135,7 +156,7 @@ class AddPartnerBottomSheet {
                             transaction,
                             partnerId,
                           );
-                          await cubit.getTransactionsWithAccounts();
+                          await cubit.getTransactionsWithAccounts(force: true);
                           Navigator.of(dialogContext).pop(true);
                         },
                         style: ElevatedButton.styleFrom(
