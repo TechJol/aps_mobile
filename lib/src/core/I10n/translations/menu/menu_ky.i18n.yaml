@@ -1,0 +1,196 @@
+menuTitle: "Меню"
+
+operations: "Бардык операциялар"
+operationsAll: "Бардык транзакциялар"
+operationsByCounterparties: "Контрагенттер боюнча"
+operationsByAccounts: "Эсептер боюнча"
+
+reports: "Отчеттор"
+reportsByArticles: "Беренелер боюнча отчеттор"
+reportsIncomeExpenseSummary: "Жалпы абал"
+reportsMonthly: "Айлык киреше жана чыгым"
+reportsMetrics: "Көрсөткүчтөр"
+
+settings: "Орнотуулар"
+settingsCounterparties: "Контрагенттер"
+settingsCounterpartyTypes: "Контрагент түрлөрү"
+settingsAccounts: "Эсептер"
+settingsArticles: "Беренелер"
+
+logout: "Чыгуу"
+
+profile:
+  profile: "Профиль"
+  next: "Андан ары"
+  deleteAccount: "Аккаунтту өчүрүү"
+  account: "Аккаунт"
+error: "Ката"
+
+typeCounterparties:
+  title: "Контрагент түрлөрү"
+  addType: "Түр кошуу"
+  editType: "Түрдү түзөтүү"
+  print: "Басып чыгаруу"
+  export: "Excelге экспорттоо"
+  name: "Аталышы"
+  delete: "Түрдү өчүрүү"
+  notFound: "Контрагент түрлөрү жок"
+save: "Сактоо"
+delete: "Өчүрүү"
+edit: "Түзөтүү"
+
+counterparties:
+  title: "Контрагенттер"
+  addCounterparty: "Контрагент кошуу"
+  editCounterparty: "Контрагентти түзөтүү"
+  deleteCounterparty: "Контрагентти өчүрүү"
+  print: "Басып чыгаруу"
+  export: "Excelге экспорттоо"
+  name: "Аталышы"
+  type: "Түрү"
+  notFound: "Контрагенттер жок"
+  phoneNumber: "Байланыш маалыматы"
+
+articles:
+  title: "Беренелер"
+  addArticle: "Берене кошуу"
+  editArticle: "Берене түзөтүү"
+  deleteArticle: "Беренени өчүрүү"
+  print: "Басып чыгаруу"
+  export: "Excelге экспорттоо"
+  name: "Аталышы"
+  type: "Түрү"
+  income: "Киреше"
+  expense: "Чыгым"
+  notFound: "Беренелер жок"
+income: "Киреше"
+expense: "Чыгым"
+
+common:
+  print: "Басып чыгаруу"
+  export: "Excelге экспорттоо"
+  amountKgs: "Сумма (сом)"
+  percent: "Пайыз"
+  numberSign: "№"
+  noDataForSelectedMonth: "Тандалган ай боюнча маалымат жок"
+  untitled: "Аталышы жок"
+  unknown: "Белгисиз"
+
+months:
+  january: "Январь"
+  february: "Февраль"
+  march: "Март"
+  april: "Апрель"
+  may: "Май"
+  june: "Июнь"
+  july: "Июль"
+  august: "Август"
+  september: "Сентябрь"
+  october: "Октябрь"
+  november: "Ноябрь"
+  december: "Декабрь"
+
+reportsByArticle:
+  title: "Беренелер боюнча отчеттор"
+  filenamePrefix: "Беренелер_отчету_ай_"
+  markers:
+    income: "--- КИРЕШЕ ---"
+    expense: "--- ЧЫГЫМ ---"
+  sections:
+    incomeTitle: "Негизги киреше беренелери"
+    expenseTitle: "Негизги чыгым беренелери"
+    incomeNameCol: "Киреше беренеси"
+    expenseNameCol: "Чыгым беренеси"
+
+article:
+  name: "Аталышы"
+  income: "Киреше"
+  expense: "Чыгым"
+
+incomeExpenseSummary:
+  title: "Жалпы абал"
+  currency: "Валюта"
+  income: "Киреше"
+  expense: "Чыгым"
+  balance: "Баланс"
+  balanceKgz: "Баланс (KGS)"
+  exchangeRate: "Валюта курсу"
+noData: "Маалымат жок"
+
+monthlyReport:
+  title: "Айлык отчет"
+  incomeTitle: "Киреше"
+  filenamePrefix: "Айлык_отчет_"
+  table:
+    month: "Ай"
+    income: "Киреше (KGS)"
+    expense: "Чыгым (KGS)"
+    balance: "Таза киреше (KGS)"
+  noData: "Тандалган ай боюнча маалымат жок"
+
+metrics:
+  title: "Көрсөткүчтөр"
+  yearlyReportTitle: "Жылдык отчет"
+  yearlyReportFilename: "Жылдык_отчет"
+  year: "Жыл"
+  incomeKgz: "Киреше (KGZ)"
+  expenseKgz: "Чыгым (KGZ)"
+  netIncomeKgz: "Таза киреше (KGZ)"
+  byYears: "жылдар боюнча"
+  selectPeriod: "Периодду тандаңыз"
+  tableTitle: "Жылдар боюнча киреше/чыгым таблицасы"
+  chartTitle: "Жылдар боюнча киреше/чыгым графиги"
+
+transactions:
+  title: "Бардык транзакциялар"
+  notFound: "Транзакциялар жок"
+  printTitle: "Бардык транзакциялар боюнча отчет"
+  fileName: "Бардык_транзакциялар"
+  table:
+    amount: "Сумма"
+    currency: "Валюта"
+    currencyShort: "Вл"
+    date: "Дата"
+    type: "Түрү"
+    account: "Эсеп"
+    article: "Берене"
+    counterparty: "Контрагент"
+    comment: "Комментарий"
+    deleted: "Өчүрүлгөн"
+    edited: "Өзгөртүлгөн"
+
+forCounterparties:
+  title: "Контрагент категориялары"
+  noTypes: "Категориялар жок"
+  noPartnersInType: "Бул категорияда контрагенттер жок"
+  name: "Аты"
+  balance: "Баланс"
+  contacts: "Контакттар"
+
+accounts:
+  total: "жалпы баланс"
+  printTitle: "Эсептер отчету"
+  fileName: "Эсептер_бойунча"
+  headers:
+    name: "Аталышы"
+    balance: "Баланс"
+    accountType: "Эсеп түрү"
+  type:
+    cash: "Касса"
+    bank: "Банк"
+
+language: 
+  title: "Тил"
+  system: "Системалык"
+  english: "Англисче"
+  russian: "Орусча"
+  kyrgyz: "Кыргызча"
+  select: "Тилди тандаңыз"
+
+interface: "Интерфейс"
+
+theme:
+  title: "Тема"
+  light: "Жаркын"
+  dark: "Караңгы"
+  system: "Системалык"
