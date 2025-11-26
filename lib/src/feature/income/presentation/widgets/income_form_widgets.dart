@@ -139,12 +139,14 @@ class IncomeAmountField extends StatelessWidget {
     required this.currencyLabel,
     required this.onCurrencyTap,
     required this.currencyIcon,
+    required this.currencyButtonKey,
   });
 
   final TextEditingController controller;
   final String currencyLabel;
   final VoidCallback onCurrencyTap;
   final Widget currencyIcon;
+  final GlobalKey currencyButtonKey;
 
   @override
   Widget build(BuildContext context) {
@@ -152,6 +154,7 @@ class IncomeAmountField extends StatelessWidget {
       label: t.income.sum,
       controller: controller,
       suffixIcon: GestureDetector(
+        key: currencyButtonKey,
         onTap: onCurrencyTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),

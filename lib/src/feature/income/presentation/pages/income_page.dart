@@ -190,6 +190,7 @@ class IncomePage {
                                 fit: BoxFit.contain,
                               ),
                             ),
+                            currencyButtonKey: currencyButtonKey,
                           ),
                           const SizedBox(height: 4),
                           IncomeValidationMessage(

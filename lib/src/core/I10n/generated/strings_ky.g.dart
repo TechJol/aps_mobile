@@ -538,7 +538,7 @@ class _TranslationsMenuThemeKy extends TranslationsMenuThemeEn {
 
 	// Translations
 	@override String get title => 'Тема';
-	@override String get light => 'Жаркын';
+	@override String get light => 'Жарык';
 	@override String get dark => 'Караңгы';
 	@override String get system => 'Системалык';
 }
@@ -930,7 +930,7 @@ extension on TranslationsKy {
 			case 'menu.language.select': return 'Тилди тандаңыз';
 			case 'menu.interface': return 'Интерфейс';
 			case 'menu.theme.title': return 'Тема';
-			case 'menu.theme.light': return 'Жаркын';
+			case 'menu.theme.light': return 'Жарык';
 			case 'menu.theme.dark': return 'Караңгы';
 			case 'menu.theme.system': return 'Системалык';
 			case 'operation.operation': return 'Операциялар';

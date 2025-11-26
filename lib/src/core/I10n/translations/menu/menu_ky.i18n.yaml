@@ -191,6 +191,6 @@ interface: "Интерфейс"
 
 theme:
   title: "Тема"
-  light: "Жаркын"
+  light: "Жарык"
   dark: "Караңгы"
   system: "Системалык"
