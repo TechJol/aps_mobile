@@ -17,7 +17,7 @@ class ElevatedButtonWidget extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryColorLight,
               foregroundColor: AppColors.whiteColor,
-              fixedSize: const Size(double.infinity, 56),
+              fixedSize: const Size(double.infinity, 50),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
               ),
@@ -25,7 +25,7 @@ class ElevatedButtonWidget extends StatelessWidget {
             ),
             child: Text(
               text,
-              style: AppTextStyles.f16w500.copyWith(
+              style: AppTextStyles.f14w500.copyWith(
                 color: AppColors.whiteColor,
               ),
             ),
