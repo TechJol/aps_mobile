@@ -47,26 +47,25 @@ class MyApp extends StatelessWidget {
         initialRoute: '/',
 
         routes: {
-          '/':
-              (context) => _UpdateOnce(
-                child: BlocListener<AuthCubit, AuthState>(
-                  listenWhen: (previous, current) => current is UnAuthenticated,
-                  listener: (context, state) {
-                    context.read<MenuCubit>().reset();
-                    context.read<IncomeCubit>().clearAll();
-                    context.read<MainCubit>().reset();
-                  },
-                  child: BlocBuilder<AuthCubit, AuthState>(
-                    builder: (context, state) {
-                      if (state is Authenticated) return const MainView();
-                      if (state is UnAuthenticated) {
-                        return const AuthPagerPage();
-                      }
-                      return const SizedBox.shrink();
-                    },
-                  ),
-                ),
+          '/': (context) => _UpdateOnce(
+            child: BlocListener<AuthCubit, AuthState>(
+              listenWhen: (previous, current) => current is UnAuthenticated,
+              listener: (context, state) {
+                context.read<MenuCubit>().reset();
+                context.read<IncomeCubit>().clearAll();
+                context.read<MainCubit>().reset();
+              },
+              child: BlocBuilder<AuthCubit, AuthState>(
+                builder: (context, state) {
+                  if (state is Authenticated) return const MainView();
+                  if (state is UnAuthenticated) {
+                    return const AuthPagerPage();
+                  }
+                  return const SizedBox.shrink();
+                },
               ),
+            ),
+          ),
         },
       ),
     );
