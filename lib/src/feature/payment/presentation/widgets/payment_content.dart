@@ -49,7 +49,6 @@ class PaymentContent extends StatelessWidget {
             style: AppTextStyles.f20w600.copyWith(color: AppColors.blackColor),
           ),
           8.h,
-
           Text(
             'Откройте все возможности SoftkgPro и управляйте финансами без'
             ' ограничений.',
@@ -58,17 +57,14 @@ class PaymentContent extends StatelessWidget {
               height: 1.4,
             ),
           ),
-          14.h,
-
-          SizedBox(height: isCompact ? 12 : 14),
+          12.h,
           Text(
             'Выберите тариф',
             style: AppTextStyles.f14w600.copyWith(color: AppColors.blackColor),
           ),
           10.h,
           for (final plan in plans) ...[PlanCard(option: plan), 12.h],
-          14.h,
-
+          12.h,
           const ElevatedButtonWidget(text: 'Оформить подписку'),
           10.h,
           Text(
