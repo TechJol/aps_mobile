@@ -17,20 +17,20 @@ class PaymentContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final plans = [
       const PlanOption(
-        title: '1 месяц',
+        title: 'Start(1 мес.)',
         price: '299 сом',
         subtitle: 'Пробный тариф',
         highlight: false,
       ),
       const PlanOption(
-        title: '3 месяца',
+        title: 'Standart(6 мес.)',
         price: '699 сом',
         subtitle: 'Экономия 20%',
         highlight: true,
         badge: 'Рекомендуем',
       ),
       const PlanOption(
-        title: '12 месяцев',
+        title: 'Premium(12 мес.)',
         price: '1999 сом',
         subtitle: 'Экономия 45%',
         highlight: false,
