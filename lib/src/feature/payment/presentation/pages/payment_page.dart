@@ -1,8 +1,78 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
 class PaymentPage extends StatelessWidget {
   const PaymentPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.backroundColor,
+      body: SafeArea(
+        child: const _PaymentContent(
+          padding: EdgeInsets.fromLTRB(24, 16, 24, 24),
+        ),
+      ),
+    );
+  }
+}
+
+class PaymentAlertDialog extends StatelessWidget {
+  const PaymentAlertDialog({super.key, required this.onClose});
+
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      backgroundColor: Colors.transparent,
+      child: Stack(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(top: 12),
+            padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
+            decoration: BoxDecoration(
+              color: AppColors.whiteColor,
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.blackColor.withOpacity(0.15),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                ),
+              ],
+            ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 420),
+              child: _PaymentContent(padding: EdgeInsets.zero, isCompact: true),
+            ),
+          ),
+          Positioned(
+            right: 6,
+            top: 0,
+            child: Material(
+              color: Colors.transparent,
+              child: IconButton(
+                onPressed: onClose,
+                icon: const Icon(Icons.close),
+                color: AppColors.greyerColorLight,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PaymentContent extends StatelessWidget {
+  const _PaymentContent({required this.padding, this.isCompact = false});
+
+  final EdgeInsets padding;
+  final bool isCompact;
 
   @override
   Widget build(BuildContext context) {
@@ -34,70 +104,64 @@ class PaymentPage extends StatelessWidget {
       'Поддержка 24/7 в приложении',
     ];
 
-    return Scaffold(
-      backgroundColor: AppColors.backroundColor,
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
-          children: [
-            const _HeaderCard(),
-            const SizedBox(height: 24),
-            Text(
-              'Оформите подписку',
-              style: AppTextStyles.f24w600.copyWith(
-                color: AppColors.blackColor,
-              ),
+    return SingleChildScrollView(
+      padding: padding,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const _HeaderCard(),
+          SizedBox(height: isCompact ? 18 : 24),
+          Text(
+            'Оформите подписку',
+            style: AppTextStyles.f24w600.copyWith(color: AppColors.blackColor),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Откройте все возможности APS и управляйте финансами без'
+            ' ограничений.',
+            style: AppTextStyles.f14w400.copyWith(
+              color: AppColors.smallTextGreyColor,
+              height: 1.4,
             ),
-            const SizedBox(height: 8),
-            Text(
-              'Откройте все возможности APS и управляйте финансами без'
-              ' ограничений.',
-              style: AppTextStyles.f14w400.copyWith(
-                color: AppColors.smallTextGreyColor,
-                height: 1.4,
-              ),
-            ),
-            const SizedBox(height: 16),
-            for (final feature in features) ...[
-              _FeatureRow(text: feature),
-              const SizedBox(height: 10),
-            ],
-            const SizedBox(height: 14),
-            Text(
-              'Выберите тариф',
-              style: AppTextStyles.f18w600.copyWith(
-                color: AppColors.blackColor,
-              ),
-            ),
-            const SizedBox(height: 12),
-            for (final plan in plans) ...[
-              _PlanCard(option: plan),
-              const SizedBox(height: 14),
-            ],
-            const SizedBox(height: 16),
-            const ElevatedButtonWidget(text: 'Оформить подписку'),
-            const SizedBox(height: 12),
-            TextButton(
-              onPressed: () {},
-              child: Text(
-                'Подробнее о подписке',
-                style: AppTextStyles.f14w500.copyWith(
-                  color: AppColors.greyerColorLight,
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Подписка продлевается автоматически. Отменить можно в любой'
-              ' момент в настройках.',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.f12w400.copyWith(
-                color: AppColors.smallTextGreyColor,
-                height: 1.4,
-              ),
-            ),
+          ),
+          const SizedBox(height: 16),
+          for (final feature in features) ...[
+            _FeatureRow(text: feature),
+            const SizedBox(height: 10),
           ],
-        ),
+          SizedBox(height: isCompact ? 12 : 14),
+          Text(
+            'Выберите тариф',
+            style: AppTextStyles.f18w600.copyWith(color: AppColors.blackColor),
+          ),
+          const SizedBox(height: 12),
+          for (final plan in plans) ...[
+            _PlanCard(option: plan),
+            const SizedBox(height: 14),
+          ],
+          const SizedBox(height: 16),
+          const ElevatedButtonWidget(text: 'Оформить подписку'),
+          const SizedBox(height: 12),
+          TextButton(
+            onPressed: () {},
+            child: Text(
+              'Подробнее о подписке',
+              style: AppTextStyles.f14w500.copyWith(
+                color: AppColors.greyerColorLight,
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Подписка продлевается автоматически. Отменить можно в любой'
+            ' момент в настройках.',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.f12w400.copyWith(
+              color: AppColors.smallTextGreyColor,
+              height: 1.4,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -109,7 +173,7 @@ class _HeaderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         gradient: const LinearGradient(
