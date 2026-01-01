@@ -19,7 +19,7 @@ class PlanCard extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: BorderRadius.circular(16),
@@ -72,7 +72,7 @@ class PlanCard extends StatelessWidget {
         if (option.badge != null)
           Positioned(
             right: 12,
-            top: -6,
+            top: -8,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(

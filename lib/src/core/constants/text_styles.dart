@@ -7,6 +7,12 @@ class AppTextStyles {
     fontFamily: 'Inter',
   );
 
+  static const f10w500 = TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 10,
+    fontFamily: 'Inter',
+  );
+
   static const f12w400 = TextStyle(
     fontWeight: FontWeight.w400,
     fontSize: 12,

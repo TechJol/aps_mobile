@@ -36,6 +36,11 @@ class PaymentContent extends StatelessWidget {
         highlight: false,
       ),
     ];
+    final features = [
+      'Безлимитные операции и отчеты',
+      'История, аналитика и экспорт',
+      'Поддержка 24/7 в приложении',
+    ];
 
     return SingleChildScrollView(
       padding: padding,
@@ -58,6 +63,8 @@ class PaymentContent extends StatelessWidget {
             ),
           ),
           12.h,
+          for (final feature in features) ...[_FeatureRow(text: feature), 8.h],
+          8.h,
           Text(
             'Выберите тариф',
             style: AppTextStyles.f14w600.copyWith(color: AppColors.blackColor),
@@ -78,6 +85,36 @@ class PaymentContent extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _FeatureRow extends StatelessWidget {
+  const _FeatureRow({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Icon(
+          Icons.check_circle_rounded,
+          size: 18,
+          color: AppColors.greenColor,
+        ),
+        8.w,
+        Expanded(
+          child: Text(
+            text,
+            style: AppTextStyles.f10w500.copyWith(
+              color: AppColors.blackColorLight,
+              height: 1.4,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
