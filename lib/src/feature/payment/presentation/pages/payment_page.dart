@@ -71,16 +71,20 @@ class PaymentAlertDialog extends StatelessWidget {
 
 class PlanOption {
   const PlanOption({
+    required this.periodId,
     required this.title,
     required this.price,
     required this.subtitle,
     required this.highlight,
     this.badge,
+    this.isSelected = false,
   });
 
+  final int periodId;
   final String title;
   final String price;
   final String subtitle;
   final bool highlight;
   final String? badge;
+  final bool isSelected;
 }

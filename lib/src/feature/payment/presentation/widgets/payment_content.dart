@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/payment/payment.dart';
 import 'package:aps_mobile/src/feature/payment/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PaymentContent extends StatelessWidget {
+class PaymentContent extends StatefulWidget {
   const PaymentContent({
     super.key,
     required this.padding,
@@ -14,78 +17,163 @@ class PaymentContent extends StatelessWidget {
   final bool isCompact;
 
   @override
-  Widget build(BuildContext context) {
-    final plans = [
-      const PlanOption(
-        title: 'Start(1 мес.)',
-        price: '299 сом',
-        subtitle: 'Пробный тариф',
-        highlight: false,
-      ),
-      const PlanOption(
-        title: 'Standart(6 мес.)',
-        price: '699 сом',
-        subtitle: 'Экономия 20%',
-        highlight: true,
-        badge: 'Рекомендуем',
-      ),
-      const PlanOption(
-        title: 'Premium(12 мес.)',
-        price: '1999 сом',
-        subtitle: 'Экономия 45%',
-        highlight: false,
-      ),
-    ];
-    final features = [
-      'Безлимитные операции и отчеты',
-      'История, аналитика и экспорт',
-      'Поддержка 24/7 в приложении',
-    ];
+  State<PaymentContent> createState() => _PaymentContentState();
+}
 
-    return SingleChildScrollView(
-      padding: padding,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const HeaderCard(),
-          SizedBox(height: isCompact ? 18 : 24),
-          Text(
-            'Оформите подписку',
-            style: AppTextStyles.f20w600.copyWith(color: AppColors.blackColor),
+class _PaymentContentState extends State<PaymentContent> {
+  static const _features = [
+    'Безлимитные операции и отчеты',
+    'История, аналитика и экспорт',
+    'Поддержка 24/7 в приложении',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<PaymentCubit>().load();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PaymentCubit, PaymentState>(
+      builder: (context, state) {
+        if (state.isLoading && state.plans.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state.error != null &&
+            state.plans.isEmpty &&
+            state.periods.isEmpty) {
+          return _ErrorState(message: state.error!);
+        }
+
+        final options = _buildPlanOptions(state);
+
+        return SingleChildScrollView(
+          padding: widget.padding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const HeaderCard(),
+              SizedBox(height: widget.isCompact ? 18 : 24),
+              Text(
+                'Оформите подписку',
+                style: AppTextStyles.f20w600.copyWith(
+                  color: AppColors.blackColor,
+                ),
+              ),
+              8.h,
+              Text(
+                'Откройте все возможности SoftkgPro и управляйте финансами без'
+                ' ограничений.',
+                style: AppTextStyles.f12w400.copyWith(
+                  color: AppColors.smallTextGreyColor,
+                  height: 1.4,
+                ),
+              ),
+              12.h,
+              for (final feature in _features) ...[
+                _FeatureRow(text: feature),
+                8.h,
+              ],
+              8.h,
+              Text(
+                'Выберите тариф',
+                style: AppTextStyles.f14w600.copyWith(
+                  color: AppColors.blackColor,
+                ),
+              ),
+              10.h,
+              if (options.isEmpty)
+                Text(
+                  'Тарифы временно недоступны',
+                  style: AppTextStyles.f12w400.copyWith(
+                    color: AppColors.smallTextGreyColor,
+                  ),
+                )
+              else
+                for (final option in options) ...[
+                  PlanCard(
+                    option: option,
+                    onTap: () => context
+                        .read<PaymentCubit>()
+                        .selectPeriod(option.periodId),
+                  ),
+                  12.h,
+                ],
+              12.h,
+              ElevatedButtonWidget(
+                text: 'Оформить подписку',
+                onPressed: state.isStarting
+                    ? null
+                    : () => context.read<PaymentCubit>().startPayment(),
+              ),
+              10.h,
+              Text(
+                'Подписка продлевается автоматически. Отменить можно в любой'
+                ' момент в настройках.',
+                textAlign: TextAlign.center,
+                style: AppTextStyles.f9w400.copyWith(
+                  color: AppColors.smallTextGreyColor,
+                  height: 1.4,
+                ),
+              ),
+            ],
           ),
-          8.h,
-          Text(
-            'Откройте все возможности SoftkgPro и управляйте финансами без'
-            ' ограничений.',
-            style: AppTextStyles.f12w400.copyWith(
-              color: AppColors.smallTextGreyColor,
-              height: 1.4,
-            ),
-          ),
-          12.h,
-          for (final feature in features) ...[_FeatureRow(text: feature), 8.h],
-          8.h,
-          Text(
-            'Выберите тариф',
-            style: AppTextStyles.f14w600.copyWith(color: AppColors.blackColor),
-          ),
-          10.h,
-          for (final plan in plans) ...[PlanCard(option: plan), 12.h],
-          12.h,
-          const ElevatedButtonWidget(text: 'Оформить подписку'),
-          10.h,
-          Text(
-            'Подписка продлевается автоматически. Отменить можно в любой'
-            ' момент в настройках.',
-            textAlign: TextAlign.center,
-            style: AppTextStyles.f9w400.copyWith(
-              color: AppColors.smallTextGreyColor,
-              height: 1.4,
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
+  }
+
+  List<PlanOption> _buildPlanOptions(PaymentState state) {
+    if (state.plans.isEmpty || state.periods.isEmpty) return [];
+    final plan = _selectPlan(state);
+    if (plan == null) return [];
+
+    final maxDiscount = state.periods.isEmpty
+        ? 0
+        : state.periods
+            .map((period) => period.discountPercent)
+            .reduce(max);
+
+    return state.periods.map((period) {
+      final price = _calculatePrice(plan.pricePerMonth, period);
+      final isSelected = period.id == state.selectedPeriodId;
+      final highlight = period.discountPercent == maxDiscount && maxDiscount > 0;
+      final subtitle = period.discountPercent > 0
+          ? 'Экономия ${period.discountPercent}%'
+          : 'Пробный тариф';
+
+      return PlanOption(
+        periodId: period.id,
+        title: '${period.months} ${_monthLabel(period.months)}',
+        price: '${price.toStringAsFixed(0)} сом',
+        subtitle: subtitle,
+        highlight: highlight,
+        badge: highlight ? 'Рекомендуем' : null,
+        isSelected: isSelected,
+      );
+    }).toList();
+  }
+
+  PlanEntity? _selectPlan(PaymentState state) {
+    if (state.plans.isEmpty) return null;
+    final active = state.plans.where((plan) => plan.isActive).toList();
+    return active.isNotEmpty ? active.first : state.plans.first;
+  }
+
+  double _calculatePrice(double pricePerMonth, PeriodEntity period) {
+    final base = pricePerMonth * period.months;
+    final discount = period.discountPercent / 100;
+    return base * (1 - discount);
+  }
+
+  String _monthLabel(int months) {
+    if (months % 10 == 1 && months % 100 != 11) return 'месяц';
+    if (months % 10 >= 2 && months % 10 <= 4) return 'месяца';
+    return 'месяцев';
   }
 }
 
@@ -108,13 +196,50 @@ class _FeatureRow extends StatelessWidget {
         Expanded(
           child: Text(
             text,
-            style: AppTextStyles.f10w500.copyWith(
+            style: AppTextStyles.f12w500.copyWith(
               color: AppColors.blackColorLight,
               height: 1.4,
             ),
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ErrorState extends StatelessWidget {
+  const _ErrorState({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.f12w400.copyWith(
+                color: AppColors.smallTextGreyColor,
+              ),
+            ),
+            12.h,
+            TextButton(
+              onPressed: () => context.read<PaymentCubit>().load(),
+              child: Text(
+                'Повторить',
+                style: AppTextStyles.f12w500.copyWith(
+                  color: AppColors.primaryColorLight,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

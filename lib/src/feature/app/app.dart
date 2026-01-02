@@ -1,7 +1,6 @@
 import 'package:aps_mobile/injection_container.dart' as di;
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
-import 'package:aps_mobile/src/feature/payment/payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -20,6 +19,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => di.sl<AuthCubit>()..appStarted()),
         BlocProvider(create: (context) => di.sl<IncomeCubit>()),
         BlocProvider(create: (context) => di.sl<MenuCubit>()),
+        BlocProvider(create: (context) => di.sl<PaymentCubit>()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

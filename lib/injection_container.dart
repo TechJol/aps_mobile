@@ -35,6 +35,14 @@ Future<void> init() async {
   );
 
   sl.registerFactory(
+    () => PaymentCubit(
+      getPaymentPlansUsecase: sl.call(),
+      getPaymentPeriodsUsecase: sl.call(),
+      startPaymentUsecase: sl.call(),
+    ),
+  );
+
+  sl.registerFactory(
     () => MenuCubit(
       getTransactionsUsecase: sl.call(),
       getPartnersUsecase: sl.call(),
@@ -98,6 +106,11 @@ Future<void> init() async {
   sl.registerLazySingleton(() => PostReasonUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => DeleteUserByIdUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => GetStoredUserIdUsecase(repository: sl.call()));
+  sl.registerLazySingleton(() => GetPaymentPlansUsecase(repository: sl.call()));
+  sl.registerLazySingleton(
+    () => GetPaymentPeriodsUsecase(repository: sl.call()),
+  );
+  sl.registerLazySingleton(() => StartPaymentUsecase(repository: sl.call()));
 
   //! Repository
   sl.registerLazySingleton<AuthRepository>(
@@ -116,6 +129,10 @@ Future<void> init() async {
     () => MenuRepositoryImpl(remoteMenuDataSource: sl.call()),
   );
 
+  sl.registerLazySingleton<PaymentRepository>(
+    () => PaymentRepositoryImpl(remoteDataSource: sl.call()),
+  );
+
   //! Data Source
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(client: sl.call()),
@@ -131,6 +148,10 @@ Future<void> init() async {
 
   sl.registerLazySingleton<RemoteMenuDataSource>(
     () => RemoteMenuDataSourceImpl(dio: sl.call()),
+  );
+
+  sl.registerLazySingleton<PaymentRemoteDataSource>(
+    () => PaymentRemoteDataSourceImpl(dio: sl.call()),
   );
 
   //! Network

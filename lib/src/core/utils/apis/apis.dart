@@ -20,4 +20,10 @@ class AppApi {
   static const refresh = '$domain/api/token/refresh/';
 
   static const users = '$domain/api/users/';
+
+  static const plans = '$domain/api/plans/';
+
+  static const periods = '$domain/api/periods/';
+
+  static const paymentStart = '$domain/api/payments/start/';
 }

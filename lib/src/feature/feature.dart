@@ -6,3 +6,4 @@ export 'income/income.dart';
 export 'operation/operation.dart';
 export 'menu/menu.dart';
 export 'home/home.dart';
+export 'payment/payment.dart';
