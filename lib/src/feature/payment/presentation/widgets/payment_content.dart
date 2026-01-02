@@ -7,7 +7,7 @@ class PaymentContent extends StatelessWidget {
   const PaymentContent({
     super.key,
     required this.padding,
-    this.isCompact = false,
+    this.isCompact = true,
   });
 
   final EdgeInsets padding;
