@@ -12,10 +12,8 @@ class PlanCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final borderColor = option.isSelected
         ? AppColors.primaryColorLight
-        : option.highlight
-            ? AppColors.primaryColorLight
-            : AppColors.greyColorLight;
-    final backgroundColor = option.highlight
+        : AppColors.greyColorLight;
+    final backgroundColor = option.isSelected
         ? AppColors.nextbackColor
         : AppColors.whiteColor;
 

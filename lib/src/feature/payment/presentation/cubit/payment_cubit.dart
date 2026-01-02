@@ -1,5 +1,4 @@
 import 'package:aps_mobile/src/feature/payment/payment.dart';
-import 'package:aps_mobile/src/feature/payment/presentation/cubit/payment_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PaymentCubit extends Cubit<PaymentState> {
@@ -75,8 +74,10 @@ class PaymentCubit extends Cubit<PaymentState> {
     if (planId == null || periodId == null) return;
 
     emit(state.copyWith(isStarting: true, error: null));
-    final result =
-        await startPaymentUsecase(planId: planId, periodId: periodId);
+    final result = await startPaymentUsecase(
+      planId: planId,
+      periodId: periodId,
+    );
     result.fold(
       (l) => emit(state.copyWith(isStarting: false, error: l.message)),
       (r) => emit(state.copyWith(isStarting: false)),
