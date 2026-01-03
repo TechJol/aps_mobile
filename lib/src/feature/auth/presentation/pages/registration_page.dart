@@ -15,7 +15,6 @@ class RegistrationFormEmbedded extends StatefulWidget {
 }
 
 class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
-  final TextEditingController firmController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
@@ -26,7 +25,6 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
   bool isAgreementChecked = false;
   bool _obscureRegPassword = true;
 
-  String? companyError;
   String? usernameError;
   String? emailError;
   String? nameError;
@@ -37,7 +35,6 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
   void initState() {
     super.initState();
     for (final c in [
-      firmController,
       usernameController,
       emailController,
       nameController,
@@ -51,7 +48,6 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
   @override
   void dispose() {
     for (final c in [
-      firmController,
       usernameController,
       emailController,
       nameController,
@@ -64,23 +60,18 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
   }
 
   void _validateForm() {
-    final company = firmController.text.trim();
     final username = usernameController.text.trim();
     final email = emailController.text.trim();
     final firstName = nameController.text.trim();
     final lastName = surnameController.text.trim();
     final password = passwordController.text.trim();
 
-    String? localCompanyError;
     String? localUsernameError;
     String? localEmailError;
     String? localNameError;
     String? localSurnameError;
     String? localPasswordError;
 
-    if (company.isNotEmpty && !AppRegExp.companyName.hasMatch(company)) {
-      localCompanyError = t.auth.validation.companyInvalid;
-    }
     if (username.isNotEmpty && !AppRegExp.username.hasMatch(username)) {
       localUsernameError = t.auth.validation.usernameInvalid;
     }
@@ -98,7 +89,6 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
     }
 
     final allNonEmpty =
-        company.isNotEmpty &&
         username.isNotEmpty &&
         email.isNotEmpty &&
         firstName.isNotEmpty &&
@@ -106,7 +96,6 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
         password.isNotEmpty;
 
     final allValid =
-        (localCompanyError == null) &&
         (localUsernameError == null) &&
         (localEmailError == null) &&
         (localNameError == null) &&
@@ -114,7 +103,6 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
         (localPasswordError == null);
 
     setState(() {
-      companyError = localCompanyError;
       usernameError = localUsernameError;
       emailError = localEmailError;
       nameError = localNameError;
@@ -194,7 +182,6 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
       listener: (context, state) async {
         if (state is CredentialSuccess) {
           setState(() {
-            companyError = null;
             usernameError = null;
             emailError = null;
           });
@@ -207,14 +194,10 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
         }
         if (state is CredentialFailure) {
           setState(() {
-            companyError = null;
             usernameError = null;
             emailError = null;
 
             switch (state.errorCode) {
-              case AuthErrorCodes.companyExists:
-                companyError = state.errorMessage;
-                break;
               case AuthErrorCodes.emailExists:
                 emailError = state.errorMessage;
                 break;
@@ -227,7 +210,6 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
           });
 
           final handledCodes = <String>{
-            AuthErrorCodes.companyExists,
             AuthErrorCodes.emailExists,
             AuthErrorCodes.usernameExists,
           };
@@ -250,12 +232,6 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
           child: Column(
             children: [
               const SizedBox(height: 30),
-              _buildField(
-                controller: firmController,
-                hint: t.auth.company,
-                errorText: companyError,
-              ),
-              const SizedBox(height: 24),
               _buildField(
                 controller: usernameController,
                 hint: t.auth.username,
@@ -341,14 +317,14 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
                   }
                   return ElevatedButton(
                     onPressed: isFormValid
-                        ? () {
+                          ? () {
                             final user = AuthModel(
                               username: usernameController.text,
                               password: passwordController.text,
                               email: emailController.text,
                               firstName: nameController.text,
                               lastName: surnameController.text,
-                              companyName: firmController.text,
+                              companyName: 'SoftkgPro Company',
                             );
                             context.read<CredentialCubit>().register(user);
                           }
