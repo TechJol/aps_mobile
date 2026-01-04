@@ -48,7 +48,11 @@ class PaymentAlertDialog extends StatelessWidget {
             ),
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 420),
-              child: PaymentContent(padding: EdgeInsets.zero, isCompact: true),
+              child: PaymentContent(
+                padding: EdgeInsets.zero,
+                isCompact: true,
+                onPaymentSuccess: onClose,
+              ),
             ),
           ),
           Positioned(

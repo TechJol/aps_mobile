@@ -1,5 +1,4 @@
 import 'package:aps_mobile/src/feature/payment/payment.dart';
-import 'package:aps_mobile/src/feature/payment/presentation/cubit/payment_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PaymentCubit extends Cubit<PaymentState> {

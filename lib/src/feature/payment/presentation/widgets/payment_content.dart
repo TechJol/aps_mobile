@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:math';
 
 import 'package:aps_mobile/src/core/core.dart';
@@ -11,10 +13,12 @@ class PaymentContent extends StatefulWidget {
     super.key,
     required this.padding,
     this.isCompact = true,
+    this.onPaymentSuccess,
   });
 
   final EdgeInsets padding;
   final bool isCompact;
+  final VoidCallback? onPaymentSuccess;
 
   @override
   State<PaymentContent> createState() => _PaymentContentState();
@@ -47,6 +51,7 @@ class _PaymentContentState extends State<PaymentContent> {
         if (url == null) return;
         context.read<PaymentCubit>().clearPaymentUrl();
 
+        final rootNavigator = Navigator.of(context, rootNavigator: true);
         final result = await Navigator.of(context).push<bool>(
           MaterialPageRoute(
             builder: (_) => PaymentWebViewPage(paymentUrl: url),
@@ -57,8 +62,10 @@ class _PaymentContentState extends State<PaymentContent> {
         if (result == true) {
           await context.read<PaymentCubit>().fetchSubscriptions();
           if (!mounted) return;
+          widget.onPaymentSuccess?.call();
+          if (!mounted) return;
           showDialog<void>(
-            context: context,
+            context: rootNavigator.context,
             barrierDismissible: false,
             builder: (_) => const PaymentSuccessDialog(),
           );

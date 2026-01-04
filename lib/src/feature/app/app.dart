@@ -65,13 +65,20 @@ class MyApp extends StatelessWidget {
                   listener: (context, state) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       if (!context.mounted) return;
-                      showDialog<void>(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (dialogContext) => PaymentAlertDialog(
-                          onClose: () => Navigator.of(dialogContext).pop(),
-                        ),
-                      );
+                      () async {
+                        await context.read<PaymentCubit>().fetchSubscriptions();
+                        if (!context.mounted) return;
+                        final paymentState = context.read<PaymentCubit>().state;
+                        if (paymentState.activeSubscription != null) return;
+
+                        showDialog<void>(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (dialogContext) => PaymentAlertDialog(
+                            onClose: () => Navigator.of(dialogContext).pop(),
+                          ),
+                        );
+                      }();
                     });
                   },
                 ),
