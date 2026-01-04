@@ -62,6 +62,25 @@ class _PaymentContentState extends State<PaymentContent> {
         if (result == true) {
           await context.read<PaymentCubit>().fetchSubscriptions();
           if (!mounted) return;
+          final activeSubscription = context
+              .read<PaymentCubit>()
+              .state
+              .activeSubscription;
+          if (activeSubscription == null) {
+            ScaffoldMessenger.of(rootNavigator.context).showSnackBar(
+              SnackBar(
+                content: const Text(
+                  'Платеж обработан. Подписка активируется, попробуйте позже.',
+                ),
+                action: SnackBarAction(
+                  label: 'Обновить статус',
+                  onPressed: () =>
+                      context.read<PaymentCubit>().fetchSubscriptions(),
+                ),
+              ),
+            );
+            return;
+          }
           widget.onPaymentSuccess?.call();
           if (!mounted) return;
           showDialog<void>(

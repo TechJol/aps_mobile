@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:aps_mobile/src/core/core.dart';
-import 'package:aps_mobile/src/feature/payment/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -16,9 +13,6 @@ class PaymentWebViewPage extends StatefulWidget {
 
 class _PaymentWebViewPageState extends State<PaymentWebViewPage> {
   late final WebViewController _controller;
-  Timer? _timer;
-  int _secondsLeft = 6;
-  bool _showProcessing = false;
 
   @override
   void initState() {
@@ -30,7 +24,7 @@ class _PaymentWebViewPageState extends State<PaymentWebViewPage> {
           onNavigationRequest: (request) {
             final url = request.url;
             if (_isSuccessUrl(url)) {
-              _startProcessing();
+              Navigator.of(context).pop(true);
               return NavigationDecision.prevent;
             }
             return NavigationDecision.navigate;
@@ -45,39 +39,12 @@ class _PaymentWebViewPageState extends State<PaymentWebViewPage> {
         url.contains('status=succeeded');
   }
 
-  void _startProcessing() {
-    if (_showProcessing) return;
-    setState(() => _showProcessing = true);
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_secondsLeft <= 1) {
-        timer.cancel();
-        if (!mounted) return;
-        Navigator.of(context).pop(true);
-        return;
-      }
-      setState(() => _secondsLeft--);
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       body: SafeArea(
-        child: Stack(
-          children: [
-            WebViewWidget(controller: _controller),
-            if (_showProcessing)
-              PaymentProcessingOverlay(secondsLeft: _secondsLeft),
-          ],
-        ),
+        child: WebViewWidget(controller: _controller),
       ),
     );
   }
