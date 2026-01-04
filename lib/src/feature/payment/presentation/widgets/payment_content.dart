@@ -32,99 +32,179 @@ class _PaymentContentState extends State<PaymentContent> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<PaymentCubit>().load();
+      context.read<PaymentCubit>().fetchSubscriptions();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PaymentCubit, PaymentState>(
-      builder: (context, state) {
-        if (state.isLoading && state.plans.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    return BlocListener<PaymentCubit, PaymentState>(
+      listenWhen: (previous, current) =>
+          previous.paymentUrl != current.paymentUrl &&
+          current.paymentUrl != null,
+      listener: (context, state) async {
+        final url = state.paymentUrl;
+        if (url == null) return;
+        context.read<PaymentCubit>().clearPaymentUrl();
 
-        if (state.error != null &&
-            state.plans.isEmpty &&
-            state.periods.isEmpty) {
-          return _ErrorState(message: state.error!);
-        }
-
-        final options = _buildPlanOptions(state);
-
-        return SingleChildScrollView(
-          padding: widget.padding,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const HeaderCard(),
-              SizedBox(height: widget.isCompact ? 18 : 24),
-              Text(
-                'Оформите подписку',
-                style: AppTextStyles.f20w600.copyWith(
-                  color: AppColors.blackColor,
-                ),
-              ),
-              8.h,
-              Text(
-                'Откройте все возможности SoftkgPro и управляйте финансами без'
-                ' ограничений.',
-                style: AppTextStyles.f12w400.copyWith(
-                  color: AppColors.smallTextGreyColor,
-                  height: 1.4,
-                ),
-              ),
-              12.h,
-              for (final feature in _features) ...[
-                _FeatureRow(text: feature),
-                8.h,
-              ],
-              8.h,
-              Text(
-                'Выберите тариф',
-                style: AppTextStyles.f14w600.copyWith(
-                  color: AppColors.blackColor,
-                ),
-              ),
-              10.h,
-              if (options.isEmpty)
-                Text(
-                  'Тарифы временно недоступны',
-                  style: AppTextStyles.f12w400.copyWith(
-                    color: AppColors.smallTextGreyColor,
-                  ),
-                )
-              else
-                for (final option in options) ...[
-                  PlanCard(
-                    option: option,
-                    onTap: () => context
-                        .read<PaymentCubit>()
-                        .selectPeriod(option.periodId),
-                  ),
-                  12.h,
-                ],
-              12.h,
-              ElevatedButtonWidget(
-                text: 'Оформить подписку',
-                onPressed: state.isStarting
-                    ? null
-                    : () => context.read<PaymentCubit>().startPayment(),
-              ),
-              10.h,
-              Text(
-                'Подписка продлевается автоматически. Отменить можно в любой'
-                ' момент в настройках.',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.f9w400.copyWith(
-                  color: AppColors.smallTextGreyColor,
-                  height: 1.4,
-                ),
-              ),
-            ],
+        final result = await Navigator.of(context).push<bool>(
+          MaterialPageRoute(
+            builder: (_) => PaymentWebViewPage(paymentUrl: url),
           ),
         );
+
+        if (!mounted) return;
+        if (result == true) {
+          await context.read<PaymentCubit>().fetchSubscriptions();
+          if (!mounted) return;
+          showDialog<void>(
+            context: context,
+            barrierDismissible: false,
+            builder: (_) => const PaymentSuccessDialog(),
+          );
+        }
       },
+      child: BlocBuilder<PaymentCubit, PaymentState>(
+        builder: (context, state) {
+          if (state.isLoading && state.plans.isEmpty) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state.error != null &&
+              state.plans.isEmpty &&
+              state.periods.isEmpty) {
+            return _ErrorState(message: state.error!);
+          }
+
+          final options = _buildPlanOptions(state);
+          final activeInfo = _buildActiveInfo(state);
+
+          return SingleChildScrollView(
+            padding: widget.padding,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const HeaderCard(),
+                SizedBox(height: widget.isCompact ? 18 : 24),
+                Text(
+                  'Оформите подписку',
+                  style: AppTextStyles.f20w600.copyWith(
+                    color: AppColors.blackColor,
+                  ),
+                ),
+                8.h,
+                Text(
+                  'Откройте все возможности SoftkgPro и управляйте финансами без'
+                  ' ограничений.',
+                  style: AppTextStyles.f12w400.copyWith(
+                    color: AppColors.smallTextGreyColor,
+                    height: 1.4,
+                  ),
+                ),
+                12.h,
+                if (activeInfo != null) ...[activeInfo, 12.h],
+                for (final feature in _features) ...[
+                  _FeatureRow(text: feature),
+                  8.h,
+                ],
+                8.h,
+                Text(
+                  'Выберите тариф',
+                  style: AppTextStyles.f14w600.copyWith(
+                    color: AppColors.blackColor,
+                  ),
+                ),
+                10.h,
+                if (options.isEmpty)
+                  Text(
+                    'Тарифы временно недоступны',
+                    style: AppTextStyles.f12w400.copyWith(
+                      color: AppColors.smallTextGreyColor,
+                    ),
+                  )
+                else
+                  for (final option in options) ...[
+                    PlanCard(
+                      option: option,
+                      onTap: () => context.read<PaymentCubit>().selectPeriod(
+                        option.periodId,
+                      ),
+                    ),
+                    12.h,
+                  ],
+                12.h,
+                ElevatedButtonWidget(
+                  text: 'Оформить подписку',
+                  onPressed: state.isStarting
+                      ? null
+                      : () => context.read<PaymentCubit>().startPayment(),
+                ),
+                10.h,
+                Text(
+                  'Подписка продлевается автоматически. Отменить можно в любой'
+                  ' момент в настройках.',
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.f9w400.copyWith(
+                    color: AppColors.smallTextGreyColor,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
+  }
+
+  Widget? _buildActiveInfo(PaymentState state) {
+    final active = state.activeSubscription;
+    if (active == null) return null;
+
+    final planName = state.plans
+        .firstWhere(
+          (plan) => plan.id == active.plan,
+          orElse: () => PlanEntity(
+            id: active.plan ?? 0,
+            name: 'Пакет',
+            pricePerMonth: 0,
+            isActive: false,
+          ),
+        )
+        .name;
+
+    final daysLeft = _daysLeft(active.endDate);
+    if (daysLeft == null) return null;
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.greenColorLight,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.check_circle_rounded, color: AppColors.greenColor),
+          8.w,
+          Expanded(
+            child: Text(
+              'Активен: $planName — осталось $daysLeft дней',
+              style: AppTextStyles.f12w500.copyWith(
+                color: AppColors.greenColor,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  int? _daysLeft(String endDate) {
+    if (endDate.isEmpty) return null;
+    final parsed = DateTime.tryParse(endDate);
+    if (parsed == null) return null;
+    final diff = parsed.difference(DateTime.now()).inDays;
+    return diff < 0 ? 0 : diff;
   }
 
   List<PlanOption> _buildPlanOptions(PaymentState state) {
@@ -134,14 +214,13 @@ class _PaymentContentState extends State<PaymentContent> {
 
     final maxDiscount = state.periods.isEmpty
         ? 0
-        : state.periods
-            .map((period) => period.discountPercent)
-            .reduce(max);
+        : state.periods.map((period) => period.discountPercent).reduce(max);
 
     return state.periods.map((period) {
       final price = _calculatePrice(plan.pricePerMonth, period);
       final isSelected = period.id == state.selectedPeriodId;
-      final highlight = period.discountPercent == maxDiscount && maxDiscount > 0;
+      final highlight =
+          period.discountPercent == maxDiscount && maxDiscount > 0;
       final subtitle = period.discountPercent > 0
           ? 'Экономия ${period.discountPercent}%'
           : 'Пробный тариф';

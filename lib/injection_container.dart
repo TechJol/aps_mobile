@@ -39,6 +39,7 @@ Future<void> init() async {
       getPaymentPlansUsecase: sl.call(),
       getPaymentPeriodsUsecase: sl.call(),
       startPaymentUsecase: sl.call(),
+      getSubscriptionsUsecase: sl.call(),
     ),
   );
 
@@ -111,6 +112,9 @@ Future<void> init() async {
     () => GetPaymentPeriodsUsecase(repository: sl.call()),
   );
   sl.registerLazySingleton(() => StartPaymentUsecase(repository: sl.call()));
+  sl.registerLazySingleton(
+    () => GetSubscriptionsUsecase(repository: sl.call()),
+  );
 
   //! Repository
   sl.registerLazySingleton<AuthRepository>(

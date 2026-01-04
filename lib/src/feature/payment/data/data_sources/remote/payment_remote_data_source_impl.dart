@@ -120,4 +120,39 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
       return Left(Failure(msg));
     }
   }
+
+  @override
+  Future<Either> getSubscriptions() async {
+    final accessToken = await AuthTokenStorage().getAccessToken();
+    try {
+      final response = await sl<DioClient>().get(
+        AppApi.subscriptions,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+            'X-CSRFTOKEN': 'fi0b25V9IEeulV5AoTdUL3JSAaP4YZDP',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Right(response.data);
+      } else {
+        throw Exception(
+          'Failed to get subscriptions. Status code: ${response.statusCode}',
+        );
+      }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        return await AuthError(dio: dio).handleUnauthorized();
+      }
+      final msg = NetworkErrorMapper.toMessage(e);
+      return Left(Failure(msg, code: e.response?.statusCode));
+    } catch (e) {
+      final msg = NetworkErrorMapper.toMessage(e);
+      return Left(Failure(msg));
+    }
+  }
 }

@@ -26,4 +26,6 @@ class AppApi {
   static const periods = '$domain/api/periods/';
 
   static const paymentStart = '$domain/api/payments/start/';
+
+  static const subscriptions = '$domain/api/subscription/';
 }

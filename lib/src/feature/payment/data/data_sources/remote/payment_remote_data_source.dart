@@ -6,4 +6,6 @@ abstract class PaymentRemoteDataSource {
   Future<Either> getPeriods();
 
   Future<Either> startPayment({required int planId, required int periodId});
+
+  Future<Either> getSubscriptions();
 }

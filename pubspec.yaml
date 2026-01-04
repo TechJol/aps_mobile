@@ -43,6 +43,7 @@ dependencies:
   cached_network_image: ^3.4.1
   new_version_plus: ^0.1.1
   url_launcher: ^6.3.0
+  webview_flutter: ^4.10.0
 
   # -- Json -- #
   json_annotation: ^4.9.0

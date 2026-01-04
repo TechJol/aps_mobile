@@ -20,4 +20,9 @@ class PaymentRepositoryImpl implements PaymentRepository {
   Future<Either> startPayment({required int planId, required int periodId}) {
     return remoteDataSource.startPayment(planId: planId, periodId: periodId);
   }
+
+  @override
+  Future<Either> getSubscriptions() async {
+    return await remoteDataSource.getSubscriptions();
+  }
 }

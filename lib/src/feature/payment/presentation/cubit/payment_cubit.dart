@@ -1,4 +1,5 @@
 import 'package:aps_mobile/src/feature/payment/payment.dart';
+import 'package:aps_mobile/src/feature/payment/presentation/cubit/payment_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PaymentCubit extends Cubit<PaymentState> {
@@ -6,11 +7,13 @@ class PaymentCubit extends Cubit<PaymentState> {
     required this.getPaymentPlansUsecase,
     required this.getPaymentPeriodsUsecase,
     required this.startPaymentUsecase,
+    required this.getSubscriptionsUsecase,
   }) : super(const PaymentState());
 
   final GetPaymentPlansUsecase getPaymentPlansUsecase;
   final GetPaymentPeriodsUsecase getPaymentPeriodsUsecase;
   final StartPaymentUsecase startPaymentUsecase;
+  final GetSubscriptionsUsecase getSubscriptionsUsecase;
 
   Future<void> load() async {
     if (state.isLoading) return;
@@ -63,6 +66,28 @@ class PaymentCubit extends Cubit<PaymentState> {
     );
   }
 
+  Future<void> fetchSubscriptions() async {
+    if (state.isLoadingSubscriptions) return;
+    emit(state.copyWith(isLoadingSubscriptions: true, error: null));
+
+    final result = await getSubscriptionsUsecase();
+    result.fold(
+      (l) =>
+          emit(state.copyWith(isLoadingSubscriptions: false, error: l.message)),
+      (r) {
+        final subscriptions = (r as List)
+            .map((e) => SubscriptionEntity.fromMap(e as Map<String, dynamic>))
+            .toList();
+        emit(
+          state.copyWith(
+            isLoadingSubscriptions: false,
+            subscriptions: subscriptions,
+          ),
+        );
+      },
+    );
+  }
+
   void selectPeriod(int periodId) {
     if (periodId == state.selectedPeriodId) return;
     emit(state.copyWith(selectedPeriodId: periodId));
@@ -80,8 +105,23 @@ class PaymentCubit extends Cubit<PaymentState> {
     );
     result.fold(
       (l) => emit(state.copyWith(isStarting: false, error: l.message)),
-      (r) => emit(state.copyWith(isStarting: false)),
+      (r) {
+        final data = r as Map<String, dynamic>;
+        final paymentUrl = data['payment_url'] as String?;
+        if (paymentUrl == null || paymentUrl.isEmpty) {
+          emit(
+            state.copyWith(isStarting: false, error: 'Payment URL отсутствует'),
+          );
+          return;
+        }
+        emit(state.copyWith(isStarting: false, paymentUrl: paymentUrl));
+      },
     );
+  }
+
+  void clearPaymentUrl() {
+    if (state.paymentUrl == null) return;
+    emit(state.copyWith(clearPaymentUrl: true));
   }
 
   PlanEntity? _selectDefaultPlan(List<PlanEntity> plans) {
