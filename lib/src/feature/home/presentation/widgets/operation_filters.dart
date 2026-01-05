@@ -1,5 +1,4 @@
-import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
-import 'package:aps_mobile/src/core/enums/home_filters.dart';
+import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -71,7 +70,7 @@ class OperationFilters extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 3),
+            30.h,
             Text(
               label,
               style: const TextStyle(

@@ -92,83 +92,80 @@ class TopSection extends StatelessWidget {
                       child: SlideTransition(position: offset, child: child),
                     );
                   },
-                  child:
-                      chartItems.isEmpty
-                          ? SizedBox(
-                            key: ValueKey('empty_$selectedPeriod'),
-                            height: 140,
-                            child: Center(
-                              child: Text(
-                                t.home.noData,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                  child: chartItems.isEmpty
+                      ? SizedBox(
+                          key: ValueKey('empty_$selectedPeriod'),
+                          height: 140,
+                          child: Center(
+                            child: Text(
+                              t.home.noData,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                          )
-                          : Row(
-                            key: ValueKey(
-                              'chart_${selectedPeriod.name}_${totals.income}_${totals.expense}',
-                            ),
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 112,
-                                height: 112,
-                                child: CustomPaint(
-                                  size: const Size(112, 112),
-                                  painter: PieChartDynamicPainter(
-                                    data: chartData,
-                                    colors: colors,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 24),
-                              _IncomeExpenseLegend(items: legendItems),
-                            ],
                           ),
+                        )
+                      : Row(
+                          key: ValueKey(
+                            'chart_${selectedPeriod.name}_${totals.income}_${totals.expense}',
+                          ),
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 112,
+                              height: 112,
+                              child: CustomPaint(
+                                size: const Size(112, 112),
+                                painter: PieChartDynamicPainter(
+                                  data: chartData,
+                                  colors: colors,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 24),
+                            _IncomeExpenseLegend(items: legendItems),
+                          ],
+                        ),
                 ),
-                const SizedBox(height: 18),
+                18.h,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children:
-                      periodOptions.map((period) {
-                        final isSelected = selectedPeriod == period;
-                        return GestureDetector(
-                          onTap: () => onPeriodTap(period),
-                          child: Column(
-                            children: [
-                              AnimatedDefaultTextStyle(
-                                duration: const Duration(milliseconds: 200),
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: 'Inter',
-                                  fontSize: 13,
-                                  color:
-                                      isSelected
-                                          ? AppColors.primaryColor
-                                          : Colors.grey,
-                                ),
-                                child: Text(periodLabel(period)),
-                              ),
-                              const SizedBox(height: 6),
-                              AnimatedContainer(
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.easeOut,
-                                height: 2,
-                                width: isSelected ? 24 : 0,
-                                decoration: BoxDecoration(
-                                  color: AppColors.primaryColor,
-                                  borderRadius: BorderRadius.circular(2),
-                                ),
-                              ),
-                            ],
+                  children: periodOptions.map((period) {
+                    final isSelected = selectedPeriod == period;
+                    return GestureDetector(
+                      onTap: () => onPeriodTap(period),
+                      child: Column(
+                        children: [
+                          AnimatedDefaultTextStyle(
+                            duration: const Duration(milliseconds: 200),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Inter',
+                              fontSize: 13,
+                              color: isSelected
+                                  ? AppColors.primaryColor
+                                  : Colors.grey,
+                            ),
+                            child: Text(periodLabel(period)),
                           ),
-                        );
-                      }).toList(),
+                          const SizedBox(height: 6),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            curve: Curves.easeOut,
+                            height: 2,
+                            width: isSelected ? 24 : 0,
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryColor,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
                 ),
               ],
             ),
@@ -254,24 +251,23 @@ class _IncomeExpenseLegend extends StatelessWidget {
       padding: const EdgeInsets.only(top: 22, right: 30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children:
-            items
-                .map(
-                  (item) => Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      children: [
-                        CircleAvatar(backgroundColor: item.color, radius: 5.5),
-                        const SizedBox(width: 6),
-                        Text(
-                          '${item.label}: ${numberFormatter.format(item.value)} с',
-                          style: const TextStyle(fontSize: 13),
-                        ),
-                      ],
+        children: items
+            .map(
+              (item) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  children: [
+                    CircleAvatar(backgroundColor: item.color, radius: 5.5),
+                    const SizedBox(width: 6),
+                    Text(
+                      '${item.label}: ${numberFormatter.format(item.value)} с',
+                      style: const TextStyle(fontSize: 13),
                     ),
-                  ),
-                )
-                .toList(),
+                  ],
+                ),
+              ),
+            )
+            .toList(),
       ),
     );
   }
@@ -319,11 +315,10 @@ class PieChartDynamicPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 9.5
-          ..strokeCap = StrokeCap.round;
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 9.5
+      ..strokeCap = StrokeCap.round;
 
     final total = data.values.fold(0.0, (sum, value) => sum + value);
     if (total == 0) return;

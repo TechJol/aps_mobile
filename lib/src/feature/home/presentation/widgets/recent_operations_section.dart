@@ -57,7 +57,7 @@ class RecentOperationsSection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        12.h,
         const Divider(thickness: 0.3, color: AppColors.smallTextGreyColor),
         const SizedBox(height: 12),
         BlocBuilder<MenuCubit, MenuState>(
@@ -131,7 +131,7 @@ class RecentOperationsSection extends StatelessWidget {
                               size: 20,
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          12.w,
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

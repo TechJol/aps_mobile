@@ -89,7 +89,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
               ],
             ),
 
-            SizedBox(height: 55),
+            55.h,
             Text(
               "Мы отправили код в вашу эл. почту",
               style: TextStyle(
@@ -109,7 +109,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
               ),
             ),
 
-            SizedBox(height: 10),
+            10.h,
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -158,7 +158,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
               }),
             ),
 
-            SizedBox(height: 20),
+            20.h,
 
             Center(
               child: GestureDetector(
@@ -178,7 +178,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
               ),
             ),
 
-            SizedBox(height: 425),
+            425.h,
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
