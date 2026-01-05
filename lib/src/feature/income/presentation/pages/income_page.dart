@@ -91,7 +91,7 @@ class IncomePage {
                       title: title,
                       onClose: () => Navigator.pop(context),
                     ),
-                    const SizedBox(height: 16),
+                    16.h,
 
                     IncomeDateField(
                       controller: dateController,
@@ -108,7 +108,7 @@ class IncomePage {
                         );
                       },
                     ),
-                    const SizedBox(height: 12),
+                    12.h,
 
                     /// Dropdown: Account
                     BlocConsumer<IncomeCubit, IncomeState>(
@@ -166,7 +166,7 @@ class IncomePage {
                         );
                       },
                     ),
-                    const SizedBox(height: 12),
+                    12.h,
 
                     ValueListenableBuilder<_CurrencyOption>(
                       valueListenable: selectedCurrency,
@@ -202,7 +202,7 @@ class IncomePage {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    12.h,
 
                     /// Dropdown: Reason
                     BlocBuilder<IncomeCubit, IncomeState>(
@@ -243,7 +243,7 @@ class IncomePage {
                         );
                       },
                     ),
-                    const SizedBox(height: 12),
+                    12.h,
 
                     ValueListenableBuilder<bool>(
                       valueListenable: includePartnerNotifier,
@@ -283,7 +283,7 @@ class IncomePage {
                               ],
                             ),
                             if (includePartner) ...[
-                              const SizedBox(height: 12),
+                              12.h,
 
                               /// Dropdown: Partner type
                               BlocBuilder<IncomeCubit, IncomeState>(
@@ -328,7 +328,7 @@ class IncomePage {
                                   );
                                 },
                               ),
-                              const SizedBox(height: 12),
+                              12.h,
 
                               /// Dropdown: Partner
                               BlocBuilder<IncomeCubit, IncomeState>(
@@ -416,12 +416,10 @@ class IncomePage {
                       },
                     ),
 
-                    const SizedBox(height: 12),
-
-                    const SizedBox(height: 12),
+                    24.h,
 
                     IncomeDescriptionField(controller: descriptionController),
-                    const SizedBox(height: 24),
+                    24.h,
 
                     /// Save button
                     BlocBuilder<IncomeCubit, IncomeState>(
@@ -518,7 +516,7 @@ class IncomePage {
                     lastDate: DateTime(2100),
                     onDateChanged: (date) => setState(() => tempDate = date),
                   ),
-                  const SizedBox(height: 16),
+                  16.h,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -546,7 +544,7 @@ class IncomePage {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  16.h,
                   ElevatedButton(
                     onPressed: () {
                       final newDateTime = DateTime(
