@@ -64,7 +64,7 @@ class PlanCard extends StatelessWidget {
                       ),
                       4.h,
                       Text(
-                        'за период',
+                        t.payment.perPeriod,
                         style: AppTextStyles.f12w400.copyWith(
                           color: AppColors.smallTextGreyColor,
                         ),

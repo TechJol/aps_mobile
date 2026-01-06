@@ -44,6 +44,7 @@ class TranslationsRu extends Translations {
 	@override late final _TranslationsIncomeRu income = _TranslationsIncomeRu._(_root);
 	@override late final _TranslationsMenuRu menu = _TranslationsMenuRu._(_root);
 	@override late final _TranslationsOperationRu operation = _TranslationsOperationRu._(_root);
+	@override late final _TranslationsPaymentRu payment = _TranslationsPaymentRu._(_root);
 }
 
 // Path: account
@@ -247,6 +248,49 @@ class _TranslationsOperationRu extends TranslationsOperationEn {
 	@override String get cancel => 'Отмена';
 	@override String get yes => 'Да';
 	@override String get notFoundPartner => 'Партнер не найден';
+}
+
+// Path: payment
+class _TranslationsPaymentRu extends TranslationsPaymentEn {
+	_TranslationsPaymentRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get headerTitle => 'SoftkgPro Premium';
+	@override String get headerSubtitle => 'Полный доступ к сервису\nдля вашего бизнеса';
+	@override String get subscribeTitle => 'Оформите подписку';
+	@override String get subscribeDescription => 'Откройте все возможности SoftkgPro и управляйте финансами без ограничений.';
+	@override late final _TranslationsPaymentFeaturesRu features = _TranslationsPaymentFeaturesRu._(_root);
+	@override String get choosePlanTitle => 'Выберите тариф';
+	@override String get plansUnavailable => 'Тарифы временно недоступны';
+	@override String get subscribeButton => 'Оформить подписку';
+	@override String get autoRenew => 'Подписка продлевается автоматически. Отменить можно в любой момент в настройках.';
+	@override String get perPeriod => 'за период';
+	@override String get discountSubtitle => 'Экономия {percent}%';
+	@override String get trialSubtitle => 'Пробный тариф';
+	@override String get recommendedBadge => 'Рекомендуем';
+	@override String get paymentProcessedSnack => 'Платеж обработан. Подписка активируется, попробуйте позже.';
+	@override String get refreshStatus => 'Обновить статус';
+	@override String get activeStatus => 'Активен: {planName} — осталось {daysLeft} дней';
+	@override String get processingTitle => 'Платеж успешно обработан';
+	@override String get processingSubtitle => 'Мы вернем вас на главную страницу через {secondsLeft} секунд';
+	@override String get successTitle => 'Ваш платеж успешно завершен!';
+	@override String get successBody => 'Поздравляем! Теперь вы являетесь участником плана {planName}';
+	@override String get subscriptionPeriodLabel => 'Период подписки';
+	@override String get endDateLabel => 'Дата окончания';
+	@override String get totalAmountLabel => 'Сумма платежа';
+	@override String get mainButton => 'Главное';
+	@override String get retryButton => 'Повторить';
+	@override String get planFallback => 'Пакет';
+	@override String get currencyKgs => 'сом';
+	@override String get monthsShort => 'мес.';
+	@override String months({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('ru'))(n,
+		one: 'месяц',
+		few: 'месяца',
+		many: 'месяцев',
+		other: 'месяцев',
+	);
 }
 
 // Path: account.account
@@ -541,6 +585,18 @@ class _TranslationsMenuThemeRu extends TranslationsMenuThemeEn {
 	@override String get light => 'Светлый';
 	@override String get dark => 'Темный';
 	@override String get system => 'Системный';
+}
+
+// Path: payment.features
+class _TranslationsPaymentFeaturesRu extends TranslationsPaymentFeaturesEn {
+	_TranslationsPaymentFeaturesRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get unlimitedOps => 'Безлимитные операции и отчеты';
+	@override String get historyAnalytics => 'История, аналитика и экспорт';
+	@override String get support => 'Поддержка 24/7 в приложении';
 }
 
 // Path: account.account.account
@@ -955,6 +1011,42 @@ extension on TranslationsRu {
 			case 'operation.cancel': return 'Отмена';
 			case 'operation.yes': return 'Да';
 			case 'operation.notFoundPartner': return 'Партнер не найден';
+			case 'payment.headerTitle': return 'SoftkgPro Premium';
+			case 'payment.headerSubtitle': return 'Полный доступ к сервису\nдля вашего бизнеса';
+			case 'payment.subscribeTitle': return 'Оформите подписку';
+			case 'payment.subscribeDescription': return 'Откройте все возможности SoftkgPro и управляйте финансами без ограничений.';
+			case 'payment.features.unlimitedOps': return 'Безлимитные операции и отчеты';
+			case 'payment.features.historyAnalytics': return 'История, аналитика и экспорт';
+			case 'payment.features.support': return 'Поддержка 24/7 в приложении';
+			case 'payment.choosePlanTitle': return 'Выберите тариф';
+			case 'payment.plansUnavailable': return 'Тарифы временно недоступны';
+			case 'payment.subscribeButton': return 'Оформить подписку';
+			case 'payment.autoRenew': return 'Подписка продлевается автоматически. Отменить можно в любой момент в настройках.';
+			case 'payment.perPeriod': return 'за период';
+			case 'payment.discountSubtitle': return 'Экономия {percent}%';
+			case 'payment.trialSubtitle': return 'Пробный тариф';
+			case 'payment.recommendedBadge': return 'Рекомендуем';
+			case 'payment.paymentProcessedSnack': return 'Платеж обработан. Подписка активируется, попробуйте позже.';
+			case 'payment.refreshStatus': return 'Обновить статус';
+			case 'payment.activeStatus': return 'Активен: {planName} — осталось {daysLeft} дней';
+			case 'payment.processingTitle': return 'Платеж успешно обработан';
+			case 'payment.processingSubtitle': return 'Мы вернем вас на главную страницу через {secondsLeft} секунд';
+			case 'payment.successTitle': return 'Ваш платеж успешно завершен!';
+			case 'payment.successBody': return 'Поздравляем! Теперь вы являетесь участником плана {planName}';
+			case 'payment.subscriptionPeriodLabel': return 'Период подписки';
+			case 'payment.endDateLabel': return 'Дата окончания';
+			case 'payment.totalAmountLabel': return 'Сумма платежа';
+			case 'payment.mainButton': return 'Главное';
+			case 'payment.retryButton': return 'Повторить';
+			case 'payment.planFallback': return 'Пакет';
+			case 'payment.currencyKgs': return 'сом';
+			case 'payment.monthsShort': return 'мес.';
+			case 'payment.months': return ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('ru'))(n,
+				one: 'месяц',
+				few: 'месяца',
+				many: 'месяцев',
+				other: 'месяцев',
+			);
 			default: return null;
 		}
 	}

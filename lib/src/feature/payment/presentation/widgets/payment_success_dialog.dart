@@ -21,7 +21,7 @@ class PaymentSuccessDialog extends StatelessWidget {
                     (plan) => plan.id == subscription.plan,
                     orElse: () => PlanEntity(
                       id: subscription.plan ?? 0,
-                      name: 'Пакет',
+                      name: t.payment.planFallback,
                       pricePerMonth: 0,
                       isActive: false,
                     ),
@@ -44,7 +44,7 @@ class PaymentSuccessDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Ваш платеж успешно завершен!',
+                  t.payment.successTitle,
                   style: AppTextStyles.f16w600.copyWith(
                     color: AppColors.blackColor,
                   ),
@@ -52,8 +52,10 @@ class PaymentSuccessDialog extends StatelessWidget {
                 ),
                 12.h,
                 Text(
-                  'Поздравляем! Теперь вы являетесь участником плана'
-                  ' ${plan?.name ?? '-'}',
+                  t.payment.successBody.replaceAll(
+                    '{planName}',
+                    plan?.name ?? t.payment.planFallback,
+                  ),
                   textAlign: TextAlign.center,
                   style: AppTextStyles.f12w400.copyWith(
                     color: AppColors.smallTextGreyColor,
@@ -61,21 +63,21 @@ class PaymentSuccessDialog extends StatelessWidget {
                 ),
                 12.h,
                 _InfoRow(
-                  label: 'Период подписки',
+                  label: t.payment.subscriptionPeriodLabel,
                   value: period == null
                       ? '-'
-                      : '${period.name} (${period.months} мес.)',
+                      : '${period.name} (${period.months} ${t.payment.monthsShort})',
                 ),
-                _InfoRow(label: 'Дата окончания', value: endDate ?? '-'),
+                _InfoRow(label: t.payment.endDateLabel, value: endDate ?? '-'),
                 _InfoRow(
-                  label: 'Сумма платежа',
+                  label: t.payment.totalAmountLabel,
                   value: total == null
                       ? '-'
-                      : '${total.toStringAsFixed(0)} сом',
+                      : '${total.toStringAsFixed(0)} ${t.payment.currencyKgs}',
                 ),
                 16.h,
                 ElevatedButtonWidget(
-                  text: 'Главное',
+                  text: t.payment.mainButton,
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ],

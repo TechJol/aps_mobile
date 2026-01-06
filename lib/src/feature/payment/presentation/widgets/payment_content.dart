@@ -25,12 +25,6 @@ class PaymentContent extends StatefulWidget {
 }
 
 class _PaymentContentState extends State<PaymentContent> {
-  static const _features = [
-    'Безлимитные операции и отчеты',
-    'История, аналитика и экспорт',
-    'Поддержка 24/7 в приложении',
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -69,11 +63,9 @@ class _PaymentContentState extends State<PaymentContent> {
           if (activeSubscription == null) {
             ScaffoldMessenger.of(rootNavigator.context).showSnackBar(
               SnackBar(
-                content: const Text(
-                  'Платеж обработан. Подписка активируется, попробуйте позже.',
-                ),
+                content: Text(t.payment.paymentProcessedSnack),
                 action: SnackBarAction(
-                  label: 'Обновить статус',
+                  label: t.payment.refreshStatus,
                   onPressed: () =>
                       context.read<PaymentCubit>().fetchSubscriptions(),
                 ),
@@ -102,6 +94,11 @@ class _PaymentContentState extends State<PaymentContent> {
             return _ErrorState(message: state.error!);
           }
 
+          final features = [
+            t.payment.features.unlimitedOps,
+            t.payment.features.historyAnalytics,
+            t.payment.features.support,
+          ];
           final options = _buildPlanOptions(state);
           final activeInfo = _buildActiveInfo(state);
 
@@ -113,15 +110,14 @@ class _PaymentContentState extends State<PaymentContent> {
                 const HeaderCard(),
                 SizedBox(height: widget.isCompact ? 18 : 24),
                 Text(
-                  'Оформите подписку',
+                  t.payment.subscribeTitle,
                   style: AppTextStyles.f20w600.copyWith(
                     color: AppColors.blackColor,
                   ),
                 ),
                 8.h,
                 Text(
-                  'Откройте все возможности SoftkgPro и управляйте финансами без'
-                  ' ограничений.',
+                  t.payment.subscribeDescription,
                   style: AppTextStyles.f12w400.copyWith(
                     color: AppColors.smallTextGreyColor,
                     height: 1.4,
@@ -129,13 +125,13 @@ class _PaymentContentState extends State<PaymentContent> {
                 ),
                 12.h,
                 if (activeInfo != null) ...[activeInfo, 12.h],
-                for (final feature in _features) ...[
+                for (final feature in features) ...[
                   _FeatureRow(text: feature),
                   8.h,
                 ],
                 8.h,
                 Text(
-                  'Выберите тариф',
+                  t.payment.choosePlanTitle,
                   style: AppTextStyles.f14w600.copyWith(
                     color: AppColors.blackColor,
                   ),
@@ -143,7 +139,7 @@ class _PaymentContentState extends State<PaymentContent> {
                 10.h,
                 if (options.isEmpty)
                   Text(
-                    'Тарифы временно недоступны',
+                    t.payment.plansUnavailable,
                     style: AppTextStyles.f12w400.copyWith(
                       color: AppColors.smallTextGreyColor,
                     ),
@@ -160,15 +156,14 @@ class _PaymentContentState extends State<PaymentContent> {
                   ],
                 12.h,
                 ElevatedButtonWidget(
-                  text: 'Оформить подписку',
+                  text: t.payment.subscribeButton,
                   onPressed: state.isStarting
                       ? null
                       : () => context.read<PaymentCubit>().startPayment(),
                 ),
                 10.h,
                 Text(
-                  'Подписка продлевается автоматически. Отменить можно в любой'
-                  ' момент в настройках.',
+                  t.payment.autoRenew,
                   textAlign: TextAlign.center,
                   style: AppTextStyles.f9w400.copyWith(
                     color: AppColors.smallTextGreyColor,
@@ -192,7 +187,7 @@ class _PaymentContentState extends State<PaymentContent> {
           (plan) => plan.id == active.plan,
           orElse: () => PlanEntity(
             id: active.plan ?? 0,
-            name: 'Пакет',
+            name: t.payment.planFallback,
             pricePerMonth: 0,
             isActive: false,
           ),
@@ -214,7 +209,9 @@ class _PaymentContentState extends State<PaymentContent> {
           8.w,
           Expanded(
             child: Text(
-              'Активен: $planName — осталось $daysLeft дней',
+              t.payment.activeStatus
+                  .replaceAll('{planName}', planName)
+                  .replaceAll('{daysLeft}', daysLeft.toString()),
               style: AppTextStyles.f12w500.copyWith(
                 color: AppColors.greenColor,
               ),
@@ -248,16 +245,19 @@ class _PaymentContentState extends State<PaymentContent> {
       final highlight =
           period.discountPercent == maxDiscount && maxDiscount > 0;
       final subtitle = period.discountPercent > 0
-          ? 'Экономия ${period.discountPercent}%'
-          : 'Пробный тариф';
+          ? t.payment.discountSubtitle.replaceAll(
+              '{percent}',
+              period.discountPercent.toString(),
+            )
+          : t.payment.trialSubtitle;
 
       return PlanOption(
         periodId: period.id,
         title: '${period.months} ${_monthLabel(period.months)}',
-        price: '${price.toStringAsFixed(0)} сом',
+        price: '${price.toStringAsFixed(0)} ${t.payment.currencyKgs}',
         subtitle: subtitle,
         highlight: highlight,
-        badge: highlight ? 'Рекомендуем' : null,
+        badge: highlight ? t.payment.recommendedBadge : null,
         isSelected: isSelected,
       );
     }).toList();
@@ -276,9 +276,7 @@ class _PaymentContentState extends State<PaymentContent> {
   }
 
   String _monthLabel(int months) {
-    if (months % 10 == 1 && months % 100 != 11) return 'месяц';
-    if (months % 10 >= 2 && months % 10 <= 4) return 'месяца';
-    return 'месяцев';
+    return t.payment.months(n: months);
   }
 }
 
@@ -336,7 +334,7 @@ class _ErrorState extends StatelessWidget {
             TextButton(
               onPressed: () => context.read<PaymentCubit>().load(),
               child: Text(
-                'Повторить',
+                t.payment.retryButton,
                 style: AppTextStyles.f12w500.copyWith(
                   color: AppColors.primaryColorLight,
                 ),

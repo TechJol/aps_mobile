@@ -44,6 +44,7 @@ class TranslationsKy extends Translations {
 	@override late final _TranslationsIncomeKy income = _TranslationsIncomeKy._(_root);
 	@override late final _TranslationsMenuKy menu = _TranslationsMenuKy._(_root);
 	@override late final _TranslationsOperationKy operation = _TranslationsOperationKy._(_root);
+	@override late final _TranslationsPaymentKy payment = _TranslationsPaymentKy._(_root);
 }
 
 // Path: account
@@ -247,6 +248,49 @@ class _TranslationsOperationKy extends TranslationsOperationEn {
 	@override String get cancel => 'Жокко чыгаруу';
 	@override String get yes => 'Ооба';
 	@override String get notFoundPartner => 'Партнер табылган жок';
+}
+
+// Path: payment
+class _TranslationsPaymentKy extends TranslationsPaymentEn {
+	_TranslationsPaymentKy._(TranslationsKy root) : this._root = root, super.internal(root);
+
+	final TranslationsKy _root; // ignore: unused_field
+
+	// Translations
+	@override String get headerTitle => 'SoftkgPro Premium';
+	@override String get headerSubtitle => 'Бизнесиңиз үчүн\nкызматка толук мүмкүнчүлүк';
+	@override String get subscribeTitle => 'Жазылууну тариздеңиз';
+	@override String get subscribeDescription => 'SoftkgPro\'нун бардык мүмкүнчүлүктөрүн ачыңыз жана каржыны чектөөсүз башкарыңыз.';
+	@override late final _TranslationsPaymentFeaturesKy features = _TranslationsPaymentFeaturesKy._(_root);
+	@override String get choosePlanTitle => 'Тариф тандаңыз';
+	@override String get plansUnavailable => 'Тарифтер убактылуу жеткиликсиз';
+	@override String get subscribeButton => 'Жазылууну тариздөө';
+	@override String get autoRenew => 'Жазылуу автоматтык түрдө узартылат. Каалаган убакта жөндөөлөрдөн токтотсоңуз болот.';
+	@override String get perPeriod => 'мөөнөт үчүн';
+	@override String get discountSubtitle => 'Үнөмдөө {percent}%';
+	@override String get trialSubtitle => 'Сынама тариф';
+	@override String get recommendedBadge => 'Сунуштайбыз';
+	@override String get paymentProcessedSnack => 'Төлөм иштетилди. Жазылуу кийинчерээк активдешет, кайра аракет кылыңыз.';
+	@override String get refreshStatus => 'Статусту жаңыртуу';
+	@override String get activeStatus => 'Активдүү: {planName} — {daysLeft} күн калды';
+	@override String get processingTitle => 'Төлөм ийгиликтүү иштетилди';
+	@override String get processingSubtitle => '{secondsLeft} секундадан кийин башкы бетке кайтарабыз';
+	@override String get successTitle => 'Төлөмүңүз ийгиликтүү аяктады!';
+	@override String get successBody => 'Куттуктайбыз! Эми сиз {planName} планынын катышуучусусуз';
+	@override String get subscriptionPeriodLabel => 'Жазылуу мөөнөтү';
+	@override String get endDateLabel => 'Аяктоо датасы';
+	@override String get totalAmountLabel => 'Төлөм суммасы';
+	@override String get mainButton => 'Башкы';
+	@override String get retryButton => 'Кайра аракет';
+	@override String get planFallback => 'План';
+	@override String get currencyKgs => 'сом';
+	@override String get monthsShort => 'ай';
+	@override String months({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('ky'))(n,
+		one: 'ай',
+		few: 'ай',
+		many: 'ай',
+		other: 'ай',
+	);
 }
 
 // Path: account.account
@@ -541,6 +585,18 @@ class _TranslationsMenuThemeKy extends TranslationsMenuThemeEn {
 	@override String get light => 'Жарык';
 	@override String get dark => 'Караңгы';
 	@override String get system => 'Системалык';
+}
+
+// Path: payment.features
+class _TranslationsPaymentFeaturesKy extends TranslationsPaymentFeaturesEn {
+	_TranslationsPaymentFeaturesKy._(TranslationsKy root) : this._root = root, super.internal(root);
+
+	final TranslationsKy _root; // ignore: unused_field
+
+	// Translations
+	@override String get unlimitedOps => 'Чексиз операциялар жана отчеттор';
+	@override String get historyAnalytics => 'Тарых, аналитика жана экспорт';
+	@override String get support => 'Колдоо 24/7 колдонмодо';
 }
 
 // Path: account.account.account
@@ -955,6 +1011,42 @@ extension on TranslationsKy {
 			case 'operation.cancel': return 'Жокко чыгаруу';
 			case 'operation.yes': return 'Ооба';
 			case 'operation.notFoundPartner': return 'Партнер табылган жок';
+			case 'payment.headerTitle': return 'SoftkgPro Premium';
+			case 'payment.headerSubtitle': return 'Бизнесиңиз үчүн\nкызматка толук мүмкүнчүлүк';
+			case 'payment.subscribeTitle': return 'Жазылууну тариздеңиз';
+			case 'payment.subscribeDescription': return 'SoftkgPro\'нун бардык мүмкүнчүлүктөрүн ачыңыз жана каржыны чектөөсүз башкарыңыз.';
+			case 'payment.features.unlimitedOps': return 'Чексиз операциялар жана отчеттор';
+			case 'payment.features.historyAnalytics': return 'Тарых, аналитика жана экспорт';
+			case 'payment.features.support': return 'Колдоо 24/7 колдонмодо';
+			case 'payment.choosePlanTitle': return 'Тариф тандаңыз';
+			case 'payment.plansUnavailable': return 'Тарифтер убактылуу жеткиликсиз';
+			case 'payment.subscribeButton': return 'Жазылууну тариздөө';
+			case 'payment.autoRenew': return 'Жазылуу автоматтык түрдө узартылат. Каалаган убакта жөндөөлөрдөн токтотсоңуз болот.';
+			case 'payment.perPeriod': return 'мөөнөт үчүн';
+			case 'payment.discountSubtitle': return 'Үнөмдөө {percent}%';
+			case 'payment.trialSubtitle': return 'Сынама тариф';
+			case 'payment.recommendedBadge': return 'Сунуштайбыз';
+			case 'payment.paymentProcessedSnack': return 'Төлөм иштетилди. Жазылуу кийинчерээк активдешет, кайра аракет кылыңыз.';
+			case 'payment.refreshStatus': return 'Статусту жаңыртуу';
+			case 'payment.activeStatus': return 'Активдүү: {planName} — {daysLeft} күн калды';
+			case 'payment.processingTitle': return 'Төлөм ийгиликтүү иштетилди';
+			case 'payment.processingSubtitle': return '{secondsLeft} секундадан кийин башкы бетке кайтарабыз';
+			case 'payment.successTitle': return 'Төлөмүңүз ийгиликтүү аяктады!';
+			case 'payment.successBody': return 'Куттуктайбыз! Эми сиз {planName} планынын катышуучусусуз';
+			case 'payment.subscriptionPeriodLabel': return 'Жазылуу мөөнөтү';
+			case 'payment.endDateLabel': return 'Аяктоо датасы';
+			case 'payment.totalAmountLabel': return 'Төлөм суммасы';
+			case 'payment.mainButton': return 'Башкы';
+			case 'payment.retryButton': return 'Кайра аракет';
+			case 'payment.planFallback': return 'План';
+			case 'payment.currencyKgs': return 'сом';
+			case 'payment.monthsShort': return 'ай';
+			case 'payment.months': return ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('ky'))(n,
+				one: 'ай',
+				few: 'ай',
+				many: 'ай',
+				other: 'ай',
+			);
 			default: return null;
 		}
 	}

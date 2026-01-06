@@ -29,14 +29,17 @@ class PaymentProcessingOverlay extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Платеж успешно обработан',
+                t.payment.processingTitle,
                 style: AppTextStyles.f14w600.copyWith(
                   color: AppColors.blackColor,
                 ),
               ),
               8.h,
               Text(
-                'Мы вернем вас на главную страницу через $secondsLeft секунд',
+                t.payment.processingSubtitle.replaceAll(
+                  '{secondsLeft}',
+                  secondsLeft.toString(),
+                ),
                 textAlign: TextAlign.center,
                 style: AppTextStyles.f12w400.copyWith(
                   color: AppColors.smallTextGreyColor,

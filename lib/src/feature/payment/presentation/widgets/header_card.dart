@@ -25,7 +25,7 @@ class HeaderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'SoftkgPro Premium',
+                  t.payment.headerTitle,
                   style: AppTextStyles.f18w700.copyWith(
                     color: AppColors.whiteColor,
                   ),
@@ -33,7 +33,7 @@ class HeaderCard extends StatelessWidget {
                 8.h,
 
                 Text(
-                  'Полный доступ к сервису\nдля вашего бизнеса',
+                  t.payment.headerSubtitle,
                   style: AppTextStyles.f12w400.copyWith(
                     color: AppColors.whiteColor.withOpacity(0.9),
                     height: 1.4,

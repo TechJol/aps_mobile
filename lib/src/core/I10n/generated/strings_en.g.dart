@@ -45,6 +45,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	late final TranslationsIncomeEn income = TranslationsIncomeEn.internal(_root);
 	late final TranslationsMenuEn menu = TranslationsMenuEn.internal(_root);
 	late final TranslationsOperationEn operation = TranslationsOperationEn.internal(_root);
+	late final TranslationsPaymentEn payment = TranslationsPaymentEn.internal(_root);
 }
 
 // Path: account
@@ -515,6 +516,106 @@ class TranslationsOperationEn {
 
 	/// en: 'Partner not found'
 	String get notFoundPartner => 'Partner not found';
+}
+
+// Path: payment
+class TranslationsPaymentEn {
+	TranslationsPaymentEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'SoftkgPro Premium'
+	String get headerTitle => 'SoftkgPro Premium';
+
+	/// en: 'Full access to the service for your business'
+	String get headerSubtitle => 'Full access to the service\nfor your business';
+
+	/// en: 'Start a subscription'
+	String get subscribeTitle => 'Start a subscription';
+
+	/// en: 'Unlock all SoftkgPro features and manage finances without limits.'
+	String get subscribeDescription => 'Unlock all SoftkgPro features and manage finances without limits.';
+
+	late final TranslationsPaymentFeaturesEn features = TranslationsPaymentFeaturesEn.internal(_root);
+
+	/// en: 'Choose a plan'
+	String get choosePlanTitle => 'Choose a plan';
+
+	/// en: 'Plans are temporarily unavailable'
+	String get plansUnavailable => 'Plans are temporarily unavailable';
+
+	/// en: 'Subscribe'
+	String get subscribeButton => 'Subscribe';
+
+	/// en: 'Subscription renews automatically. You can cancel anytime in settings.'
+	String get autoRenew => 'Subscription renews automatically. You can cancel anytime in settings.';
+
+	/// en: 'per period'
+	String get perPeriod => 'per period';
+
+	/// en: 'Save {percent}%'
+	String get discountSubtitle => 'Save {percent}%';
+
+	/// en: 'Trial plan'
+	String get trialSubtitle => 'Trial plan';
+
+	/// en: 'Recommended'
+	String get recommendedBadge => 'Recommended';
+
+	/// en: 'Payment processed. The subscription will activate shortly. Please try again later.'
+	String get paymentProcessedSnack => 'Payment processed. The subscription will activate shortly. Please try again later.';
+
+	/// en: 'Refresh status'
+	String get refreshStatus => 'Refresh status';
+
+	/// en: 'Active: {planName} — {daysLeft} days left'
+	String get activeStatus => 'Active: {planName} — {daysLeft} days left';
+
+	/// en: 'Payment processed successfully'
+	String get processingTitle => 'Payment processed successfully';
+
+	/// en: 'We will return you to the home screen in {secondsLeft} seconds'
+	String get processingSubtitle => 'We will return you to the home screen in {secondsLeft} seconds';
+
+	/// en: 'Your payment was successful!'
+	String get successTitle => 'Your payment was successful!';
+
+	/// en: 'Congratulations! You are now on the {planName} plan'
+	String get successBody => 'Congratulations! You are now on the {planName} plan';
+
+	/// en: 'Subscription period'
+	String get subscriptionPeriodLabel => 'Subscription period';
+
+	/// en: 'End date'
+	String get endDateLabel => 'End date';
+
+	/// en: 'Payment amount'
+	String get totalAmountLabel => 'Payment amount';
+
+	/// en: 'Home'
+	String get mainButton => 'Home';
+
+	/// en: 'Retry'
+	String get retryButton => 'Retry';
+
+	/// en: 'Plan'
+	String get planFallback => 'Plan';
+
+	/// en: 'KGS'
+	String get currencyKgs => 'KGS';
+
+	/// en: 'mo'
+	String get monthsShort => 'mo';
+
+	/// en: '(one) {month} (few) {months} (many) {months} (other) {months}'
+	String months({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: 'month',
+		few: 'months',
+		many: 'months',
+		other: 'months',
+	);
 }
 
 // Path: account.account
@@ -1041,6 +1142,24 @@ class TranslationsMenuThemeEn {
 	String get system => 'System';
 }
 
+// Path: payment.features
+class TranslationsPaymentFeaturesEn {
+	TranslationsPaymentFeaturesEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Unlimited operations and reports'
+	String get unlimitedOps => 'Unlimited operations and reports';
+
+	/// en: 'History, analytics, and export'
+	String get historyAnalytics => 'History, analytics, and export';
+
+	/// en: '24/7 in-app support'
+	String get support => '24/7 in-app support';
+}
+
 // Path: account.account.account
 class TranslationsAccountAccountAccountEn {
 	TranslationsAccountAccountAccountEn.internal(this._root);
@@ -1527,6 +1646,42 @@ extension on Translations {
 			case 'operation.cancel': return 'Cancel';
 			case 'operation.yes': return 'Yes';
 			case 'operation.notFoundPartner': return 'Partner not found';
+			case 'payment.headerTitle': return 'SoftkgPro Premium';
+			case 'payment.headerSubtitle': return 'Full access to the service\nfor your business';
+			case 'payment.subscribeTitle': return 'Start a subscription';
+			case 'payment.subscribeDescription': return 'Unlock all SoftkgPro features and manage finances without limits.';
+			case 'payment.features.unlimitedOps': return 'Unlimited operations and reports';
+			case 'payment.features.historyAnalytics': return 'History, analytics, and export';
+			case 'payment.features.support': return '24/7 in-app support';
+			case 'payment.choosePlanTitle': return 'Choose a plan';
+			case 'payment.plansUnavailable': return 'Plans are temporarily unavailable';
+			case 'payment.subscribeButton': return 'Subscribe';
+			case 'payment.autoRenew': return 'Subscription renews automatically. You can cancel anytime in settings.';
+			case 'payment.perPeriod': return 'per period';
+			case 'payment.discountSubtitle': return 'Save {percent}%';
+			case 'payment.trialSubtitle': return 'Trial plan';
+			case 'payment.recommendedBadge': return 'Recommended';
+			case 'payment.paymentProcessedSnack': return 'Payment processed. The subscription will activate shortly. Please try again later.';
+			case 'payment.refreshStatus': return 'Refresh status';
+			case 'payment.activeStatus': return 'Active: {planName} — {daysLeft} days left';
+			case 'payment.processingTitle': return 'Payment processed successfully';
+			case 'payment.processingSubtitle': return 'We will return you to the home screen in {secondsLeft} seconds';
+			case 'payment.successTitle': return 'Your payment was successful!';
+			case 'payment.successBody': return 'Congratulations! You are now on the {planName} plan';
+			case 'payment.subscriptionPeriodLabel': return 'Subscription period';
+			case 'payment.endDateLabel': return 'End date';
+			case 'payment.totalAmountLabel': return 'Payment amount';
+			case 'payment.mainButton': return 'Home';
+			case 'payment.retryButton': return 'Retry';
+			case 'payment.planFallback': return 'Plan';
+			case 'payment.currencyKgs': return 'KGS';
+			case 'payment.monthsShort': return 'mo';
+			case 'payment.months': return ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+				one: 'month',
+				few: 'months',
+				many: 'months',
+				other: 'months',
+			);
 			default: return null;
 		}
 	}
