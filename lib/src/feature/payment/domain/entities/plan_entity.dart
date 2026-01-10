@@ -33,8 +33,18 @@ class PlanEntity {
       id: map['id'] as int,
       name: map['name'] as String? ?? '',
       pricePerMonth: price,
-      isActive: map['is_active'] as bool? ?? false,
+      isActive: _parseBool(map['is_active']),
     );
+  }
+
+  static bool _parseBool(dynamic value) {
+    if (value is bool) return value;
+    if (value is num) return value != 0;
+    if (value is String) {
+      final normalized = value.trim().toLowerCase();
+      return normalized == 'true' || normalized == '1' || normalized == 'yes';
+    }
+    return false;
   }
 
   String toJson() => json.encode(toMap());
