@@ -272,6 +272,7 @@ class _TranslationsPaymentRu extends TranslationsPaymentEn {
 	@override String get recommendedBadge => 'Рекомендуем';
 	@override String get paymentProcessedSnack => 'Платеж обработан. Подписка активируется, попробуйте позже.';
 	@override String get refreshStatus => 'Обновить статус';
+	@override String get accountMissing => 'Счет не найден. Проверьте список счетов.';
 	@override String get activeStatus => 'Активен: {planName} — осталось {daysLeft} дней';
 	@override String get processingTitle => 'Платеж успешно обработан';
 	@override String get processingSubtitle => 'Мы вернем вас на главную страницу через {secondsLeft} секунд';
@@ -1028,6 +1029,7 @@ extension on TranslationsRu {
 			case 'payment.recommendedBadge': return 'Рекомендуем';
 			case 'payment.paymentProcessedSnack': return 'Платеж обработан. Подписка активируется, попробуйте позже.';
 			case 'payment.refreshStatus': return 'Обновить статус';
+			case 'payment.accountMissing': return 'Счет не найден. Проверьте список счетов.';
 			case 'payment.activeStatus': return 'Активен: {planName} — осталось {daysLeft} дней';
 			case 'payment.processingTitle': return 'Платеж успешно обработан';
 			case 'payment.processingSubtitle': return 'Мы вернем вас на главную страницу через {secondsLeft} секунд';

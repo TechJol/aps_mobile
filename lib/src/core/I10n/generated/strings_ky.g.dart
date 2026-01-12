@@ -272,6 +272,7 @@ class _TranslationsPaymentKy extends TranslationsPaymentEn {
 	@override String get recommendedBadge => 'Сунуштайбыз';
 	@override String get paymentProcessedSnack => 'Төлөм иштетилди. Жазылуу кийинчерээк активдешет, кайра аракет кылыңыз.';
 	@override String get refreshStatus => 'Статусту жаңыртуу';
+	@override String get accountMissing => 'Эсеп табылган жок. Эсептер тизмесин текшериңиз.';
 	@override String get activeStatus => 'Активдүү: {planName} — {daysLeft} күн калды';
 	@override String get processingTitle => 'Төлөм ийгиликтүү иштетилди';
 	@override String get processingSubtitle => '{secondsLeft} секундадан кийин башкы бетке кайтарабыз';
@@ -1028,6 +1029,7 @@ extension on TranslationsKy {
 			case 'payment.recommendedBadge': return 'Сунуштайбыз';
 			case 'payment.paymentProcessedSnack': return 'Төлөм иштетилди. Жазылуу кийинчерээк активдешет, кайра аракет кылыңыз.';
 			case 'payment.refreshStatus': return 'Статусту жаңыртуу';
+			case 'payment.accountMissing': return 'Эсеп табылган жок. Эсептер тизмесин текшериңиз.';
 			case 'payment.activeStatus': return 'Активдүү: {planName} — {daysLeft} күн калды';
 			case 'payment.processingTitle': return 'Төлөм ийгиликтүү иштетилди';
 			case 'payment.processingSubtitle': return '{secondsLeft} секундадан кийин башкы бетке кайтарабыз';

@@ -570,6 +570,9 @@ class TranslationsPaymentEn {
 	/// en: 'Refresh status'
 	String get refreshStatus => 'Refresh status';
 
+	/// en: 'Account not found. Please check your accounts list.'
+	String get accountMissing => 'Account not found. Please check your accounts list.';
+
 	/// en: 'Active: {planName} — {daysLeft} days left'
 	String get activeStatus => 'Active: {planName} — {daysLeft} days left';
 
@@ -1663,6 +1666,7 @@ extension on Translations {
 			case 'payment.recommendedBadge': return 'Recommended';
 			case 'payment.paymentProcessedSnack': return 'Payment processed. The subscription will activate shortly. Please try again later.';
 			case 'payment.refreshStatus': return 'Refresh status';
+			case 'payment.accountMissing': return 'Account not found. Please check your accounts list.';
 			case 'payment.activeStatus': return 'Active: {planName} — {daysLeft} days left';
 			case 'payment.processingTitle': return 'Payment processed successfully';
 			case 'payment.processingSubtitle': return 'We will return you to the home screen in {secondsLeft} seconds';

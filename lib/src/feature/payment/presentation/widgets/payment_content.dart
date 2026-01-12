@@ -3,8 +3,10 @@
 import 'dart:math';
 
 import 'package:aps_mobile/src/core/core.dart';
-import 'package:aps_mobile/src/feature/payment/payment.dart';
+// import 'package:aps_mobile/injection_container.dart';
+import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:aps_mobile/src/feature/payment/presentation/widgets/widgets.dart';
+import 'package:finik_sdk/finik_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -31,6 +33,7 @@ class _PaymentContentState extends State<PaymentContent> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<PaymentCubit>().load();
       context.read<PaymentCubit>().fetchSubscriptions();
+      context.read<MenuCubit>().getTransactionsWithAccounts(force: true);
     });
   }
 
@@ -159,7 +162,7 @@ class _PaymentContentState extends State<PaymentContent> {
                   text: t.payment.subscribeButton,
                   onPressed: state.isStarting
                       ? null
-                      : () => context.read<PaymentCubit>().startPayment(),
+                      : () => _openFinikPayment(context, state),
                 ),
                 10.h,
                 Text(
@@ -177,6 +180,106 @@ class _PaymentContentState extends State<PaymentContent> {
       ),
     );
   }
+
+  Future<void> _openFinikPayment(
+    BuildContext context,
+    PaymentState state,
+  ) async {
+    final plan = _selectPlan(state);
+    final period = state.periods.firstWhere(
+      (item) => item.id == state.selectedPeriodId,
+      orElse: () =>
+          PeriodEntity(id: 0, name: '', months: 0, discountPercent: 0),
+    );
+    if (plan == null || period.id == 0) return;
+
+    const accountId = 'ee0290fe-8eaf-4570-9e86-ed13aac71678';
+
+    final amount = _calculatePrice(plan.pricePerMonth, period);
+    final result = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => FinikPaymentPage(
+          apiKey: '96507ba0-d2a7-444b-8dbb-d88f4e1a1b42',
+          accountId: accountId,
+          amount: amount,
+          itemNameEn: plan.name.isEmpty ? 'SoftkgPro' : plan.name,
+          description: plan.name.isEmpty ? 'SoftkgPro subscription' : plan.name,
+          callbackUrl: _finikCallbackUrl,
+          locale: _resolveFinikLocale(),
+        ),
+      ),
+    );
+
+    if (!context.mounted) return;
+    if (result == true) {
+      await context.read<PaymentCubit>().fetchSubscriptions();
+      if (!context.mounted) return;
+      final rootNavigator = Navigator.of(context, rootNavigator: true);
+      showDialog<void>(
+        context: rootNavigator.context,
+        barrierDismissible: false,
+        builder: (_) => const PaymentSuccessDialog(),
+      );
+    }
+  }
+
+  // Future<String?> _resolveAccountId(BuildContext context) async {
+  //   final menuCubit = context.read<MenuCubit>();
+  //   var accountId = _accountIdFromState(menuCubit.state);
+  //   if (accountId != null) return accountId;
+
+  //   await menuCubit.getTransactionsWithAccounts(force: true);
+  //   accountId = _accountIdFromState(menuCubit.state);
+  //   if (accountId != null) return accountId;
+
+  //   return _fetchAccountIdFromApi();
+  // }
+
+  // String? _accountIdFromState(MenuState state) {
+  //   if (state is MenuTransactionsWithAccountsSuccess) {
+  //     final accounts = state.accounts;
+  //     if (accounts.isNotEmpty) return accounts.first.id.toString();
+  //   }
+  //   if (state is MenuAccountsSuccess) {
+  //     final accounts = state.accounts;
+  //     if (accounts.isNotEmpty) return accounts.first.id.toString();
+  //   }
+  //   return null;
+  // }
+
+  // Future<String?> _fetchAccountIdFromApi() async {
+  //   final result = await sl<GetAccountsUsecase>()();
+  //   if (result.isLeft()) return null;
+
+  //   final accounts = (result.getOrElse(() => []) as List)
+  //       .whereType<Map<String, dynamic>>()
+  //       .toList();
+  //   if (accounts.isEmpty) return null;
+
+  //   final userId = await sl<AuthLocalDataSource>().getUserId();
+  //   if (userId != null) {
+  //     for (final account in accounts) {
+  //       if (account['user'] == userId) {
+  //         return account['id']?.toString();
+  //       }
+  //     }
+  //   }
+
+  //   return accounts.first['id']?.toString();
+  // }
+
+  FinikSdkLocale _resolveFinikLocale() {
+    switch (LocaleSettings.currentLocale) {
+      case AppLocale.ky:
+        return FinikSdkLocale.KY;
+      case AppLocale.ru:
+        return FinikSdkLocale.RU;
+      case AppLocale.en:
+        return FinikSdkLocale.EN;
+    }
+  }
+
+  static const String? _finikCallbackUrl = null;
 
   Widget? _buildActiveInfo(PaymentState state) {
     final active = state.activeSubscription;
@@ -263,6 +366,13 @@ class _PaymentContentState extends State<PaymentContent> {
     }).toList();
   }
 
+  /*************  ✨ Windsurf Command ⭐  *************/
+  /// Selects the first active plan from the list of plans, or the first plan if no active plans are found.
+  ///
+  /// [state] is the state of the payment feature.
+  ///
+  /// Returns the selected plan entity, or null if the list of plans is empty.
+  /*******  d366c0e8-74ee-4477-abf7-41f2f4add115  *******/
   PlanEntity? _selectPlan(PaymentState state) {
     if (state.plans.isEmpty) return null;
     final active = state.plans.where((plan) => plan.isActive).toList();
