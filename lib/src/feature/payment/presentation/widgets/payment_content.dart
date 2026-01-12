@@ -223,51 +223,6 @@ class _PaymentContentState extends State<PaymentContent> {
     }
   }
 
-  // Future<String?> _resolveAccountId(BuildContext context) async {
-  //   final menuCubit = context.read<MenuCubit>();
-  //   var accountId = _accountIdFromState(menuCubit.state);
-  //   if (accountId != null) return accountId;
-
-  //   await menuCubit.getTransactionsWithAccounts(force: true);
-  //   accountId = _accountIdFromState(menuCubit.state);
-  //   if (accountId != null) return accountId;
-
-  //   return _fetchAccountIdFromApi();
-  // }
-
-  // String? _accountIdFromState(MenuState state) {
-  //   if (state is MenuTransactionsWithAccountsSuccess) {
-  //     final accounts = state.accounts;
-  //     if (accounts.isNotEmpty) return accounts.first.id.toString();
-  //   }
-  //   if (state is MenuAccountsSuccess) {
-  //     final accounts = state.accounts;
-  //     if (accounts.isNotEmpty) return accounts.first.id.toString();
-  //   }
-  //   return null;
-  // }
-
-  // Future<String?> _fetchAccountIdFromApi() async {
-  //   final result = await sl<GetAccountsUsecase>()();
-  //   if (result.isLeft()) return null;
-
-  //   final accounts = (result.getOrElse(() => []) as List)
-  //       .whereType<Map<String, dynamic>>()
-  //       .toList();
-  //   if (accounts.isEmpty) return null;
-
-  //   final userId = await sl<AuthLocalDataSource>().getUserId();
-  //   if (userId != null) {
-  //     for (final account in accounts) {
-  //       if (account['user'] == userId) {
-  //         return account['id']?.toString();
-  //       }
-  //     }
-  //   }
-
-  //   return accounts.first['id']?.toString();
-  // }
-
   FinikSdkLocale _resolveFinikLocale() {
     switch (LocaleSettings.currentLocale) {
       case AppLocale.ky:
@@ -366,13 +321,6 @@ class _PaymentContentState extends State<PaymentContent> {
     }).toList();
   }
 
-  /*************  ✨ Windsurf Command ⭐  *************/
-  /// Selects the first active plan from the list of plans, or the first plan if no active plans are found.
-  ///
-  /// [state] is the state of the payment feature.
-  ///
-  /// Returns the selected plan entity, or null if the list of plans is empty.
-  /*******  d366c0e8-74ee-4477-abf7-41f2f4add115  *******/
   PlanEntity? _selectPlan(PaymentState state) {
     if (state.plans.isEmpty) return null;
     final active = state.plans.where((plan) => plan.isActive).toList();
