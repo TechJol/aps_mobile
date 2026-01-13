@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Aps Mobile',
+        title: 'SoftkgPro',
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
@@ -59,29 +59,29 @@ class MyApp extends StatelessWidget {
                     context.read<MainCubit>().reset();
                   },
                 ),
-                BlocListener<AuthCubit, AuthState>(
-                  listenWhen: (previous, current) =>
-                      previous is! Authenticated && current is Authenticated,
-                  listener: (context, state) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (!context.mounted) return;
-                      () async {
-                        await context.read<PaymentCubit>().fetchSubscriptions();
-                        if (!context.mounted) return;
-                        final paymentState = context.read<PaymentCubit>().state;
-                        if (paymentState.activeSubscription != null) return;
+                // BlocListener<AuthCubit, AuthState>(
+                //   listenWhen: (previous, current) =>
+                //       previous is! Authenticated && current is Authenticated,
+                //   listener: (context, state) {
+                //     WidgetsBinding.instance.addPostFrameCallback((_) {
+                //       if (!context.mounted) return;
+                //       () async {
+                //         await context.read<PaymentCubit>().fetchSubscriptions();
+                //         if (!context.mounted) return;
+                //         final paymentState = context.read<PaymentCubit>().state;
+                //         if (paymentState.activeSubscription != null) return;
 
-                        showDialog<void>(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (dialogContext) => PaymentAlertDialog(
-                            onClose: () => Navigator.of(dialogContext).pop(),
-                          ),
-                        );
-                      }();
-                    });
-                  },
-                ),
+                //         showDialog<void>(
+                //           context: context,
+                //           barrierDismissible: false,
+                //           builder: (dialogContext) => PaymentAlertDialog(
+                //             onClose: () => Navigator.of(dialogContext).pop(),
+                //           ),
+                //         );
+                //       }();
+                //     });
+                //   },
+                // ),
               ],
               child: BlocBuilder<AuthCubit, AuthState>(
                 builder: (context, state) {

@@ -199,7 +199,7 @@ class _PaymentContentState extends State<PaymentContent> {
     final result = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (_) => FinikPaymentPage(
-          apiKey: '96507ba0-d2a7-444b-8dbb-d88f4e1a1b42',
+          apiKey: 'TzTyEtCb2La73OdNaNGj861D1Ny4axUP30X6E4Gw',
           accountId: accountId,
           amount: amount,
           itemNameEn: plan.name.isEmpty ? 'SoftkgPro' : plan.name,
