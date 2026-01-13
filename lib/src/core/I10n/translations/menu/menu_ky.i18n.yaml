@@ -93,6 +93,7 @@ months:
 reportsByArticle:
   title: "Беренелер боюнча отчеттор"
   filenamePrefix: "Беренелер_отчету_ай_"
+  yearLabel: "Жыл:"
   markers:
     income: "--- КИРЕШЕ ---"
     expense: "--- ЧЫГЫМ ---"

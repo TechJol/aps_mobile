@@ -452,6 +452,7 @@ class _TranslationsMenuReportsByArticleKy extends TranslationsMenuReportsByArtic
 	// Translations
 	@override String get title => 'Беренелер боюнча отчеттор';
 	@override String get filenamePrefix => 'Беренелер_отчету_ай_';
+	@override String get yearLabel => 'Жыл:';
 	@override late final _TranslationsMenuReportsByArticleMarkersKy markers = _TranslationsMenuReportsByArticleMarkersKy._(_root);
 	@override late final _TranslationsMenuReportsByArticleSectionsKy sections = _TranslationsMenuReportsByArticleSectionsKy._(_root);
 	@override String get titleYearReport => 'Жылдык отчет киреше жана чыгаша боюнча:';
@@ -917,6 +918,7 @@ extension on TranslationsKy {
 			case 'menu.months.december': return 'Декабрь';
 			case 'menu.reportsByArticle.title': return 'Беренелер боюнча отчеттор';
 			case 'menu.reportsByArticle.filenamePrefix': return 'Беренелер_отчету_ай_';
+			case 'menu.reportsByArticle.yearLabel': return 'Жыл:';
 			case 'menu.reportsByArticle.markers.income': return '--- КИРЕШЕ ---';
 			case 'menu.reportsByArticle.markers.expense': return '--- ЧЫГЫМ ---';
 			case 'menu.reportsByArticle.sections.incomeTitle': return 'Негизги киреше беренелери';

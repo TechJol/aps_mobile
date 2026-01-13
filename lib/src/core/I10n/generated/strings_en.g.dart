@@ -912,6 +912,9 @@ class TranslationsMenuReportsByArticleEn {
 	/// en: 'Report_by_articles_month_'
 	String get filenamePrefix => 'Report_by_articles_month_';
 
+	/// en: 'Year:'
+	String get yearLabel => 'Year:';
+
 	late final TranslationsMenuReportsByArticleMarkersEn markers = TranslationsMenuReportsByArticleMarkersEn.internal(_root);
 	late final TranslationsMenuReportsByArticleSectionsEn sections = TranslationsMenuReportsByArticleSectionsEn.internal(_root);
 
@@ -1558,6 +1561,7 @@ extension on Translations {
 			case 'menu.months.december': return 'December';
 			case 'menu.reportsByArticle.title': return 'Reports by articles';
 			case 'menu.reportsByArticle.filenamePrefix': return 'Report_by_articles_month_';
+			case 'menu.reportsByArticle.yearLabel': return 'Year:';
 			case 'menu.reportsByArticle.markers.income': return '--- INCOME ---';
 			case 'menu.reportsByArticle.markers.expense': return '--- EXPENSE ---';
 			case 'menu.reportsByArticle.sections.incomeTitle': return 'Top income categories';

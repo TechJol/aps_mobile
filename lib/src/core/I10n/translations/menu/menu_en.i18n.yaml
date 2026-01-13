@@ -93,6 +93,7 @@ months:
 reportsByArticle:
   title: "Reports by articles"
   filenamePrefix: "Report_by_articles_month_"
+  yearLabel: "Year:"
   markers:
     income: "--- INCOME ---"
     expense: "--- EXPENSE ---"

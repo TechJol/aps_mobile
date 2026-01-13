@@ -93,6 +93,7 @@ months:
 reportsByArticle:
   title: "Отчеты по статьям"
   filenamePrefix: "Отчет_по_статьям_месяц_"
+  yearLabel: "Год:"
   markers:
     income: "--- ДОХОД ---"
     expense: "--- РАСХОД ---"

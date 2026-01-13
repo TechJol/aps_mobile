@@ -17,6 +17,8 @@ class CategoryReportsPage extends StatefulWidget {
 class _CategoryReportsPageState extends State<CategoryReportsPage> {
   final LocalService _localService = LocalService();
   String selectedMonth = DateTime.now().month.toString();
+  int selectedYear = DateTime.now().year;
+  late final TextEditingController _yearController;
   final ScrollController _monthsController = ScrollController();
 
   static const String _kgs = 'KGS';
@@ -24,6 +26,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
   @override
   void initState() {
     super.initState();
+    _yearController = TextEditingController(text: selectedYear.toString());
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToCurrentMonth();
     });
@@ -31,6 +34,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
 
   @override
   void dispose() {
+    _yearController.dispose();
     _monthsController.dispose();
     super.dispose();
   }
@@ -58,6 +62,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
               type: 'income',
               month: selectedMonth,
               currency: _kgs,
+              year: selectedYear,
             );
 
             final expenseData = _calculateTop6Reasons(
@@ -66,10 +71,16 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
               type: 'expense',
               month: selectedMonth,
               currency: _kgs,
+              year: selectedYear,
             );
 
             final hasIncomeData = incomeData.isNotEmpty;
             final hasExpenseData = expenseData.isNotEmpty;
+            final yearTotals = _calculateYearTotals(
+              state.transactions,
+              year: selectedYear,
+              currency: _kgs,
+            );
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -165,25 +176,59 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                     },
                   ),
                   20.h,
-                  TitleSection(title: t.menu.reportsByArticle.titleYearReport),
+                  TitleSection(
+                    title:
+                        '${t.menu.reportsByArticle.titleYearReport}: $selectedYear',
+                  ),
+                  20.h,
+                  Row(
+                    children: [
+                      Text(t.menu.reportsByArticle.yearLabel),
+                      8.w,
+                      SizedBox(
+                        width: 120,
+                        child: TextField(
+                          controller: _yearController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            isDense: true,
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 10,
+                            ),
+                          ),
+                        ),
+                      ),
+                      12.w,
+                      ElevatedButton(
+                        onPressed: () {
+                          final parsed = int.tryParse(_yearController.text);
+                          if (parsed == null) return;
+                          setState(() => selectedYear = parsed);
+                        },
+                        child: Text(t.operation.show),
+                      ),
+                    ],
+                  ),
                   20.h,
                   Row(
                     children: [
                       HeaderBalanceContainer(
                         title: t.income.incomes,
-                        amount: '250000,000',
+                        amount: yearTotals.income,
                         bgColor: AppColors.greenColor50,
                       ),
                       8.w,
                       HeaderBalanceContainer(
                         title: t.income.expenses,
-                        amount: '180,000',
+                        amount: yearTotals.expense,
                         bgColor: AppColors.redColor,
                       ),
                       8.w,
                       HeaderBalanceContainer(
                         title: t.income.balance,
-                        amount: '180,000',
+                        amount: yearTotals.balance,
                         bgColor: AppColors.blueColor,
                       ),
                       8.w,
@@ -250,9 +295,9 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
     required String type, // 'income' | 'expense'
     required String month, // '1'..'12'
     required String currency, //  'KGS'
+    required int year,
   }) {
     final Map<int, Decimal> totalsByReason = {};
-    final selectedYear = DateTime.now().year;
 
     for (final tx in transactions) {
       final txTypeOk = tx.transactionType == type;
@@ -264,7 +309,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
         continue;
       }
       final txMonthOk = parsedDate.month.toString() == month;
-      final txYearOk = parsedDate.year == selectedYear;
+      final txYearOk = parsedDate.year == year;
       final txCurrOk =
           (_txCurrency(tx)?.toUpperCase() ?? '') == currency.toUpperCase();
       final hasReason = tx.incomeExpenseReason != null;
@@ -316,6 +361,56 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
         'percent': percent,
       };
     }).toList();
+  }
+
+  _YearTotals _calculateYearTotals(
+    List<AllTransactionsModel> transactions, {
+    required int year,
+    required String currency,
+  }) {
+    Decimal income = Decimal.zero;
+    Decimal expense = Decimal.zero;
+
+    for (final tx in transactions) {
+      if (tx.date == null || tx.date!.isEmpty) continue;
+      DateTime parsedDate;
+      try {
+        parsedDate = DateTime.parse(tx.date!);
+      } catch (_) {
+        continue;
+      }
+      if (parsedDate.year != year) continue;
+
+      final isKgs =
+          (_txCurrency(tx)?.toUpperCase() ?? '') == currency.toUpperCase();
+      if (!isKgs) continue;
+
+      final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
+      if (tx.transactionType == 'income') {
+        income += amount;
+      } else if (tx.transactionType == 'expense') {
+        expense += amount.abs();
+      }
+    }
+
+    final balance = income - expense;
+    return _YearTotals(
+      income: formatNumericAmountWithCurrency(
+        income.toDouble(),
+        currency,
+        showKgsSuffix: true,
+      ),
+      expense: formatNumericAmountWithCurrency(
+        expense.toDouble(),
+        currency,
+        showKgsSuffix: true,
+      ),
+      balance: formatNumericAmountWithCurrency(
+        balance.toDouble(),
+        currency,
+        showKgsSuffix: true,
+      ),
+    );
   }
 
   String? _txCurrency(AllTransactionsModel tx) {
@@ -389,6 +484,18 @@ class HeaderBalanceContainer extends StatelessWidget {
       ),
     );
   }
+}
+
+class _YearTotals {
+  const _YearTotals({
+    required this.income,
+    required this.expense,
+    required this.balance,
+  });
+
+  final String income;
+  final String expense;
+  final String balance;
 }
 
 class MonthsTabs extends StatelessWidget {
