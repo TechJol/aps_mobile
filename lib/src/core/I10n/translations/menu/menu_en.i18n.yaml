@@ -102,7 +102,7 @@ reportsByArticle:
     expenseTitle: "Top expense categories"
     incomeNameCol: "Income category"
     expenseNameCol: "Expense category"
-  titleYearReport: "Annual Income and Expenditure Report:"
+  titleYearReport: "Annual Income and Expenditure Report"
 
 article:
   name: "Name"

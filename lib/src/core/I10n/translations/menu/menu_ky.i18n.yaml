@@ -102,7 +102,7 @@ reportsByArticle:
     expenseTitle: "Негизги чыгым беренелери"
     incomeNameCol: "Киреше беренеси"
     expenseNameCol: "Чыгым беренеси"
-  titleYearReport: "Жылдык отчет киреше жана чыгаша боюнча:"
+  titleYearReport: "Жылдык отчет киреше жана чыгаша боюнча"
 
 article:
   name: "Аталышы"

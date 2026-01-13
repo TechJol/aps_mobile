@@ -455,7 +455,7 @@ class _TranslationsMenuReportsByArticleKy extends TranslationsMenuReportsByArtic
 	@override String get yearLabel => 'Жыл:';
 	@override late final _TranslationsMenuReportsByArticleMarkersKy markers = _TranslationsMenuReportsByArticleMarkersKy._(_root);
 	@override late final _TranslationsMenuReportsByArticleSectionsKy sections = _TranslationsMenuReportsByArticleSectionsKy._(_root);
-	@override String get titleYearReport => 'Жылдык отчет киреше жана чыгаша боюнча:';
+	@override String get titleYearReport => 'Жылдык отчет киреше жана чыгаша боюнча';
 }
 
 // Path: menu.article
@@ -925,7 +925,7 @@ extension on TranslationsKy {
 			case 'menu.reportsByArticle.sections.expenseTitle': return 'Негизги чыгым беренелери';
 			case 'menu.reportsByArticle.sections.incomeNameCol': return 'Киреше беренеси';
 			case 'menu.reportsByArticle.sections.expenseNameCol': return 'Чыгым беренеси';
-			case 'menu.reportsByArticle.titleYearReport': return 'Жылдык отчет киреше жана чыгаша боюнча:';
+			case 'menu.reportsByArticle.titleYearReport': return 'Жылдык отчет киреше жана чыгаша боюнча';
 			case 'menu.article.name': return 'Аталышы';
 			case 'menu.article.income': return 'Киреше';
 			case 'menu.article.expense': return 'Чыгым';

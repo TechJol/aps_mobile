@@ -102,7 +102,7 @@ reportsByArticle:
     expenseTitle: "Основные статьи расходов"
     incomeNameCol: "Статья дохода"
     expenseNameCol: "Статья расхода"
-  titleYearReport: "Годовой отчет по доходам и расходам:"
+  titleYearReport: "Годовой отчет по доходам и расходам"
 
 article:
   name: "Название"
