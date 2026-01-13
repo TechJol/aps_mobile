@@ -85,27 +85,25 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                         t.menu.common.percent,
                       ];
 
-                      final incomeRows =
-                          incomeData.asMap().entries.map((e) {
-                            final row = e.value;
-                            return [
-                              '${e.key + 1}',
-                              '${row['name'] ?? ''}',
-                              '${row['amount'] ?? ''}',
-                              '${row['percent'] ?? ''}%',
-                            ];
-                          }).toList();
+                      final incomeRows = incomeData.asMap().entries.map((e) {
+                        final row = e.value;
+                        return [
+                          '${e.key + 1}',
+                          '${row['name'] ?? ''}',
+                          '${row['amount'] ?? ''}',
+                          '${row['percent'] ?? ''}%',
+                        ];
+                      }).toList();
 
-                      final expenseRows =
-                          expenseData.asMap().entries.map((e) {
-                            final row = e.value;
-                            return [
-                              '${e.key + 1}',
-                              '${row['name'] ?? ''}',
-                              '${row['amount'] ?? ''}',
-                              '${row['percent'] ?? ''}%',
-                            ];
-                          }).toList();
+                      final expenseRows = expenseData.asMap().entries.map((e) {
+                        final row = e.value;
+                        return [
+                          '${e.key + 1}',
+                          '${row['name'] ?? ''}',
+                          '${row['amount'] ?? ''}',
+                          '${row['percent'] ?? ''}%',
+                        ];
+                      }).toList();
 
                       _localService.exportToExcelGeneric(
                         fileName:
@@ -129,27 +127,25 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                         t.menu.common.percent,
                       ];
 
-                      final incomeRows =
-                          incomeData.asMap().entries.map((e) {
-                            final row = e.value;
-                            return [
-                              '${e.key + 1}',
-                              '${row['name'] ?? ''}',
-                              '${row['amount'] ?? ''}',
-                              '${row['percent'] ?? ''}%',
-                            ];
-                          }).toList();
+                      final incomeRows = incomeData.asMap().entries.map((e) {
+                        final row = e.value;
+                        return [
+                          '${e.key + 1}',
+                          '${row['name'] ?? ''}',
+                          '${row['amount'] ?? ''}',
+                          '${row['percent'] ?? ''}%',
+                        ];
+                      }).toList();
 
-                      final expenseRows =
-                          expenseData.asMap().entries.map((e) {
-                            final row = e.value;
-                            return [
-                              '${e.key + 1}',
-                              '${row['name'] ?? ''}',
-                              '${row['amount'] ?? ''}',
-                              '${row['percent'] ?? ''}%',
-                            ];
-                          }).toList();
+                      final expenseRows = expenseData.asMap().entries.map((e) {
+                        final row = e.value;
+                        return [
+                          '${e.key + 1}',
+                          '${row['name'] ?? ''}',
+                          '${row['amount'] ?? ''}',
+                          '${row['percent'] ?? ''}%',
+                        ];
+                      }).toList();
 
                       final monthName =
                           months[int.parse(selectedMonth) - 1]; // локализовано
@@ -251,9 +247,8 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
 
     if (totalsByReason.isEmpty) return [];
 
-    final top =
-        totalsByReason.entries.toList()
-          ..sort((a, b) => b.value.compareTo(a.value));
+    final top = totalsByReason.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
     final top6 = top.take(6).toList();
 
     final Decimal top6Total = top6.fold(
@@ -265,13 +260,12 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
     return top6.map((entry) {
       final reason = reasons.firstWhere(
         (r) => r.id == entry.key,
-        orElse:
-            () => IncomeExpenseReasons(
-              id: entry.key,
-              name: t.menu.common.untitled,
-              type: type,
-              company: null,
-            ),
+        orElse: () => IncomeExpenseReasons(
+          id: entry.key,
+          name: t.menu.common.untitled,
+          type: type,
+          company: null,
+        ),
       );
 
       final Decimal value = entry.value;
@@ -339,29 +333,26 @@ class MonthsTabs extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       controller: scrollController,
       child: Row(
-        children:
-            months.asMap().entries.map((entry) {
-              String monthNumber = (entry.key + 1).toString();
-              bool isSelected = monthNumber == selectedMonth;
+        children: months.asMap().entries.map((entry) {
+          String monthNumber = (entry.key + 1).toString();
+          bool isSelected = monthNumber == selectedMonth;
 
-              return Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: GestureDetector(
-                  onTap: () => onMonthSelected(monthNumber),
-                  child: Text(
-                    entry.value,
-                    style: AppTextStyles.f12w400.copyWith(
-                      color:
-                          isSelected
-                              ? AppColors.primaryColor
-                              : AppColors.greyColor,
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.normal,
-                    ),
-                  ),
+          return Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: GestureDetector(
+              onTap: () => onMonthSelected(monthNumber),
+              child: Text(
+                entry.value,
+                style: AppTextStyles.f12w400.copyWith(
+                  color: isSelected
+                      ? AppColors.primaryColor
+                      : AppColors.greyColor,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
-              );
-            }).toList(),
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }
@@ -397,24 +388,23 @@ class PieChartSection extends StatelessWidget {
         PieChartData(
           sectionsSpace: 2,
           centerSpaceRadius: w * 0.16,
-          sections:
-              data.asMap().entries.map((entry) {
-                final color = _chartColors[entry.key % _chartColors.length];
-                final percent = (entry.value['percent'] as Decimal).toDouble();
+          sections: data.asMap().entries.map((entry) {
+            final color = _chartColors[entry.key % _chartColors.length];
+            final percent = (entry.value['percent'] as Decimal).toDouble();
 
-                return PieChartSectionData(
-                  color: color,
-                  value: percent,
-                  title: '${percent.round()}%',
-                  titleStyle: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                  ),
-                  titlePositionPercentageOffset: 0.6,
-                  radius: w * 0.2,
-                );
-              }).toList(),
+            return PieChartSectionData(
+              color: color,
+              value: percent,
+              title: '${percent.round()}%',
+              titleStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 14,
+              ),
+              titlePositionPercentageOffset: 0.6,
+              radius: w * 0.2,
+            );
+          }).toList(),
         ),
       ),
     );
@@ -429,11 +419,10 @@ class LegendSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children:
-          data.asMap().entries.map((entry) {
-            final color = _chartColors[entry.key % _chartColors.length];
-            return LegendItem(color: color, text: entry.value['name']);
-          }).toList(),
+      children: data.asMap().entries.map((entry) {
+        final color = _chartColors[entry.key % _chartColors.length];
+        return LegendItem(color: color, text: entry.value['name']);
+      }).toList(),
     );
   }
 }
@@ -502,8 +491,9 @@ class DataTableSection extends StatelessWidget {
 
         final fixedPartW = numColW + sumColW + pctColW + (cellHPad * 2 * 4);
         final requiredTableW = fixedPartW + maxNameTextW;
-        final tableMinWidth =
-            requiredTableW < screenW ? screenW : requiredTableW;
+        final tableMinWidth = requiredTableW < screenW
+            ? screenW
+            : requiredTableW;
 
         final nameColW = (screenW - fixedPartW).clamp(120.0, 800.0);
 
@@ -541,38 +531,37 @@ class DataTableSection extends StatelessWidget {
           ],
         );
 
-        List<TableRow> dataRows() =>
-            data.asMap().entries.map((entry) {
-              final i = entry.key + 1;
-              final row = entry.value;
-              final name = (row['name'] ?? '').toString();
-              final amount = (row['amount'] ?? '').toString();
-              final percent = row['percent'];
+        List<TableRow> dataRows() => data.asMap().entries.map((entry) {
+          final i = entry.key + 1;
+          final row = entry.value;
+          final name = (row['name'] ?? '').toString();
+          final amount = (row['amount'] ?? '').toString();
+          final percent = row['percent'];
 
-              final isStretched = tableMinWidth == screenW;
+          final isStretched = tableMinWidth == screenW;
 
-              return TableRow(
-                children: [
-                  _cell('$i', width: numColW, padH: cellHPad, padV: cellVPad),
-                  _cell(
-                    name,
-                    width: isStretched ? nameColW : maxNameTextW,
-                    padH: cellHPad,
-                    padV: cellVPad,
-                    ellipsis: isStretched,
-                  ),
-                  _cell(amount, width: sumColW, padH: cellHPad, padV: cellVPad),
-                  _cell(
-                    percent is Decimal
-                        ? '${percent.toString()}%'
-                        : '${percent ?? 0}%',
-                    width: pctColW,
-                    padH: cellHPad,
-                    padV: cellVPad,
-                  ),
-                ],
-              );
-            }).toList();
+          return TableRow(
+            children: [
+              _cell('$i', width: numColW, padH: cellHPad, padV: cellVPad),
+              _cell(
+                name,
+                width: isStretched ? nameColW : maxNameTextW,
+                padH: cellHPad,
+                padV: cellVPad,
+                ellipsis: isStretched,
+              ),
+              _cell(amount, width: sumColW, padH: cellHPad, padV: cellVPad),
+              _cell(
+                percent is Decimal
+                    ? '${percent.toString()}%'
+                    : '${percent ?? 0}%',
+                width: pctColW,
+                padH: cellHPad,
+                padV: cellVPad,
+              ),
+            ],
+          );
+        }).toList();
 
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -604,10 +593,9 @@ class DataTableSection extends StatelessWidget {
     bool isHeader = false,
     bool ellipsis = false,
   }) {
-    final style =
-        isHeader
-            ? const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)
-            : AppTextStyles.f16w500;
+    final style = isHeader
+        ? const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)
+        : AppTextStyles.f16w500;
 
     return SizedBox(
       width: width,
