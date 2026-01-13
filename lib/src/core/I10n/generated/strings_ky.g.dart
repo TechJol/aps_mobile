@@ -414,9 +414,12 @@ class _TranslationsMenuCommonKy extends TranslationsMenuCommonEn {
 	// Translations
 	@override String get print => 'Басып чыгаруу';
 	@override String get export => 'Excelге экспорттоо';
+	@override String get title => 'Көрсөткүч';
 	@override String get amountKgs => 'Сумма (сом)';
 	@override String get percent => 'Пайыз';
 	@override String get numberSign => '№';
+	@override String get month => 'Ай';
+	@override String get total => 'Жыйынтык';
 	@override String get noDataForSelectedMonth => 'Тандалган ай боюнча маалымат жок';
 	@override String get untitled => 'Аталышы жок';
 	@override String get unknown => 'Белгисиз';
@@ -453,6 +456,7 @@ class _TranslationsMenuReportsByArticleKy extends TranslationsMenuReportsByArtic
 	@override String get title => 'Беренелер боюнча отчеттор';
 	@override String get filenamePrefix => 'Беренелер_отчету_ай_';
 	@override String get yearLabel => 'Жыл:';
+	@override String get chartTitle => 'Киреше жана чыгаша графиги';
 	@override late final _TranslationsMenuReportsByArticleMarkersKy markers = _TranslationsMenuReportsByArticleMarkersKy._(_root);
 	@override late final _TranslationsMenuReportsByArticleSectionsKy sections = _TranslationsMenuReportsByArticleSectionsKy._(_root);
 	@override String get titleYearReport => 'Жылдык отчет киреше жана чыгаша боюнча';
@@ -898,9 +902,12 @@ extension on TranslationsKy {
 			case 'menu.expense': return 'Чыгым';
 			case 'menu.common.print': return 'Басып чыгаруу';
 			case 'menu.common.export': return 'Excelге экспорттоо';
+			case 'menu.common.title': return 'Көрсөткүч';
 			case 'menu.common.amountKgs': return 'Сумма (сом)';
 			case 'menu.common.percent': return 'Пайыз';
 			case 'menu.common.numberSign': return '№';
+			case 'menu.common.month': return 'Ай';
+			case 'menu.common.total': return 'Жыйынтык';
 			case 'menu.common.noDataForSelectedMonth': return 'Тандалган ай боюнча маалымат жок';
 			case 'menu.common.untitled': return 'Аталышы жок';
 			case 'menu.common.unknown': return 'Белгисиз';
@@ -919,6 +926,7 @@ extension on TranslationsKy {
 			case 'menu.reportsByArticle.title': return 'Беренелер боюнча отчеттор';
 			case 'menu.reportsByArticle.filenamePrefix': return 'Беренелер_отчету_ай_';
 			case 'menu.reportsByArticle.yearLabel': return 'Жыл:';
+			case 'menu.reportsByArticle.chartTitle': return 'Киреше жана чыгаша графиги';
 			case 'menu.reportsByArticle.markers.income': return '--- КИРЕШЕ ---';
 			case 'menu.reportsByArticle.markers.expense': return '--- ЧЫГЫМ ---';
 			case 'menu.reportsByArticle.sections.incomeTitle': return 'Негизги киреше беренелери';

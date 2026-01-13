@@ -13,6 +13,44 @@ import 'package:printing/printing.dart';
 import 'package:share_plus/share_plus.dart';
 
 class LocalService {
+  Future<void> exportToExcelSections({
+    required String fileName,
+    required List<PdfTableSection> sections,
+    required BuildContext context,
+  }) async {
+    final excel = Excel.createExcel();
+    final sheet = excel['Отчет'];
+
+    for (final section in sections) {
+      sheet.appendRow(
+        section.headers.map((h) => TextCellValue(h)).toList(),
+      );
+      for (final row in section.rows) {
+        sheet.appendRow(row.map((cell) => TextCellValue(cell)).toList());
+      }
+      sheet.appendRow([]);
+    }
+
+    final fileBytes = excel.save();
+    if (fileBytes == null) return;
+
+    final dir = await getApplicationDocumentsDirectory();
+    final file = File('${dir.path}/$fileName.xlsx');
+    await file.writeAsBytes(fileBytes, flush: true);
+
+    if (Platform.isAndroid) {
+      final status = await Permission.storage.request();
+      if (!status.isGranted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Нет разрешения на запись файла')),
+        );
+        return;
+      }
+    }
+
+    await Share.shareXFiles([XFile(file.path)]);
+  }
+
   Future<void> exportToExcelGeneric({
     required String fileName,
     required List<String> headers,
@@ -55,6 +93,85 @@ class LocalService {
 
     // Поделиться
     await Share.shareXFiles([XFile(file.path)]);
+  }
+
+  Future<void> printReportAsPdfSections({
+    required BuildContext context,
+    required String title,
+    required List<PdfTableSection> sections,
+  }) async {
+    final pdf = pw.Document();
+
+    final fontData = await rootBundle.load('assets/fonts/Roboto-Regular.ttf');
+    final ttf = pw.Font.ttf(fontData);
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        build: (context) {
+          final widgets = <pw.Widget>[
+            pw.Center(
+              child: pw.Text(
+                title,
+                style: pw.TextStyle(
+                  font: ttf,
+                  fontSize: 18,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+              ),
+            ),
+            pw.SizedBox(height: 16),
+          ];
+
+          for (final section in sections) {
+            if (section.title.isNotEmpty) {
+              widgets.add(
+                pw.Text(
+                  section.title,
+                  style: pw.TextStyle(
+                    font: ttf,
+                    fontSize: 12,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                ),
+              );
+              widgets.add(pw.SizedBox(height: 6));
+            }
+            widgets.add(
+              pw.Table.fromTextArray(
+                headers: section.headers,
+                data: section.rows,
+                border: pw.TableBorder.all(),
+                cellStyle: pw.TextStyle(font: ttf, fontSize: 9),
+                headerStyle: pw.TextStyle(
+                  font: ttf,
+                  fontWeight: pw.FontWeight.bold,
+                ),
+                cellAlignment: pw.Alignment.centerLeft,
+                headerDecoration: const pw.BoxDecoration(
+                  color: PdfColors.grey300,
+                ),
+              ),
+            );
+            widgets.add(pw.SizedBox(height: 14));
+          }
+
+          return widgets;
+        },
+      ),
+    );
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Формирование PDF...')));
+
+    try {
+      await Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => pdf.save(),
+      );
+    } catch (e) {
+      debugPrint('Ошибка при печати: $e');
+    }
   }
 
   Future<void> printReportAsPdf({
@@ -116,4 +233,16 @@ class LocalService {
       debugPrint('Ошибка при печати: $e');
     }
   }
+}
+
+class PdfTableSection {
+  PdfTableSection({
+    required this.title,
+    required this.headers,
+    required this.rows,
+  });
+
+  final String title;
+  final List<String> headers;
+  final List<List<String>> rows;
 }

@@ -834,6 +834,9 @@ class TranslationsMenuCommonEn {
 	/// en: 'Export to Excel'
 	String get export => 'Export to Excel';
 
+	/// en: 'Title'
+	String get title => 'Title';
+
 	/// en: 'Amount (KGS)'
 	String get amountKgs => 'Amount (KGS)';
 
@@ -842,6 +845,12 @@ class TranslationsMenuCommonEn {
 
 	/// en: '№'
 	String get numberSign => '№';
+
+	/// en: 'Month'
+	String get month => 'Month';
+
+	/// en: 'Total'
+	String get total => 'Total';
 
 	/// en: 'No data for selected month'
 	String get noDataForSelectedMonth => 'No data for selected month';
@@ -914,6 +923,9 @@ class TranslationsMenuReportsByArticleEn {
 
 	/// en: 'Year:'
 	String get yearLabel => 'Year:';
+
+	/// en: 'Income and expense chart'
+	String get chartTitle => 'Income and expense chart';
 
 	late final TranslationsMenuReportsByArticleMarkersEn markers = TranslationsMenuReportsByArticleMarkersEn.internal(_root);
 	late final TranslationsMenuReportsByArticleSectionsEn sections = TranslationsMenuReportsByArticleSectionsEn.internal(_root);
@@ -1541,9 +1553,12 @@ extension on Translations {
 			case 'menu.expense': return 'Expense';
 			case 'menu.common.print': return 'Print';
 			case 'menu.common.export': return 'Export to Excel';
+			case 'menu.common.title': return 'Title';
 			case 'menu.common.amountKgs': return 'Amount (KGS)';
 			case 'menu.common.percent': return 'Percent';
 			case 'menu.common.numberSign': return '№';
+			case 'menu.common.month': return 'Month';
+			case 'menu.common.total': return 'Total';
 			case 'menu.common.noDataForSelectedMonth': return 'No data for selected month';
 			case 'menu.common.untitled': return 'Untitled';
 			case 'menu.common.unknown': return 'Unknown';
@@ -1562,6 +1577,7 @@ extension on Translations {
 			case 'menu.reportsByArticle.title': return 'Reports by articles';
 			case 'menu.reportsByArticle.filenamePrefix': return 'Report_by_articles_month_';
 			case 'menu.reportsByArticle.yearLabel': return 'Year:';
+			case 'menu.reportsByArticle.chartTitle': return 'Income and expense chart';
 			case 'menu.reportsByArticle.markers.income': return '--- INCOME ---';
 			case 'menu.reportsByArticle.markers.expense': return '--- EXPENSE ---';
 			case 'menu.reportsByArticle.sections.incomeTitle': return 'Top income categories';

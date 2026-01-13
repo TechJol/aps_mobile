@@ -414,9 +414,12 @@ class _TranslationsMenuCommonRu extends TranslationsMenuCommonEn {
 	// Translations
 	@override String get print => 'Распечатать';
 	@override String get export => 'Скачать в Excel';
+	@override String get title => 'Показатель';
 	@override String get amountKgs => 'Сумма (сом)';
 	@override String get percent => 'Процент';
 	@override String get numberSign => '№';
+	@override String get month => 'Месяц';
+	@override String get total => 'Итого';
 	@override String get noDataForSelectedMonth => 'Нет данных за выбранный месяц';
 	@override String get untitled => 'Без названия';
 	@override String get unknown => 'Неизвестно';
@@ -453,6 +456,7 @@ class _TranslationsMenuReportsByArticleRu extends TranslationsMenuReportsByArtic
 	@override String get title => 'Отчеты по статьям';
 	@override String get filenamePrefix => 'Отчет_по_статьям_месяц_';
 	@override String get yearLabel => 'Год:';
+	@override String get chartTitle => 'График доходов и расходов';
 	@override late final _TranslationsMenuReportsByArticleMarkersRu markers = _TranslationsMenuReportsByArticleMarkersRu._(_root);
 	@override late final _TranslationsMenuReportsByArticleSectionsRu sections = _TranslationsMenuReportsByArticleSectionsRu._(_root);
 	@override String get titleYearReport => 'Годовой отчет по доходам и расходам';
@@ -898,9 +902,12 @@ extension on TranslationsRu {
 			case 'menu.expense': return 'Расход';
 			case 'menu.common.print': return 'Распечатать';
 			case 'menu.common.export': return 'Скачать в Excel';
+			case 'menu.common.title': return 'Показатель';
 			case 'menu.common.amountKgs': return 'Сумма (сом)';
 			case 'menu.common.percent': return 'Процент';
 			case 'menu.common.numberSign': return '№';
+			case 'menu.common.month': return 'Месяц';
+			case 'menu.common.total': return 'Итого';
 			case 'menu.common.noDataForSelectedMonth': return 'Нет данных за выбранный месяц';
 			case 'menu.common.untitled': return 'Без названия';
 			case 'menu.common.unknown': return 'Неизвестно';
@@ -919,6 +926,7 @@ extension on TranslationsRu {
 			case 'menu.reportsByArticle.title': return 'Отчеты по статьям';
 			case 'menu.reportsByArticle.filenamePrefix': return 'Отчет_по_статьям_месяц_';
 			case 'menu.reportsByArticle.yearLabel': return 'Год:';
+			case 'menu.reportsByArticle.chartTitle': return 'График доходов и расходов';
 			case 'menu.reportsByArticle.markers.income': return '--- ДОХОД ---';
 			case 'menu.reportsByArticle.markers.expense': return '--- РАСХОД ---';
 			case 'menu.reportsByArticle.sections.incomeTitle': return 'Основные статьи доходов';

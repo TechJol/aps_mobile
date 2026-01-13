@@ -88,89 +88,31 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                   20.h,
                   ButtonsRow(
                     onExport: () {
-                      final headers = [
-                        t.menu.common.numberSign,
-                        t.menu.articles.name,
-                        t.menu.common.amountKgs,
-                        t.menu.common.percent,
-                      ];
-
-                      final incomeRows = incomeData.asMap().entries.map((e) {
-                        final row = e.value;
-                        return [
-                          '${e.key + 1}',
-                          '${row['name'] ?? ''}',
-                          '${row['amount'] ?? ''}',
-                          '${row['percent'] ?? ''}%',
-                        ];
-                      }).toList();
-
-                      final expenseRows = expenseData.asMap().entries.map((e) {
-                        final row = e.value;
-                        return [
-                          '${e.key + 1}',
-                          '${row['name'] ?? ''}',
-                          '${row['amount'] ?? ''}',
-                          '${row['percent'] ?? ''}%',
-                        ];
-                      }).toList();
-
-                      _localService.exportToExcelGeneric(
+                      final sections = _buildYearlyReportSections(
+                        transactions: state.transactions,
+                        reasons: state.reasons,
+                        year: selectedYear,
+                        currency: _kgs,
+                      );
+                      _localService.exportToExcelSections(
                         fileName:
-                            '${t.menu.reportsByArticle.filenamePrefix}$selectedMonth',
-                        headers: headers,
-                        rows: [
-                          [t.menu.reportsByArticle.markers.income],
-                          ...incomeRows,
-                          [],
-                          [t.menu.reportsByArticle.markers.expense],
-                          ...expenseRows,
-                        ],
+                            '${t.menu.reportsByArticle.filenamePrefix}$selectedYear',
+                        sections: sections,
                         context: context,
                       );
                     },
                     onPrint: () {
-                      final headers = [
-                        t.menu.common.numberSign,
-                        t.menu.articles.name,
-                        t.menu.common.amountKgs,
-                        t.menu.common.percent,
-                      ];
-
-                      final incomeRows = incomeData.asMap().entries.map((e) {
-                        final row = e.value;
-                        return [
-                          '${e.key + 1}',
-                          '${row['name'] ?? ''}',
-                          '${row['amount'] ?? ''}',
-                          '${row['percent'] ?? ''}%',
-                        ];
-                      }).toList();
-
-                      final expenseRows = expenseData.asMap().entries.map((e) {
-                        final row = e.value;
-                        return [
-                          '${e.key + 1}',
-                          '${row['name'] ?? ''}',
-                          '${row['amount'] ?? ''}',
-                          '${row['percent'] ?? ''}%',
-                        ];
-                      }).toList();
-
-                      final monthName =
-                          months[int.parse(selectedMonth) - 1]; // локализовано
-
-                      _localService.printReportAsPdf(
+                      final sections = _buildYearlyReportSections(
+                        transactions: state.transactions,
+                        reasons: state.reasons,
+                        year: selectedYear,
+                        currency: _kgs,
+                      );
+                      _localService.printReportAsPdfSections(
                         context: context,
-                        title: '${t.menu.reportsByArticle.title} ($monthName)',
-                        headers: headers,
-                        rows: [
-                          [t.menu.reportsByArticle.markers.income],
-                          ...incomeRows,
-                          [],
-                          [t.menu.reportsByArticle.markers.expense],
-                          ...expenseRows,
-                        ],
+                        title:
+                            '${t.menu.reportsByArticle.titleYearReport} $selectedYear',
+                        sections: sections,
                       );
                     },
                   ),
@@ -429,6 +371,180 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
     );
   }
 
+  List<PdfTableSection> _buildYearlyReportSections({
+    required List<AllTransactionsModel> transactions,
+    required List<IncomeExpenseReasons> reasons,
+    required int year,
+    required String currency,
+  }) {
+    final totals = _calculateYearTotals(
+      transactions,
+      year: year,
+      currency: currency,
+    );
+
+    final totalsSection = PdfTableSection(
+      title: t.menu.reportsByArticle.titleYearReport,
+      headers: [t.menu.common.title, t.menu.common.amountKgs],
+      rows: [
+        [t.income.incomes, totals.income],
+        [t.income.expenses, totals.expense],
+        [t.income.balance, totals.balance],
+      ],
+    );
+
+    final monthHeaders = [
+      t.menu.articles.name,
+      ..._localizedMonthsShort(),
+      t.menu.common.total,
+    ];
+
+    final incomeRows = _buildYearlyCategoryRows(
+      transactions: transactions,
+      reasons: reasons,
+      type: 'income',
+      year: year,
+      currency: currency,
+    );
+
+    final expenseRows = _buildYearlyCategoryRows(
+      transactions: transactions,
+      reasons: reasons,
+      type: 'expense',
+      year: year,
+      currency: currency,
+    );
+
+    final incomeSection = PdfTableSection(
+      title: t.menu.reportsByArticle.sections.incomeTitle,
+      headers: monthHeaders,
+      rows: incomeRows,
+    );
+
+    final expenseSection = PdfTableSection(
+      title: t.menu.reportsByArticle.sections.expenseTitle,
+      headers: monthHeaders,
+      rows: expenseRows,
+    );
+
+    final monthlyTotals = _buildMonthlyTotalsRows(
+      transactions: transactions,
+      year: year,
+      currency: currency,
+    );
+
+    final chartSection = PdfTableSection(
+      title: t.menu.reportsByArticle.chartTitle,
+      headers: [t.menu.common.month, t.income.incomes, t.income.expenses],
+      rows: monthlyTotals,
+    );
+
+    return [totalsSection, chartSection, incomeSection, expenseSection];
+  }
+
+  List<List<String>> _buildYearlyCategoryRows({
+    required List<AllTransactionsModel> transactions,
+    required List<IncomeExpenseReasons> reasons,
+    required String type,
+    required int year,
+    required String currency,
+  }) {
+    final Map<int, List<Decimal>> monthlyByReason = {};
+
+    for (final tx in transactions) {
+      if (tx.date == null || tx.date!.isEmpty) continue;
+      DateTime parsedDate;
+      try {
+        parsedDate = DateTime.parse(tx.date!);
+      } catch (_) {
+        continue;
+      }
+
+      if (parsedDate.year != year) continue;
+      if (tx.transactionType != type) continue;
+
+      final isKgs =
+          (_txCurrency(tx)?.toUpperCase() ?? '') == currency.toUpperCase();
+      if (!isKgs) continue;
+      if (tx.incomeExpenseReason == null) continue;
+
+      final monthIndex = parsedDate.month - 1;
+      final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
+      final value = type == 'expense' ? amount.abs() : amount;
+
+      monthlyByReason.putIfAbsent(
+        tx.incomeExpenseReason!,
+        () => List.filled(12, Decimal.zero),
+      );
+      final current = monthlyByReason[tx.incomeExpenseReason!];
+      if (current != null) {
+        current[monthIndex] = current[monthIndex] + value;
+      }
+    }
+
+    final sortedReasons = monthlyByReason.keys.toList()..sort();
+    return sortedReasons.map((reasonId) {
+      final reason = reasons.firstWhere(
+        (r) => r.id == reasonId,
+        orElse: () => IncomeExpenseReasons(
+          id: reasonId,
+          name: t.menu.common.untitled,
+          type: type,
+          company: null,
+        ),
+      );
+      final values = monthlyByReason[reasonId]!;
+      final total = values.fold(Decimal.zero, (acc, v) => acc + v);
+      return [
+        reason.name,
+        ...values.map((v) => v.toStringAsFixed(2)),
+        total.toStringAsFixed(2),
+      ];
+    }).toList();
+  }
+
+  List<List<String>> _buildMonthlyTotalsRows({
+    required List<AllTransactionsModel> transactions,
+    required int year,
+    required String currency,
+  }) {
+    final income = List<Decimal>.filled(12, Decimal.zero);
+    final expense = List<Decimal>.filled(12, Decimal.zero);
+
+    for (final tx in transactions) {
+      if (tx.date == null || tx.date!.isEmpty) continue;
+      DateTime parsedDate;
+      try {
+        parsedDate = DateTime.parse(tx.date!);
+      } catch (_) {
+        continue;
+      }
+      if (parsedDate.year != year) continue;
+
+      final isKgs =
+          (_txCurrency(tx)?.toUpperCase() ?? '') == currency.toUpperCase();
+      if (!isKgs) continue;
+
+      final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
+      final monthIndex = parsedDate.month - 1;
+
+      if (tx.transactionType == 'income') {
+        income[monthIndex] += amount;
+      } else if (tx.transactionType == 'expense') {
+        expense[monthIndex] += amount.abs();
+      }
+    }
+
+    final months = _localizedMonthsShort();
+    return List.generate(12, (i) {
+      return [
+        months[i],
+        income[i].toStringAsFixed(2),
+        expense[i].toStringAsFixed(2),
+      ];
+    });
+  }
+
   String? _txCurrency(AllTransactionsModel tx) {
     return tx.currency ?? 'KGS';
   }
@@ -447,6 +563,13 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
     t.menu.months.november,
     t.menu.months.december,
   ];
+
+  List<String> _localizedMonthsShort() {
+    return _localizedMonths().map((m) {
+      final trimmed = m.trim();
+      return trimmed.length <= 3 ? trimmed : trimmed.substring(0, 3);
+    }).toList();
+  }
 
   void _scrollToCurrentMonth() {
     if (!_monthsController.hasClients) return;
