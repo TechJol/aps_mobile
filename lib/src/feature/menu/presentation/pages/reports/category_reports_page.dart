@@ -42,7 +42,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
     return Scaffold(
       backgroundColor: AppColors.whiteColor,
       appBar: CustomAppBar(
-        title: t.menu.reportsByArticle.title,
+        title: t.menu.metrics.yearlyReportTitle,
         backgroundColor: AppColors.whiteColor,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
@@ -164,7 +164,31 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                       );
                     },
                   ),
-
+                  20.h,
+                  TitleSection(title: t.menu.reportsByArticle.titleYearReport),
+                  20.h,
+                  Row(
+                    children: [
+                      HeaderBalanceContainer(
+                        title: t.income.incomes,
+                        amount: '250000,000',
+                        bgColor: AppColors.greenColor50,
+                      ),
+                      8.w,
+                      HeaderBalanceContainer(
+                        title: t.income.expenses,
+                        amount: '180,000',
+                        bgColor: AppColors.redColor,
+                      ),
+                      8.w,
+                      HeaderBalanceContainer(
+                        title: t.income.balance,
+                        amount: '180,000',
+                        bgColor: AppColors.blueColor,
+                      ),
+                      8.w,
+                    ],
+                  ),
                   20.h,
                   MonthsTabs(
                     months: months,
@@ -321,6 +345,49 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
     final offset = (idx - 2) * approxTabWidth;
     final max = _monthsController.position.maxScrollExtent;
     _monthsController.jumpTo(offset.clamp(0.0, max));
+  }
+}
+
+class HeaderBalanceContainer extends StatelessWidget {
+  const HeaderBalanceContainer({
+    super.key,
+    required this.title,
+    required this.amount,
+    required this.bgColor,
+  });
+
+  final String title;
+  final String amount;
+  final Color bgColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        alignment: Alignment.center,
+        width: double.infinity,
+        height: 80,
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              style: AppTextStyles.f14w500.copyWith(color: Colors.white),
+            ),
+            8.h,
+            Text(
+              amount,
+              style: AppTextStyles.f12w600.copyWith(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

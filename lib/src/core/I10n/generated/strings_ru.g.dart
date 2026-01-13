@@ -153,6 +153,7 @@ class _TranslationsIncomeRu extends TranslationsIncomeEn {
 	// Translations
 	@override String get incomes => 'Доходы';
 	@override String get expenses => 'Расходы';
+	@override String get balance => 'Баланс';
 	@override String get account => 'Счет';
 	@override String get notAccount => 'Нет счетов..';
 	@override String get sum => 'Сумма';
@@ -453,6 +454,7 @@ class _TranslationsMenuReportsByArticleRu extends TranslationsMenuReportsByArtic
 	@override String get filenamePrefix => 'Отчет_по_статьям_месяц_';
 	@override late final _TranslationsMenuReportsByArticleMarkersRu markers = _TranslationsMenuReportsByArticleMarkersRu._(_root);
 	@override late final _TranslationsMenuReportsByArticleSectionsRu sections = _TranslationsMenuReportsByArticleSectionsRu._(_root);
+	@override String get titleYearReport => 'Годовой отчет по доходам и расходам:';
 }
 
 // Path: menu.article
@@ -822,6 +824,7 @@ extension on TranslationsRu {
 			case 'home.other': return 'Другое';
 			case 'income.incomes': return 'Доходы';
 			case 'income.expenses': return 'Расходы';
+			case 'income.balance': return 'Баланс';
 			case 'income.account': return 'Счет';
 			case 'income.notAccount': return 'Нет счетов..';
 			case 'income.sum': return 'Сумма';
@@ -920,6 +923,7 @@ extension on TranslationsRu {
 			case 'menu.reportsByArticle.sections.expenseTitle': return 'Основные статьи расходов';
 			case 'menu.reportsByArticle.sections.incomeNameCol': return 'Статья дохода';
 			case 'menu.reportsByArticle.sections.expenseNameCol': return 'Статья расхода';
+			case 'menu.reportsByArticle.titleYearReport': return 'Годовой отчет по доходам и расходам:';
 			case 'menu.article.name': return 'Название';
 			case 'menu.article.income': return 'Доход';
 			case 'menu.article.expense': return 'Расход';

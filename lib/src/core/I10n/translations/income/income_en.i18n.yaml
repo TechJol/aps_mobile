@@ -1,5 +1,6 @@
 incomes: "Incomes"
 expenses: "Expenses"
+balance: "Balance"
 account: "Account"
 notAccount: "No accounts.."
 sum: "Sum"

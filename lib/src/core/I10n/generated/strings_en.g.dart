@@ -294,6 +294,9 @@ class TranslationsIncomeEn {
 	/// en: 'Expenses'
 	String get expenses => 'Expenses';
 
+	/// en: 'Balance'
+	String get balance => 'Balance';
+
 	/// en: 'Account'
 	String get account => 'Account';
 
@@ -911,6 +914,9 @@ class TranslationsMenuReportsByArticleEn {
 
 	late final TranslationsMenuReportsByArticleMarkersEn markers = TranslationsMenuReportsByArticleMarkersEn.internal(_root);
 	late final TranslationsMenuReportsByArticleSectionsEn sections = TranslationsMenuReportsByArticleSectionsEn.internal(_root);
+
+	/// en: 'Annual Income and Expenditure Report:'
+	String get titleYearReport => 'Annual Income and Expenditure Report:';
 }
 
 // Path: menu.article
@@ -1459,6 +1465,7 @@ extension on Translations {
 			case 'home.other': return 'Other';
 			case 'income.incomes': return 'Incomes';
 			case 'income.expenses': return 'Expenses';
+			case 'income.balance': return 'Balance';
 			case 'income.account': return 'Account';
 			case 'income.notAccount': return 'No accounts..';
 			case 'income.sum': return 'Sum';
@@ -1557,6 +1564,7 @@ extension on Translations {
 			case 'menu.reportsByArticle.sections.expenseTitle': return 'Top expense categories';
 			case 'menu.reportsByArticle.sections.incomeNameCol': return 'Income category';
 			case 'menu.reportsByArticle.sections.expenseNameCol': return 'Expense category';
+			case 'menu.reportsByArticle.titleYearReport': return 'Annual Income and Expenditure Report:';
 			case 'menu.article.name': return 'Name';
 			case 'menu.article.income': return 'Income';
 			case 'menu.article.expense': return 'Expense';

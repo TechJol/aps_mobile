@@ -1,5 +1,6 @@
 incomes: "Доходы"
 expenses: "Расходы"
+balance: "Баланс"
 account: "Счет"
 notAccount: "Нет счетов.."
 sum: "Сумма"
