@@ -228,15 +228,26 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
     required String currency, //  'KGS'
   }) {
     final Map<int, Decimal> totalsByReason = {};
+    final selectedYear = DateTime.now().year;
 
     for (final tx in transactions) {
       final txTypeOk = tx.transactionType == type;
-      final txMonthOk = DateTime.parse(tx.date!).month.toString() == month;
+      if (tx.date == null || tx.date!.isEmpty) continue;
+      DateTime parsedDate;
+      try {
+        parsedDate = DateTime.parse(tx.date!);
+      } catch (_) {
+        continue;
+      }
+      final txMonthOk = parsedDate.month.toString() == month;
+      final txYearOk = parsedDate.year == selectedYear;
       final txCurrOk =
           (_txCurrency(tx)?.toUpperCase() ?? '') == currency.toUpperCase();
       final hasReason = tx.incomeExpenseReason != null;
 
-      if (!(txTypeOk && txMonthOk && txCurrOk && hasReason)) continue;
+      if (!(txTypeOk && txMonthOk && txYearOk && txCurrOk && hasReason)) {
+        continue;
+      }
 
       final amount = Decimal.tryParse(tx.amount ?? '0') ?? Decimal.zero;
       final val = (type == 'expense') ? amount.abs() : amount;
