@@ -15,10 +15,10 @@ class AccountBalanceHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isNarrow = constraints.maxWidth < 360;
+        final balanceBlock = Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (isLoading)
@@ -28,9 +28,13 @@ class AccountBalanceHeader extends StatelessWidget {
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
             else
-              Text(
-                totalAmountText,
-                style: AppTextStyles.f24w600.copyWith(fontFamily: 'Inter'),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  totalAmountText,
+                  style: AppTextStyles.f20w600.copyWith(fontFamily: 'Inter'),
+                ),
               ),
             Text(
               t.account.totalBalances,
@@ -40,25 +44,47 @@ class AccountBalanceHeader extends StatelessWidget {
               ),
             ),
           ],
-        ),
-        OutlinedButton(
-          style: OutlinedButton.styleFrom(minimumSize: const Size(140, 48)),
+        );
+
+        final addButton = OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            minimumSize: const Size(0, 48),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          ),
           onPressed: onAddAccount,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 t.account.addAccount,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: AppTextStyles.f16w500.copyWith(
                   color: AppColors.blackColor,
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               const Icon(Icons.add, size: 20, color: AppColors.blackColor),
             ],
           ),
-        ),
-      ],
+        );
+
+        if (isNarrow) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [balanceBlock, const SizedBox(height: 12), addButton],
+          );
+        }
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(child: balanceBlock),
+            const SizedBox(width: 12),
+            Flexible(child: addButton),
+          ],
+        );
+      },
     );
   }
 }

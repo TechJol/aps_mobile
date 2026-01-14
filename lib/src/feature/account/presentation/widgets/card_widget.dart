@@ -17,16 +17,10 @@ class WavePainter extends CustomPainter {
       stops: [0.0, 1.0],
     );
 
-    final paint =
-        Paint()
-          ..shader = gradient.createShader(
-            Rect.fromLTWH(
-              0,
-              size.height * 0.15,
-              size.width,
-              size.height * 0.85,
-            ),
-          );
+    final paint = Paint()
+      ..shader = gradient.createShader(
+        Rect.fromLTWH(0, size.height * 0.15, size.width, size.height * 0.85),
+      );
 
     final path = Path();
     path.moveTo(0, size.height * 0.50);
@@ -48,11 +42,10 @@ class WavePainter extends CustomPainter {
 
     canvas.drawPath(path, paint);
 
-    final strokePaint =
-        Paint()
-          ..color = Colors.white.withOpacity(0.05)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2;
+    final strokePaint = Paint()
+      ..color = Colors.white.withOpacity(0.05)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
 
     canvas.drawPath(path, strokePaint);
   }
@@ -118,8 +111,8 @@ class CardWidget extends StatelessWidget {
                                 color: Colors.white,
                               ),
                             ),
-                            SizedBox(width: 10),
-                            Icon(
+                            10.w,
+                            const Icon(
                               Icons.arrow_forward_ios,
                               size: 17,
                               color: Colors.white,
@@ -131,26 +124,35 @@ class CardWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                price,
-                                style: AppTextStyles.f34w600.copyWith(
-                                  color: Colors.white,
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    price,
+                                    style: AppTextStyles.f20w600.copyWith(
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                office,
-                                style: AppTextStyles.f16w500.copyWith(
-                                  color: Colors.white,
+                                Text(
+                                  office,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTextStyles.f16w500.copyWith(
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
+                          12.w,
                           Container(
-                            width: 69,
+                            constraints: const BoxConstraints(minWidth: 56),
                             height: 31,
                             decoration: BoxDecoration(
                               color: AppColors.whiteColor.withOpacity(0.1),
@@ -159,6 +161,8 @@ class CardWidget extends StatelessWidget {
                             child: Center(
                               child: Text(
                                 currency ?? 'KGZ',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: AppTextStyles.f16w500.copyWith(
                                   color: AppColors.whiteColor,
                                 ),
