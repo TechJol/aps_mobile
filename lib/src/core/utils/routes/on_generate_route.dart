@@ -73,8 +73,8 @@ class RouteGenerator {
       case AppRoutes.incomeExpenseSummary:
         return CupertinoPageRoute(builder: (_) => IncomeExpenseSummaryPage());
 
-      case AppRoutes.monthlyReport:
-        return CupertinoPageRoute(builder: (_) => MonthlyReportPage());
+      // case AppRoutes.monthlyReport:
+      //   return CupertinoPageRoute(builder: (_) => MonthlyReportPage());
 
       // Settings
       case AppRoutes.articles:

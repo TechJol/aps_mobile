@@ -185,6 +185,8 @@ class _TranslationsMenuRu extends TranslationsMenuEn {
 	@override String get operationsByAccounts => 'По счетам';
 	@override String get reports => 'Отчеты';
 	@override String get reportsByArticles => 'Отчеты по статьям';
+	@override String get reportsByCounterparties => 'Отчеты по контрагентам';
+	@override String get otherReportsBuCounterparties => 'Детальные отчеты по контрагентам';
 	@override String get reportsIncomeExpenseSummary => 'Общее положение';
 	@override String get reportsMonthly => 'Месячный отчет по доходам и расходам';
 	@override String get reportsMetrics => 'Показатели';
@@ -852,6 +854,8 @@ extension on TranslationsRu {
 			case 'menu.operationsByAccounts': return 'По счетам';
 			case 'menu.reports': return 'Отчеты';
 			case 'menu.reportsByArticles': return 'Отчеты по статьям';
+			case 'menu.reportsByCounterparties': return 'Отчеты по контрагентам';
+			case 'menu.otherReportsBuCounterparties': return 'Детальные отчеты по контрагентам';
 			case 'menu.reportsIncomeExpenseSummary': return 'Общее положение';
 			case 'menu.reportsMonthly': return 'Месячный отчет по доходам и расходам';
 			case 'menu.reportsMetrics': return 'Показатели';

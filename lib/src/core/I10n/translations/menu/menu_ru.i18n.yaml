@@ -7,6 +7,8 @@ operationsByAccounts: "По счетам"
 
 reports: "Отчеты"
 reportsByArticles: "Отчеты по статьям"
+reportsByCounterparties: "Отчеты по контрагентам"
+otherReportsBuCounterparties: "Детальные отчеты по контрагентам"
 reportsIncomeExpenseSummary: "Общее положение"
 reportsMonthly: "Месячный отчет по доходам и расходам"
 reportsMetrics: "Показатели"

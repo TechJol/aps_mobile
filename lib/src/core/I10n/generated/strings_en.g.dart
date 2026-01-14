@@ -372,6 +372,12 @@ class TranslationsMenuEn {
 	/// en: 'Reports by articles'
 	String get reportsByArticles => 'Reports by articles';
 
+	/// en: 'Reports by counterparties'
+	String get reportsByCounterparties => 'Reports by counterparties';
+
+	/// en: 'Detailed reports by counterparties'
+	String get otherReportsBuCounterparties => 'Detailed reports by counterparties';
+
 	/// en: 'Overall position'
 	String get reportsIncomeExpenseSummary => 'Overall position';
 
@@ -1503,6 +1509,8 @@ extension on Translations {
 			case 'menu.operationsByAccounts': return 'By accounts';
 			case 'menu.reports': return 'Reports';
 			case 'menu.reportsByArticles': return 'Reports by articles';
+			case 'menu.reportsByCounterparties': return 'Reports by counterparties';
+			case 'menu.otherReportsBuCounterparties': return 'Detailed reports by counterparties';
 			case 'menu.reportsIncomeExpenseSummary': return 'Overall position';
 			case 'menu.reportsMonthly': return 'Monthly income & expense report';
 			case 'menu.reportsMetrics': return 'Metrics';

@@ -7,6 +7,8 @@ operationsByAccounts: "Эсептер боюнча"
 
 reports: "Отчеттор"
 reportsByArticles: "Беренелер боюнча отчеттор"
+reportsByCounterparties: "Контрагенттер боюнча отчеттор"
+otherReportsBuCounterparties: "Контрагенттер боюнча толук отчеттор"
 reportsIncomeExpenseSummary: "Жалпы абал"
 reportsMonthly: "Айлык киреше жана чыгым"
 reportsMetrics: "Көрсөткүчтөр"

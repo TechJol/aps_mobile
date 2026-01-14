@@ -38,8 +38,10 @@ class _MenuPageState extends State<MenuPage> {
 
     final reportsChildren = <String>[
       t.menu.metrics.yearlyReportTitle,
+      t.menu.reportsByCounterparties,
+      t.menu.otherReportsBuCounterparties,
+      // t.menu.reportsMonthly,
       t.menu.reportsIncomeExpenseSummary,
-      t.menu.reportsMonthly,
       t.menu.reportsMetrics,
     ];
 
@@ -117,10 +119,12 @@ class _MenuPageState extends State<MenuPage> {
               onChildTap: (value) {
                 if (value == t.menu.metrics.yearlyReportTitle) {
                   Navigator.pushNamed(context, AppRoutes.categoryReports);
-                } else if (value == t.menu.reportsIncomeExpenseSummary) {
+                }
+                // else if (value == t.menu.reportsMonthly) {
+                //   Navigator.pushNamed(context, AppRoutes.monthlyReport);
+                // }
+                else if (value == t.menu.reportsIncomeExpenseSummary) {
                   Navigator.pushNamed(context, AppRoutes.incomeExpenseSummary);
-                } else if (value == t.menu.reportsMonthly) {
-                  Navigator.pushNamed(context, AppRoutes.monthlyReport);
                 } else if (value == t.menu.reportsMetrics) {
                   Navigator.pushNamed(context, AppRoutes.metrics);
                 }

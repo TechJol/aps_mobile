@@ -185,6 +185,8 @@ class _TranslationsMenuKy extends TranslationsMenuEn {
 	@override String get operationsByAccounts => 'Эсептер боюнча';
 	@override String get reports => 'Отчеттор';
 	@override String get reportsByArticles => 'Беренелер боюнча отчеттор';
+	@override String get reportsByCounterparties => 'Контрагенттер боюнча отчеттор';
+	@override String get otherReportsBuCounterparties => 'Контрагенттер боюнча толук отчеттор';
 	@override String get reportsIncomeExpenseSummary => 'Жалпы абал';
 	@override String get reportsMonthly => 'Айлык киреше жана чыгым';
 	@override String get reportsMetrics => 'Көрсөткүчтөр';
@@ -852,6 +854,8 @@ extension on TranslationsKy {
 			case 'menu.operationsByAccounts': return 'Эсептер боюнча';
 			case 'menu.reports': return 'Отчеттор';
 			case 'menu.reportsByArticles': return 'Беренелер боюнча отчеттор';
+			case 'menu.reportsByCounterparties': return 'Контрагенттер боюнча отчеттор';
+			case 'menu.otherReportsBuCounterparties': return 'Контрагенттер боюнча толук отчеттор';
 			case 'menu.reportsIncomeExpenseSummary': return 'Жалпы абал';
 			case 'menu.reportsMonthly': return 'Айлык киреше жана чыгым';
 			case 'menu.reportsMetrics': return 'Көрсөткүчтөр';
