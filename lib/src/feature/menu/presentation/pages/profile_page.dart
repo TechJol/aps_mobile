@@ -56,7 +56,6 @@ class ProfilePage extends StatelessWidget {
       children: [
         const SizedBox(height: 120),
 
-        // Avatar and white background
         Center(
           child: Stack(
             alignment: Alignment.center,
