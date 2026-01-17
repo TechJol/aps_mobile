@@ -100,6 +100,15 @@ reportsByArticle:
   filenamePrefix: "Отчет_по_статьям_месяц_"
   yearLabel: "Год:"
   chartTitle: "График доходов и расходов"
+
+reportsByCounterpartiesPage:
+  title: "Годовой отчет по контрагентам"
+  yearLabel: "Год:"
+  typeLabel: "Тип контрагента"
+  incomeTitle: "Доходы по контрагентам"
+  expenseTitle: "Расходы по контрагентам"
+  filenamePrefix: "Отчет_по_контрагентам_"
+  allTypes: "Все"
   markers:
     income: "--- ДОХОД ---"
     expense: "--- РАСХОД ---"

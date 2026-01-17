@@ -433,6 +433,7 @@ class TranslationsMenuEn {
 	late final TranslationsMenuCommonEn common = TranslationsMenuCommonEn.internal(_root);
 	late final TranslationsMenuMonthsEn months = TranslationsMenuMonthsEn.internal(_root);
 	late final TranslationsMenuReportsByArticleEn reportsByArticle = TranslationsMenuReportsByArticleEn.internal(_root);
+	late final TranslationsMenuReportsByCounterpartiesPageEn reportsByCounterpartiesPage = TranslationsMenuReportsByCounterpartiesPageEn.internal(_root);
 	late final TranslationsMenuArticleEn article = TranslationsMenuArticleEn.internal(_root);
 	late final TranslationsMenuIncomeExpenseSummaryEn incomeExpenseSummary = TranslationsMenuIncomeExpenseSummaryEn.internal(_root);
 
@@ -932,9 +933,39 @@ class TranslationsMenuReportsByArticleEn {
 
 	/// en: 'Income and expense chart'
 	String get chartTitle => 'Income and expense chart';
+}
 
-	late final TranslationsMenuReportsByArticleMarkersEn markers = TranslationsMenuReportsByArticleMarkersEn.internal(_root);
-	late final TranslationsMenuReportsByArticleSectionsEn sections = TranslationsMenuReportsByArticleSectionsEn.internal(_root);
+// Path: menu.reportsByCounterpartiesPage
+class TranslationsMenuReportsByCounterpartiesPageEn {
+	TranslationsMenuReportsByCounterpartiesPageEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Annual report by counterparties'
+	String get title => 'Annual report by counterparties';
+
+	/// en: 'Year:'
+	String get yearLabel => 'Year:';
+
+	/// en: 'Counterparty type'
+	String get typeLabel => 'Counterparty type';
+
+	/// en: 'Income by counterparties'
+	String get incomeTitle => 'Income by counterparties';
+
+	/// en: 'Expenses by counterparties'
+	String get expenseTitle => 'Expenses by counterparties';
+
+	/// en: 'Report_by_counterparties_'
+	String get filenamePrefix => 'Report_by_counterparties_';
+
+	/// en: 'All'
+	String get allTypes => 'All';
+
+	late final TranslationsMenuReportsByCounterpartiesPageMarkersEn markers = TranslationsMenuReportsByCounterpartiesPageMarkersEn.internal(_root);
+	late final TranslationsMenuReportsByCounterpartiesPageSectionsEn sections = TranslationsMenuReportsByCounterpartiesPageSectionsEn.internal(_root);
 
 	/// en: 'Annual Income and Expenditure Report'
 	String get titleYearReport => 'Annual Income and Expenditure Report';
@@ -1259,9 +1290,9 @@ class TranslationsAccountAccountErrorsEn {
 	String get accountAlreadyExists => 'An account with this name already exists';
 }
 
-// Path: menu.reportsByArticle.markers
-class TranslationsMenuReportsByArticleMarkersEn {
-	TranslationsMenuReportsByArticleMarkersEn.internal(this._root);
+// Path: menu.reportsByCounterpartiesPage.markers
+class TranslationsMenuReportsByCounterpartiesPageMarkersEn {
+	TranslationsMenuReportsByCounterpartiesPageMarkersEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -1274,9 +1305,9 @@ class TranslationsMenuReportsByArticleMarkersEn {
 	String get expense => '--- EXPENSE ---';
 }
 
-// Path: menu.reportsByArticle.sections
-class TranslationsMenuReportsByArticleSectionsEn {
-	TranslationsMenuReportsByArticleSectionsEn.internal(this._root);
+// Path: menu.reportsByCounterpartiesPage.sections
+class TranslationsMenuReportsByCounterpartiesPageSectionsEn {
+	TranslationsMenuReportsByCounterpartiesPageSectionsEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -1586,13 +1617,20 @@ extension on Translations {
 			case 'menu.reportsByArticle.filenamePrefix': return 'Report_by_articles_month_';
 			case 'menu.reportsByArticle.yearLabel': return 'Year:';
 			case 'menu.reportsByArticle.chartTitle': return 'Income and expense chart';
-			case 'menu.reportsByArticle.markers.income': return '--- INCOME ---';
-			case 'menu.reportsByArticle.markers.expense': return '--- EXPENSE ---';
-			case 'menu.reportsByArticle.sections.incomeTitle': return 'Top income categories';
-			case 'menu.reportsByArticle.sections.expenseTitle': return 'Top expense categories';
-			case 'menu.reportsByArticle.sections.incomeNameCol': return 'Income category';
-			case 'menu.reportsByArticle.sections.expenseNameCol': return 'Expense category';
-			case 'menu.reportsByArticle.titleYearReport': return 'Annual Income and Expenditure Report';
+			case 'menu.reportsByCounterpartiesPage.title': return 'Annual report by counterparties';
+			case 'menu.reportsByCounterpartiesPage.yearLabel': return 'Year:';
+			case 'menu.reportsByCounterpartiesPage.typeLabel': return 'Counterparty type';
+			case 'menu.reportsByCounterpartiesPage.incomeTitle': return 'Income by counterparties';
+			case 'menu.reportsByCounterpartiesPage.expenseTitle': return 'Expenses by counterparties';
+			case 'menu.reportsByCounterpartiesPage.filenamePrefix': return 'Report_by_counterparties_';
+			case 'menu.reportsByCounterpartiesPage.allTypes': return 'All';
+			case 'menu.reportsByCounterpartiesPage.markers.income': return '--- INCOME ---';
+			case 'menu.reportsByCounterpartiesPage.markers.expense': return '--- EXPENSE ---';
+			case 'menu.reportsByCounterpartiesPage.sections.incomeTitle': return 'Top income categories';
+			case 'menu.reportsByCounterpartiesPage.sections.expenseTitle': return 'Top expense categories';
+			case 'menu.reportsByCounterpartiesPage.sections.incomeNameCol': return 'Income category';
+			case 'menu.reportsByCounterpartiesPage.sections.expenseNameCol': return 'Expense category';
+			case 'menu.reportsByCounterpartiesPage.titleYearReport': return 'Annual Income and Expenditure Report';
 			case 'menu.article.name': return 'Name';
 			case 'menu.article.income': return 'Income';
 			case 'menu.article.expense': return 'Expense';

@@ -100,6 +100,15 @@ reportsByArticle:
   filenamePrefix: "Беренелер_отчету_ай_"
   yearLabel: "Жыл:"
   chartTitle: "Киреше жана чыгаша графиги"
+
+reportsByCounterpartiesPage:
+  title: "Контрагенттер боюнча жылдык отчет"
+  yearLabel: "Жыл:"
+  typeLabel: "Контрагенттин түрү"
+  incomeTitle: "Контрагенттер боюнча киреше"
+  expenseTitle: "Контрагенттер боюнча чыгаша"
+  filenamePrefix: "Контрагенттер_отчету_"
+  allTypes: "Баары"
   markers:
     income: "--- КИРЕШЕ ---"
     expense: "--- ЧЫГЫМ ---"

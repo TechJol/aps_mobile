@@ -111,7 +111,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                       _localService.printReportAsPdfSections(
                         context: context,
                         title:
-                            '${t.menu.reportsByArticle.titleYearReport} $selectedYear',
+                            '${t.menu.reportsByArticle.filenamePrefix} $selectedYear',
                         sections: sections,
                       );
                     },
@@ -119,7 +119,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                   20.h,
                   TitleSection(
                     title:
-                        '${t.menu.reportsByArticle.titleYearReport}: $selectedYear',
+                        '${t.menu.reportsByCounterpartiesPage.titleYearReport}: $selectedYear',
                   ),
                   20.h,
                   Row(
@@ -217,8 +217,10 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                           20.h,
                           DataTableSection(
                             data: incomeData,
-                            nameColumnTitle:
-                                t.menu.reportsByArticle.sections.incomeNameCol,
+                            nameColumnTitle: t
+                                .menu
+                                .reportsByCounterpartiesPage
+                                .titleYearReport,
                           ),
                           40.h,
                         ],
@@ -230,8 +232,10 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                           20.h,
                           DataTableSection(
                             data: expenseData,
-                            nameColumnTitle:
-                                t.menu.reportsByArticle.sections.expenseNameCol,
+                            nameColumnTitle: t
+                                .menu
+                                .reportsByCounterpartiesPage
+                                .titleYearReport,
                           ),
                         ],
                       ],
@@ -384,7 +388,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
     );
 
     final totalsSection = PdfTableSection(
-      title: t.menu.reportsByArticle.titleYearReport,
+      title: t.menu.reportsByCounterpartiesPage.titleYearReport,
       headers: [t.menu.common.title, t.menu.common.amountKgs],
       rows: [
         [t.income.incomes, totals.income],
@@ -416,13 +420,13 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
     );
 
     final incomeSection = PdfTableSection(
-      title: t.menu.reportsByArticle.sections.incomeTitle,
+      title: t.menu.reportsByCounterpartiesPage.sections.incomeTitle,
       headers: monthHeaders,
       rows: incomeRows,
     );
 
     final expenseSection = PdfTableSection(
-      title: t.menu.reportsByArticle.sections.expenseTitle,
+      title: t.menu.reportsByCounterpartiesPage.sections.expenseTitle,
       headers: monthHeaders,
       rows: expenseRows,
     );

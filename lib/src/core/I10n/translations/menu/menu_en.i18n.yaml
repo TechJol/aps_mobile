@@ -100,6 +100,15 @@ reportsByArticle:
   filenamePrefix: "Report_by_articles_month_"
   yearLabel: "Year:"
   chartTitle: "Income and expense chart"
+
+reportsByCounterpartiesPage:
+  title: "Annual report by counterparties"
+  yearLabel: "Year:"
+  typeLabel: "Counterparty type"
+  incomeTitle: "Income by counterparties"
+  expenseTitle: "Expenses by counterparties"
+  filenamePrefix: "Report_by_counterparties_"
+  allTypes: "All"
   markers:
     income: "--- INCOME ---"
     expense: "--- EXPENSE ---"

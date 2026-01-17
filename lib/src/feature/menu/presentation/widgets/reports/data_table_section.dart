@@ -31,7 +31,7 @@ class DataTableSection extends StatelessWidget {
     const pctColW = 110.0;
     const cellHPad = 16.0;
     const cellVPad = 14.0;
-    const gridColor = Color(0xFFE6E6E6);
+    const gridColor = Color(0xFFC9C7C7);
 
     final maxNameTextW = data.fold<double>(80.0, (maxW, row) {
       final name = (row['name'] ?? '').toString();

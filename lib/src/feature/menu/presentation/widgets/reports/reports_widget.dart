@@ -6,3 +6,4 @@ export 'title_section.dart';
 export 'data_table_section.dart';
 export 'months_tabs.dart';
 export 'legend_section.dart';
+export 'counterparties_table_section.dart';
