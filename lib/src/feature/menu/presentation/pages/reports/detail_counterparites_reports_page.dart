@@ -14,6 +14,6 @@ class _DetailCounterparitesReportsPageState
     extends State<DetailCounterparitesReportsPage> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold();
   }
 }

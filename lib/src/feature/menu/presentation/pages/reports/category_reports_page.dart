@@ -215,12 +215,19 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                           20.h,
                           LegendSection(data: incomeData),
                           20.h,
-                          DataTableSection(
-                            data: incomeData,
-                            nameColumnTitle: t
-                                .menu
-                                .reportsByCounterpartiesPage
-                                .titleYearReport,
+                          ReportTableWidget(
+                            title: '',
+                            headers: [
+                              t.menu.common.numberSign,
+                              t
+                                  .menu
+                                  .reportsByCounterpartiesPage
+                                  .sections
+                                  .incomeNameCol,
+                              t.menu.common.amountKgs,
+                            ],
+                            rows: _buildReportTableRows(incomeData),
+                            columnWidths: const [56, 220, 120],
                           ),
                           40.h,
                         ],
@@ -230,12 +237,19 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                           20.h,
                           LegendSection(data: expenseData),
                           20.h,
-                          DataTableSection(
-                            data: expenseData,
-                            nameColumnTitle: t
-                                .menu
-                                .reportsByCounterpartiesPage
-                                .titleYearReport,
+                          ReportTableWidget(
+                            title: '',
+                            headers: [
+                              t.menu.common.numberSign,
+                              t
+                                  .menu
+                                  .reportsByCounterpartiesPage
+                                  .sections
+                                  .expenseNameCol,
+                              t.menu.common.amountKgs,
+                            ],
+                            rows: _buildReportTableRows(expenseData),
+                            columnWidths: const [56, 220, 120],
                           ),
                         ],
                       ],
@@ -322,6 +336,17 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
         'amount': value.toString(),
         'percent': percent,
       };
+    }).toList();
+  }
+
+  List<List<String>> _buildReportTableRows(List<Map<String, dynamic>> data) {
+    return data.asMap().entries.map((entry) {
+      final row = entry.value;
+      return [
+        '${entry.key + 1}',
+        (row['name'] ?? '').toString(),
+        (row['amount'] ?? '').toString(),
+      ];
     }).toList();
   }
 
