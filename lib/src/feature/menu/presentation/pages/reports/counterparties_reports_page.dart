@@ -210,18 +210,20 @@ class _CounterpartiesReportsPageState extends State<CounterpartiesReportsPage> {
                   },
                 ),
                 24.h,
-                CounterpartiesTableSection(
+                ReportTableWidget(
                   title: t.menu.reportsByCounterpartiesPage.incomeTitle,
                   headers: headers,
                   rows: incomeRows,
-                  headerColor: const Color(0xFFD7EEE2),
+                  headerColor: AppColors.primary200Color,
+                  columnWidths: _counterpartyTableWidths(),
                 ),
                 32.h,
-                CounterpartiesTableSection(
+                ReportTableWidget(
                   title: t.menu.reportsByCounterpartiesPage.expenseTitle,
                   headers: headers,
                   rows: expenseRows,
-                  headerColor: const Color(0xFFF8D8DC),
+                  headerColor: AppColors.primary200Color,
+                  columnWidths: _counterpartyTableWidths(),
                 ),
               ],
             ),
@@ -339,4 +341,23 @@ class _CounterpartiesReportsPageState extends State<CounterpartiesReportsPage> {
     t.menu.months.november,
     t.menu.months.december,
   ].map((m) => m.length <= 3 ? m : m.substring(0, 3)).toList();
+
+  List<double> _counterpartyTableWidths() {
+    return const [
+      180, // counterparty
+      70,
+      70,
+      70,
+      70,
+      70,
+      70,
+      70,
+      70,
+      70,
+      70,
+      70,
+      70,
+      90, // total
+    ];
+  }
 }

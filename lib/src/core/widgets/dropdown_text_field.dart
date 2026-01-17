@@ -25,9 +25,8 @@ class DropDownFormField extends StatelessWidget {
       onChanged: onChanged,
       items: (f, cs) => items,
 
-      dropdownBuilder:
-          (context, selectedItem) =>
-              Text(selectedItem ?? '', style: AppTextStyles.f16w500),
+      dropdownBuilder: (context, selectedItem) =>
+          Text(selectedItem ?? '', style: AppTextStyles.f16w500),
 
       suffixProps: DropdownSuffixProps(
         dropdownButtonProps: DropdownButtonProps(
@@ -42,11 +41,18 @@ class DropDownFormField extends StatelessWidget {
           floatingLabelBehavior: FloatingLabelBehavior.never,
           fillColor: AppColors.backroundColor,
           filled: true,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: const BorderSide(width: 1, color: AppColors.blackColor),
+          ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(25),
-            borderSide: const BorderSide(color: AppColors.backroundColor),
+            borderSide: const BorderSide(
+              width: 0.5,
+              color: AppColors.blackColor,
+            ),
           ),
+
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(25),
             borderSide: const BorderSide(
@@ -71,30 +77,34 @@ class DropDownFormField extends StatelessWidget {
           splashColor: AppColors.primaryColor.withOpacity(0.3),
         ),
 
-        itemBuilder: (
-          BuildContext context,
-          String item,
-          bool isSelected,
-          bool isHovered,
-        ) {
-          return Container(
-            decoration: BoxDecoration(
-              color:
-                  isSelected
+        itemBuilder:
+            (
+              BuildContext context,
+              String item,
+              bool isSelected,
+              bool isHovered,
+            ) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: isSelected
                       ? AppColors.primary200Color.withOpacity(0.5)
                       : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-            child: Text(
-              item,
-              style: AppTextStyles.f16w500.copyWith(
-                color:
-                    isSelected ? AppColors.primaryColor : AppColors.blackColor,
-              ),
-            ),
-          );
-        },
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 14,
+                ),
+                child: Text(
+                  item,
+                  style: AppTextStyles.f16w500.copyWith(
+                    color: isSelected
+                        ? AppColors.primaryColor
+                        : AppColors.blackColor,
+                  ),
+                ),
+              );
+            },
 
         listViewProps: const ListViewProps(
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
