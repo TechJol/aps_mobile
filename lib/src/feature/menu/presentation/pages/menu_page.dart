@@ -120,6 +120,15 @@ class _MenuPageState extends State<MenuPage> {
                 if (value == t.menu.metrics.yearlyReportTitle) {
                   Navigator.pushNamed(context, AppRoutes.categoryReports);
                 }
+                if (value == t.menu.reportsByCounterparties) {
+                  Navigator.pushNamed(context, AppRoutes.counterpartiesReports);
+                }
+                if (value == t.menu.otherReportsBuCounterparties) {
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.detailCounterparitesReports,
+                  );
+                }
                 // else if (value == t.menu.reportsMonthly) {
                 //   Navigator.pushNamed(context, AppRoutes.monthlyReport);
                 // }

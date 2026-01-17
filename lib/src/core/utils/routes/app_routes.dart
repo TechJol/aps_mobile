@@ -23,6 +23,8 @@ class AppRoutes {
   static const transactions = 'transactions';
   static const forCounterparties = 'forCounterparties';
   static const menuAccounts = 'menuAccounts';
+  static const counterpartiesReports = 'counterpartiesReports';
+  static const detailCounterparitesReports = 'detailCounterparitesReports';
 
   static const categoryReports = 'categoryReports';
   static const metrics = 'metrics';

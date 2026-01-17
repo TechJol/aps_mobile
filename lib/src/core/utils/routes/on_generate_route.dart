@@ -76,6 +76,14 @@ class RouteGenerator {
       // case AppRoutes.monthlyReport:
       //   return CupertinoPageRoute(builder: (_) => MonthlyReportPage());
 
+      case AppRoutes.counterpartiesReports:
+        return CupertinoPageRoute(builder: (_) => CounterpartiesReportsPage());
+
+      case AppRoutes.detailCounterparitesReports:
+        return CupertinoPageRoute(
+          builder: (_) => DetailCounterparitesReportsPage(),
+        );
+
       // Settings
       case AppRoutes.articles:
         return CupertinoPageRoute(builder: (_) => ArticlesPage());
