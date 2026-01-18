@@ -9,6 +9,7 @@ class ReportTableWidget extends StatelessWidget {
     required this.rows,
     required this.columnWidths,
     this.headerColor = AppColors.primaryColorLight,
+    this.headerTextColor = Colors.white,
     this.borderColor = const Color(0xFFC9C7C7),
   });
 
@@ -17,6 +18,7 @@ class ReportTableWidget extends StatelessWidget {
   final List<List<String>> rows;
   final List<double> columnWidths;
   final Color headerColor;
+  final Color headerTextColor;
   final Color borderColor;
 
   @override
@@ -78,7 +80,7 @@ class ReportTableWidget extends StatelessWidget {
 
   Widget _cell(String text, {required double width, bool isHeader = false}) {
     final style = isHeader
-        ? const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)
+        ? TextStyle(color: headerTextColor, fontWeight: FontWeight.w700)
         : AppTextStyles.f14w500;
 
     return SizedBox(

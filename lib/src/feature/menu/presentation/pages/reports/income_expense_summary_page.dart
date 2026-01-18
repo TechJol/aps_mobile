@@ -107,12 +107,11 @@ class IncomeExpenseSummaryPage extends StatelessWidget {
                     }
 
                     // баланс в KGS
-                    final balanceKgz =
-                        (cur == 'KGS')
-                            ? balance // <- для KGS показываем сам баланс
-                            : (rateDec == Decimal.zero
-                                ? null
-                                : (balance * rateDec));
+                    final balanceKgz = (cur == 'KGS')
+                        ? balance // <- для KGS показываем сам баланс
+                        : (rateDec == Decimal.zero
+                              ? null
+                              : (balance * rateDec));
 
                     rows.add(
                       RowData(
@@ -187,104 +186,30 @@ class DataTableSectionA extends StatelessWidget {
   Widget build(BuildContext context) {
     if (rows.isEmpty) return const SizedBox.shrink();
 
-    const curW = 100.0;
-    const incW = 140.0;
-    const expW = 140.0;
-    const balW = 140.0;
-    const balKGZW = 160.0;
-    const rateW = 120.0;
+    final headers = [
+      t.menu.incomeExpenseSummary.currency,
+      t.menu.incomeExpenseSummary.income,
+      t.menu.incomeExpenseSummary.expense,
+      t.menu.incomeExpenseSummary.balance,
+      t.menu.incomeExpenseSummary.balanceKgz,
+      t.menu.incomeExpenseSummary.exchangeRate,
+    ];
 
-    const cellHPad = 16.0;
-    const gridColor = Color(0xFFE6E6E6);
+    final tableRows = rows.map((r) {
+      return [
+        r.currency,
+        r.income.toString(),
+        r.expense.toString(),
+        r.balance.toString(),
+        r.balanceKgz?.toString() ?? '-',
+        r.currency == 'KGS' ? '-' : r.rate.toString(),
+      ];
+    }).toList();
 
-    final totalFixedW =
-        curW + incW + expW + balW + balKGZW + rateW + cellHPad * 2 * 6;
-
-    TableRow header() => TableRow(
-      decoration: const BoxDecoration(color: AppColors.primaryColorLight),
-      children: [
-        _cell(
-          t.menu.incomeExpenseSummary.currency,
-          isHeader: true,
-          width: curW,
-        ),
-        _cell(t.menu.incomeExpenseSummary.income, isHeader: true, width: incW),
-        _cell(t.menu.incomeExpenseSummary.expense, isHeader: true, width: expW),
-        _cell(t.menu.incomeExpenseSummary.balance, isHeader: true, width: balW),
-        _cell(
-          t.menu.incomeExpenseSummary.balanceKgz,
-          isHeader: true,
-          width: balKGZW,
-        ),
-        _cell(
-          t.menu.incomeExpenseSummary.exchangeRate,
-          isHeader: true,
-          width: rateW,
-        ),
-      ],
-    );
-
-    List<TableRow> dataRows() =>
-        rows.map((r) {
-          return TableRow(
-            children: [
-              _cell(r.currency, width: curW),
-              _cell(r.income.toString(), width: incW),
-              _cell(r.expense.toString(), width: expW),
-              _cell(r.balance.toString(), width: balW),
-              _cell(r.balanceKgz?.toString() ?? '-', width: balKGZW),
-              _cell(
-                r.currency == 'KGS' ? '-' : r.rate.toString(),
-                width: rateW,
-              ),
-            ],
-          );
-        }).toList();
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final screenW = constraints.maxWidth;
-        final tableMinWidth = totalFixedW < screenW ? screenW : totalFixedW;
-
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minWidth: tableMinWidth),
-            child: Table(
-              border: TableBorder.all(color: gridColor, width: 1),
-              columnWidths: const {
-                0: FixedColumnWidth(curW),
-                1: FixedColumnWidth(incW),
-                2: FixedColumnWidth(expW),
-                3: FixedColumnWidth(balW),
-                4: FixedColumnWidth(balKGZW),
-                5: FixedColumnWidth(rateW),
-              },
-              children: [header(), ...dataRows()],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _cell(String text, {required double width, bool isHeader = false}) {
-    final style =
-        isHeader
-            ? const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)
-            : AppTextStyles.f16w500;
-
-    return SizedBox(
-      width: width,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
-        child: Text(
-          text,
-          style: style,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
+    return ReportTableWidget(
+      headers: headers,
+      rows: tableRows,
+      columnWidths: const [100, 140, 140, 140, 160, 120],
     );
   }
 }

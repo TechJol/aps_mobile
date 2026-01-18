@@ -69,15 +69,14 @@ class _MetricsPageState extends State<MetricsPage> {
                           t.menu.metrics.netIncomeKgz,
                         ];
 
-                        final rows =
-                            yearlyData.map((row) {
-                              return [
-                                row['year'].toString(),
-                                row['income'].toString(),
-                                row['expense'].toString(),
-                                row['balance'].toString(),
-                              ];
-                            }).toList();
+                        final rows = yearlyData.map((row) {
+                          return [
+                            row['year'].toString(),
+                            row['income'].toString(),
+                            row['expense'].toString(),
+                            row['balance'].toString(),
+                          ];
+                        }).toList();
 
                         LocalService().printReportAsPdf(
                           context: context,
@@ -97,15 +96,14 @@ class _MetricsPageState extends State<MetricsPage> {
                           t.menu.metrics.expenseKgz,
                           t.menu.metrics.netIncomeKgz,
                         ];
-                        final rows =
-                            yearlyData.map((row) {
-                              return [
-                                row['year'].toString(),
-                                row['income'].toString(),
-                                row['expense'].toString(),
-                                row['balance'].toString(),
-                              ];
-                            }).toList();
+                        final rows = yearlyData.map((row) {
+                          return [
+                            row['year'].toString(),
+                            row['income'].toString(),
+                            row['expense'].toString(),
+                            row['balance'].toString(),
+                          ];
+                        }).toList();
 
                         LocalService().exportToExcelGeneric(
                           fileName: t.menu.metrics.yearlyReportFilename,
@@ -153,86 +151,26 @@ class _MetricsPageState extends State<MetricsPage> {
   Widget _buildMetrics() {
     if (yearlyData.isEmpty) return const SizedBox.shrink();
 
-    const yearW = 100.0;
-    const incomeW = 160.0;
-    const expenseW = 160.0;
-    const balanceW = 180.0;
+    final headers = [
+      t.menu.metrics.year,
+      t.menu.metrics.incomeKgz,
+      t.menu.metrics.expenseKgz,
+      t.menu.metrics.netIncomeKgz,
+    ];
 
-    const gridColor = Color(0xFFE6E6E6);
+    final rows = yearlyData.map((row) {
+      return [
+        row['year'].toString(),
+        row['income'].toString(),
+        row['expense'].toString(),
+        row['balance'].toString(),
+      ];
+    }).toList();
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final totalW = yearW + incomeW + expenseW + balanceW + 16 * 2 * 4;
-        final minWidth =
-            totalW < constraints.maxWidth ? constraints.maxWidth : totalW;
-
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minWidth: minWidth),
-            child: Table(
-              border: TableBorder.all(color: gridColor, width: 1),
-              columnWidths: const {
-                0: FixedColumnWidth(yearW),
-                1: FixedColumnWidth(incomeW),
-                2: FixedColumnWidth(expenseW),
-                3: FixedColumnWidth(balanceW),
-              },
-              children: [
-                TableRow(
-                  decoration: const BoxDecoration(
-                    color: AppColors.primaryColorLight,
-                  ),
-                  children: [
-                    _cell(t.menu.metrics.year, isHeader: true),
-                    _cell(t.menu.metrics.incomeKgz, isHeader: true),
-                    _cell(t.menu.metrics.expenseKgz, isHeader: true),
-                    _cell(t.menu.metrics.netIncomeKgz, isHeader: true),
-                  ],
-                ),
-                ...yearlyData.map((row) {
-                  return TableRow(
-                    children: [
-                      _cell(row['year'].toString()),
-                      _cell(
-                        row['income'].toString(),
-                        color: AppColors.greenColor,
-                      ),
-                      _cell(
-                        row['expense'].toString(),
-                        color: AppColors.redColor,
-                      ),
-                      _cell(
-                        row['balance'].toString(),
-                        color: AppColors.greenColor,
-                      ),
-                    ],
-                  );
-                }),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _cell(String text, {bool isHeader = false, Color? color}) {
-    final style =
-        isHeader
-            ? const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)
-            : AppTextStyles.f16w500.copyWith(
-              color: color ?? AppColors.blackColor,
-            );
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
-      child: Text(
-        text,
-        style: style,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
+    return ReportTableWidget(
+      headers: headers,
+      rows: rows,
+      columnWidths: const [100, 160, 160, 180],
     );
   }
 
@@ -240,21 +178,22 @@ class _MetricsPageState extends State<MetricsPage> {
     const double barWidth = 170;
     const double groupSpacing = 20;
 
-    final List<String> years =
-        yearlyData.map((e) => e['year'].toString()).toList();
-    final List<double> values =
-        yearlyData
-            .map(
-              (e) =>
-                  (Decimal.tryParse(e['balance'].toString()) ?? Decimal.zero)
-                      .toDouble(),
-            )
-            .toList();
+    final List<String> years = yearlyData
+        .map((e) => e['year'].toString())
+        .toList();
+    final List<double> values = yearlyData
+        .map(
+          (e) => (Decimal.tryParse(e['balance'].toString()) ?? Decimal.zero)
+              .toDouble(),
+        )
+        .toList();
 
-    final double rawMax =
-        values.isNotEmpty ? values.reduce((a, b) => a > b ? a : b) : 0;
-    final double rawMin =
-        values.isNotEmpty ? values.reduce((a, b) => a < b ? a : b) : 0;
+    final double rawMax = values.isNotEmpty
+        ? values.reduce((a, b) => a > b ? a : b)
+        : 0;
+    final double rawMin = values.isNotEmpty
+        ? values.reduce((a, b) => a < b ? a : b)
+        : 0;
     final double niceMax = _niceCeil((rawMax.abs()) * 1.15);
     final double niceMin = rawMin < 0 ? -_niceCeil((rawMin.abs()) * 1.15) : 0;
     final double axisSpan = max(niceMax, niceMin.abs());
@@ -298,8 +237,8 @@ class _MetricsPageState extends State<MetricsPage> {
               show: true,
               drawVerticalLine: false,
               horizontalInterval: tickStep,
-              getDrawingHorizontalLine:
-                  (_) => const FlLine(color: Color(0xFFEAEAEA), strokeWidth: 1),
+              getDrawingHorizontalLine: (_) =>
+                  const FlLine(color: Color(0xFFEAEAEA), strokeWidth: 1),
             ),
             titlesData: FlTitlesData(
               bottomTitles: AxisTitles(
@@ -351,9 +290,8 @@ class _MetricsPageState extends State<MetricsPage> {
     final raw = maxValue / targetTicks;
     final exp = (log(raw) / ln10).floor();
     final base = pow(10, exp).toDouble();
-    final candidates =
-        [1, 2, 5, 10].map((m) => m * base).toList()
-          ..sort((a, b) => (a - raw).abs().compareTo((b - raw).abs()));
+    final candidates = [1, 2, 5, 10].map((m) => m * base).toList()
+      ..sort((a, b) => (a - raw).abs().compareTo((b - raw).abs()));
     return candidates.first.toDouble();
   }
 
