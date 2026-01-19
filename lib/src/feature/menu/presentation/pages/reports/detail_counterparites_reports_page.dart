@@ -25,10 +25,24 @@ class _DetailCounterparitesReportsPageState
   String? _selectedPartnerName;
 
   static const String _kgs = 'KGS';
+  List<AllTransactionsModel> _transactions = [];
+  List<PartnersModel> _partners = [];
+  List<PartnerTypesModel> _types = [];
+  bool _hasData = false;
 
   @override
   void initState() {
     super.initState();
+    final currentState = context.read<MenuCubit>().state;
+    if (currentState is MenuTransactionsWithAccountsSuccess) {
+      _transactions = currentState.transactions;
+      _partners = currentState.partners;
+      _types = currentState.partnerTypes ?? [];
+      _hasData = true;
+    } else if (currentState is MenuPartnerDataSuccess) {
+      _partners = currentState.partners ?? _partners;
+      _types = currentState.partnerTypes ?? _types;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final menuCubit = context.read<MenuCubit>();
       menuCubit.getTransactionsWithAccounts(force: true);
@@ -50,13 +64,23 @@ class _DetailCounterparitesReportsPageState
               current is MenuPartnerDataSuccess;
         },
         builder: (context, state) {
-          if (state is! MenuTransactionsWithAccountsSuccess) {
+          if (state is MenuTransactionsWithAccountsSuccess) {
+            _transactions = state.transactions;
+            _partners = state.partners;
+            _types = state.partnerTypes ?? _types;
+            _hasData = true;
+          } else if (state is MenuPartnerDataSuccess) {
+            _partners = state.partners ?? _partners;
+            _types = state.partnerTypes ?? _types;
+          }
+
+          if (!_hasData) {
             return const SizedBox.shrink();
           }
 
-          final partners = state.partners;
-          final types = state.partnerTypes ?? [];
-          final years = _availableYears(state.transactions);
+          final partners = _partners;
+          final types = _types;
+          final years = _availableYears(_transactions);
 
           final selectedYear =
               _selectedYear ?? (years.isNotEmpty ? years.first : null);
@@ -80,7 +104,7 @@ class _DetailCounterparitesReportsPageState
           final reportData = (selectedYear == null || partnerId == null)
               ? _PartnerReport.empty()
               : _buildPartnerReport(
-                  transactions: state.transactions,
+                  transactions: _transactions,
                   partnerId: partnerId,
                   year: selectedYear,
                   currency: _kgs,
