@@ -119,7 +119,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                   20.h,
                   TitleSection(
                     title:
-                        '${t.menu.reportsByCounterpartiesPage.titleYearReport}: $selectedYear',
+                        '${t.menu.reportsByCounterpartyDetail.titleYearReport}: $selectedYear',
                   ),
                   20.h,
                   Row(
@@ -221,7 +221,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                               t.menu.common.numberSign,
                               t
                                   .menu
-                                  .reportsByCounterpartiesPage
+                                  .reportsByCounterpartyDetail
                                   .sections
                                   .incomeNameCol,
                               t.menu.common.amountKgs,
@@ -243,7 +243,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
                               t.menu.common.numberSign,
                               t
                                   .menu
-                                  .reportsByCounterpartiesPage
+                                  .reportsByCounterpartyDetail
                                   .sections
                                   .expenseNameCol,
                               t.menu.common.amountKgs,
@@ -413,7 +413,7 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
     );
 
     final totalsSection = PdfTableSection(
-      title: t.menu.reportsByCounterpartiesPage.titleYearReport,
+      title: t.menu.reportsByCounterpartyDetail.titleYearReport,
       headers: [t.menu.common.title, t.menu.common.amountKgs],
       rows: [
         [t.income.incomes, totals.income],
@@ -445,13 +445,13 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
     );
 
     final incomeSection = PdfTableSection(
-      title: t.menu.reportsByCounterpartiesPage.sections.incomeTitle,
+      title: t.menu.reportsByCounterpartyDetail.sections.incomeTitle,
       headers: monthHeaders,
       rows: incomeRows,
     );
 
     final expenseSection = PdfTableSection(
-      title: t.menu.reportsByCounterpartiesPage.sections.expenseTitle,
+      title: t.menu.reportsByCounterpartyDetail.sections.expenseTitle,
       headers: monthHeaders,
       rows: expenseRows,
     );

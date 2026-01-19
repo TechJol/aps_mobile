@@ -109,6 +109,17 @@ reportsByCounterpartiesPage:
   expenseTitle: "Контрагенттер боюнча чыгаша"
   filenamePrefix: "Контрагенттер_отчету_"
   allTypes: "Баары"
+
+reportsByCounterpartyDetail:
+  title: "Контрагент боюнча жылдык отчет (Киреше / Чыгаша)"
+  selectYear: "Жылды тандаңыз"
+  selectType: "Түрүн тандаңыз"
+  selectPartner: "Контрагентти тандаңыз"
+  showReport: "Отчет көрсөтүү"
+  totalsTitle: "Контрагент"
+  totalIncome: "Жалпы киреше"
+  totalExpense: "Жалпы чыгаша"
+  monthlyTitle: "Айлык киреше / чыгаша"
   markers:
     income: "--- КИРЕШЕ ---"
     expense: "--- ЧЫГЫМ ---"

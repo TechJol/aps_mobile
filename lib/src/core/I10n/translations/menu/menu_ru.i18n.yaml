@@ -109,6 +109,17 @@ reportsByCounterpartiesPage:
   expenseTitle: "Расходы по контрагентам"
   filenamePrefix: "Отчет_по_контрагентам_"
   allTypes: "Все"
+
+reportsByCounterpartyDetail:
+  title: "Годовой отчет по контрагенту (Доход / Расход)"
+  selectYear: "Выберите год"
+  selectType: "Выберите тип"
+  selectPartner: "Выберите контрагента"
+  showReport: "Показать отчет"
+  totalsTitle: "Контрагент"
+  totalIncome: "Общий доход"
+  totalExpense: "Общий расход"
+  monthlyTitle: "Доход / расход по месяцам"
   markers:
     income: "--- ДОХОД ---"
     expense: "--- РАСХОД ---"

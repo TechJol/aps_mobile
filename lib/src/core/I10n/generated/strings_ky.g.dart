@@ -210,6 +210,7 @@ class _TranslationsMenuKy extends TranslationsMenuEn {
 	@override late final _TranslationsMenuMonthsKy months = _TranslationsMenuMonthsKy._(_root);
 	@override late final _TranslationsMenuReportsByArticleKy reportsByArticle = _TranslationsMenuReportsByArticleKy._(_root);
 	@override late final _TranslationsMenuReportsByCounterpartiesPageKy reportsByCounterpartiesPage = _TranslationsMenuReportsByCounterpartiesPageKy._(_root);
+	@override late final _TranslationsMenuReportsByCounterpartyDetailKy reportsByCounterpartyDetail = _TranslationsMenuReportsByCounterpartyDetailKy._(_root);
 	@override late final _TranslationsMenuArticleKy article = _TranslationsMenuArticleKy._(_root);
 	@override late final _TranslationsMenuIncomeExpenseSummaryKy incomeExpenseSummary = _TranslationsMenuIncomeExpenseSummaryKy._(_root);
 	@override String get noData => 'Маалымат жок';
@@ -476,8 +477,26 @@ class _TranslationsMenuReportsByCounterpartiesPageKy extends TranslationsMenuRep
 	@override String get expenseTitle => 'Контрагенттер боюнча чыгаша';
 	@override String get filenamePrefix => 'Контрагенттер_отчету_';
 	@override String get allTypes => 'Баары';
-	@override late final _TranslationsMenuReportsByCounterpartiesPageMarkersKy markers = _TranslationsMenuReportsByCounterpartiesPageMarkersKy._(_root);
-	@override late final _TranslationsMenuReportsByCounterpartiesPageSectionsKy sections = _TranslationsMenuReportsByCounterpartiesPageSectionsKy._(_root);
+}
+
+// Path: menu.reportsByCounterpartyDetail
+class _TranslationsMenuReportsByCounterpartyDetailKy extends TranslationsMenuReportsByCounterpartyDetailEn {
+	_TranslationsMenuReportsByCounterpartyDetailKy._(TranslationsKy root) : this._root = root, super.internal(root);
+
+	final TranslationsKy _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Контрагент боюнча жылдык отчет (Киреше / Чыгаша)';
+	@override String get selectYear => 'Жылды тандаңыз';
+	@override String get selectType => 'Түрүн тандаңыз';
+	@override String get selectPartner => 'Контрагентти тандаңыз';
+	@override String get showReport => 'Отчет көрсөтүү';
+	@override String get totalsTitle => 'Контрагент';
+	@override String get totalIncome => 'Жалпы киреше';
+	@override String get totalExpense => 'Жалпы чыгаша';
+	@override String get monthlyTitle => 'Айлык киреше / чыгаша';
+	@override late final _TranslationsMenuReportsByCounterpartyDetailMarkersKy markers = _TranslationsMenuReportsByCounterpartyDetailMarkersKy._(_root);
+	@override late final _TranslationsMenuReportsByCounterpartyDetailSectionsKy sections = _TranslationsMenuReportsByCounterpartyDetailSectionsKy._(_root);
 	@override String get titleYearReport => 'Жылдык отчет киреше жана чыгаша боюнча';
 }
 
@@ -673,9 +692,9 @@ class _TranslationsAccountAccountErrorsKy extends TranslationsAccountAccountErro
 	@override String get accountAlreadyExists => 'Мындай аталыштагы эсеп бар';
 }
 
-// Path: menu.reportsByCounterpartiesPage.markers
-class _TranslationsMenuReportsByCounterpartiesPageMarkersKy extends TranslationsMenuReportsByCounterpartiesPageMarkersEn {
-	_TranslationsMenuReportsByCounterpartiesPageMarkersKy._(TranslationsKy root) : this._root = root, super.internal(root);
+// Path: menu.reportsByCounterpartyDetail.markers
+class _TranslationsMenuReportsByCounterpartyDetailMarkersKy extends TranslationsMenuReportsByCounterpartyDetailMarkersEn {
+	_TranslationsMenuReportsByCounterpartyDetailMarkersKy._(TranslationsKy root) : this._root = root, super.internal(root);
 
 	final TranslationsKy _root; // ignore: unused_field
 
@@ -684,9 +703,9 @@ class _TranslationsMenuReportsByCounterpartiesPageMarkersKy extends Translations
 	@override String get expense => '--- ЧЫГЫМ ---';
 }
 
-// Path: menu.reportsByCounterpartiesPage.sections
-class _TranslationsMenuReportsByCounterpartiesPageSectionsKy extends TranslationsMenuReportsByCounterpartiesPageSectionsEn {
-	_TranslationsMenuReportsByCounterpartiesPageSectionsKy._(TranslationsKy root) : this._root = root, super.internal(root);
+// Path: menu.reportsByCounterpartyDetail.sections
+class _TranslationsMenuReportsByCounterpartyDetailSectionsKy extends TranslationsMenuReportsByCounterpartyDetailSectionsEn {
+	_TranslationsMenuReportsByCounterpartyDetailSectionsKy._(TranslationsKy root) : this._root = root, super.internal(root);
 
 	final TranslationsKy _root; // ignore: unused_field
 
@@ -955,13 +974,22 @@ extension on TranslationsKy {
 			case 'menu.reportsByCounterpartiesPage.expenseTitle': return 'Контрагенттер боюнча чыгаша';
 			case 'menu.reportsByCounterpartiesPage.filenamePrefix': return 'Контрагенттер_отчету_';
 			case 'menu.reportsByCounterpartiesPage.allTypes': return 'Баары';
-			case 'menu.reportsByCounterpartiesPage.markers.income': return '--- КИРЕШЕ ---';
-			case 'menu.reportsByCounterpartiesPage.markers.expense': return '--- ЧЫГЫМ ---';
-			case 'menu.reportsByCounterpartiesPage.sections.incomeTitle': return 'Негизги киреше беренелери';
-			case 'menu.reportsByCounterpartiesPage.sections.expenseTitle': return 'Негизги чыгым беренелери';
-			case 'menu.reportsByCounterpartiesPage.sections.incomeNameCol': return 'Киреше беренеси';
-			case 'menu.reportsByCounterpartiesPage.sections.expenseNameCol': return 'Чыгым беренеси';
-			case 'menu.reportsByCounterpartiesPage.titleYearReport': return 'Жылдык отчет киреше жана чыгаша боюнча';
+			case 'menu.reportsByCounterpartyDetail.title': return 'Контрагент боюнча жылдык отчет (Киреше / Чыгаша)';
+			case 'menu.reportsByCounterpartyDetail.selectYear': return 'Жылды тандаңыз';
+			case 'menu.reportsByCounterpartyDetail.selectType': return 'Түрүн тандаңыз';
+			case 'menu.reportsByCounterpartyDetail.selectPartner': return 'Контрагентти тандаңыз';
+			case 'menu.reportsByCounterpartyDetail.showReport': return 'Отчет көрсөтүү';
+			case 'menu.reportsByCounterpartyDetail.totalsTitle': return 'Контрагент';
+			case 'menu.reportsByCounterpartyDetail.totalIncome': return 'Жалпы киреше';
+			case 'menu.reportsByCounterpartyDetail.totalExpense': return 'Жалпы чыгаша';
+			case 'menu.reportsByCounterpartyDetail.monthlyTitle': return 'Айлык киреше / чыгаша';
+			case 'menu.reportsByCounterpartyDetail.markers.income': return '--- КИРЕШЕ ---';
+			case 'menu.reportsByCounterpartyDetail.markers.expense': return '--- ЧЫГЫМ ---';
+			case 'menu.reportsByCounterpartyDetail.sections.incomeTitle': return 'Негизги киреше беренелери';
+			case 'menu.reportsByCounterpartyDetail.sections.expenseTitle': return 'Негизги чыгым беренелери';
+			case 'menu.reportsByCounterpartyDetail.sections.incomeNameCol': return 'Киреше беренеси';
+			case 'menu.reportsByCounterpartyDetail.sections.expenseNameCol': return 'Чыгым беренеси';
+			case 'menu.reportsByCounterpartyDetail.titleYearReport': return 'Жылдык отчет киреше жана чыгаша боюнча';
 			case 'menu.article.name': return 'Аталышы';
 			case 'menu.article.income': return 'Киреше';
 			case 'menu.article.expense': return 'Чыгым';

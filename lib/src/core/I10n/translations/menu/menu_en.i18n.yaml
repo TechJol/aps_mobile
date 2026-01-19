@@ -109,6 +109,17 @@ reportsByCounterpartiesPage:
   expenseTitle: "Expenses by counterparties"
   filenamePrefix: "Report_by_counterparties_"
   allTypes: "All"
+
+reportsByCounterpartyDetail:
+  title: "Annual report by counterparty (Income / Expense)"
+  selectYear: "Select year"
+  selectType: "Select type"
+  selectPartner: "Select counterparty"
+  showReport: "Show report"
+  totalsTitle: "Counterparty"
+  totalIncome: "Total income"
+  totalExpense: "Total expense"
+  monthlyTitle: "Monthly income / expense"
   markers:
     income: "--- INCOME ---"
     expense: "--- EXPENSE ---"

@@ -210,6 +210,7 @@ class _TranslationsMenuRu extends TranslationsMenuEn {
 	@override late final _TranslationsMenuMonthsRu months = _TranslationsMenuMonthsRu._(_root);
 	@override late final _TranslationsMenuReportsByArticleRu reportsByArticle = _TranslationsMenuReportsByArticleRu._(_root);
 	@override late final _TranslationsMenuReportsByCounterpartiesPageRu reportsByCounterpartiesPage = _TranslationsMenuReportsByCounterpartiesPageRu._(_root);
+	@override late final _TranslationsMenuReportsByCounterpartyDetailRu reportsByCounterpartyDetail = _TranslationsMenuReportsByCounterpartyDetailRu._(_root);
 	@override late final _TranslationsMenuArticleRu article = _TranslationsMenuArticleRu._(_root);
 	@override late final _TranslationsMenuIncomeExpenseSummaryRu incomeExpenseSummary = _TranslationsMenuIncomeExpenseSummaryRu._(_root);
 	@override String get noData => 'Нет данных';
@@ -476,8 +477,26 @@ class _TranslationsMenuReportsByCounterpartiesPageRu extends TranslationsMenuRep
 	@override String get expenseTitle => 'Расходы по контрагентам';
 	@override String get filenamePrefix => 'Отчет_по_контрагентам_';
 	@override String get allTypes => 'Все';
-	@override late final _TranslationsMenuReportsByCounterpartiesPageMarkersRu markers = _TranslationsMenuReportsByCounterpartiesPageMarkersRu._(_root);
-	@override late final _TranslationsMenuReportsByCounterpartiesPageSectionsRu sections = _TranslationsMenuReportsByCounterpartiesPageSectionsRu._(_root);
+}
+
+// Path: menu.reportsByCounterpartyDetail
+class _TranslationsMenuReportsByCounterpartyDetailRu extends TranslationsMenuReportsByCounterpartyDetailEn {
+	_TranslationsMenuReportsByCounterpartyDetailRu._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Годовой отчет по контрагенту (Доход / Расход)';
+	@override String get selectYear => 'Выберите год';
+	@override String get selectType => 'Выберите тип';
+	@override String get selectPartner => 'Выберите контрагента';
+	@override String get showReport => 'Показать отчет';
+	@override String get totalsTitle => 'Контрагент';
+	@override String get totalIncome => 'Общий доход';
+	@override String get totalExpense => 'Общий расход';
+	@override String get monthlyTitle => 'Доход / расход по месяцам';
+	@override late final _TranslationsMenuReportsByCounterpartyDetailMarkersRu markers = _TranslationsMenuReportsByCounterpartyDetailMarkersRu._(_root);
+	@override late final _TranslationsMenuReportsByCounterpartyDetailSectionsRu sections = _TranslationsMenuReportsByCounterpartyDetailSectionsRu._(_root);
 	@override String get titleYearReport => 'Годовой отчет по доходам и расходам';
 }
 
@@ -673,9 +692,9 @@ class _TranslationsAccountAccountErrorsRu extends TranslationsAccountAccountErro
 	@override String get accountAlreadyExists => 'Счет с таким именем уже существует';
 }
 
-// Path: menu.reportsByCounterpartiesPage.markers
-class _TranslationsMenuReportsByCounterpartiesPageMarkersRu extends TranslationsMenuReportsByCounterpartiesPageMarkersEn {
-	_TranslationsMenuReportsByCounterpartiesPageMarkersRu._(TranslationsRu root) : this._root = root, super.internal(root);
+// Path: menu.reportsByCounterpartyDetail.markers
+class _TranslationsMenuReportsByCounterpartyDetailMarkersRu extends TranslationsMenuReportsByCounterpartyDetailMarkersEn {
+	_TranslationsMenuReportsByCounterpartyDetailMarkersRu._(TranslationsRu root) : this._root = root, super.internal(root);
 
 	final TranslationsRu _root; // ignore: unused_field
 
@@ -684,9 +703,9 @@ class _TranslationsMenuReportsByCounterpartiesPageMarkersRu extends Translations
 	@override String get expense => '--- РАСХОД ---';
 }
 
-// Path: menu.reportsByCounterpartiesPage.sections
-class _TranslationsMenuReportsByCounterpartiesPageSectionsRu extends TranslationsMenuReportsByCounterpartiesPageSectionsEn {
-	_TranslationsMenuReportsByCounterpartiesPageSectionsRu._(TranslationsRu root) : this._root = root, super.internal(root);
+// Path: menu.reportsByCounterpartyDetail.sections
+class _TranslationsMenuReportsByCounterpartyDetailSectionsRu extends TranslationsMenuReportsByCounterpartyDetailSectionsEn {
+	_TranslationsMenuReportsByCounterpartyDetailSectionsRu._(TranslationsRu root) : this._root = root, super.internal(root);
 
 	final TranslationsRu _root; // ignore: unused_field
 
@@ -955,13 +974,22 @@ extension on TranslationsRu {
 			case 'menu.reportsByCounterpartiesPage.expenseTitle': return 'Расходы по контрагентам';
 			case 'menu.reportsByCounterpartiesPage.filenamePrefix': return 'Отчет_по_контрагентам_';
 			case 'menu.reportsByCounterpartiesPage.allTypes': return 'Все';
-			case 'menu.reportsByCounterpartiesPage.markers.income': return '--- ДОХОД ---';
-			case 'menu.reportsByCounterpartiesPage.markers.expense': return '--- РАСХОД ---';
-			case 'menu.reportsByCounterpartiesPage.sections.incomeTitle': return 'Основные статьи доходов';
-			case 'menu.reportsByCounterpartiesPage.sections.expenseTitle': return 'Основные статьи расходов';
-			case 'menu.reportsByCounterpartiesPage.sections.incomeNameCol': return 'Статья дохода';
-			case 'menu.reportsByCounterpartiesPage.sections.expenseNameCol': return 'Статья расхода';
-			case 'menu.reportsByCounterpartiesPage.titleYearReport': return 'Годовой отчет по доходам и расходам';
+			case 'menu.reportsByCounterpartyDetail.title': return 'Годовой отчет по контрагенту (Доход / Расход)';
+			case 'menu.reportsByCounterpartyDetail.selectYear': return 'Выберите год';
+			case 'menu.reportsByCounterpartyDetail.selectType': return 'Выберите тип';
+			case 'menu.reportsByCounterpartyDetail.selectPartner': return 'Выберите контрагента';
+			case 'menu.reportsByCounterpartyDetail.showReport': return 'Показать отчет';
+			case 'menu.reportsByCounterpartyDetail.totalsTitle': return 'Контрагент';
+			case 'menu.reportsByCounterpartyDetail.totalIncome': return 'Общий доход';
+			case 'menu.reportsByCounterpartyDetail.totalExpense': return 'Общий расход';
+			case 'menu.reportsByCounterpartyDetail.monthlyTitle': return 'Доход / расход по месяцам';
+			case 'menu.reportsByCounterpartyDetail.markers.income': return '--- ДОХОД ---';
+			case 'menu.reportsByCounterpartyDetail.markers.expense': return '--- РАСХОД ---';
+			case 'menu.reportsByCounterpartyDetail.sections.incomeTitle': return 'Основные статьи доходов';
+			case 'menu.reportsByCounterpartyDetail.sections.expenseTitle': return 'Основные статьи расходов';
+			case 'menu.reportsByCounterpartyDetail.sections.incomeNameCol': return 'Статья дохода';
+			case 'menu.reportsByCounterpartyDetail.sections.expenseNameCol': return 'Статья расхода';
+			case 'menu.reportsByCounterpartyDetail.titleYearReport': return 'Годовой отчет по доходам и расходам';
 			case 'menu.article.name': return 'Название';
 			case 'menu.article.income': return 'Доход';
 			case 'menu.article.expense': return 'Расход';
