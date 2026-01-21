@@ -3,7 +3,7 @@ description: "Soft KG Pro Mobile Application"
 
 publish_to: 'none'
 
-version: 1.1.1+19
+version: 1.1.2+20
 
 environment:
   sdk: '^3.9.2'
