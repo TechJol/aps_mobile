@@ -187,17 +187,15 @@ class _MetricsPageState extends State<MetricsPage> {
               .toDouble(),
         )
         .toList();
+    final List<double> chartValues = values
+        .map<double>((v) => v < 0 ? 0.0 : v)
+        .toList();
 
-    final double rawMax = values.isNotEmpty
-        ? values.reduce((a, b) => a > b ? a : b)
-        : 0;
-    final double rawMin = values.isNotEmpty
-        ? values.reduce((a, b) => a < b ? a : b)
+    final double rawMax = chartValues.isNotEmpty
+        ? chartValues.reduce((a, b) => a > b ? a : b)
         : 0;
     final double niceMax = _niceCeil((rawMax.abs()) * 1.15);
-    final double niceMin = rawMin < 0 ? -_niceCeil((rawMin.abs()) * 1.15) : 0;
-    final double axisSpan = max(niceMax, niceMin.abs());
-    final double tickStep = _niceStep(axisSpan, targetTicks: 6);
+    final double tickStep = _niceStep(niceMax, targetTicks: 6);
 
     final locale = Localizations.localeOf(context).languageCode;
     final compact = NumberFormat.compact(locale: locale);
@@ -215,11 +213,11 @@ class _MetricsPageState extends State<MetricsPage> {
         height: 400,
         child: BarChart(
           BarChartData(
-            minY: niceMin < 0 ? niceMin : 0,
+            minY: 0,
             maxY: niceMax > 0 ? niceMax : 1,
             groupsSpace: groupSpacing,
             barGroups: List.generate(years.length, (index) {
-              final v = values[index];
+              final v = chartValues[index];
               return BarChartGroupData(
                 x: index,
                 barRods: [
