@@ -183,6 +183,7 @@ class _CounterpartiesReportsPageState extends State<CounterpartiesReportsPage> {
                         label: t.menu.reportsByCounterpartiesPage.typeLabel,
                         items: [typeLabel, ..._types.map((e) => e.name)],
                         value: currentTypeName,
+                        isSettingDropdown: false,
                         onChanged: (value) {
                           setState(() {
                             selectedTypeName = value;

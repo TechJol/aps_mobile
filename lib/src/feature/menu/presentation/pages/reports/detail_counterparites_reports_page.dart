@@ -182,6 +182,7 @@ class _DetailCounterparitesReportsPageState
                         label: t.menu.reportsByCounterpartyDetail.selectYear,
                         items: years.map((y) => y.toString()).toList(),
                         value: selectedYear?.toString(),
+                        isSettingDropdown: false,
                         onChanged: (value) {
                           setState(() {
                             _selectedYear = int.tryParse(value ?? '');
@@ -196,6 +197,7 @@ class _DetailCounterparitesReportsPageState
                         label: t.menu.reportsByCounterpartyDetail.selectType,
                         items: [typeLabel, ...types.map((e) => e.name)],
                         value: _selectedTypeName ?? typeLabel,
+                        isSettingDropdown: false,
                         onChanged: (value) {
                           setState(() {
                             _selectedTypeName = value;
@@ -220,6 +222,7 @@ class _DetailCounterparitesReportsPageState
                   label: t.menu.reportsByCounterpartyDetail.selectPartner,
                   items: [partnerLabel, ...filteredPartners.map((e) => e.name)],
                   value: _selectedPartnerName ?? partnerLabel,
+                  isSettingDropdown: false,
                   onChanged: (value) {
                     setState(() {
                       _selectedPartnerName = value;

@@ -175,36 +175,43 @@ class _MetricsPageState extends State<MetricsPage> {
   }
 
   Widget _buildGraphic() {
-    const double barWidth = 170;
-    const double groupSpacing = 20;
+    const double barWidth = 34;
+    const double groupSpacing = 28;
+    const double barSpace = 6;
 
     final List<String> years = yearlyData
         .map((e) => e['year'].toString())
         .toList();
-    final List<double> values = yearlyData
+    final List<double> incomes = yearlyData
         .map(
-          (e) => (Decimal.tryParse(e['balance'].toString()) ?? Decimal.zero)
+          (e) => (Decimal.tryParse(e['income'].toString()) ?? Decimal.zero)
               .toDouble(),
         )
         .toList();
-    final List<double> chartValues = values
-        .map<double>((v) => v < 0 ? 0.0 : v)
+    final List<double> expenses = yearlyData
+        .map(
+          (e) => (Decimal.tryParse(e['expense'].toString()) ?? Decimal.zero)
+              .toDouble(),
+        )
         .toList();
 
-    final double rawMax = chartValues.isNotEmpty
-        ? chartValues.reduce((a, b) => a > b ? a : b)
-        : 0;
+    final double rawMax = [
+      ...incomes,
+      ...expenses,
+    ].fold<double>(0, (maxVal, v) => v > maxVal ? v : maxVal);
     final double niceMax = _niceCeil((rawMax.abs()) * 1.15);
     final double tickStep = _niceStep(niceMax, targetTicks: 6);
 
     final locale = Localizations.localeOf(context).languageCode;
     final compact = NumberFormat.compact(locale: locale);
 
-    const positiveColor = Color(0xFF7B37B5);
-    const negativeColor = Color(0xFFE85445);
+    const incomeColor = Color(0xFF5DBB6A);
+    const expenseColor = Color(0xFFEB6B6B);
 
     double chartWidth =
-        years.length * barWidth + (years.length - 1) * groupSpacing + 40;
+        years.length * (barWidth * 2 + barSpace) +
+        (years.length - 1) * groupSpacing +
+        60;
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -217,35 +224,46 @@ class _MetricsPageState extends State<MetricsPage> {
             maxY: niceMax > 0 ? niceMax : 1,
             groupsSpace: groupSpacing,
             barGroups: List.generate(years.length, (index) {
-              final v = chartValues[index];
               return BarChartGroupData(
                 x: index,
                 barRods: [
                   BarChartRodData(
-                    toY: v,
-                    color: v >= 0 ? positiveColor : negativeColor,
+                    toY: incomes[index],
+                    color: incomeColor,
+                    width: barWidth,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  BarChartRodData(
+                    toY: expenses[index],
+                    color: expenseColor,
                     width: barWidth,
                     borderRadius: BorderRadius.circular(6),
                   ),
                 ],
+                barsSpace: barSpace,
               );
             }),
             borderData: FlBorderData(show: false),
             gridData: FlGridData(
               show: true,
-              drawVerticalLine: false,
+              drawVerticalLine: true,
               horizontalInterval: tickStep,
+              verticalInterval: 1,
+              checkToShowVerticalLine: (_) => true,
               getDrawingHorizontalLine: (_) =>
-                  const FlLine(color: Color(0xFFEAEAEA), strokeWidth: 1),
+                  const FlLine(color: Color(0xFFE0E0E0), strokeWidth: 1),
+              getDrawingVerticalLine: (_) =>
+                  const FlLine(color: Color(0xFFE0E0E0), strokeWidth: 1),
             ),
             titlesData: FlTitlesData(
               bottomTitles: AxisTitles(
                 sideTitles: SideTitles(
                   showTitles: true,
+                  reservedSize: 28,
                   getTitlesWidget: (value, _) {
                     final index = value.toInt();
                     if (index >= 0 && index < years.length) {
-                      return Text(years[index]);
+                      return Text(years[index], textAlign: TextAlign.center);
                     }
                     return const SizedBox.shrink();
                   },

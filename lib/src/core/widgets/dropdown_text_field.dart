@@ -11,12 +11,14 @@ class DropDownFormField extends StatelessWidget {
     required this.label,
     required this.value,
     required this.onChanged,
+    this.isSettingDropdown = true,
   });
 
   final List<String> items;
   final String label;
   final String? value;
   final ValueChanged<String?> onChanged;
+  final bool isSettingDropdown;
 
   @override
   Widget build(BuildContext context) {
@@ -41,18 +43,20 @@ class DropDownFormField extends StatelessWidget {
           floatingLabelBehavior: FloatingLabelBehavior.never,
           fillColor: AppColors.backroundColor,
           filled: true,
+
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(25),
-            borderSide: const BorderSide(width: 1, color: AppColors.blackColor),
+            // borderSide: const BorderSide(width: 1, color: AppColors.blackColor),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(25),
-            borderSide: const BorderSide(
+            borderSide: BorderSide(
               width: 0.5,
-              color: AppColors.blackColor,
+              color: isSettingDropdown == false
+                  ? AppColors.blackColor
+                  : AppColors.transparentColor,
             ),
           ),
-
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(25),
             borderSide: const BorderSide(
