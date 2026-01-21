@@ -14,6 +14,7 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
   final nameController = TextEditingController();
   final contactInfoController = TextEditingController();
 
+  List<PartnerTypesModel> _types = [];
   int? selectedTypeId;
   String? selectedTypeName;
 
@@ -24,6 +25,11 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
     super.initState();
     nameController.addListener(checkFormValidity);
     contactInfoController.addListener(checkFormValidity);
+
+    final currentState = context.read<MenuCubit>().state;
+    if (currentState is MenuPartnerDataSuccess) {
+      _types = currentState.partnerTypes ?? [];
+    }
 
     context.read<MenuCubit>().getPartnerData();
   }
@@ -59,6 +65,18 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
           if (state is PartnerUpdated) {
             Navigator.pop(context);
           }
+          if (state is MenuPartnerDataSuccess) {
+            final types = state.partnerTypes ?? [];
+            setState(() {
+              _types = types;
+              if (selectedTypeId != null &&
+                  !_types.any((e) => e.id == selectedTypeId)) {
+                selectedTypeId = null;
+                selectedTypeName = null;
+              }
+            });
+            checkFormValidity();
+          }
           if (state is MenuError) {
             var snackBar = SnackBar(content: Text(state.message));
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -87,31 +105,20 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
                     controller: nameController,
                   ),
                   12.h,
-                  BlocBuilder<MenuCubit, MenuState>(
-                    builder: (context, state) {
-                      if (state is MenuPartnerDataSuccess) {
-                        final types = state.partnerTypes ?? [];
-
-                        return DropDownFormField(
-                          label: t.menu.counterparties.type,
-                          items: types.map((e) => e.name).toList(),
-                          value: selectedTypeName,
-                          onChanged: (val) {
-                            final selected = types.firstWhere(
-                              (e) => e.name == val,
-                            );
-                            setState(() {
-                              selectedTypeId = selected.id;
-                              selectedTypeName = selected.name;
-                            });
-                            checkFormValidity();
-                          },
-                        );
-                      } else if (state is MenuLoading) {
-                        return const CircularProgressIndicator();
-                      } else {
-                        return const SizedBox.shrink();
+                  DropDownFormField(
+                    label: t.menu.counterparties.type,
+                    items: _types.map((e) => e.name).toList(),
+                    value: selectedTypeName,
+                    onChanged: (val) {
+                      if (val == null) {
+                        return;
                       }
+                      final selected = _types.firstWhere((e) => e.name == val);
+                      setState(() {
+                        selectedTypeId = selected.id;
+                        selectedTypeName = selected.name;
+                      });
+                      checkFormValidity();
                     },
                   ),
                   12.h,
@@ -123,19 +130,18 @@ class _AddCounterpartiesPageState extends State<AddCounterpartiesPage> {
                   BlocBuilder<MenuCubit, MenuState>(
                     builder: (context, state) {
                       return ElevatedButton(
-                        onPressed:
-                            isFormValid
-                                ? () {
-                                  final newPartner = PartnersModel(
-                                    name: nameController.text,
-                                    type: selectedTypeId!,
-                                    contactInfo: contactInfoController.text,
-                                  );
-                                  context.read<MenuCubit>().postPartner(
-                                    newPartner,
-                                  );
-                                }
-                                : null,
+                        onPressed: isFormValid
+                            ? () {
+                                final newPartner = PartnersModel(
+                                  name: nameController.text,
+                                  type: selectedTypeId!,
+                                  contactInfo: contactInfoController.text,
+                                );
+                                context.read<MenuCubit>().postPartner(
+                                  newPartner,
+                                );
+                              }
+                            : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary200Color,
                           minimumSize: const Size(double.infinity, 50),

@@ -43,37 +43,36 @@ class SettingsAppPage extends StatelessWidget {
                   ),
                   16.h,
 
-                  GestureDetector(
-                    onTap: () {},
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          t.menu.theme.title,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              t.menu.theme.light,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            Icon(
-                              Icons.chevron_right,
-                              color: AppColors.greyColor,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-
+                  // GestureDetector(
+                  //   onTap: () {},
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: [
+                  //       Text(
+                  //         t.menu.theme.title,
+                  //         style: const TextStyle(
+                  //           fontSize: 16,
+                  //           fontWeight: FontWeight.w400,
+                  //         ),
+                  //       ),
+                  //       Row(
+                  //         children: [
+                  //           Text(
+                  //             t.menu.theme.light,
+                  //             style: const TextStyle(
+                  //               fontSize: 16,
+                  //               fontWeight: FontWeight.w400,
+                  //             ),
+                  //           ),
+                  //           Icon(
+                  //             Icons.chevron_right,
+                  //             color: AppColors.greyColor,
+                  //           ),
+                  //         ],
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   20.h,
 
                   GestureDetector(
