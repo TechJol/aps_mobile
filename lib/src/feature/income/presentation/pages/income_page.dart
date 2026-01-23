@@ -520,10 +520,7 @@ class IncomePage {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        t.income.time,
-                        style: AppTextStyles.f20w500,
-                      ), // "Время" / "Time"
+                      Text(t.income.time, style: AppTextStyles.f20w500),
                       ElevatedButton(
                         onPressed: () async {
                           final picked = await showTimePicker(
@@ -557,7 +554,7 @@ class IncomePage {
                       onDateTimeSelected(newDateTime);
                       Navigator.pop(context);
                     },
-                    child: Text(t.income.select), // "Выбрать" / "Select"
+                    child: Text(t.income.select),
                   ),
                 ],
               ),
