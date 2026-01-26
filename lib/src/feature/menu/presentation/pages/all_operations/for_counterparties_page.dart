@@ -55,8 +55,9 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
               activeType = partnerTypes.first.id!;
             }
 
-            final filteredPartners =
-                partners.where((e) => e.type == activeType).toList();
+            final filteredPartners = partners
+                .where((e) => e.type == activeType)
+                .toList();
 
             return Padding(
               padding: const EdgeInsets.all(20.0),
@@ -65,37 +66,36 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      children:
-                          partnerTypes
-                              .map(
-                                (type) => categoryButton(
-                                  label: type.name,
-                                  isActive: activeType == type.id,
-                                  onTap: () {
-                                    setState(() {
-                                      activeType = type.id!;
-                                      currentPage = 1;
-                                    });
-                                  },
-                                ),
-                              )
-                              .toList(),
+                      children: partnerTypes
+                          .map(
+                            (type) => categoryButton(
+                              label: type.name,
+                              isActive: activeType == type.id,
+                              onTap: () {
+                                setState(() {
+                                  activeType = type.id!;
+                                  currentPage = 1;
+                                });
+                              },
+                            ),
+                          )
+                          .toList(),
                     ),
                   ),
                   20.h,
                   filteredPartners.isEmpty
                       ? Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 60),
-                        child: Center(
-                          child: Text(
-                            t.menu.forCounterparties.noPartnersInType,
+                          padding: const EdgeInsets.symmetric(vertical: 60),
+                          child: Center(
+                            child: Text(
+                              t.menu.forCounterparties.noPartnersInType,
+                            ),
                           ),
-                        ),
-                      )
+                        )
                       : _buildTableWithPagination(
-                        filteredPartners,
-                        balances ?? {},
-                      ),
+                          filteredPartners,
+                          balances ?? {},
+                        ),
                 ],
               ),
             );
@@ -118,10 +118,10 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
     // Настройки
     const borderColor = Color(0xFFE6E6E6);
     const colW = {
-      0: FixedColumnWidth(50), // №
-      1: FixedColumnWidth(200), // Имя
-      2: FixedColumnWidth(120), // Баланс
-      3: FixedColumnWidth(200), // Контакты
+      0: FixedColumnWidth(50),
+      1: FixedColumnWidth(200),
+      2: FixedColumnWidth(120),
+      3: FixedColumnWidth(200),
     };
 
     Widget cell(String text, {bool isHeader = false, Color? color}) {
@@ -129,15 +129,14 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
         child: Text(
           text,
-          style:
-              isHeader
-                  ? const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  )
-                  : AppTextStyles.f14w500.copyWith(
-                    color: color ?? AppColors.blackColor,
-                  ),
+          style: isHeader
+              ? const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                )
+              : AppTextStyles.f14w500.copyWith(
+                  color: color ?? AppColors.blackColor,
+                ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -237,18 +236,16 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
         children: [
           IconButton(
             icon: const Icon(Icons.chevron_left),
-            onPressed:
-                currentPage > 1
-                    ? () => goToPage(currentPage - 1, pageCount)
-                    : null,
+            onPressed: currentPage > 1
+                ? () => goToPage(currentPage - 1, pageCount)
+                : null,
           ),
           for (int i = startPage; i <= endPage; i++) _pageButton(i, pageCount),
           IconButton(
             icon: const Icon(Icons.chevron_right),
-            onPressed:
-                currentPage < pageCount
-                    ? () => goToPage(currentPage + 1, pageCount)
-                    : null,
+            onPressed: currentPage < pageCount
+                ? () => goToPage(currentPage + 1, pageCount)
+                : null,
           ),
         ],
       ),
@@ -260,8 +257,9 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
       padding: const EdgeInsets.symmetric(horizontal: 2.0),
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
-          backgroundColor:
-              page == currentPage ? AppColors.primaryColorLight : null,
+          backgroundColor: page == currentPage
+              ? AppColors.primaryColorLight
+              : null,
           foregroundColor: page == currentPage ? Colors.white : Colors.black,
           minimumSize: const Size(36, 36),
           padding: const EdgeInsets.symmetric(horizontal: 8),

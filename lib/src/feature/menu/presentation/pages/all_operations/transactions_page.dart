@@ -17,10 +17,8 @@ class TransactionsPage extends StatefulWidget {
 class _TransactionsPageState extends State<TransactionsPage> {
   final LocalService _localService = LocalService();
 
-  /// сколько строк показываем на странице
   final int rowsPerPage = 10;
 
-  /// текущая страница (с 1)
   int currentPage = 1;
 
   @override
