@@ -123,7 +123,7 @@ class _InfoRow extends StatelessWidget {
               color: AppColors.smallTextGreyColor,
             ),
           ),
-          const SizedBox(width: 12),
+          12.w,
           Flexible(
             child: Text(
               value,

@@ -43,7 +43,7 @@ class PlanCard extends StatelessWidget {
                             color: AppColors.blackColor,
                           ),
                         ),
-                        const SizedBox(height: 6),
+                        6.h,
                         Text(
                           option.subtitle,
                           style: AppTextStyles.f9w400.copyWith(
