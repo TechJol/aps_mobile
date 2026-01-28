@@ -53,7 +53,7 @@ class _PeriodPickerBottomSheetState extends State<PeriodPickerBottomSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 10),
+            10.h,
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -63,7 +63,7 @@ class _PeriodPickerBottomSheetState extends State<PeriodPickerBottomSheet> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            16.h,
             Row(
               children: [
                 _DatePreview(
@@ -79,7 +79,7 @@ class _PeriodPickerBottomSheetState extends State<PeriodPickerBottomSheet> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            20.h,
             _PeriodOption(
               label: t.operation.week,
               selected: _periodLabel,
@@ -95,7 +95,7 @@ class _PeriodPickerBottomSheetState extends State<PeriodPickerBottomSheet> {
               selected: _periodLabel,
               onChanged: _onPeriodChanged,
             ),
-            const SizedBox(height: 20),
+            20.h,
             ElevatedButton(
               onPressed: _submit,
               style: ElevatedButton.styleFrom(
@@ -108,7 +108,7 @@ class _PeriodPickerBottomSheetState extends State<PeriodPickerBottomSheet> {
               ),
               child: Text(t.operation.show),
             ),
-            const SizedBox(height: 20),
+            20.h,
           ],
         ),
       ),
@@ -202,10 +202,9 @@ class _DatePreview extends StatelessWidget {
                         ? '—'
                         : '${date!.day.toString().padLeft(2, '0')}.${date!.month.toString().padLeft(2, '0')}.${date!.year}',
                     style: AppTextStyles.f14w500.copyWith(
-                      color:
-                          date == null
-                              ? AppColors.greyerColorLight
-                              : AppColors.blackColor,
+                      color: date == null
+                          ? AppColors.greyerColorLight
+                          : AppColors.blackColor,
                     ),
                   ),
                 ],

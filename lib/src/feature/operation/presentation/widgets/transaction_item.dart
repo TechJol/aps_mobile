@@ -16,21 +16,22 @@ class TransactionItem extends StatelessWidget {
         '${date.day.toString().padLeft(2, '0')}.${date.month.toString().padLeft(2, '0')}.${date.year} - ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
 
     final formatted = formatAmountWithCurrency(tx.amount, tx.currency);
-    final String amountText =
-        formatted.isEmpty ? formatted : (isIncome ? formatted : '-$formatted');
+    final String amountText = formatted.isEmpty
+        ? formatted
+        : (isIncome ? formatted : '-$formatted');
 
     final Color bgColor = isIncome ? Color(0xFFDFF7E2) : Color(0xFFF9DCDC);
     final Color arrowColor = isIncome ? Color(0xFF56BC60) : Color(0xFFE85445);
-    final IconData arrowIcon =
-        isIncome ? Icons.call_received : Icons.north_west;
+    final IconData arrowIcon = isIncome
+        ? Icons.call_received
+        : Icons.north_west;
 
-    final partnerName =
-        partners
-            .firstWhere(
-              (p) => p.id == tx.partners,
-              orElse: () => PartnersModel(name: 'Неизвестно'),
-            )
-            .name;
+    final partnerName = partners
+        .firstWhere(
+          (p) => p.id == tx.partners,
+          orElse: () => PartnersModel(name: 'Неизвестно'),
+        )
+        .name;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -42,7 +43,7 @@ class TransactionItem extends StatelessWidget {
             decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
             child: Icon(arrowIcon, color: arrowColor, size: 20),
           ),
-          const SizedBox(width: 12),
+          12.w,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,8 +62,9 @@ class TransactionItem extends StatelessWidget {
           Text(
             amountText,
             style: AppTextStyles.f16w600.copyWith(
-              color:
-                  isIncome ? const Color(0xFF56BC60) : const Color(0xFFE85445),
+              color: isIncome
+                  ? const Color(0xFF56BC60)
+                  : const Color(0xFFE85445),
             ),
           ),
         ],
