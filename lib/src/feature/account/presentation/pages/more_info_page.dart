@@ -34,8 +34,9 @@ class MoreInfoPage extends StatelessWidget {
           }
 
           final txAll = state.transactions;
-          final txByAccount =
-              txAll.where((t) => t.account == account.id).toList();
+          final txByAccount = txAll
+              .where((t) => t.account == account.id)
+              .toList();
 
           final summaries = _buildCurrencySummaries(txByAccount);
           final service = LocalService();
@@ -48,15 +49,15 @@ class MoreInfoPage extends StatelessWidget {
           );
 
           final currencyOrder = ['KGS', 'USD', 'EUR', 'RUB'];
-          final sortedKeys =
-              summaries.keys.toList()..sort((a, b) {
-                final ia = currencyOrder.indexOf(a);
-                final ib = currencyOrder.indexOf(b);
-                if (ia != -1 && ib != -1) return ia.compareTo(ib);
-                if (ia != -1) return -1;
-                if (ib != -1) return 1;
-                return a.compareTo(b);
-              });
+          final sortedKeys = summaries.keys.toList()
+            ..sort((a, b) {
+              final ia = currencyOrder.indexOf(a);
+              final ib = currencyOrder.indexOf(b);
+              if (ia != -1 && ib != -1) return ia.compareTo(ib);
+              if (ia != -1) return -1;
+              if (ib != -1) return 1;
+              return a.compareTo(b);
+            });
 
           String formatOriginal(Decimal value, String code) {
             final doubleVal = double.tryParse(value.toString()) ?? 0.0;
@@ -102,17 +103,16 @@ class MoreInfoPage extends StatelessWidget {
                             t.account.currentBalance,
                             '${t.account.currentBalance} (KGS)',
                           ];
-                          final rows1 =
-                              sortedKeys.map((code) {
-                                final summary = summaries[code]!;
-                                return [
-                                  code,
-                                  summary.income.toString(),
-                                  summary.expense.toString(),
-                                  summary.balance.toString(),
-                                  summary.balanceKgs?.toString() ?? '-',
-                                ];
-                              }).toList();
+                          final rows1 = sortedKeys.map((code) {
+                            final summary = summaries[code]!;
+                            return [
+                              code,
+                              summary.income.toString(),
+                              summary.expense.toString(),
+                              summary.balance.toString(),
+                              summary.balanceKgs?.toString() ?? '-',
+                            ];
+                          }).toList();
 
                           final headers2 = [
                             'ID',
@@ -120,22 +120,19 @@ class MoreInfoPage extends StatelessWidget {
                             t.account.typeTransaction,
                             t.account.reason,
                           ];
-                          final rows2 =
-                              txByAccount.map((tx) {
-                                final date =
-                                    tx.date != null
-                                        ? DateFormat(
-                                          'yyyy-MM-dd',
-                                        ).format(DateTime.parse(tx.date!))
-                                        : '';
+                          final rows2 = txByAccount.map((tx) {
+                            final date = tx.date != null
+                                ? DateFormat(
+                                    'yyyy-MM-dd',
+                                  ).format(DateTime.parse(tx.date!))
+                                : '';
 
-                                final type =
-                                    (tx.transactionType == 'income')
-                                        ? t.account.income
-                                        : t.account.expense;
-                                final reason = tx.description ?? '';
-                                return ['${tx.id ?? ''}', date, type, reason];
-                              }).toList();
+                            final type = (tx.transactionType == 'income')
+                                ? t.account.income
+                                : t.account.expense;
+                            final reason = tx.description ?? '';
+                            return ['${tx.id ?? ''}', date, type, reason];
+                          }).toList();
 
                           service.printReportAsPdf(
                             context: context,
@@ -165,17 +162,16 @@ class MoreInfoPage extends StatelessWidget {
                             t.account.currentBalance,
                             '${t.account.currentBalance} (KGS)',
                           ];
-                          final rows1 =
-                              sortedKeys.map((code) {
-                                final summary = summaries[code]!;
-                                return [
-                                  code,
-                                  summary.income.toString(),
-                                  summary.expense.toString(),
-                                  summary.balance.toString(),
-                                  summary.balanceKgs?.toString() ?? '-',
-                                ];
-                              }).toList();
+                          final rows1 = sortedKeys.map((code) {
+                            final summary = summaries[code]!;
+                            return [
+                              code,
+                              summary.income.toString(),
+                              summary.expense.toString(),
+                              summary.balance.toString(),
+                              summary.balanceKgs?.toString() ?? '-',
+                            ];
+                          }).toList();
 
                           final headers2 = [
                             'ID',
@@ -183,21 +179,18 @@ class MoreInfoPage extends StatelessWidget {
                             t.account.typeTransaction,
                             t.account.reason,
                           ];
-                          final rows2 =
-                              txByAccount.map((tx) {
-                                final date =
-                                    tx.date != null
-                                        ? DateFormat(
-                                          'yyyy-MM-dd',
-                                        ).format(DateTime.parse(tx.date!))
-                                        : '';
-                                final type =
-                                    (tx.transactionType == 'income')
-                                        ? t.account.income
-                                        : t.account.expense;
-                                final reason = tx.description ?? '';
-                                return ['${tx.id ?? ''}', date, type, reason];
-                              }).toList();
+                          final rows2 = txByAccount.map((tx) {
+                            final date = tx.date != null
+                                ? DateFormat(
+                                    'yyyy-MM-dd',
+                                  ).format(DateTime.parse(tx.date!))
+                                : '';
+                            final type = (tx.transactionType == 'income')
+                                ? t.account.income
+                                : t.account.expense;
+                            final reason = tx.description ?? '';
+                            return ['${tx.id ?? ''}', date, type, reason];
+                          }).toList();
 
                           service.exportToExcelGeneric(
                             fileName:
@@ -220,7 +213,6 @@ class MoreInfoPage extends StatelessWidget {
                   ),
                 ),
               ),
-
               20.h,
 
               Padding(
@@ -243,20 +235,18 @@ class MoreInfoPage extends StatelessWidget {
                         t.account.currentBalance,
                         '${t.account.currentBalance} (KGS)',
                       ],
-                      rows:
-                          summaries.entries.map((entry) {
-                            final code = entry.key;
-                            final summary = entry.value;
-                            return [
-                              code,
-                              formatOriginal(summary.income, code),
-                              formatOriginal(summary.expense, code),
-                              formatOriginal(summary.balance, code),
-                              formatKgs(summary.balanceKgs),
-                            ];
-                          }).toList(),
+                      rows: summaries.entries.map((entry) {
+                        final code = entry.key;
+                        final summary = entry.value;
+                        return [
+                          code,
+                          formatOriginal(summary.income, code),
+                          formatOriginal(summary.expense, code),
+                          formatOriginal(summary.balance, code),
+                          formatKgs(summary.balanceKgs),
+                        ];
+                      }).toList(),
                     ),
-
                     28.h,
 
                     Text(
@@ -264,6 +254,7 @@ class MoreInfoPage extends StatelessWidget {
                       style: AppTextStyles.f16w500,
                     ),
                     12.h,
+
                     _BoxedTable(
                       headerBg: Colors.black,
                       headerFg: Colors.white,
@@ -273,22 +264,19 @@ class MoreInfoPage extends StatelessWidget {
                         t.account.typeTransaction,
                         t.account.reason,
                       ],
-                      rows:
-                          txByAccount.map((tx) {
-                            final date =
-                                tx.date != null
-                                    ? DateFormat(
-                                      'yyyy-MM-dd',
-                                    ).format(DateTime.parse(tx.date!))
-                                    : '';
+                      rows: txByAccount.map((tx) {
+                        final date = tx.date != null
+                            ? DateFormat(
+                                'yyyy-MM-dd',
+                              ).format(DateTime.parse(tx.date!))
+                            : '';
 
-                            final type =
-                                (tx.transactionType == 'income')
-                                    ? t.account.income
-                                    : t.account.expense;
-                            final reason = tx.description ?? '';
-                            return ['${tx.id ?? ''}', date, type, reason];
-                          }).toList(),
+                        final type = (tx.transactionType == 'income')
+                            ? t.account.income
+                            : t.account.expense;
+                        final reason = tx.description ?? '';
+                        return ['${tx.id ?? ''}', date, type, reason];
+                      }).toList(),
                     ),
                   ],
                 ),
@@ -388,40 +376,36 @@ class _BoxedTable extends StatelessWidget {
           children: [
             TableRow(
               decoration: BoxDecoration(color: headerBg),
-              children:
-                  headers
-                      .map(
-                        (h) => Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 14,
-                            horizontal: 12,
-                          ),
-                          child: Text(
-                            h,
-                            style: AppTextStyles.f16w500.copyWith(
-                              color: headerFg,
-                            ),
-                          ),
-                        ),
-                      )
-                      .toList(),
+              children: headers
+                  .map(
+                    (h) => Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 14,
+                        horizontal: 12,
+                      ),
+                      child: Text(
+                        h,
+                        style: AppTextStyles.f16w500.copyWith(color: headerFg),
+                      ),
+                    ),
+                  )
+                  .toList(),
             ),
 
             ...rows.map(
               (r) => TableRow(
                 decoration: const BoxDecoration(color: Colors.white),
-                children:
-                    r
-                        .map(
-                          (c) => Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 14,
-                              horizontal: 12,
-                            ),
-                            child: Text(c, style: AppTextStyles.f16w500),
-                          ),
-                        )
-                        .toList(),
+                children: r
+                    .map(
+                      (c) => Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 14,
+                          horizontal: 12,
+                        ),
+                        child: Text(c, style: AppTextStyles.f16w500),
+                      ),
+                    )
+                    .toList(),
               ),
             ),
           ],

@@ -17,32 +17,29 @@ class CurrencyBreakdown extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children:
-          totals
-              .map(
-                (item) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        item.currency,
-                        style: AppTextStyles.f14w500.copyWith(
-                          color: AppColors.greyColor,
-                          fontFamily: 'Inter',
-                        ),
-                      ),
-                      Text(
-                        formatAmount(item.amount, item.currency),
-                        style: AppTextStyles.f16w600.copyWith(
-                          fontFamily: 'Inter',
-                        ),
-                      ),
-                    ],
+      children: totals
+          .map(
+            (item) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    item.currency,
+                    style: AppTextStyles.f14w500.copyWith(
+                      color: AppColors.greyColor,
+                      fontFamily: 'Inter',
+                    ),
                   ),
-                ),
-              )
-              .toList(),
+                  Text(
+                    formatAmount(item.amount, item.currency),
+                    style: AppTextStyles.f16w600.copyWith(fontFamily: 'Inter'),
+                  ),
+                ],
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 }

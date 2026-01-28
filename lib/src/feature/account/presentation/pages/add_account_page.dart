@@ -102,7 +102,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
                     controller: nameController,
                   ),
 
-                  const SizedBox(height: 12),
+                  12.h,
                   DropDownFormField(
                     items: types,
                     label: t.account.type,
@@ -111,13 +111,14 @@ class _AddAccountPageState extends State<AddAccountPage> {
                       setState(() {
                         selectedType = val;
                         final index = types.indexOf(val ?? '');
-                        selectedTypeCode =
-                            index != -1 ? typesCodes[index] : null;
+                        selectedTypeCode = index != -1
+                            ? typesCodes[index]
+                            : null;
                       });
                       checkFormValidity();
                     },
                   ),
-                  const SizedBox(height: 12),
+                  12.h,
                   DropDownFormField(
                     items: currencies,
                     label: t.account.currency,
@@ -126,14 +127,15 @@ class _AddAccountPageState extends State<AddAccountPage> {
                       setState(() {
                         selectedCurrency = val;
                         final index = currencies.indexOf(val ?? '');
-                        selectedCurrencyCode =
-                            index != -1 ? currenciesCodes[index] : null;
+                        selectedCurrencyCode = index != -1
+                            ? currenciesCodes[index]
+                            : null;
                       });
                       checkFormValidity();
                     },
                   ),
 
-                  const SizedBox(height: 24),
+                  24.h,
 
                   BlocBuilder<MenuCubit, MenuState>(
                     builder: (context, state) {
@@ -141,20 +143,17 @@ class _AddAccountPageState extends State<AddAccountPage> {
                         return const CircularProgressIndicator();
                       }
                       return ElevatedButton(
-                        onPressed:
-                            isFormValid && !_isSubmitting
-                                ? () {
-                                  final account = AccountModel(
-                                    name: nameController.text.trim(),
-                                    accountType: selectedTypeCode ?? '',
-                                    currency: selectedCurrencyCode,
-                                  );
-                                  setState(() => _isSubmitting = true);
-                                  context.read<MenuCubit>().postAccount(
-                                    account,
-                                  );
-                                }
-                                : null,
+                        onPressed: isFormValid && !_isSubmitting
+                            ? () {
+                                final account = AccountModel(
+                                  name: nameController.text.trim(),
+                                  accountType: selectedTypeCode ?? '',
+                                  currency: selectedCurrencyCode,
+                                );
+                                setState(() => _isSubmitting = true);
+                                context.read<MenuCubit>().postAccount(account);
+                              }
+                            : null,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary200Color,
                           minimumSize: const Size(double.infinity, 50),

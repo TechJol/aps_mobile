@@ -63,7 +63,7 @@ class AccountBalanceHeader extends StatelessWidget {
                   color: AppColors.blackColor,
                 ),
               ),
-              const SizedBox(width: 8),
+              8.w,
               const Icon(Icons.add, size: 20, color: AppColors.blackColor),
             ],
           ),
@@ -80,7 +80,7 @@ class AccountBalanceHeader extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(child: balanceBlock),
-            const SizedBox(width: 12),
+            12.w,
             Flexible(child: addButton),
           ],
         );

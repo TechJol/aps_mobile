@@ -38,7 +38,7 @@ class AccountOverviewView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: ListView(
         children: [
-          const SizedBox(height: 30),
+          30.h,
           AccountBalanceHeader(
             isLoading: isRatesLoading,
             totalAmountText: formatAmount(summary.totalKgs, 'KGS'),
@@ -52,7 +52,7 @@ class AccountOverviewView extends StatelessWidget {
                 formatAmount: formatAmount,
               ),
             ),
-          const SizedBox(height: 24),
+          24.h,
           if (summary.hasAccounts)
             AccountCardsList(
               balances: summary.balances,

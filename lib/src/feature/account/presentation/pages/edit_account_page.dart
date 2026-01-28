@@ -99,6 +99,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
               ),
             ),
             24.h,
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
@@ -107,8 +108,8 @@ class _EditAccountPageState extends State<EditAccountPage> {
                     label: t.account.name,
                     controller: nameController,
                   ),
-
                   12.h,
+
                   DropDownFormField(
                     items: types,
                     label: t.account.type,
@@ -117,8 +118,9 @@ class _EditAccountPageState extends State<EditAccountPage> {
                       setState(() {
                         selectedType = val;
                         final index = types.indexOf(val ?? '');
-                        selectedTypeCode =
-                            index != -1 ? typesCodes[index] : null;
+                        selectedTypeCode = index != -1
+                            ? typesCodes[index]
+                            : null;
                       });
                       checkFormValidity();
                     },
@@ -133,32 +135,31 @@ class _EditAccountPageState extends State<EditAccountPage> {
                       setState(() {
                         selectedCurrency = val;
                         final index = currencies.indexOf(val ?? '');
-                        selectedCurrencyCode =
-                            index != -1 ? currenciesCodes[index] : null;
+                        selectedCurrencyCode = index != -1
+                            ? currenciesCodes[index]
+                            : null;
                       });
                       checkFormValidity();
                     },
                   ),
-
                   24.h,
 
                   ElevatedButton(
-                    onPressed:
-                        isFormValid
-                            ? () async {
-                              final id = widget.account.id;
-                              final account = AccountModel(
-                                name: nameController.text,
-                                currency: selectedCurrencyCode,
-                                accountType: selectedTypeCode ?? '',
-                              );
-                              await context.read<MenuCubit>().updateAccount(
-                                account,
-                                id!,
-                              );
-                              Navigator.pop(context, true);
-                            }
-                            : null,
+                    onPressed: isFormValid
+                        ? () async {
+                            final id = widget.account.id;
+                            final account = AccountModel(
+                              name: nameController.text,
+                              currency: selectedCurrencyCode,
+                              accountType: selectedTypeCode ?? '',
+                            );
+                            await context.read<MenuCubit>().updateAccount(
+                              account,
+                              id!,
+                            );
+                            Navigator.pop(context, true);
+                          }
+                        : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary200Color,
                       minimumSize: const Size(double.infinity, 50),
