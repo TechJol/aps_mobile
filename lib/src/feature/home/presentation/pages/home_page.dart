@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   ViewType selectedView = ViewType.all;
   PeriodType selectedPeriod = PeriodType.day;
+  MenuTransactionsWithAccountsSuccess? _cachedTransactionsState;
 
   static const _periodOptionsOrder = [
     PeriodType.day,
@@ -26,6 +27,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    final currentState = context.read<MenuCubit>().state;
+    if (currentState is MenuTransactionsWithAccountsSuccess) {
+      _cachedTransactionsState = currentState;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<MenuCubit>().getTransactionsWithAccounts();
       context.read<CredentialCubit>().getUserById();
@@ -35,9 +40,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final menuState = context.watch<MenuCubit>().state;
+    if (menuState is MenuTransactionsWithAccountsSuccess) {
+      _cachedTransactionsState = menuState;
+    }
     final transactionsState = menuState is MenuTransactionsWithAccountsSuccess
         ? menuState
-        : null;
+        : _cachedTransactionsState;
 
     return Scaffold(
       backgroundColor: AppColors.whiteColor,

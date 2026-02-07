@@ -3,10 +3,27 @@ import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class RecentOperationsSection extends StatelessWidget {
+class RecentOperationsSection extends StatefulWidget {
   final ViewType selectedView;
 
   const RecentOperationsSection({super.key, required this.selectedView});
+
+  @override
+  State<RecentOperationsSection> createState() =>
+      _RecentOperationsSectionState();
+}
+
+class _RecentOperationsSectionState extends State<RecentOperationsSection> {
+  MenuTransactionsWithAccountsSuccess? _cachedData;
+
+  @override
+  void initState() {
+    super.initState();
+    final currentState = context.read<MenuCubit>().state;
+    if (currentState is MenuTransactionsWithAccountsSuccess) {
+      _cachedData = currentState;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +38,7 @@ class RecentOperationsSection extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    switch (selectedView) {
+                    switch (widget.selectedView) {
                       case ViewType.all:
                         context.read<MainCubit>().change(4);
                         break;
@@ -63,11 +80,19 @@ class RecentOperationsSection extends StatelessWidget {
         BlocBuilder<MenuCubit, MenuState>(
           builder: (context, state) {
             if (state is MenuTransactionsWithAccountsSuccess) {
+              _cachedData = state;
+            }
+
+            final data = state is MenuTransactionsWithAccountsSuccess
+                ? state
+                : _cachedData;
+
+            if (data != null) {
               final transactions = _filterByViewType(
-                state.transactions,
-                selectedView,
+                data.transactions,
+                widget.selectedView,
               );
-              final partners = state.partners;
+              final partners = data.partners;
 
               if (transactions.isEmpty) {
                 return Center(child: Text(t.home.noOperations));

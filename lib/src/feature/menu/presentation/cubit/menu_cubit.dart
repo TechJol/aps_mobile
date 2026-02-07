@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:bloc/bloc.dart';
 import 'package:decimal/decimal.dart';
@@ -79,7 +81,17 @@ class MenuCubit extends Cubit<MenuState> {
   Future<void> getTransactionsWithAccounts({bool force = false}) async {
     final wasSuccess = state is MenuTransactionsWithAccountsSuccess;
     if (wasSuccess && !force) return;
-    if (!wasSuccess && !force) emit(MenuLoading());
+
+    final companyId = await _companyId();
+    if (!wasSuccess && !force) {
+      final cached = await _readCachedTransactionsSnapshot(companyId);
+      if (cached != null) {
+        partnerBalances = cached.partnerBalances ?? {};
+        emit(cached);
+      } else {
+        emit(MenuLoading());
+      }
+    }
 
     final transactionsResult = await getTransactionsUsecase();
     final accountsResult = await getAccountsUsecase();
@@ -118,8 +130,6 @@ class MenuCubit extends Cubit<MenuState> {
       return;
     }
 
-    final companyId = await _companyId();
-
     final transactions = (transactionsResult.getOrElse(() => []) as List)
         .map((e) => AllTransactionsModel.fromMap(e))
         .where((tx) => tx.company == companyId)
@@ -157,6 +167,15 @@ class MenuCubit extends Cubit<MenuState> {
         partnerTypes: partnerTypes,
         partnerBalances: balances,
       ),
+    );
+
+    await _writeCachedTransactionsSnapshot(
+      companyId: companyId,
+      transactions: transactions,
+      accounts: accounts,
+      reasons: reasons,
+      partners: partners,
+      partnerTypes: partnerTypes,
     );
   }
 
@@ -507,5 +526,71 @@ class MenuCubit extends Cubit<MenuState> {
   Future<int?> _companyId() async {
     final storage = await SharedPreferences.getInstance();
     return storage.getInt('companyId');
+  }
+
+  String _menuCacheKey(int? companyId) =>
+      'menu_transactions_cache_${companyId ?? 0}';
+
+  Future<void> _writeCachedTransactionsSnapshot({
+    required int? companyId,
+    required List<AllTransactionsModel> transactions,
+    required List<AccountModel> accounts,
+    required List<IncomeExpenseReasons> reasons,
+    required List<PartnersModel> partners,
+    required List<PartnerTypesModel> partnerTypes,
+  }) async {
+    final storage = await SharedPreferences.getInstance();
+    final payload = <String, dynamic>{
+      'transactions': transactions.map((e) => e.toMap()).toList(),
+      'accounts': accounts.map((e) => e.toMap()).toList(),
+      'reasons': reasons.map((e) => e.toMap()).toList(),
+      'partners': partners.map((e) => e.toMap()).toList(),
+      'partnerTypes': partnerTypes.map((e) => e.toMap()).toList(),
+    };
+    await storage.setString(_menuCacheKey(companyId), jsonEncode(payload));
+  }
+
+  Future<MenuTransactionsWithAccountsSuccess?> _readCachedTransactionsSnapshot(
+    int? companyId,
+  ) async {
+    final storage = await SharedPreferences.getInstance();
+    final raw = storage.getString(_menuCacheKey(companyId));
+    if (raw == null || raw.isEmpty) return null;
+
+    try {
+      final decoded = jsonDecode(raw) as Map<String, dynamic>;
+
+      final transactions = ((decoded['transactions'] as List?) ?? [])
+          .map(
+            (e) => AllTransactionsModel.fromMap(Map<String, dynamic>.from(e)),
+          )
+          .toList();
+      final accounts = ((decoded['accounts'] as List?) ?? [])
+          .map((e) => AccountModel.fromMap(Map<String, dynamic>.from(e)))
+          .toList();
+      final reasons = ((decoded['reasons'] as List?) ?? [])
+          .map(
+            (e) => IncomeExpenseReasons.fromMap(Map<String, dynamic>.from(e)),
+          )
+          .toList();
+      final partners = ((decoded['partners'] as List?) ?? [])
+          .map((e) => PartnersModel.fromMap(Map<String, dynamic>.from(e)))
+          .toList();
+      final partnerTypes = ((decoded['partnerTypes'] as List?) ?? [])
+          .map((e) => PartnerTypesModel.fromMap(Map<String, dynamic>.from(e)))
+          .toList();
+
+      final balances = calculatePartnerBalances(transactions);
+      return MenuTransactionsWithAccountsSuccess(
+        transactions: transactions,
+        accounts: accounts,
+        reasons: reasons,
+        partners: partners,
+        partnerTypes: partnerTypes,
+        partnerBalances: balances,
+      );
+    } catch (_) {
+      return null;
+    }
   }
 }

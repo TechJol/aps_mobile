@@ -17,10 +17,15 @@ class _ExpenseTransactionsPageState extends State<ExpenseTransactionsPage>
     with SingleTickerProviderStateMixin {
   OperationFilter _filter = const OperationFilter();
   late final AnimationController _controller;
+  MenuTransactionsWithAccountsSuccess? _cachedData;
 
   @override
   void initState() {
     super.initState();
+    final currentState = context.read<MenuCubit>().state;
+    if (currentState is MenuTransactionsWithAccountsSuccess) {
+      _cachedData = currentState;
+    }
     context.read<MenuCubit>().getTransactionsWithAccounts();
     context.read<CredentialCubit>().getUserById();
     _controller = AnimationController(
@@ -113,14 +118,22 @@ class _ExpenseTransactionsPageState extends State<ExpenseTransactionsPage>
               }
             },
             builder: (context, state) {
-              if (state is MenuLoading) {
+              if (state is MenuTransactionsWithAccountsSuccess) {
+                _cachedData = state;
+              }
+
+              final data = state is MenuTransactionsWithAccountsSuccess
+                  ? state
+                  : _cachedData;
+
+              if (data == null && state is MenuLoading) {
                 return const Center(child: CircularProgressIndicator());
               }
-              if (state is! MenuTransactionsWithAccountsSuccess) {
+              if (data == null) {
                 return const SizedBox.shrink();
               }
 
-              final expenses = state.transactions
+              final expenses = data.transactions
                   .where((tx) => tx.transactionType == 'expense')
                   .toList();
 
@@ -144,7 +157,7 @@ class _ExpenseTransactionsPageState extends State<ExpenseTransactionsPage>
 
               return OperationTransactionList(
                 groups: groups,
-                partners: state.partners,
+                partners: data.partners,
                 controller: _controller,
                 onRequestPartner: _handleAddPartner,
               );
