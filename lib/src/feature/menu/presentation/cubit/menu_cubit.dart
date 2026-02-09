@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:bloc/bloc.dart';
 import 'package:decimal/decimal.dart';
@@ -28,6 +26,7 @@ class MenuCubit extends Cubit<MenuState> {
   final PostReasonUsecase postReasonUsecase;
   final UpdateReasonUsecase updateReasonUsecase;
   final DeleteReasonUsecase deleteReasonUsecase;
+  final MenuLocalDataSource menuLocalDataSource;
 
   List<PartnersModel> filteredPartners = [];
   Map<int, Decimal> partnerBalances = {};
@@ -52,6 +51,7 @@ class MenuCubit extends Cubit<MenuState> {
     required this.postReasonUsecase,
     required this.updateReasonUsecase,
     required this.deleteReasonUsecase,
+    required this.menuLocalDataSource,
   }) : super(MenuInitial());
 
   void reset() {
@@ -83,11 +83,24 @@ class MenuCubit extends Cubit<MenuState> {
     if (wasSuccess && !force) return;
 
     final companyId = await _companyId();
+    final companyKey = companyId ?? 0;
     if (!wasSuccess && !force) {
-      final cached = await _readCachedTransactionsSnapshot(companyId);
+      final cached = await menuLocalDataSource.getTransactionsSnapshot(
+        companyId: companyKey,
+      );
       if (cached != null) {
-        partnerBalances = cached.partnerBalances ?? {};
-        emit(cached);
+        final balances = calculatePartnerBalances(cached.transactions);
+        partnerBalances = balances;
+        emit(
+          MenuTransactionsWithAccountsSuccess(
+            transactions: cached.transactions,
+            accounts: cached.accounts,
+            reasons: cached.reasons,
+            partners: cached.partners,
+            partnerTypes: cached.partnerTypes,
+            partnerBalances: balances,
+          ),
+        );
       } else {
         emit(MenuLoading());
       }
@@ -169,13 +182,15 @@ class MenuCubit extends Cubit<MenuState> {
       ),
     );
 
-    await _writeCachedTransactionsSnapshot(
-      companyId: companyId,
-      transactions: transactions,
-      accounts: accounts,
-      reasons: reasons,
-      partners: partners,
-      partnerTypes: partnerTypes,
+    await menuLocalDataSource.saveTransactionsSnapshot(
+      companyId: companyKey,
+      snapshot: MenuCacheSnapshot(
+        transactions: transactions,
+        accounts: accounts,
+        reasons: reasons,
+        partners: partners,
+        partnerTypes: partnerTypes,
+      ),
     );
   }
 
@@ -526,71 +541,5 @@ class MenuCubit extends Cubit<MenuState> {
   Future<int?> _companyId() async {
     final storage = await SharedPreferences.getInstance();
     return storage.getInt('companyId');
-  }
-
-  String _menuCacheKey(int? companyId) =>
-      'menu_transactions_cache_${companyId ?? 0}';
-
-  Future<void> _writeCachedTransactionsSnapshot({
-    required int? companyId,
-    required List<AllTransactionsModel> transactions,
-    required List<AccountModel> accounts,
-    required List<IncomeExpenseReasons> reasons,
-    required List<PartnersModel> partners,
-    required List<PartnerTypesModel> partnerTypes,
-  }) async {
-    final storage = await SharedPreferences.getInstance();
-    final payload = <String, dynamic>{
-      'transactions': transactions.map((e) => e.toMap()).toList(),
-      'accounts': accounts.map((e) => e.toMap()).toList(),
-      'reasons': reasons.map((e) => e.toMap()).toList(),
-      'partners': partners.map((e) => e.toMap()).toList(),
-      'partnerTypes': partnerTypes.map((e) => e.toMap()).toList(),
-    };
-    await storage.setString(_menuCacheKey(companyId), jsonEncode(payload));
-  }
-
-  Future<MenuTransactionsWithAccountsSuccess?> _readCachedTransactionsSnapshot(
-    int? companyId,
-  ) async {
-    final storage = await SharedPreferences.getInstance();
-    final raw = storage.getString(_menuCacheKey(companyId));
-    if (raw == null || raw.isEmpty) return null;
-
-    try {
-      final decoded = jsonDecode(raw) as Map<String, dynamic>;
-
-      final transactions = ((decoded['transactions'] as List?) ?? [])
-          .map(
-            (e) => AllTransactionsModel.fromMap(Map<String, dynamic>.from(e)),
-          )
-          .toList();
-      final accounts = ((decoded['accounts'] as List?) ?? [])
-          .map((e) => AccountModel.fromMap(Map<String, dynamic>.from(e)))
-          .toList();
-      final reasons = ((decoded['reasons'] as List?) ?? [])
-          .map(
-            (e) => IncomeExpenseReasons.fromMap(Map<String, dynamic>.from(e)),
-          )
-          .toList();
-      final partners = ((decoded['partners'] as List?) ?? [])
-          .map((e) => PartnersModel.fromMap(Map<String, dynamic>.from(e)))
-          .toList();
-      final partnerTypes = ((decoded['partnerTypes'] as List?) ?? [])
-          .map((e) => PartnerTypesModel.fromMap(Map<String, dynamic>.from(e)))
-          .toList();
-
-      final balances = calculatePartnerBalances(transactions);
-      return MenuTransactionsWithAccountsSuccess(
-        transactions: transactions,
-        accounts: accounts,
-        reasons: reasons,
-        partners: partners,
-        partnerTypes: partnerTypes,
-        partnerBalances: balances,
-      );
-    } catch (_) {
-      return null;
-    }
   }
 }

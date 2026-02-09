@@ -64,6 +64,7 @@ Future<void> init() async {
       updateReasonUsecase: sl.call(),
       postReasonUsecase: sl.call(),
       updateTransactionUsecase: sl.call(),
+      menuLocalDataSource: sl.call(),
     ),
   );
 
@@ -152,6 +153,10 @@ Future<void> init() async {
 
   sl.registerLazySingleton<RemoteMenuDataSource>(
     () => RemoteMenuDataSourceImpl(dio: sl.call()),
+  );
+
+  sl.registerLazySingleton<MenuLocalDataSource>(
+    () => MenuLocalDataSourceImpl(sharedPreferences: sl.call()),
   );
 
   sl.registerLazySingleton<PaymentRemoteDataSource>(
