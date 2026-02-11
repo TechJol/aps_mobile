@@ -1,22 +1,22 @@
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:aps_mobile/src/feature/income/presentation/cubit/income_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class IncomeCubit extends Cubit<IncomeState> {
   IncomeCubit({
     required this.addIncomeUsecase,
     required this.getAccountUsecase,
     required this.getIncomeExpenseReasonUsecase,
+    required this.getStoredCompanyIdUsecase,
   }) : super(const IncomeState());
 
   final AddIncomeUsecase addIncomeUsecase;
   final GetAccountUsecase getAccountUsecase;
   final GetIncomeExpenseReasonUsecase getIncomeExpenseReasonUsecase;
+  final GetStoredCompanyIdUsecase getStoredCompanyIdUsecase;
 
   Future<void> addIncome(IncomeAndComeoutModel income) async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-    var companyId = storage.getInt('companyId');
+    final companyId = await getStoredCompanyIdUsecase();
 
     final inc = IncomeAndComeoutModel(
       account: income.account,
@@ -49,8 +49,7 @@ class IncomeCubit extends Cubit<IncomeState> {
           .map((e) => AccountModel.fromMap(e as Map<String, dynamic>))
           .toList();
 
-      SharedPreferences storage = await SharedPreferences.getInstance();
-      final companyId = storage.getInt('companyId');
+      final companyId = await getStoredCompanyIdUsecase();
 
       final filteredAccounts = accounts
           .where((account) => account.company == companyId)
@@ -70,8 +69,7 @@ class IncomeCubit extends Cubit<IncomeState> {
           .map((e) => IncomeExpenseReasons.fromMap(e as Map<String, dynamic>))
           .toList();
 
-      SharedPreferences storage = await SharedPreferences.getInstance();
-      final companyId = storage.getInt('companyId');
+      final companyId = await getStoredCompanyIdUsecase();
 
       final filteredReasons = reasons
           .where((reason) => reason.company == companyId)

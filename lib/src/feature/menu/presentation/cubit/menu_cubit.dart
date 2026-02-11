@@ -2,7 +2,6 @@ import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:bloc/bloc.dart';
 import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'menu_state.dart';
 
@@ -27,6 +26,7 @@ class MenuCubit extends Cubit<MenuState> {
   final UpdateReasonUsecase updateReasonUsecase;
   final DeleteReasonUsecase deleteReasonUsecase;
   final MenuLocalDataSource menuLocalDataSource;
+  final GetStoredCompanyIdUsecase getStoredCompanyIdUsecase;
 
   List<PartnersModel> filteredPartners = [];
   Map<int, Decimal> partnerBalances = {};
@@ -52,6 +52,7 @@ class MenuCubit extends Cubit<MenuState> {
     required this.updateReasonUsecase,
     required this.deleteReasonUsecase,
     required this.menuLocalDataSource,
+    required this.getStoredCompanyIdUsecase,
   }) : super(MenuInitial());
 
   void reset() {
@@ -538,8 +539,5 @@ class MenuCubit extends Cubit<MenuState> {
     }
   }
 
-  Future<int?> _companyId() async {
-    final storage = await SharedPreferences.getInstance();
-    return storage.getInt('companyId');
-  }
+  Future<int?> _companyId() async => getStoredCompanyIdUsecase();
 }

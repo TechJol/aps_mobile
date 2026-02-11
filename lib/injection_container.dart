@@ -31,6 +31,7 @@ Future<void> init() async {
       addIncomeUsecase: sl.call(),
       getAccountUsecase: sl.call(),
       getIncomeExpenseReasonUsecase: sl.call(),
+      getStoredCompanyIdUsecase: sl.call(),
     ),
   );
 
@@ -65,6 +66,7 @@ Future<void> init() async {
       postReasonUsecase: sl.call(),
       updateTransactionUsecase: sl.call(),
       menuLocalDataSource: sl.call(),
+      getStoredCompanyIdUsecase: sl.call(),
     ),
   );
 
@@ -108,6 +110,9 @@ Future<void> init() async {
   sl.registerLazySingleton(() => PostReasonUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => DeleteUserByIdUsecase(repository: sl.call()));
   sl.registerLazySingleton(() => GetStoredUserIdUsecase(repository: sl.call()));
+  sl.registerLazySingleton(
+    () => GetStoredCompanyIdUsecase(repository: sl.call()),
+  );
   sl.registerLazySingleton(() => GetPaymentPlansUsecase(repository: sl.call()));
   sl.registerLazySingleton(
     () => GetPaymentPeriodsUsecase(repository: sl.call()),

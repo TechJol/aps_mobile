@@ -44,4 +44,10 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     final storage = await SharedPreferences.getInstance();
     return storage.getInt('userId');
   }
+
+  @override
+  Future<int?> getCompanyId() async {
+    final storage = await SharedPreferences.getInstance();
+    return storage.getInt('companyId');
+  }
 }

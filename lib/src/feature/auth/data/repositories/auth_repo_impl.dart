@@ -85,4 +85,9 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<int?> getStoredUserId() async {
     return authLocalDataSource.getUserId();
   }
+
+  @override
+  Future<int?> getStoredCompanyId() async {
+    return authLocalDataSource.getCompanyId();
+  }
 }
