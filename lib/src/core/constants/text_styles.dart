@@ -4,6 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTextStyles {
   static TextStyle _style(double size, FontWeight weight) =>
       GoogleFonts.nunito(fontSize: size, fontWeight: weight);
+  static TextStyle _titleStyle(double size, FontWeight weight) =>
+      GoogleFonts.manrope(
+        fontSize: size,
+        fontWeight: weight,
+      );
 
   static final f9w400 = _style(9, FontWeight.w400);
   static final f10w500 = _style(10, FontWeight.w500);
@@ -19,16 +24,16 @@ class AppTextStyles {
   static final f18w400 = _style(18, FontWeight.w400);
   static final f18w500 = _style(18, FontWeight.w500);
   static final f18w600 = _style(18, FontWeight.w600);
-  static final f18w700 = _style(18, FontWeight.w700);
-  static final f20w400 = _style(20, FontWeight.w400);
-  static final f20w500 = _style(20, FontWeight.w500);
-  static final f20w600 = _style(20, FontWeight.w600);
-  static final f20w700 = _style(20, FontWeight.w700);
-  static final f22w500 = _style(22, FontWeight.w500);
-  static final f24w400 = _style(24, FontWeight.w400);
-  static final f24w600 = _style(24, FontWeight.w600);
-  static final f24w700 = _style(24, FontWeight.w700);
-  static final f26w600 = _style(26, FontWeight.w600);
-  static final f28w500 = _style(28, FontWeight.w500);
-  static final f34w600 = _style(34, FontWeight.w600);
+  static final f18w700 = _titleStyle(18, FontWeight.w700);
+  static final f20w400 = _titleStyle(20, FontWeight.w400);
+  static final f20w500 = _titleStyle(20, FontWeight.w500);
+  static final f20w600 = _titleStyle(20, FontWeight.w600);
+  static final f20w700 = _titleStyle(20, FontWeight.w700);
+  static final f22w500 = _titleStyle(22, FontWeight.w500);
+  static final f24w400 = _titleStyle(24, FontWeight.w400);
+  static final f24w600 = _titleStyle(24, FontWeight.w600);
+  static final f24w700 = _titleStyle(24, FontWeight.w700);
+  static final f26w600 = _titleStyle(26, FontWeight.w600);
+  static final f28w500 = _titleStyle(28, FontWeight.w500);
+  static final f34w600 = _titleStyle(34, FontWeight.w600);
 }
