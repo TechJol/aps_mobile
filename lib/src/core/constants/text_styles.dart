@@ -1,145 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTextStyles {
-  static const f9w400 = TextStyle(
-    fontWeight: FontWeight.w400,
-    fontSize: 9,
-    fontFamily: 'Inter',
-  );
+  static TextStyle _style(double size, FontWeight weight) =>
+      GoogleFonts.nunito(fontSize: size, fontWeight: weight);
 
-  static const f10w500 = TextStyle(
-    fontWeight: FontWeight.w500,
-    fontSize: 10,
-    fontFamily: 'Inter',
-  );
-
-  static const f12w400 = TextStyle(
-    fontWeight: FontWeight.w400,
-    fontSize: 12,
-    fontFamily: 'Inter',
-  );
-  static const f12w500 = TextStyle(
-    fontWeight: FontWeight.w500,
-    fontSize: 12,
-    fontFamily: 'Inter',
-  );
-
-  static const f12w600 = TextStyle(
-    fontWeight: FontWeight.w600,
-    fontSize: 12,
-    fontFamily: 'Inter',
-  );
-
-  static const f14w400 = TextStyle(
-    fontWeight: FontWeight.w400,
-    fontSize: 14,
-    fontFamily: 'Inter',
-  );
-  static const f14w500 = TextStyle(
-    fontWeight: FontWeight.w500,
-    fontSize: 14,
-    fontFamily: 'Inter',
-  );
-  static const f14w600 = TextStyle(
-    fontWeight: FontWeight.w600,
-    fontSize: 14,
-    fontFamily: 'Inter',
-  );
-
-  static const f16w400 = TextStyle(
-    fontWeight: FontWeight.w400,
-    fontSize: 16,
-    fontFamily: 'Inter',
-  );
-  static const f16w500 = TextStyle(
-    fontWeight: FontWeight.w500,
-    fontSize: 16,
-    fontFamily: 'Inter',
-  );
-  static const f16w600 = TextStyle(
-    fontWeight: FontWeight.w600,
-    fontSize: 16,
-    fontFamily: 'Inter',
-  );
-
-  static const f18w400 = TextStyle(
-    fontWeight: FontWeight.w400,
-    fontSize: 18,
-    fontFamily: 'Inter',
-  );
-  static const f18w500 = TextStyle(
-    fontWeight: FontWeight.w500,
-    fontSize: 18,
-    fontFamily: 'Inter',
-  );
-  static const f18w600 = TextStyle(
-    fontWeight: FontWeight.w600,
-    fontSize: 18,
-    fontFamily: 'Inter',
-  );
-
-  static const f18w700 = TextStyle(
-    fontWeight: FontWeight.w700,
-    fontSize: 18,
-    fontFamily: 'Inter',
-  );
-
-  static const f20w400 = TextStyle(
-    fontWeight: FontWeight.w400,
-    fontSize: 20,
-    fontFamily: 'Inter',
-  );
-  static const f20w500 = TextStyle(
-    fontWeight: FontWeight.w500,
-    fontSize: 20,
-    fontFamily: 'Inter',
-  );
-  static const f20w600 = TextStyle(
-    fontWeight: FontWeight.w600,
-    fontSize: 20,
-    fontFamily: 'Inter',
-  );
-  static const f20w700 = TextStyle(
-    fontWeight: FontWeight.w700,
-    fontSize: 20,
-    fontFamily: 'Inter',
-  );
-
-  static const f22w500 = TextStyle(
-    fontWeight: FontWeight.w500,
-    fontSize: 22,
-    fontFamily: 'Inter',
-  );
-
-  static const f24w400 = TextStyle(
-    fontWeight: FontWeight.w400,
-    fontSize: 24,
-    fontFamily: 'Inter',
-  );
-  static const f24w600 = TextStyle(
-    fontWeight: FontWeight.w600,
-    fontSize: 24,
-    fontFamily: 'Inter',
-  );
-  static const f24w700 = TextStyle(
-    fontWeight: FontWeight.w700,
-    fontSize: 24,
-    fontFamily: 'Inter',
-  );
-
-  static const f26w600 = TextStyle(
-    fontWeight: FontWeight.w600,
-    fontSize: 26,
-    fontFamily: 'Inter',
-  );
-  static const f28w500 = TextStyle(
-    fontWeight: FontWeight.w500,
-    fontSize: 28,
-    fontFamily: 'Inter',
-  );
-  static const f34w600 = TextStyle(
-    fontWeight: FontWeight.w600,
-    fontSize: 34,
-    fontFamily: 'Inter',
-  );
+  static final f9w400 = _style(9, FontWeight.w400);
+  static final f10w500 = _style(10, FontWeight.w500);
+  static final f12w400 = _style(12, FontWeight.w400);
+  static final f12w500 = _style(12, FontWeight.w500);
+  static final f12w600 = _style(12, FontWeight.w600);
+  static final f14w400 = _style(14, FontWeight.w400);
+  static final f14w500 = _style(14, FontWeight.w500);
+  static final f14w600 = _style(14, FontWeight.w600);
+  static final f16w400 = _style(16, FontWeight.w400);
+  static final f16w500 = _style(16, FontWeight.w500);
+  static final f16w600 = _style(16, FontWeight.w600);
+  static final f18w400 = _style(18, FontWeight.w400);
+  static final f18w500 = _style(18, FontWeight.w500);
+  static final f18w600 = _style(18, FontWeight.w600);
+  static final f18w700 = _style(18, FontWeight.w700);
+  static final f20w400 = _style(20, FontWeight.w400);
+  static final f20w500 = _style(20, FontWeight.w500);
+  static final f20w600 = _style(20, FontWeight.w600);
+  static final f20w700 = _style(20, FontWeight.w700);
+  static final f22w500 = _style(22, FontWeight.w500);
+  static final f24w400 = _style(24, FontWeight.w400);
+  static final f24w600 = _style(24, FontWeight.w600);
+  static final f24w700 = _style(24, FontWeight.w700);
+  static final f26w600 = _style(26, FontWeight.w600);
+  static final f28w500 = _style(28, FontWeight.w500);
+  static final f34w600 = _style(34, FontWeight.w600);
 }

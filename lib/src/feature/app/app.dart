@@ -4,6 +4,7 @@ import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -29,6 +30,8 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromARGB(255, 147, 90, 246),
           ),
+          textTheme: GoogleFonts.nunitoTextTheme(),
+          primaryTextTheme: GoogleFonts.nunitoTextTheme(),
         ),
         locale: flutterLocale,
         supportedLocales: AppLocaleUtils.supportedLocales,
