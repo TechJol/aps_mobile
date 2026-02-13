@@ -27,25 +27,8 @@ class MyApp extends StatelessWidget {
         title: 'SoftkgPro',
         theme: ThemeData(
           useMaterial3: true,
-          textTheme: GoogleFonts.nunitoTextTheme().copyWith(
-            displayLarge: GoogleFonts.manrope(fontWeight: FontWeight.w700),
-            displayMedium: GoogleFonts.manrope(fontWeight: FontWeight.w700),
-            displaySmall: GoogleFonts.manrope(fontWeight: FontWeight.w700),
-            headlineLarge: GoogleFonts.manrope(fontWeight: FontWeight.w700),
-            headlineMedium: GoogleFonts.manrope(fontWeight: FontWeight.w700),
-            headlineSmall: GoogleFonts.manrope(fontWeight: FontWeight.w700),
-            titleLarge: GoogleFonts.manrope(fontWeight: FontWeight.w600),
-            titleMedium: GoogleFonts.manrope(fontWeight: FontWeight.w600),
-            titleSmall: GoogleFonts.manrope(fontWeight: FontWeight.w600),
-          ),
+          textTheme: GoogleFonts.nunitoTextTheme(),
           primaryTextTheme: GoogleFonts.nunitoTextTheme(),
-          appBarTheme: AppBarTheme(
-            titleTextStyle: GoogleFonts.manrope(
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-              color: AppColors.blackColor,
-            ),
-          ),
         ),
         locale: flutterLocale,
         supportedLocales: AppLocaleUtils.supportedLocales,
