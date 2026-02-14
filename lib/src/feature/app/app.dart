@@ -1,10 +1,12 @@
 import 'package:aps_mobile/injection_container.dart' as di;
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:upgrader/upgrader.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -44,6 +46,13 @@ class MyApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
+        builder: (context, child) {
+          final body = child ?? const SizedBox.shrink();
+          if (defaultTargetPlatform == TargetPlatform.iOS) {
+            return UpgradeAlert(child: body);
+          }
+          return body;
+        },
         onGenerateRoute: RouteGenerator.onGenerate,
         initialRoute: '/',
 
