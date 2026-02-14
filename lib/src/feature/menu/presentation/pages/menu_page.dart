@@ -53,11 +53,10 @@ class _MenuPageState extends State<MenuPage> {
     ];
 
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: t.menu.menuTitle,
-
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {

@@ -15,6 +15,7 @@ class OperationFilters extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final options = ViewType.values;
+    final scheme = Theme.of(context).colorScheme;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -55,7 +56,7 @@ class OperationFilters extends StatelessWidget {
                 width: 100,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: isSelected ? Colors.black : Colors.white,
+                  color: isSelected ? scheme.onSurface : scheme.surface,
                   borderRadius: BorderRadius.circular(25),
                 ),
                 child: SvgPicture.asset(
@@ -64,7 +65,7 @@ class OperationFilters extends StatelessWidget {
                   width: 18,
                   height: 18,
                   colorFilter: ColorFilter.mode(
-                    isSelected ? Colors.white : Colors.black,
+                    isSelected ? scheme.surface : scheme.onSurface,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -73,10 +74,10 @@ class OperationFilters extends StatelessWidget {
             30.h,
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.w600,
-                fontFamily: 'Inter',
                 fontSize: 16,
+                color: scheme.onSurface,
               ),
             ),
           ],

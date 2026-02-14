@@ -22,6 +22,7 @@ class ExpandableMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -32,7 +33,9 @@ class ExpandableMenuItem extends StatelessWidget {
             width: double.infinity,
             height: 68,
             decoration: BoxDecoration(
-              color: expanded ? AppColors.primary50Color : Colors.transparent,
+              color: expanded
+                  ? AppColors.primary50Color.withValues(alpha: 0.2)
+                  : Colors.transparent,
               borderRadius: BorderRadius.circular(12),
             ),
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
@@ -47,12 +50,28 @@ class ExpandableMenuItem extends StatelessWidget {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: SvgPicture.asset(icon),
+                    child: SvgPicture.asset(
+                      icon,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
-                Expanded(child: Text(title, style: AppTextStyles.f16w500)),
-                Icon(expanded ? Icons.expand_less : Icons.expand_more),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: AppTextStyles.f16w500.copyWith(
+                      color: scheme.onSurface,
+                    ),
+                  ),
+                ),
+                Icon(
+                  expanded ? Icons.expand_less : Icons.expand_more,
+                  color: scheme.onSurfaceVariant,
+                ),
               ],
             ),
           ),
@@ -61,7 +80,7 @@ class ExpandableMenuItem extends StatelessWidget {
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              color: const Color(0xFFF3F4F7),
+              color: scheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
             ),
             margin: const EdgeInsets.only(top: 8),
@@ -76,16 +95,21 @@ class ExpandableMenuItem extends StatelessWidget {
                         vertical: 16,
                         horizontal: 24,
                       ),
-                      child: Text(children[i], style: AppTextStyles.f14w400),
+                      child: Text(
+                        children[i],
+                        style: AppTextStyles.f14w400.copyWith(
+                          color: scheme.onSurface,
+                        ),
+                      ),
                     ),
                   ),
                   if (i != children.length - 1)
-                    const Divider(
+                    Divider(
                       height: 1,
                       thickness: 1,
                       indent: 24,
                       endIndent: 24,
-                      color: Color(0xFFE0E0E0),
+                      color: scheme.outlineVariant,
                     ),
                 ],
               ],

@@ -23,6 +23,7 @@ class TopSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     if (data == null) {
       return SizedBox(height: 240, child: Text(t.home.noOperations));
     }
@@ -58,7 +59,7 @@ class TopSection extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: scheme.surface,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(
@@ -70,10 +71,10 @@ class TopSection extends StatelessWidget {
                     alignment: Alignment.topLeft,
                     child: Text(
                       periodLabel(selectedPeriod),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w600,
-                        fontFamily: 'Inter',
+                        color: scheme.onSurface,
                       ),
                     ),
                   ),
@@ -100,9 +101,9 @@ class TopSection extends StatelessWidget {
                             child: Text(
                               t.home.noData,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 13,
-                                color: Colors.grey,
+                                color: scheme.onSurfaceVariant,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -143,11 +144,10 @@ class TopSection extends StatelessWidget {
                             duration: const Duration(milliseconds: 200),
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
-                              fontFamily: 'Inter',
                               fontSize: 13,
                               color: isSelected
                                   ? AppColors.primaryColor
-                                  : Colors.grey,
+                                  : scheme.onSurfaceVariant,
                             ),
                             child: Text(periodLabel(period)),
                           ),
@@ -298,10 +298,10 @@ class _CircleIcon extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.grey.shade200,
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
         ),
         padding: const EdgeInsets.all(5),
-        child: Icon(icon, size: 20),
+        child: Icon(icon, size: 20, color: Theme.of(context).colorScheme.onSurface),
       ),
     );
   }

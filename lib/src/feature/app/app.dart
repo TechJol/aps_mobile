@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:upgrader/upgrader.dart';
 
 class MyApp extends StatelessWidget {
@@ -18,92 +17,94 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => di.sl<MainCubit>()),
+        BlocProvider(create: (context) => di.sl<ThemeCubit>()..loadTheme()),
         BlocProvider(create: (context) => di.sl<CredentialCubit>()),
         BlocProvider(create: (context) => di.sl<AuthCubit>()..appStarted()),
         BlocProvider(create: (context) => di.sl<IncomeCubit>()),
         BlocProvider(create: (context) => di.sl<MenuCubit>()),
         BlocProvider(create: (context) => di.sl<PaymentCubit>()),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'SoftkgPro',
-        theme: ThemeData(
-          useMaterial3: true,
-          textTheme: GoogleFonts.nunitoTextTheme(),
-          primaryTextTheme: GoogleFonts.nunitoTextTheme(),
-        ),
-        locale: flutterLocale,
-        supportedLocales: AppLocaleUtils.supportedLocales,
-        localeResolutionCallback: (locale, supported) {
-          if (locale == null) return flutterLocale;
-          for (final s in supported) {
-            if (s.languageCode == locale.languageCode) return s;
-          }
-          return flutterLocale;
-        },
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-        ],
-        builder: (context, child) {
-          final body = child ?? const SizedBox.shrink();
-          if (defaultTargetPlatform == TargetPlatform.iOS) {
-            return UpgradeAlert(child: body);
-          }
-          return body;
-        },
-        onGenerateRoute: RouteGenerator.onGenerate,
-        initialRoute: '/',
+      child: BlocBuilder<ThemeCubit, ThemeMode>(
+        builder: (context, themeMode) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'SoftkgPro',
+          theme: AppTheme.light(),
+          darkTheme: AppTheme.dark(),
+          themeMode: themeMode,
+          locale: flutterLocale,
+          supportedLocales: AppLocaleUtils.supportedLocales,
+          localeResolutionCallback: (locale, supported) {
+            if (locale == null) return flutterLocale;
+            for (final s in supported) {
+              if (s.languageCode == locale.languageCode) return s;
+            }
+            return flutterLocale;
+          },
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          builder: (context, child) {
+            final body = child ?? const SizedBox.shrink();
+            if (defaultTargetPlatform == TargetPlatform.iOS) {
+              return UpgradeAlert(child: body);
+            }
+            return body;
+          },
+          onGenerateRoute: RouteGenerator.onGenerate,
+          initialRoute: '/',
 
-        routes: {
-          '/': (context) => _UpdateOnce(
-            child: MultiBlocListener(
-              listeners: [
-                BlocListener<AuthCubit, AuthState>(
-                  listenWhen: (previous, current) => current is UnAuthenticated,
-                  listener: (context, state) {
-                    context.read<MenuCubit>().reset();
-                    context.read<IncomeCubit>().clearAll();
-                    context.read<MainCubit>().reset();
+          routes: {
+            '/': (context) => _UpdateOnce(
+              child: MultiBlocListener(
+                listeners: [
+                  BlocListener<AuthCubit, AuthState>(
+                    listenWhen: (previous, current) =>
+                        current is UnAuthenticated,
+                    listener: (context, state) {
+                      context.read<MenuCubit>().reset();
+                      context.read<IncomeCubit>().clearAll();
+                      context.read<MainCubit>().reset();
+                    },
+                  ),
+                  // BlocListener<AuthCubit, AuthState>(
+                  //   listenWhen: (previous, current) =>
+                  //       previous is! Authenticated && current is Authenticated,
+                  //   listener: (context, state) {
+                  //     WidgetsBinding.instance.addPostFrameCallback((_) {
+                  //       if (!context.mounted) return;
+                  //       () async {
+                  //         await context.read<PaymentCubit>().fetchSubscriptions();
+                  //         if (!context.mounted) return;
+                  //         final paymentState = context.read<PaymentCubit>().state;
+                  //         if (paymentState.activeSubscription != null) return;
+
+                  //         showDialog<void>(
+                  //           context: context,
+                  //           barrierDismissible: false,
+                  //           builder: (dialogContext) => PaymentAlertDialog(
+                  //             onClose: () => Navigator.of(dialogContext).pop(),
+                  //           ),
+                  //         );
+                  //       }();
+                  //     });
+                  //   },
+                  // ),
+                ],
+                child: BlocBuilder<AuthCubit, AuthState>(
+                  builder: (context, state) {
+                    if (state is Authenticated) return const MainView();
+                    if (state is UnAuthenticated) {
+                      return const AuthPagerPage();
+                    }
+                    return const SizedBox.shrink();
                   },
                 ),
-                // BlocListener<AuthCubit, AuthState>(
-                //   listenWhen: (previous, current) =>
-                //       previous is! Authenticated && current is Authenticated,
-                //   listener: (context, state) {
-                //     WidgetsBinding.instance.addPostFrameCallback((_) {
-                //       if (!context.mounted) return;
-                //       () async {
-                //         await context.read<PaymentCubit>().fetchSubscriptions();
-                //         if (!context.mounted) return;
-                //         final paymentState = context.read<PaymentCubit>().state;
-                //         if (paymentState.activeSubscription != null) return;
-
-                //         showDialog<void>(
-                //           context: context,
-                //           barrierDismissible: false,
-                //           builder: (dialogContext) => PaymentAlertDialog(
-                //             onClose: () => Navigator.of(dialogContext).pop(),
-                //           ),
-                //         );
-                //       }();
-                //     });
-                //   },
-                // ),
-              ],
-              child: BlocBuilder<AuthCubit, AuthState>(
-                builder: (context, state) {
-                  if (state is Authenticated) return const MainView();
-                  if (state is UnAuthenticated) {
-                    return const AuthPagerPage();
-                  }
-                  return const SizedBox.shrink();
-                },
               ),
             ),
-          ),
-        },
+          },
+        ),
       ),
     );
   }

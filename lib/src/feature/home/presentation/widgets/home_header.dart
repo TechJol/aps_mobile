@@ -24,11 +24,12 @@ class HomeHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20),
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: Color(0xFFF3F4F7),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest,
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(20),
           bottomRight: Radius.circular(20),

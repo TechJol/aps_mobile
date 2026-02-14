@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final menuState = context.watch<MenuCubit>().state;
+    final scheme = Theme.of(context).colorScheme;
     if (menuState is MenuTransactionsWithAccountsSuccess) {
       _cachedTransactionsState = menuState;
     }
@@ -48,9 +49,9 @@ class _HomePageState extends State<HomePage> {
         : _cachedTransactionsState;
 
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF3F4F7),
+        backgroundColor: scheme.surface,
         title: Row(
           children: [
             SizedBox(
@@ -74,7 +75,7 @@ class _HomePageState extends State<HomePage> {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: scheme.surface,
                 borderRadius: BorderRadius.circular(100),
               ),
               child: IconButton(
@@ -87,7 +88,11 @@ class _HomePageState extends State<HomePage> {
                     context.read<MenuCubit>().getTransactionsWithAccounts();
                   }
                 },
-                icon: const Icon(Icons.more_vert_outlined, size: 28),
+                icon: Icon(
+                  Icons.more_vert_outlined,
+                  size: 28,
+                  color: scheme.onSurface,
+                ),
               ),
             ),
           ),

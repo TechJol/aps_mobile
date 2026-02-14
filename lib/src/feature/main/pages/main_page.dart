@@ -28,6 +28,7 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = TranslationProvider.of(context).flutterLocale;
+    final scheme = Theme.of(context).colorScheme;
 
     final currentIndex = context.watch<MainCubit>().state;
 
@@ -36,9 +37,9 @@ class MainScreen extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         key: ValueKey('bn_${locale.languageCode}'),
         elevation: 1,
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: scheme.surface,
         selectedItemColor: AppColors.buttonColor,
-        unselectedItemColor: AppColors.blackColor,
+        unselectedItemColor: scheme.onSurfaceVariant,
         selectedLabelStyle: const TextStyle(height: 2),
         unselectedLabelStyle: const TextStyle(height: 2),
         showSelectedLabels: true,
@@ -69,7 +70,7 @@ class MainScreen extends StatelessWidget {
               colorFilter: ColorFilter.mode(
                 currentIndex == 0
                     ? AppColors.buttonColor
-                    : AppColors.blackColor,
+                    : scheme.onSurfaceVariant,
                 BlendMode.srcIn,
               ),
             ),
@@ -81,7 +82,7 @@ class MainScreen extends StatelessWidget {
               colorFilter: ColorFilter.mode(
                 currentIndex == 1
                     ? AppColors.buttonColor
-                    : AppColors.blackColor,
+                    : scheme.onSurfaceVariant,
                 BlendMode.srcIn,
               ),
             ),
@@ -93,7 +94,7 @@ class MainScreen extends StatelessWidget {
               colorFilter: ColorFilter.mode(
                 currentIndex == 2
                     ? AppColors.buttonColor
-                    : AppColors.blackColor,
+                    : scheme.onSurfaceVariant,
                 BlendMode.srcIn,
               ),
             ),
@@ -105,7 +106,7 @@ class MainScreen extends StatelessWidget {
               colorFilter: ColorFilter.mode(
                 currentIndex == 3
                     ? AppColors.buttonColor
-                    : AppColors.blackColor,
+                    : scheme.onSurfaceVariant,
                 BlendMode.srcIn,
               ),
             ),
@@ -117,7 +118,7 @@ class MainScreen extends StatelessWidget {
               colorFilter: ColorFilter.mode(
                 currentIndex == 4
                     ? AppColors.buttonColor
-                    : AppColors.blackColor,
+                    : scheme.onSurfaceVariant,
                 BlendMode.srcIn,
               ),
             ),

@@ -16,6 +16,7 @@ class MenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -31,11 +32,20 @@ class MenuItem extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset(icon),
+                child: SvgPicture.asset(
+                  icon,
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
+                ),
               ),
             ),
             const SizedBox(width: 12),
-            Text(title, style: AppTextStyles.f16w500),
+            Text(
+              title,
+              style: AppTextStyles.f16w500.copyWith(color: scheme.onSurface),
+            ),
           ],
         ),
       ),

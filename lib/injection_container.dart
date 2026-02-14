@@ -10,6 +10,7 @@ final sl = GetIt.instance;
 Future<void> init() async {
   //! Bloc
   sl.registerFactory(() => MainCubit());
+  sl.registerLazySingleton(() => ThemeCubit(sharedPreferences: sl.call()));
 
   sl.registerFactory(
     () => CredentialCubit(

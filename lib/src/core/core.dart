@@ -11,3 +11,4 @@ export 'utils/local_service.dart';
 export 'enums/enums.dart';
 export 'I10n/i10n.dart';
 export 'error/error.dart';
+export 'theme/theme.dart';

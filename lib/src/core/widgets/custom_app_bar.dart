@@ -9,6 +9,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return AppBar(
       backgroundColor: backgroundColor,
       centerTitle: false,
@@ -18,16 +19,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: scheme.surface,
             borderRadius: BorderRadius.circular(40),
           ),
           child: IconButton(
             onPressed: () async {
               Navigator.pop(context, true);
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.arrow_back_ios,
-              color: Colors.black,
+              color: scheme.onSurface,
               size: 16,
             ),
           ),

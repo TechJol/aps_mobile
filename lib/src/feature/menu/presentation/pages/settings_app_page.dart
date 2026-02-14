@@ -2,6 +2,7 @@
 
 import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsAppPage extends StatelessWidget {
@@ -13,9 +14,9 @@ class SettingsAppPage extends StatelessWidget {
     final langLabel = _langLabel(currentLocale);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: t.menu.settings,
       ),
       body: Padding(
@@ -27,7 +28,7 @@ class SettingsAppPage extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                color: AppColors.backroundColor,
+                color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
@@ -98,12 +99,62 @@ class SettingsAppPage extends StatelessWidget {
                             ),
                             Icon(
                               Icons.chevron_right,
-                              color: AppColors.greyColor,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurfaceVariant,
                             ),
                           ],
                         ),
                       ],
                     ),
+                  ),
+                  16.h,
+                  Divider(
+                    thickness: 0.5,
+                    color: Theme.of(context).dividerColor,
+                  ),
+                  12.h,
+                  BlocBuilder<ThemeCubit, ThemeMode>(
+                    builder: (context, mode) {
+                      final isDark = mode == ThemeMode.dark;
+                      final modeLabel = isDark
+                          ? t.menu.theme.dark
+                          : t.menu.theme.light;
+
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            t.menu.theme.title,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                modeLabel,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                              8.w,
+                              Switch(
+                                value: isDark,
+                                onChanged: (value) {
+                                  context.read<ThemeCubit>().toggleDark(value);
+                                },
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),

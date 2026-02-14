@@ -27,6 +27,7 @@ class _RecentOperationsSectionState extends State<RecentOperationsSection> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -61,21 +62,21 @@ class _RecentOperationsSectionState extends State<RecentOperationsSection> {
                   child: Text(
                     t.home.seeAll,
                     style: AppTextStyles.f14w500.copyWith(
-                      color: AppColors.smallTextGreyColor,
+                      color: scheme.onSurfaceVariant,
                     ),
                   ),
                 ),
-                const Icon(
+                Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 12,
-                  color: AppColors.smallTextGreyColor,
+                  color: scheme.onSurfaceVariant,
                 ),
               ],
             ),
           ],
         ),
         12.h,
-        const Divider(thickness: 0.3, color: AppColors.smallTextGreyColor),
+        Divider(thickness: 0.3, color: scheme.outlineVariant),
         const SizedBox(height: 12),
         BlocBuilder<MenuCubit, MenuState>(
           builder: (context, state) {
@@ -166,7 +167,7 @@ class _RecentOperationsSectionState extends State<RecentOperationsSection> {
                                 Text(
                                   formattedDate,
                                   style: AppTextStyles.f12w400.copyWith(
-                                    color: AppColors.smallTextGreyColor,
+                                    color: scheme.onSurfaceVariant,
                                   ),
                                 ),
                               ],
