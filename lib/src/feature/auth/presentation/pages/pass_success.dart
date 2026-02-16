@@ -19,8 +19,9 @@ class _PassSuccessPageState extends State<PassSuccessPage> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 70),
         child: Column(
@@ -44,7 +45,6 @@ class _PassSuccessPageState extends State<PassSuccessPage> {
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 22,
-                  fontFamily: 'Inter',
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -57,8 +57,7 @@ class _PassSuccessPageState extends State<PassSuccessPage> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
-                fontFamily: 'Inter',
-                color: Colors.grey[600],
+                color: scheme.onSurfaceVariant,
               ),
             ),
 
@@ -73,7 +72,7 @@ class _PassSuccessPageState extends State<PassSuccessPage> {
                     Navigator.pushReplacementNamed(context, AppRoutes.main);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF661EFB),
+                    backgroundColor: AppColors.primary200Color,
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -82,7 +81,6 @@ class _PassSuccessPageState extends State<PassSuccessPage> {
                   child: const Text(
                     "Вернуться на главную",
                     style: TextStyle(
-                      fontFamily: 'Inter',
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: Colors.white,

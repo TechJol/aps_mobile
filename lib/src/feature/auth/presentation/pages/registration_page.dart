@@ -134,17 +134,19 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
       borderSide: isError
           ? const BorderSide(color: Colors.red, width: 1.5)
           : hasText
-          ? const BorderSide(color: Color(0xFF661EFB), width: 1.5)
+          ? const BorderSide(color: AppColors.primary200Color, width: 1.5)
           : BorderSide.none,
     );
   }
 
   Widget _buildField({
+    required BuildContext context,
     required TextEditingController controller,
     required String hint,
     bool isPassword = false,
     String? errorText,
   }) {
+    final scheme = Theme.of(context).colorScheme;
     final hasText = controller.text.trim().isNotEmpty;
     return TextField(
       controller: controller,
@@ -155,18 +157,18 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
           vertical: 14,
         ),
         hintText: hint,
-        hintStyle: TextStyle(color: Colors.black.withOpacity(0.3)),
+        hintStyle: TextStyle(color: scheme.onSurfaceVariant.withOpacity(0.8)),
         border: _getBorder(hasText, isError: errorText != null),
         enabledBorder: _getBorder(hasText, isError: errorText != null),
         focusedBorder: _getBorder(hasText, isError: errorText != null),
         errorText: errorText,
         filled: true,
-        fillColor: Colors.grey.shade50,
+        fillColor: scheme.surfaceContainerHighest,
         suffixIcon: isPassword
             ? IconButton(
                 icon: Icon(
                   _obscureRegPassword ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.grey,
+                  color: scheme.onSurfaceVariant,
                 ),
                 onPressed: () =>
                     setState(() => _obscureRegPassword = !_obscureRegPassword),
@@ -178,6 +180,7 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return BlocListener<CredentialCubit, CredentialState>(
       listener: (context, state) async {
         if (state is CredentialSuccess) {
@@ -224,8 +227,8 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-        decoration: const BoxDecoration(
-          color: Colors.white,
+        decoration: BoxDecoration(
+          color: scheme.surface,
           borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
         ),
         child: SingleChildScrollView(
@@ -233,30 +236,35 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
             children: [
               const SizedBox(height: 30),
               _buildField(
+                context: context,
                 controller: usernameController,
                 hint: t.auth.username,
                 errorText: usernameError,
               ),
               const SizedBox(height: 24),
               _buildField(
+                context: context,
                 controller: emailController,
                 hint: t.auth.email,
                 errorText: emailError,
               ),
               const SizedBox(height: 24),
               _buildField(
+                context: context,
                 controller: nameController,
                 hint: t.auth.name,
                 errorText: nameError,
               ),
               const SizedBox(height: 24),
               _buildField(
+                context: context,
                 controller: surnameController,
                 hint: t.auth.surname,
                 errorText: surnameError,
               ),
               const SizedBox(height: 24),
               _buildField(
+                context: context,
                 controller: passwordController,
                 hint: t.auth.password,
                 isPassword: true,
@@ -281,18 +289,21 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
                         states,
                       ) {
                         if (states.contains(WidgetState.selected)) {
-                          return const Color(0xFF661EFB);
+                          return AppColors.primary200Color;
                         }
-                        return Colors.white;
+                        return scheme.surface;
                       }),
                       side: WidgetStateBorderSide.resolveWith((states) {
                         if (states.contains(WidgetState.selected)) {
                           return const BorderSide(
-                            color: Color(0xFF661EFB),
+                            color: AppColors.primary200Color,
                             width: 2,
                           );
                         }
-                        return const BorderSide(color: Colors.grey, width: 2);
+                        return BorderSide(
+                          color: scheme.onSurfaceVariant,
+                          width: 2,
+                        );
                       }),
                       visualDensity: VisualDensity.compact,
                     ),
@@ -302,7 +313,7 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
                       t.auth.agreement,
                       style: const TextStyle(
                         fontSize: 12,
-                        color: Color(0xFF661EFB),
+                        color: AppColors.primary200Color,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -331,8 +342,8 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
                         : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: isFormValid
-                          ? const Color(0xFF661EFB)
-                          : const Color(0xFFC7C8FF),
+                          ? AppColors.primary200Color
+                          : AppColors.primary50Color,
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),

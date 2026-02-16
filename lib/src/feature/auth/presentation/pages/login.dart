@@ -60,7 +60,7 @@ class _LoginFormEmbeddedState extends State<LoginFormEmbedded> {
       borderRadius: BorderRadius.circular(30),
       borderSide: BorderSide(
         color: touched && text.trim().isNotEmpty
-            ? const Color(0xFF661EFB)
+            ? AppColors.primary200Color
             : Colors.transparent,
       ),
     );
@@ -83,6 +83,7 @@ class _LoginFormEmbeddedState extends State<LoginFormEmbedded> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return BlocListener<CredentialCubit, CredentialState>(
       listener: (context, state) async {
         if (state is CredentialSuccess) {
@@ -102,8 +103,8 @@ class _LoginFormEmbeddedState extends State<LoginFormEmbedded> {
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-        decoration: const BoxDecoration(
-          color: Colors.white,
+        decoration: BoxDecoration(
+          color: scheme.surface,
           borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
         ),
         child: Column(
@@ -121,7 +122,7 @@ class _LoginFormEmbeddedState extends State<LoginFormEmbedded> {
                   vertical: 14,
                 ),
                 hintText: t.auth.logIn,
-                hintStyle: TextStyle(color: Colors.black.withOpacity(0.2)),
+                hintStyle: TextStyle(color: scheme.onSurfaceVariant.withOpacity(0.7)),
                 border: _getBorder(usernameTouched, usernameController.text),
                 enabledBorder: _getBorder(
                   usernameTouched,
@@ -129,7 +130,7 @@ class _LoginFormEmbeddedState extends State<LoginFormEmbedded> {
                 ),
                 focusedBorder: _getBorder(true, usernameController.text),
                 filled: true,
-                fillColor: Colors.grey.shade50,
+                fillColor: scheme.surfaceContainerHighest,
               ),
             ),
             const SizedBox(height: 25),
@@ -144,7 +145,7 @@ class _LoginFormEmbeddedState extends State<LoginFormEmbedded> {
                   vertical: 14,
                 ),
                 hintText: t.auth.password,
-                hintStyle: TextStyle(color: Colors.black.withOpacity(0.2)),
+                hintStyle: TextStyle(color: scheme.onSurfaceVariant.withOpacity(0.7)),
                 border: _getBorder(passwordTouched, passwordController.text),
                 enabledBorder: _getBorder(
                   passwordTouched,
@@ -152,11 +153,11 @@ class _LoginFormEmbeddedState extends State<LoginFormEmbedded> {
                 ),
                 focusedBorder: _getBorder(true, passwordController.text),
                 filled: true,
-                fillColor: Colors.grey.shade50,
+                fillColor: scheme.surfaceContainerHighest,
                 suffixIcon: IconButton(
                   icon: Icon(
                     _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                    color: Colors.grey,
+                    color: scheme.onSurfaceVariant,
                   ),
                   onPressed: () =>
                       setState(() => _obscurePassword = !_obscurePassword),
@@ -180,8 +181,8 @@ class _LoginFormEmbeddedState extends State<LoginFormEmbedded> {
                       : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isFormValid
-                        ? const Color(0xFF661EFB)
-                        : const Color(0xFFC7C8FF),
+                        ? AppColors.primary200Color
+                        : AppColors.primary50Color,
                     minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),

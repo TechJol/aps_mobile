@@ -83,13 +83,14 @@ class _NewPassPageState extends State<NewPassPage> {
       borderSide: BorderSide(
         color:
             touched && text.trim().isNotEmpty
-                ? const Color(0xFF661EFB)
+                ? AppColors.primary200Color
                 : Colors.transparent,
       ),
     );
   }
 
   Widget _buildPasswordField({
+    required BuildContext context,
     required String hint,
     required TextEditingController controller,
     required FocusNode focusNode,
@@ -97,6 +98,7 @@ class _NewPassPageState extends State<NewPassPage> {
     required VoidCallback toggleObscure,
     required bool touched,
   }) {
+    final scheme = Theme.of(context).colorScheme;
     return TextField(
       controller: controller,
       focusNode: focusNode,
@@ -116,11 +118,11 @@ class _NewPassPageState extends State<NewPassPage> {
           vertical: 14,
         ),
         hintText: hint,
-        hintStyle: TextStyle(color: Colors.black.withOpacity(0.2)),
+        hintStyle: TextStyle(color: scheme.onSurfaceVariant.withOpacity(0.7)),
         suffixIcon: IconButton(
           icon: Icon(
             obscureText ? Icons.visibility_off : Icons.visibility,
-            color: Colors.black.withOpacity(0.4),
+            color: scheme.onSurfaceVariant,
           ),
           onPressed: toggleObscure,
         ),
@@ -128,15 +130,16 @@ class _NewPassPageState extends State<NewPassPage> {
         enabledBorder: _getBorder(touched, controller.text),
         focusedBorder: _getBorder(true, controller.text),
         filled: true,
-        fillColor: Colors.grey.shade50,
+        fillColor: scheme.surfaceContainerHighest,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: const Color(0xFF3F00C0),
+      backgroundColor: AppColors.primaryColor,
       body: Column(
         children: [
           const SizedBox(height: 65),
@@ -145,20 +148,19 @@ class _NewPassPageState extends State<NewPassPage> {
             child: Row(
               children: [
                 IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.arrow_back_ios,
                     size: 20,
-                    color: Colors.white,
+                    color: scheme.onPrimary,
                   ),
                   onPressed: () => Navigator.pop(context),
                 ),
                 const SizedBox(width: 8),
-                const Text(
+                Text(
                   "Забыли пароль",
                   style: TextStyle(
                     fontSize: 24,
-                    color: Colors.white,
-                    fontFamily: 'Inter',
+                    color: scheme.onPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -170,13 +172,14 @@ class _NewPassPageState extends State<NewPassPage> {
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: scheme.surface,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
               ),
               child: Column(
                 children: [
                   _buildPasswordField(
+                    context: context,
                     hint: 'Введите новый пароль',
                     controller: newPasswordController,
                     focusNode: newPasswordFocus,
@@ -189,6 +192,7 @@ class _NewPassPageState extends State<NewPassPage> {
                   ),
                   const SizedBox(height: 25),
                   _buildPasswordField(
+                    context: context,
                     hint: 'Подтвердите пароль',
                     controller: confirmPasswordController,
                     focusNode: confirmPasswordFocus,
@@ -212,8 +216,8 @@ class _NewPassPageState extends State<NewPassPage> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
                           isFormValid
-                              ? const Color(0xFF661EFB)
-                              : const Color(0xFFC7C8FF),
+                              ? AppColors.primary200Color
+                              : AppColors.primary50Color,
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),

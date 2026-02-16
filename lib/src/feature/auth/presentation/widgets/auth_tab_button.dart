@@ -1,3 +1,4 @@
+import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 
 class AuthTabButton extends StatelessWidget {
@@ -16,6 +17,7 @@ class AuthTabButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -25,14 +27,14 @@ class AuthTabButton extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: active ? const Color(0xFF661EFB) : Colors.grey,
+              color: active ? AppColors.primary200Color : scheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 4),
           Container(
             height: 2,
             width: width ?? 100,
-            color: active ? const Color(0xFF661EFB) : Colors.transparent,
+            color: active ? AppColors.primary200Color : Colors.transparent,
           ),
         ],
       ),

@@ -64,8 +64,9 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 60),
         child: Column(
@@ -74,7 +75,11 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
             Row(
               children: [
                 IconButton(
-                  icon: Icon(Icons.arrow_back_ios, size: 20),
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    size: 20,
+                    color: scheme.onSurface,
+                  ),
                   onPressed: () => Navigator.pop(context),
                 ),
                 SizedBox(width: 8, height: 20),
@@ -82,8 +87,8 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                   "Забыли пароль",
                   style: TextStyle(
                     fontSize: 24,
-                    fontFamily: 'Inter',
                     fontWeight: FontWeight.w600,
+                    color: scheme.onSurface,
                   ),
                 ),
               ],
@@ -93,8 +98,7 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
             Text(
               "Мы отправили код в вашу эл. почту",
               style: TextStyle(
-                fontFamily: 'Inter',
-                color: Colors.grey.shade600,
+                color: scheme.onSurfaceVariant,
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
               ),
@@ -104,8 +108,8 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
               _maskEmail(email),
               style: TextStyle(
                 fontSize: 20,
-                fontFamily: 'Inter',
                 fontWeight: FontWeight.w600,
+                color: scheme.onSurface,
               ),
             ),
 
@@ -139,15 +143,15 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                           borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
                             color: otpDigits[index].isNotEmpty
-                                ? Color(0xFF661EFB)
-                                : Colors.grey.shade300,
+                                ? AppColors.primary200Color
+                                : scheme.outlineVariant,
                             width: otpDigits[index].isNotEmpty ? 1.5 : 1,
                           ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
-                            color: Color(0xFF661EFB),
+                            color: AppColors.primary200Color,
                             width: 2,
                           ),
                         ),
@@ -169,9 +173,10 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                       : "Отправить повторно через: $_secondsRemaining",
                   style: TextStyle(
                     fontSize: 14,
-                    fontFamily: 'Inter',
                     fontWeight: FontWeight.w500,
-                    color: _canResend ? Color(0xFF661EFB) : Color(0xFF7B818C),
+                    color: _canResend
+                        ? AppColors.primary200Color
+                        : scheme.onSurfaceVariant,
                     decoration: _canResend ? TextDecoration.underline : null,
                   ),
                 ),
@@ -186,8 +191,8 @@ class _ForgotPassPageState extends State<ForgotPassPage> {
                     ? () => Navigator.pushNamed(context, AppRoutes.newPassword)
                     : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF661EFB),
-                  disabledBackgroundColor: Color(0xFFC7C8FF),
+                  backgroundColor: AppColors.primary200Color,
+                  disabledBackgroundColor: AppColors.primary50Color,
                   padding: EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),

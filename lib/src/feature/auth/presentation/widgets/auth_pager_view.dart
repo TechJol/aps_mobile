@@ -1,4 +1,4 @@
-import 'package:aps_mobile/src/core/I10n/generated/strings.g.dart';
+import 'package:aps_mobile/src/core/core.dart';
 import 'package:aps_mobile/src/feature/feature.dart';
 import 'package:flutter/material.dart';
 
@@ -18,8 +18,10 @@ class AuthPagerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: const Color(0xFF3F00C0),
+      backgroundColor: AppColors.primaryColor,
       body: Column(
         children: [
           const SizedBox(height: 90),
@@ -41,8 +43,8 @@ class AuthPagerView extends StatelessWidget {
           Expanded(
             child: Container(
               width: double.infinity,
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: isDark ? scheme.surface : Colors.white,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
               ),
               child: Column(

@@ -32,10 +32,12 @@ class _LanguageSelectionState extends State<LanguageSelection> {
   void _select(AppLocale locale) => setState(() => selected = locale);
 
   Widget _option({
+    required BuildContext context,
     required String label,
     required String assetPath,
     required AppLocale locale,
   }) {
+    final scheme = Theme.of(context).colorScheme;
     final isSelected = selected == locale;
     return GestureDetector(
       onTap: () => _select(locale),
@@ -44,7 +46,7 @@ class _LanguageSelectionState extends State<LanguageSelection> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           border: Border.all(
-            color: isSelected ? const Color(0xFF661EFB) : Colors.grey.shade300,
+            color: isSelected ? AppColors.primary200Color : scheme.outlineVariant,
             width: 1,
           ),
           borderRadius: BorderRadius.circular(12),
@@ -69,11 +71,13 @@ class _LanguageSelectionState extends State<LanguageSelection> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? const Color(0xFF661EFB) : Colors.grey,
+                  color: isSelected
+                      ? AppColors.primary200Color
+                      : scheme.onSurfaceVariant,
                   width: 1,
                 ),
                 color: isSelected
-                    ? const Color(0xFF661EFB)
+                    ? AppColors.primary200Color
                     : Colors.transparent,
               ),
               child: isSelected
@@ -97,13 +101,14 @@ class _LanguageSelectionState extends State<LanguageSelection> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final title = t.menu.language.select;
     final enLabel = t.menu.language.english;
     final ruLabel = t.menu.language.russian;
     final kyLabel = t.menu.language.kyrgyz;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 90),
         child: Column(
@@ -111,8 +116,8 @@ class _LanguageSelectionState extends State<LanguageSelection> {
           children: [
             Text(
               title,
-              style: const TextStyle(
-                color: Colors.black,
+              style: TextStyle(
+                color: scheme.onSurface,
                 fontFamily: 'Roboto',
                 fontSize: 27,
                 fontWeight: FontWeight.bold,
@@ -120,16 +125,19 @@ class _LanguageSelectionState extends State<LanguageSelection> {
             ),
             const SizedBox(height: 20),
             _option(
+              context: context,
               label: enLabel,
               assetPath: 'assets/icons/uk.png',
               locale: AppLocale.en,
             ),
             _option(
+              context: context,
               label: ruLabel,
               assetPath: 'assets/icons/ru.png',
               locale: AppLocale.ru,
             ),
             _option(
+              context: context,
               label: kyLabel,
               assetPath: 'assets/icons/kg.png',
               locale: AppLocale.ky,
@@ -143,8 +151,8 @@ class _LanguageSelectionState extends State<LanguageSelection> {
                     ? () => _applyAndGo(selected!)
                     : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF661EFB),
-                  disabledBackgroundColor: const Color(0xFFC7C8FF),
+                  backgroundColor: AppColors.primary200Color,
+                  disabledBackgroundColor: AppColors.primary50Color,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
