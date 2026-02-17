@@ -69,9 +69,18 @@ class _HomePageState extends State<HomePage> {
         ),
         centerTitle: false,
         actions: [
-          GestureDetector(
-            onTap: () {},
-            child: Icon(Icons.light_mode, size: 28, color: scheme.onSurface),
+          IconButton(
+            onPressed: () {
+              final isDark = Theme.of(context).brightness == Brightness.dark;
+              context.read<ThemeCubit>().toggleDark(!isDark);
+            },
+            icon: Icon(
+              Theme.of(context).brightness == Brightness.dark
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+              size: 24,
+              color: scheme.onSurface,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
