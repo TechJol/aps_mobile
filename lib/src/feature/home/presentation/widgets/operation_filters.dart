@@ -16,6 +16,7 @@ class OperationFilters extends StatelessWidget {
   Widget build(BuildContext context) {
     final options = ViewType.values;
     final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -56,7 +57,11 @@ class OperationFilters extends StatelessWidget {
                 width: 100,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: isSelected ? scheme.onSurface : scheme.surface,
+                  color: isSelected
+                      ? (isDark
+                            ? AppColors.primaryColorLight.withValues(alpha: 0.35)
+                            : scheme.onSurface)
+                      : (isDark ? scheme.surfaceContainerHighest : scheme.surface),
                   borderRadius: BorderRadius.circular(25),
                 ),
                 child: SvgPicture.asset(
@@ -65,7 +70,9 @@ class OperationFilters extends StatelessWidget {
                   width: 18,
                   height: 18,
                   colorFilter: ColorFilter.mode(
-                    isSelected ? scheme.surface : scheme.onSurface,
+                    isSelected
+                        ? (isDark ? Colors.white : scheme.surface)
+                        : scheme.onSurface,
                     BlendMode.srcIn,
                   ),
                 ),

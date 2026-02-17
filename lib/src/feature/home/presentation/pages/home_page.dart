@@ -75,8 +75,8 @@ class _HomePageState extends State<HomePage> {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: scheme.surface,
-                borderRadius: BorderRadius.circular(100),
+                color: scheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(90),
               ),
               child: IconButton(
                 onPressed: () async {

@@ -9,8 +9,9 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: AppColors.primaryColor,
+      backgroundColor: scheme.surface,
       body: BlocListener<CredentialCubit, CredentialState>(
         listener: (context, state) {
           if (state is CredentialSuccess) {
@@ -52,6 +53,7 @@ class ProfilePage extends StatelessWidget {
   }
 
   Column _buildContent(BuildContext context, AuthEntity user) {
+    final scheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         const SizedBox(height: 120),
@@ -66,8 +68,8 @@ class ProfilePage extends StatelessWidget {
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
+                  decoration: BoxDecoration(
+                    color: scheme.surface,
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(40),
                     ),
@@ -77,8 +79,8 @@ class ProfilePage extends StatelessWidget {
               Container(
                 width: 140,
                 height: 140,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
+                decoration: BoxDecoration(
+                  color: scheme.surfaceContainerHighest,
                   shape: BoxShape.circle,
                 ),
                 child: Center(
@@ -120,11 +122,11 @@ class ProfilePage extends StatelessWidget {
                   // onPressed:
                   //     () => context.read<CredentialCubit>().deleteUserById(),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: AppColors.blackColor,
+                    backgroundColor: scheme.surfaceContainerHighest,
+                    foregroundColor: scheme.onSurface,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
-                      side: const BorderSide(color: AppColors.transparentColor),
+                      side: BorderSide(color: scheme.outlineVariant),
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
@@ -176,7 +178,9 @@ class ProfilePage extends StatelessWidget {
         decoration: InputDecoration(
           floatingLabelBehavior: FloatingLabelBehavior.never,
           filled: true,
-          labelStyle: AppTextStyles.f16w500,
+          labelStyle: AppTextStyles.f16w500.copyWith(
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
           fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
           enabledBorder: OutlineInputBorder(

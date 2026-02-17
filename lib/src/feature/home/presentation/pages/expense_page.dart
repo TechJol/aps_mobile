@@ -60,12 +60,13 @@ class _ExpenseTransactionsPageState extends State<ExpenseTransactionsPage>
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final filterLabel = _filter.formattedLabel();
 
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF3F4F7),
+        backgroundColor: scheme.surface,
         title: Text(
           t.home.expenses,
           style: AppTextStyles.f24w600.copyWith(color: AppColors.primaryColor),
@@ -78,7 +79,7 @@ class _ExpenseTransactionsPageState extends State<ExpenseTransactionsPage>
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: scheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(100),
               ),
               child: IconButton(

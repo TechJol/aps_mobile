@@ -13,17 +13,21 @@ class ShowSheet {
       context: context,
       barrierDismissible: false, // нельзя закрыть тапом вне окна
       builder: (context) {
+        final scheme = Theme.of(context).colorScheme;
         return AlertDialog(
-          backgroundColor: AppColors.whiteColor,
+          backgroundColor: scheme.surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
           contentPadding: const EdgeInsets.all(20),
-          title: Text(title, style: AppTextStyles.f22w500),
+          title: Text(
+            title,
+            style: AppTextStyles.f22w500.copyWith(color: scheme.onSurface),
+          ),
           content: Text(
             message ?? '${t.account.confirmDelete} "$accountName"?',
             style: AppTextStyles.f16w500.copyWith(
-              color: AppColors.greyerColorLight,
+              color: scheme.onSurfaceVariant,
             ),
           ),
           actionsPadding: const EdgeInsets.symmetric(
@@ -39,8 +43,8 @@ class ShowSheet {
                       Navigator.of(context).pop();
                     },
                     style: OutlinedButton.styleFrom(
-                      backgroundColor: AppColors.backroundColor,
-                      side: BorderSide(color: AppColors.backroundColor),
+                      backgroundColor: scheme.surfaceContainerHighest,
+                      side: BorderSide(color: scheme.outlineVariant),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -48,7 +52,7 @@ class ShowSheet {
                     child: Text(
                       t.account.cancel,
                       style: AppTextStyles.f16w500.copyWith(
-                        color: AppColors.blackColor,
+                        color: scheme.onSurface,
                       ),
                     ),
                   ),
