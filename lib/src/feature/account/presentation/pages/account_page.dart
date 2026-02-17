@@ -121,10 +121,10 @@ class _AccountPageState extends State<AccountPage> {
                               t.account.name,
                               t.account.typeAccount,
                             ];
-                            final rows =
-                                accounts.asMap().entries.map<List<String>>((
-                                  entry,
-                                ) {
+                            final rows = accounts
+                                .asMap()
+                                .entries
+                                .map<List<String>>((entry) {
                                   final index = entry.key + 1;
                                   final item = entry.value;
                                   return [
@@ -132,7 +132,8 @@ class _AccountPageState extends State<AccountPage> {
                                     item.name,
                                     _getAccountTypeName(item.accountType),
                                   ];
-                                }).toList();
+                                })
+                                .toList();
 
                             _localService.printReportAsPdf(
                               context: context,
@@ -151,10 +152,10 @@ class _AccountPageState extends State<AccountPage> {
                               t.account.name,
                               t.account.typeAccount,
                             ];
-                            final rows =
-                                accounts.asMap().entries.map<List<String>>((
-                                  entry,
-                                ) {
+                            final rows = accounts
+                                .asMap()
+                                .entries
+                                .map<List<String>>((entry) {
                                   final index = entry.key + 1;
                                   final item = entry.value;
                                   return [
@@ -162,7 +163,8 @@ class _AccountPageState extends State<AccountPage> {
                                     item.name,
                                     _getAccountTypeName(item.accountType),
                                   ];
-                                }).toList();
+                                })
+                                .toList();
 
                             _localService.exportToExcelGeneric(
                               fileName: 'Список_счетов',
@@ -210,7 +212,10 @@ class _AccountPageState extends State<AccountPage> {
 
                   return Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: scheme.outlineVariant, width: 0.8),
+                      border: Border.all(
+                        color: scheme.outlineVariant,
+                        width: 0.8,
+                      ),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: DataTableTheme(
@@ -225,7 +230,9 @@ class _AccountPageState extends State<AccountPage> {
                         showBottomBorder: true,
                         columnSpacing: spacing,
                         headingRowColor: WidgetStateProperty.all(
-                          isDark ? scheme.surfaceContainerHighest : Colors.black,
+                          isDark
+                              ? scheme.surfaceContainerHighest
+                              : Colors.black,
                         ),
                         headingTextStyle: TextStyle(
                           color: isDark ? scheme.onSurface : Colors.white,
@@ -246,84 +253,82 @@ class _AccountPageState extends State<AccountPage> {
                           ),
                           const DataColumn(label: Text('')), // меню
                         ],
-                        rows:
-                            accounts.map((acc) {
-                              final nameText = cut(acc.name, 18);
-                              final typeText = cut(
-                                _getAccountTypeName(acc.accountType),
-                                12,
-                              );
+                        rows: accounts.map((acc) {
+                          final nameText = cut(acc.name, 18);
+                          final typeText = cut(
+                            _getAccountTypeName(acc.accountType),
+                            12,
+                          );
 
-                              return DataRow(
-                                cells: [
-                                  DataCell(
-                                    SizedBox(
-                                      width: nameW,
-                                      child: Text(
-                                        nameText,
-                                        style: AppTextStyles.f16w500,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
+                          return DataRow(
+                            cells: [
+                              DataCell(
+                                SizedBox(
+                                  width: nameW,
+                                  child: Text(
+                                    nameText,
+                                    style: AppTextStyles.f16w500,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  DataCell(
-                                    SizedBox(
-                                      width: typeW,
-                                      child: Text(
-                                        typeText,
-                                        style: AppTextStyles.f16w500,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
+                                ),
+                              ),
+                              DataCell(
+                                SizedBox(
+                                  width: typeW,
+                                  child: Text(
+                                    typeText,
+                                    style: AppTextStyles.f16w500,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  DataCell(
-                                    SizedBox(
-                                      width: menuW,
-                                      child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: PopupMenuWid(
-                                          context: context,
-                                          tapDelete: () {
-                                            ShowSheet().showDeleteDialog(
+                                ),
+                              ),
+                              DataCell(
+                                SizedBox(
+                                  width: menuW,
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: PopupMenuWid(
+                                      context: context,
+                                      tapDelete: () {
+                                        ShowSheet().showDeleteDialog(
+                                          context,
+                                          accountName: acc.name,
+                                          onConfirm: () {
+                                            context
+                                                .read<MenuCubit>()
+                                                .deleteAccount(acc.id!);
+                                            Navigator.pop(context, true);
+                                          },
+                                          title: t
+                                              .account
+                                              .account
+                                              .actions
+                                              .deleteAccount,
+                                        );
+                                      },
+                                      tapEdit: () async {
+                                        final menuCubit = context
+                                            .read<MenuCubit>();
+                                        final result =
+                                            await Navigator.pushNamed(
                                               context,
-                                              accountName: acc.name,
-                                              onConfirm: () {
-                                                context
-                                                    .read<MenuCubit>()
-                                                    .deleteAccount(acc.id!);
-                                                Navigator.pop(context, true);
-                                              },
-                                              title:
-                                                  t
-                                                      .account
-                                                      .account
-                                                      .actions
-                                                      .deleteAccount,
+                                              AppRoutes.editAccount,
+                                              arguments: acc,
                                             );
-                                          },
-                                          tapEdit: () async {
-                                            final menuCubit =
-                                                context.read<MenuCubit>();
-                                            final result =
-                                                await Navigator.pushNamed(
-                                                  context,
-                                                  AppRoutes.editAccount,
-                                                  arguments: acc,
-                                                );
-                                            if (!mounted) return; // ✅ важно
-                                            if (result == true) {
-                                              menuCubit.getAccounts();
-                                            }
-                                          },
-                                        ),
-                                      ),
+                                        if (!mounted) return; // ✅ важно
+                                        if (result == true) {
+                                          menuCubit.getAccounts();
+                                        }
+                                      },
                                     ),
                                   ),
-                                ],
-                              );
-                            }).toList(),
+                                ),
+                              ),
+                            ],
+                          );
+                        }).toList(),
                       ),
                     ),
                   );

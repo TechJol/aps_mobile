@@ -69,6 +69,10 @@ class _HomePageState extends State<HomePage> {
         ),
         centerTitle: false,
         actions: [
+          GestureDetector(
+            onTap: () {},
+            child: Icon(Icons.light_mode, size: 28, color: scheme.onSurface),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Container(
