@@ -24,11 +24,12 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: t.account.account.account.title,
-        backgroundColor: AppColors.backroundColor,
+        backgroundColor: scheme.surface,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
         builder: (context, state) {
@@ -60,6 +61,8 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Widget _buildTableSection(BuildContext context, List<AccountModel> accounts) {
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final hasAccount = accounts.isNotEmpty;
 
     return SingleChildScrollView(
@@ -68,7 +71,7 @@ class _AccountPageState extends State<AccountPage> {
         children: [
           DecoratedBox(
             decoration: BoxDecoration(
-              color: AppColors.backroundColor,
+              color: scheme.surface,
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
@@ -207,7 +210,7 @@ class _AccountPageState extends State<AccountPage> {
 
                   return Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black, width: 0.1),
+                      border: Border.all(color: scheme.outlineVariant, width: 0.8),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: DataTableTheme(
@@ -221,9 +224,11 @@ class _AccountPageState extends State<AccountPage> {
                         showCheckboxColumn: false,
                         showBottomBorder: true,
                         columnSpacing: spacing,
-                        headingRowColor: WidgetStateProperty.all(Colors.black),
-                        headingTextStyle: const TextStyle(
-                          color: Colors.white,
+                        headingRowColor: WidgetStateProperty.all(
+                          isDark ? scheme.surfaceContainerHighest : Colors.black,
+                        ),
+                        headingTextStyle: TextStyle(
+                          color: isDark ? scheme.onSurface : Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                         columns: [

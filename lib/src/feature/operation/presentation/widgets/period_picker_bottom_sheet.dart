@@ -16,7 +16,7 @@ class PeriodPickerBottomSheet extends StatefulWidget {
     return showModalBottomSheet<OperationFilter>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -177,6 +177,7 @@ class _DatePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
@@ -184,10 +185,10 @@ class _DatePreview extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: AppColors.backroundColor.withOpacity(
+            color: scheme.surfaceContainerHighest.withOpacity(
               onTap == null ? 0.6 : 1.0,
             ),
-            border: Border.all(color: Colors.grey.shade300, width: 1),
+            border: Border.all(color: scheme.outlineVariant, width: 1),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -203,8 +204,8 @@ class _DatePreview extends StatelessWidget {
                         : '${date!.day.toString().padLeft(2, '0')}.${date!.month.toString().padLeft(2, '0')}.${date!.year}',
                     style: AppTextStyles.f14w500.copyWith(
                       color: date == null
-                          ? AppColors.greyerColorLight
-                          : AppColors.blackColor,
+                          ? scheme.onSurfaceVariant
+                          : scheme.onSurface,
                     ),
                   ),
                 ],
@@ -232,6 +233,7 @@ class _PeriodOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isSelected = label == selected;
+    final scheme = Theme.of(context).colorScheme;
 
     return GestureDetector(
       onTap: () => onChanged(isSelected ? null : label),
@@ -240,28 +242,28 @@ class _PeriodOption extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         height: 55,
         decoration: BoxDecoration(
-          color: AppColors.backroundColor,
+          color: scheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(25),
-          border: Border.all(color: Colors.grey.shade300, width: 1),
+          border: Border.all(color: scheme.outlineVariant, width: 1),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               label,
-              style: AppTextStyles.f16w500.copyWith(color: Colors.black),
+              style: AppTextStyles.f16w500.copyWith(color: scheme.onSurface),
             ),
             Theme(
               data: ThemeData(
-                unselectedWidgetColor: Colors.grey.shade400,
+                unselectedWidgetColor: scheme.onSurfaceVariant,
                 checkboxTheme: CheckboxThemeData(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  side: BorderSide(color: Colors.grey.shade300, width: 1),
+                  side: BorderSide(color: scheme.outlineVariant, width: 1),
                   fillColor: WidgetStateProperty.resolveWith(
                     (states) =>
-                        isSelected ? AppColors.primaryColor : Colors.white,
+                        isSelected ? AppColors.primaryColor : scheme.surface,
                   ),
                   checkColor: WidgetStateProperty.all(Colors.white),
                 ),

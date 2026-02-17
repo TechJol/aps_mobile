@@ -15,6 +15,7 @@ class TextFieldWid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return TextFormField(
       controller: controller,
 
@@ -22,19 +23,16 @@ class TextFieldWid extends StatelessWidget {
         suffixIcon: suffixIcon,
         floatingLabelBehavior: FloatingLabelBehavior.never,
         filled: true,
-        labelStyle: AppTextStyles.f16w500,
-        fillColor: AppColors.backroundColor,
+        labelStyle: AppTextStyles.f16w500.copyWith(color: scheme.onSurfaceVariant),
+        fillColor: scheme.surfaceContainerHighest,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(25),
-          borderSide: const BorderSide(color: AppColors.backroundColor),
+          borderSide: BorderSide(color: scheme.surfaceContainerHighest),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(25),
-          borderSide: const BorderSide(
-            width: 1,
-            color: AppColors.backroundColor,
-          ),
+          borderSide: BorderSide(width: 1, color: scheme.surfaceContainerHighest),
         ),
         hintText: label,
         // labelText: label,

@@ -28,10 +28,10 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: t.menu.typeCounterparties.title,
-        backgroundColor: AppColors.backroundColor,
+        backgroundColor: Theme.of(context).colorScheme.surface,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
         builder: (context, state) {
@@ -85,7 +85,7 @@ class _TypeCounterpartiesPageState extends State<TypeCounterpartiesPage> {
           // Верхняя панель с кнопками
           DecoratedBox(
             decoration: BoxDecoration(
-              color: AppColors.backroundColor,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),

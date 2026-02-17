@@ -43,10 +43,10 @@ class _CategoryReportsPageState extends State<CategoryReportsPage> {
     final months = _localizedMonths();
 
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: t.menu.metrics.yearlyReportTitle,
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
         builder: (context, state) {

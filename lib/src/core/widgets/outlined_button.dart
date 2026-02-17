@@ -9,13 +9,18 @@ class OutlinedButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Expanded(
       child: OutlinedButton(
         onPressed: onPressed,
-        style: OutlinedButton.styleFrom(fixedSize: Size(double.infinity, 48)),
+        style: OutlinedButton.styleFrom(
+          fixedSize: const Size(double.infinity, 48),
+          foregroundColor: scheme.onSurface,
+          side: BorderSide(color: scheme.outlineVariant),
+        ),
         child: Text(
           text,
-          style: AppTextStyles.f14w500.copyWith(color: AppColors.blackColor),
+          style: AppTextStyles.f14w500.copyWith(color: scheme.onSurface),
         ),
       ),
     );

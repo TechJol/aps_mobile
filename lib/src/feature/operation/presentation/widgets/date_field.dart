@@ -16,6 +16,7 @@ class DateField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
@@ -23,8 +24,8 @@ class DateField extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: AppColors.backroundColor,
-            border: Border.all(color: Colors.grey.shade300, width: 1),
+            color: scheme.surfaceContainerHighest,
+            border: Border.all(color: scheme.outlineVariant, width: 1),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

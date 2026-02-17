@@ -26,10 +26,10 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: t.account.account.account.title,
-        backgroundColor: AppColors.backroundColor,
+        backgroundColor: Theme.of(context).colorScheme.surface,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
         builder: (context, state) {
@@ -80,7 +80,7 @@ class _SettingAccountPageState extends State<SettingAccountPage> {
           // Верхняя панель
           DecoratedBox(
             decoration: BoxDecoration(
-              color: AppColors.backroundColor,
+              color: Theme.of(context).colorScheme.surface,
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),

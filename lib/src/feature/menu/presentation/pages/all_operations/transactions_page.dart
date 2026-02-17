@@ -62,10 +62,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: t.menu.transactions.title,
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       body: BlocConsumer<MenuCubit, MenuState>(
         listenWhen: (previous, current) =>
@@ -136,7 +136,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
     await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -162,6 +162,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
     List<IncomeExpenseReasons> reasons,
     List<PartnersModel> partners,
   ) {
+    final scheme = Theme.of(context).colorScheme;
+    final bg = Theme.of(context).scaffoldBackgroundColor;
+    final useLightForeground = bg.computeLuminance() < 0.5;
+    final readableTextColor = useLightForeground ? Colors.white : Colors.black87;
     String getAccountName(int id) {
       return accounts
           .firstWhere(
@@ -204,7 +208,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
     final pageCount = (data.length / rowsPerPage).ceil();
 
     // ===== Настройки таблицы =====
-    const borderColor = Color(0xFFE6E6E6);
+    final borderColor = scheme.outlineVariant;
     const colW = {
       0: FixedColumnWidth(50), // №
       1: FixedColumnWidth(100), // Сумма
@@ -229,7 +233,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                   fontWeight: FontWeight.bold,
                 )
               : AppTextStyles.f14w500.copyWith(
-                  color: color ?? AppColors.blackColor,
+                  color: color ?? readableTextColor,
                 ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -443,6 +447,8 @@ class _TransactionsPageState extends State<TransactionsPage> {
     if (pageCount <= 1) {
       return const SizedBox.shrink(); // не показываем пагинацию если одна страница
     }
+    final bg = Theme.of(context).scaffoldBackgroundColor;
+    final useLightForeground = bg.computeLuminance() < 0.5;
 
     int startPage = (currentPage - 5).clamp(1, pageCount);
     int endPage = (startPage + 9).clamp(startPage, pageCount);
@@ -457,14 +463,20 @@ class _TransactionsPageState extends State<TransactionsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
-            icon: const Icon(Icons.chevron_left),
+            icon: Icon(
+              Icons.chevron_left,
+              color: useLightForeground ? Colors.white : Colors.black87,
+            ),
             onPressed: currentPage > 1
                 ? () => goToPage(currentPage - 1, pageCount)
                 : null,
           ),
           for (int i = startPage; i <= endPage; i++) _pageButton(i, pageCount),
           IconButton(
-            icon: const Icon(Icons.chevron_right),
+            icon: Icon(
+              Icons.chevron_right,
+              color: useLightForeground ? Colors.white : Colors.black87,
+            ),
             onPressed: currentPage < pageCount
                 ? () => goToPage(currentPage + 1, pageCount)
                 : null,
@@ -475,6 +487,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
   }
 
   Widget _pageButton(int page, int pageCount) {
+    final scheme = Theme.of(context).colorScheme;
+    final bg = Theme.of(context).scaffoldBackgroundColor;
+    final useLightForeground = bg.computeLuminance() < 0.5;
+    final readableTextColor = useLightForeground ? Colors.white : Colors.black87;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2.0),
       child: OutlinedButton(
@@ -482,7 +498,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
           backgroundColor: page == currentPage
               ? AppColors.primaryColorLight
               : null,
-          foregroundColor: page == currentPage ? Colors.white : Colors.black,
+          foregroundColor: page == currentPage ? Colors.white : readableTextColor,
+          side: BorderSide(
+            color: useLightForeground ? Colors.white54 : scheme.outlineVariant,
+          ),
           minimumSize: const Size(36, 36),
           padding: const EdgeInsets.symmetric(horizontal: 8),
         ),
@@ -576,6 +595,7 @@ class _EditTransactionSheetState extends State<_EditTransactionSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final transactionTypes = <String, String>{
       'income': t.menu.articles.income,
       'expense': t.menu.articles.expense,
@@ -611,7 +631,7 @@ class _EditTransactionSheetState extends State<_EditTransactionSheet> {
                   height: 4,
                   margin: const EdgeInsets.only(bottom: 12),
                   decoration: BoxDecoration(
-                    color: AppColors.greyerColor.withOpacity(0.3),
+                    color: scheme.onSurfaceVariant.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
@@ -659,7 +679,10 @@ class _EditTransactionSheetState extends State<_EditTransactionSheet> {
                 readOnly: true,
                 decoration: _inputDecoration(t.menu.transactions.table.date)
                     .copyWith(
-                      suffixIcon: const Icon(Icons.calendar_today_outlined),
+                      suffixIcon: Icon(
+                        Icons.calendar_today_outlined,
+                        color: scheme.onSurfaceVariant,
+                      ),
                     ),
                 onTap: _pickDateTime,
               ),
@@ -843,15 +866,16 @@ class _EditTransactionSheetState extends State<_EditTransactionSheet> {
   }
 
   InputDecoration _inputDecoration(String label) {
+    final scheme = Theme.of(context).colorScheme;
     return InputDecoration(
       labelText: label,
-      labelStyle: AppTextStyles.f16w500,
+      labelStyle: AppTextStyles.f16w500.copyWith(color: scheme.onSurfaceVariant),
       filled: true,
-      fillColor: AppColors.backroundColor,
+      fillColor: scheme.surfaceContainerHighest,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: AppColors.backroundColor),
+        borderSide: BorderSide(color: scheme.surfaceContainerHighest),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),

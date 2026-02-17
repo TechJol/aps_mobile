@@ -13,11 +13,12 @@ class OperationFilterField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
       height: 100,
-      decoration: const BoxDecoration(
-        color: Color(0xFFF3F4F7),
+      decoration: BoxDecoration(
+        color: scheme.surface,
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(16),
           bottomRight: Radius.circular(16),
@@ -31,17 +32,20 @@ class OperationFilterField extends StatelessWidget {
           decoration: InputDecoration(
             floatingLabelBehavior: FloatingLabelBehavior.never,
             filled: true,
-            labelStyle: AppTextStyles.f16w500,
-            suffixIcon: const Icon(Icons.keyboard_arrow_down_outlined),
-            fillColor: AppColors.backroundColor,
+            labelStyle: AppTextStyles.f16w500.copyWith(color: scheme.onSurface),
+            suffixIcon: Icon(
+              Icons.keyboard_arrow_down_outlined,
+              color: scheme.onSurfaceVariant,
+            ),
+            fillColor: scheme.surfaceContainerHighest,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(25),
-              borderSide: const BorderSide(color: AppColors.backroundColor),
+              borderSide: BorderSide(color: scheme.surfaceContainerHighest),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(25),
-              borderSide: const BorderSide(color: AppColors.backroundColor),
+              borderSide: BorderSide(color: scheme.surfaceContainerHighest),
             ),
             hintText: label.isEmpty ? t.operation.selectPeriod : label,
           ),

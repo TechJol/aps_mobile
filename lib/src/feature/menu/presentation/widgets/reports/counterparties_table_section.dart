@@ -18,13 +18,15 @@ class CounterpartiesTableSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (rows.isEmpty) return const SizedBox.shrink();
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     const nameColW = 180.0;
     const monthColW = 70.0;
     const totalColW = 90.0;
     const cellHPad = 12.0;
     const cellVPad = 10.0;
-    const gridColor = Color(0xFFE6E6E6);
+    final gridColor = isDark ? scheme.outlineVariant : const Color(0xFFE6E6E6);
 
     final totalColumns = headers.length;
     final minWidth =
@@ -35,6 +37,7 @@ class CounterpartiesTableSection extends StatelessWidget {
       children: headers.map((header) {
         return _cell(
           header,
+          context: context,
           width: header == headers.first
               ? nameColW
               : header == headers.last
@@ -56,6 +59,7 @@ class CounterpartiesTableSection extends StatelessWidget {
           final isLast = idx == row.length - 1;
           return _cell(
             value,
+            context: context,
             width: isFirst
                 ? nameColW
                 : isLast
@@ -95,14 +99,16 @@ class CounterpartiesTableSection extends StatelessWidget {
 
   Widget _cell(
     String text, {
+    required BuildContext context,
     required double width,
     required double padH,
     required double padV,
     bool isHeader = false,
   }) {
+    final scheme = Theme.of(context).colorScheme;
     final style = isHeader
-        ? const TextStyle(color: Colors.black, fontWeight: FontWeight.w700)
-        : AppTextStyles.f14w500;
+        ? TextStyle(color: scheme.onSurface, fontWeight: FontWeight.w700)
+        : AppTextStyles.f14w500.copyWith(color: scheme.onSurface);
 
     return SizedBox(
       width: width,

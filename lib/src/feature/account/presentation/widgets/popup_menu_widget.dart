@@ -16,6 +16,7 @@ class PopupMenuWid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Builder(
       builder: (context) {
         return IconButton(
@@ -41,7 +42,7 @@ class PopupMenuWid extends StatelessWidget {
               position: positionRect,
 
               elevation: 8,
-              color: AppColors.whiteColor,
+              color: scheme.surface,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

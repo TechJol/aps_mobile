@@ -60,10 +60,10 @@ class _CounterpartiesReportsPageState extends State<CounterpartiesReportsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: t.menu.reportsByCounterpartiesPage.title,
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
         buildWhen: (previous, current) {

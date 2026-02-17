@@ -54,10 +54,10 @@ class _EditArticlesPageState extends State<EditArticlesPage> {
     selectedType ??= typeToLabel[widget.reason.type];
 
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: t.menu.articles.editArticle,
-        backgroundColor: AppColors.backroundColor,
+        backgroundColor: Theme.of(context).colorScheme.surface,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
         builder: (context, state) {

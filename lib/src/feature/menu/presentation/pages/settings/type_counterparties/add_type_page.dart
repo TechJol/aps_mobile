@@ -37,10 +37,10 @@ class _AddTypePageState extends State<AddTypePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: t.menu.typeCounterparties.addType,
-        backgroundColor: AppColors.backroundColor,
+        backgroundColor: Theme.of(context).colorScheme.surface,
       ),
       body: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {
@@ -58,7 +58,7 @@ class _AddTypePageState extends State<AddTypePage> {
               width: double.infinity,
               height: 50,
               decoration: BoxDecoration(
-                color: AppColors.backroundColor,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(12),
                   bottomRight: Radius.circular(12),

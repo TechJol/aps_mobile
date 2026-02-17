@@ -66,7 +66,7 @@ class IncomePage {
     final result = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -588,7 +588,7 @@ class IncomePage {
     final selected = await showMenu<_CurrencyOption>(
       context: context,
       position: rect,
-      color: AppColors.whiteColor,
+      color: Theme.of(context).colorScheme.surface,
       items: options.map((option) {
         return PopupMenuItem<_CurrencyOption>(
           value: option,

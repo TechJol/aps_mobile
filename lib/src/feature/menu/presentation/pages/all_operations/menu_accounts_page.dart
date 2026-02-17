@@ -47,9 +47,9 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: t.menu.operationsByAccounts,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
@@ -85,10 +85,9 @@ class _MenuAccountsPageState extends State<MenuAccountsPage> {
                 transactions: transactions,
               );
 
-              final pageCount =
-                  summary.rows.isEmpty
-                      ? 1
-                      : (summary.rows.length / _rowsPerPage).ceil();
+              final pageCount = summary.rows.isEmpty
+                  ? 1
+                  : (summary.rows.length / _rowsPerPage).ceil();
               if (_currentPage > pageCount && pageCount > 0) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   if (mounted) setState(() => _currentPage = pageCount);

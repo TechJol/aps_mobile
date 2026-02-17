@@ -1,4 +1,3 @@
-import 'package:aps_mobile/src/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -42,7 +41,7 @@ class _PaymentWebViewPageState extends State<PaymentWebViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(child: WebViewWidget(controller: _controller)),
     );
   }

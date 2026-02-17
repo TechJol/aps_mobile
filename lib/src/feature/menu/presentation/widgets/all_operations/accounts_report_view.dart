@@ -28,6 +28,7 @@ class AccountsReportView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final rows = summary.rows;
     final pageCount = rows.isEmpty ? 0 : (rows.length / rowsPerPage).ceil();
     final pageIndex = pageCount == 0 ? 1 : currentPage.clamp(1, pageCount);
@@ -70,7 +71,9 @@ class AccountsReportView extends StatelessWidget {
             ),
             Text(
               t.menu.accounts.total,
-              style: AppTextStyles.f14w500.copyWith(color: AppColors.greyColor),
+              style: AppTextStyles.f14w500.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 8),
             ...summary.currencyTotals.map(
@@ -82,7 +85,7 @@ class AccountsReportView extends StatelessWidget {
                     Text(
                       item.currency,
                       style: AppTextStyles.f14w500.copyWith(
-                        color: AppColors.greyColor,
+                        color: scheme.onSurfaceVariant,
                       ),
                     ),
                     Text(
@@ -112,7 +115,7 @@ class AccountsReportView extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: Table(
                 border: TableBorder.all(
-                  color: const Color(0xFFE6E6E6),
+                  color: scheme.outlineVariant,
                   width: 1,
                 ),
                 columnWidths: const {
@@ -127,11 +130,24 @@ class AccountsReportView extends StatelessWidget {
                       color: AppColors.primaryColorLight,
                     ),
                     children: [
-                      _cell(t.menu.common.numberSign, isHeader: true),
-                      _cell(t.menu.accounts.headers.name, isHeader: true),
-                      _cell(t.menu.accounts.headers.balance, isHeader: true),
+                      _cell(
+                        t.menu.common.numberSign,
+                        context: context,
+                        isHeader: true,
+                      ),
+                      _cell(
+                        t.menu.accounts.headers.name,
+                        context: context,
+                        isHeader: true,
+                      ),
+                      _cell(
+                        t.menu.accounts.headers.balance,
+                        context: context,
+                        isHeader: true,
+                      ),
                       _cell(
                         t.menu.accounts.headers.accountType,
+                        context: context,
                         isHeader: true,
                       ),
                     ],
@@ -139,13 +155,17 @@ class AccountsReportView extends StatelessWidget {
                   for (final row in paginatedRows)
                     TableRow(
                       children: [
-                        _cell('${row.index}'),
-                        _cell(row.account.name),
-                        _cell(formatAmount(row.balance, row.account.currency)),
+                        _cell('${row.index}', context: context),
+                        _cell(row.account.name, context: context),
+                        _cell(
+                          formatAmount(row.balance, row.account.currency),
+                          context: context,
+                        ),
                         _cell(
                           row.account.accountType == 'cash'
                               ? t.menu.accounts.type.cash
                               : t.menu.accounts.type.bank,
+                          context: context,
                         ),
                       ],
                     ),
@@ -190,7 +210,12 @@ class AccountsReportView extends StatelessWidget {
         .toList();
   }
 
-  static Widget _cell(String text, {bool isHeader = false}) {
+  static Widget _cell(
+    String text, {
+    required BuildContext context,
+    bool isHeader = false,
+  }) {
+    final scheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       child: Text(
@@ -203,7 +228,7 @@ class AccountsReportView extends StatelessWidget {
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 )
-                : AppTextStyles.f14w500.copyWith(color: AppColors.blackColor),
+                : AppTextStyles.f14w500.copyWith(color: scheme.onSurface),
       ),
     );
   }
@@ -222,6 +247,7 @@ class _PaginationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     int startPage = (currentPage - 5).clamp(1, pageCount);
     int endPage = (startPage + 9).clamp(startPage, pageCount);
     if (endPage - startPage < 9) {
@@ -246,7 +272,8 @@ class _PaginationBar extends StatelessWidget {
                   backgroundColor:
                       i == currentPage ? AppColors.primaryColorLight : null,
                   foregroundColor:
-                      i == currentPage ? Colors.white : Colors.black,
+                      i == currentPage ? Colors.white : scheme.onSurface,
+                  side: BorderSide(color: scheme.outlineVariant),
                   minimumSize: const Size(36, 36),
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                 ),

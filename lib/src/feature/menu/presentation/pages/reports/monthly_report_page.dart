@@ -38,10 +38,10 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
-//       backgroundColor: AppColors.whiteColor,
+//       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 //       appBar: CustomAppBar(
 //         title: t.menu.monthlyReport.title,
-//         backgroundColor: AppColors.whiteColor,
+//         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 //       ),
 //       body: Padding(
 //         padding: const EdgeInsets.symmetric(horizontal: 20),

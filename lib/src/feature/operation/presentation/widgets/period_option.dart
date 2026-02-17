@@ -16,6 +16,7 @@ class PeriodOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isSelected = label == selected;
+    final scheme = Theme.of(context).colorScheme;
 
     return GestureDetector(
       onTap: () => onChanged(label),
@@ -24,27 +25,27 @@ class PeriodOption extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         height: 55,
         decoration: BoxDecoration(
-          color: AppColors.backroundColor,
+          color: scheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(25),
-          border: Border.all(color: Colors.grey.shade300, width: 1),
+          border: Border.all(color: scheme.outlineVariant, width: 1),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               label,
-              style: AppTextStyles.f16w500.copyWith(color: Colors.black),
+              style: AppTextStyles.f16w500.copyWith(color: scheme.onSurface),
             ),
             Theme(
               data: ThemeData(
-                unselectedWidgetColor: Colors.grey.shade400,
+                unselectedWidgetColor: scheme.onSurfaceVariant,
                 checkboxTheme: CheckboxThemeData(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  side: BorderSide(color: Colors.grey.shade300, width: 1),
+                  side: BorderSide(color: scheme.outlineVariant, width: 1),
                   fillColor: WidgetStateProperty.resolveWith((states) {
-                    return isSelected ? AppColors.primaryColor : Colors.white;
+                    return isSelected ? AppColors.primaryColor : scheme.surface;
                   }),
                   checkColor: WidgetStateProperty.all(Colors.white),
                 ),

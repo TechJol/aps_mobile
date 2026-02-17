@@ -45,10 +45,11 @@ class _MainAccountPageState extends State<MainAccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         centerTitle: false,
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -64,7 +65,7 @@ class _MainAccountPageState extends State<MainAccountPage> {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: scheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(100),
               ),
               child: IconButton(

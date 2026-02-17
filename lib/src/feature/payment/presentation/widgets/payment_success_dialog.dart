@@ -8,8 +8,10 @@ class PaymentSuccessDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      backgroundColor: scheme.surface,
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: BlocBuilder<PaymentCubit, PaymentState>(
@@ -46,7 +48,7 @@ class PaymentSuccessDialog extends StatelessWidget {
                 Text(
                   t.payment.successTitle,
                   style: AppTextStyles.f16w600.copyWith(
-                    color: AppColors.blackColor,
+                    color: scheme.onSurface,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -58,7 +60,7 @@ class PaymentSuccessDialog extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                   style: AppTextStyles.f12w400.copyWith(
-                    color: AppColors.smallTextGreyColor,
+                    color: scheme.onSurfaceVariant,
                   ),
                 ),
                 12.h,
@@ -112,6 +114,7 @@ class _InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -120,7 +123,7 @@ class _InfoRow extends StatelessWidget {
           Text(
             label,
             style: AppTextStyles.f12w400.copyWith(
-              color: AppColors.smallTextGreyColor,
+              color: scheme.onSurfaceVariant,
             ),
           ),
           12.w,
@@ -129,7 +132,7 @@ class _InfoRow extends StatelessWidget {
               value,
               textAlign: TextAlign.right,
               style: AppTextStyles.f12w600.copyWith(
-                color: AppColors.blackColor,
+                color: scheme.onSurface,
               ),
             ),
           ),

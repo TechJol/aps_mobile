@@ -72,11 +72,12 @@ class _EditAccountPageState extends State<EditAccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: t.account.account.actions.editAccount,
-        backgroundColor: AppColors.backroundColor,
+        backgroundColor: scheme.surface,
       ),
       body: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {
@@ -91,7 +92,7 @@ class _EditAccountPageState extends State<EditAccountPage> {
               width: double.infinity,
               height: 50,
               decoration: BoxDecoration(
-                color: AppColors.backroundColor,
+                color: scheme.surface,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(12),
                   bottomRight: Radius.circular(12),

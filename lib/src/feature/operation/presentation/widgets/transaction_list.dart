@@ -81,6 +81,7 @@ class _OperationTransactionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final isIncome = transaction.transactionType == 'income';
     final date = DateTime.tryParse(transaction.date ?? '') ?? DateTime.now();
     final formattedDate =
@@ -135,7 +136,7 @@ class _OperationTransactionTile extends StatelessWidget {
                 Text(
                   formattedDate,
                   style: AppTextStyles.f12w400.copyWith(
-                    color: AppColors.smallTextGreyColor,
+                    color: scheme.onSurfaceVariant,
                   ),
                 ),
               ],

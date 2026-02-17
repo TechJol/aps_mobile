@@ -91,9 +91,9 @@ class ProfilePage extends StatelessWidget {
 
         const SizedBox(height: 40),
 
-        _buildTextField(label: user.username),
+        _buildTextField(context: context, label: user.username),
         const SizedBox(height: 30),
-        _buildTextField(label: user.email ?? ''),
+        _buildTextField(context: context, label: user.email ?? ''),
         const SizedBox(height: 32),
 
         SizedBox(height: 290),
@@ -164,6 +164,7 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildTextField({
+    required BuildContext context,
     required String label,
     TextEditingController? controller,
   }) {
@@ -176,7 +177,7 @@ class ProfilePage extends StatelessWidget {
           floatingLabelBehavior: FloatingLabelBehavior.never,
           filled: true,
           labelStyle: AppTextStyles.f16w500,
-          fillColor: AppColors.backroundColor,
+          fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(25),
@@ -184,9 +185,9 @@ class ProfilePage extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(25),
-            borderSide: const BorderSide(
+            borderSide: BorderSide(
               width: 1,
-              color: AppColors.backroundColor,
+              color: Theme.of(context).colorScheme.surface,
             ),
           ),
           labelText: label,

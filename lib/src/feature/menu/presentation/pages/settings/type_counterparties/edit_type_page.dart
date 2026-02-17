@@ -40,10 +40,10 @@ class _EditTypePageState extends State<EditTypePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: t.menu.typeCounterparties.editType,
-        backgroundColor: AppColors.backroundColor,
+        backgroundColor: Theme.of(context).colorScheme.surface,
       ),
       body: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {
@@ -58,7 +58,7 @@ class _EditTypePageState extends State<EditTypePage> {
               width: double.infinity,
               height: 50,
               decoration: BoxDecoration(
-                color: AppColors.backroundColor,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(12),
                   bottomRight: Radius.circular(12),

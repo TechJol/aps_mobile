@@ -44,14 +44,15 @@ class AddPartnerBottomSheet {
 
     return showModalBottomSheet<bool>(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       isDismissible: true,
       enableDrag: true,
       builder: (dialogContext) {
         return StatefulBuilder(
           builder: (context, setState) {
+            final scheme = Theme.of(context).colorScheme;
             return AlertDialog(
-              backgroundColor: AppColors.whiteColor,
+              backgroundColor: scheme.surface,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -63,7 +64,7 @@ class AddPartnerBottomSheet {
                   Text(
                     t.operation.selectTypeAndPartner,
                     style: AppTextStyles.f14w500.copyWith(
-                      color: AppColors.greyColor,
+                      color: scheme.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -107,9 +108,9 @@ class AddPartnerBottomSheet {
                       child: OutlinedButton(
                         onPressed: () => Navigator.of(dialogContext).pop(true),
                         style: OutlinedButton.styleFrom(
-                          backgroundColor: AppColors.backroundColor,
-                          side: const BorderSide(
-                            color: AppColors.backroundColor,
+                          backgroundColor: scheme.surfaceContainerHighest,
+                          side: BorderSide(
+                            color: scheme.surfaceContainerHighest,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -118,7 +119,7 @@ class AddPartnerBottomSheet {
                         child: Text(
                           t.operation.cancel,
                           style: AppTextStyles.f16w500.copyWith(
-                            color: AppColors.blackColor,
+                            color: scheme.onSurface,
                           ),
                         ),
                       ),

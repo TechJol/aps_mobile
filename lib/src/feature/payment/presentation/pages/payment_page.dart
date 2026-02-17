@@ -10,7 +10,7 @@ class PaymentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: const PaymentContent(
           padding: EdgeInsets.fromLTRB(24, 16, 24, 24),
@@ -27,6 +27,7 @@ class PaymentAlertDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       backgroundColor: Colors.transparent,
@@ -36,7 +37,7 @@ class PaymentAlertDialog extends StatelessWidget {
             margin: const EdgeInsets.only(top: 12),
             padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
             decoration: BoxDecoration(
-              color: AppColors.whiteColor,
+              color: scheme.surface,
               borderRadius: BorderRadius.circular(28),
               boxShadow: [
                 BoxShadow(
@@ -63,7 +64,7 @@ class PaymentAlertDialog extends StatelessWidget {
               child: IconButton(
                 onPressed: onClose,
                 icon: const Icon(Icons.close),
-                color: AppColors.greyerColorLight,
+                color: scheme.onSurfaceVariant,
               ),
             ),
           ),

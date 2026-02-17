@@ -58,11 +58,12 @@ class _AddAccountPageState extends State<AddAccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: t.account.addAccount,
-        backgroundColor: AppColors.backroundColor,
+        backgroundColor: scheme.surface,
       ),
       body: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {
@@ -85,7 +86,7 @@ class _AddAccountPageState extends State<AddAccountPage> {
               width: double.infinity,
               height: 50,
               decoration: BoxDecoration(
-                color: AppColors.backroundColor,
+                color: scheme.surface,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(12),
                   bottomRight: Radius.circular(12),

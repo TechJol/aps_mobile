@@ -10,12 +10,16 @@ class PlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final borderColor = option.isSelected
         ? AppColors.primaryColorLight
-        : AppColors.greyColorLight;
+        : (isDark ? scheme.outlineVariant : AppColors.greyColorLight);
     final backgroundColor = option.isSelected
-        ? AppColors.nextbackColor
-        : AppColors.whiteColor;
+        ? (isDark
+              ? AppColors.primaryColorLight.withValues(alpha: 0.18)
+              : AppColors.nextbackColor)
+        : (isDark ? scheme.surfaceContainerHighest : AppColors.whiteColor);
 
     return Stack(
       children: [
@@ -40,14 +44,14 @@ class PlanCard extends StatelessWidget {
                         Text(
                           option.title,
                           style: AppTextStyles.f14w600.copyWith(
-                            color: AppColors.blackColor,
+                            color: scheme.onSurface,
                           ),
                         ),
                         6.h,
                         Text(
                           option.subtitle,
                           style: AppTextStyles.f9w400.copyWith(
-                            color: AppColors.smallTextGreyColor,
+                            color: scheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -59,14 +63,14 @@ class PlanCard extends StatelessWidget {
                       Text(
                         option.price,
                         style: AppTextStyles.f14w600.copyWith(
-                          color: AppColors.blackColor,
+                          color: scheme.onSurface,
                         ),
                       ),
                       4.h,
                       Text(
                         t.payment.perPeriod,
                         style: AppTextStyles.f12w400.copyWith(
-                          color: AppColors.smallTextGreyColor,
+                          color: scheme.onSurfaceVariant,
                         ),
                       ),
                     ],

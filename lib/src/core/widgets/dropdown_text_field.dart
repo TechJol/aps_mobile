@@ -22,13 +22,17 @@ class DropDownFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return DropdownSearch<String>(
       selectedItem: value,
       onChanged: onChanged,
       items: (f, cs) => items,
 
-      dropdownBuilder: (context, selectedItem) =>
-          Text(selectedItem ?? '', style: AppTextStyles.f16w500),
+      dropdownBuilder: (context, selectedItem) => Text(
+        selectedItem ?? '',
+        style: AppTextStyles.f16w500.copyWith(color: scheme.onSurface),
+      ),
 
       suffixProps: DropdownSuffixProps(
         dropdownButtonProps: DropdownButtonProps(
@@ -39,9 +43,12 @@ class DropDownFormField extends StatelessWidget {
 
       decoratorProps: DropDownDecoratorProps(
         decoration: InputDecoration(
-          label: Text(label, style: AppTextStyles.f16w500),
+          label: Text(
+            label,
+            style: AppTextStyles.f16w500.copyWith(color: scheme.onSurfaceVariant),
+          ),
           floatingLabelBehavior: FloatingLabelBehavior.never,
-          fillColor: AppColors.backroundColor,
+          fillColor: scheme.surfaceContainerHighest,
           filled: true,
 
           border: OutlineInputBorder(
@@ -53,8 +60,8 @@ class DropDownFormField extends StatelessWidget {
             borderSide: BorderSide(
               width: 0.5,
               color: isSettingDropdown == false
-                  ? AppColors.blackColor
-                  : AppColors.transparentColor,
+                  ? (isDark ? scheme.outline : AppColors.blackColor)
+                  : scheme.surfaceContainerHighest,
             ),
           ),
           focusedBorder: OutlineInputBorder(
@@ -104,7 +111,7 @@ class DropDownFormField extends StatelessWidget {
                   style: AppTextStyles.f16w500.copyWith(
                     color: isSelected
                         ? AppColors.primaryColor
-                        : AppColors.blackColor,
+                        : scheme.onSurface,
                   ),
                 ),
               );
@@ -117,10 +124,10 @@ class DropDownFormField extends StatelessWidget {
         ),
 
         menuProps: MenuProps(
-          backgroundColor: AppColors.whiteColor,
+          backgroundColor: scheme.surface,
           borderRadius: BorderRadius.circular(16),
           elevation: 8,
-          shadowColor: AppColors.whiteColor,
+          shadowColor: Colors.black26,
         ),
       ),
     );

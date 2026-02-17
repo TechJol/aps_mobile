@@ -28,10 +28,10 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: t.menu.forCounterparties.title,
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
         builder: (context, state) {
@@ -69,6 +69,7 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
                       children: partnerTypes
                           .map(
                             (type) => categoryButton(
+                              context: context,
                               label: type.name,
                               isActive: activeType == type.id,
                               onTap: () {
@@ -110,13 +111,14 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
     List<PartnersModel> data,
     Map<int, Decimal> balances,
   ) {
+    final scheme = Theme.of(context).colorScheme;
     final pageCount = (data.length / rowsPerPage).ceil();
     final start = (currentPage - 1) * rowsPerPage;
     final end = (start + rowsPerPage).clamp(0, data.length);
     final paginatedData = data.sublist(start, end);
 
     // Настройки
-    const borderColor = Color(0xFFE6E6E6);
+    final borderColor = scheme.outlineVariant;
     const colW = {
       0: FixedColumnWidth(50),
       1: FixedColumnWidth(200),
@@ -135,7 +137,7 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
                   fontWeight: FontWeight.bold,
                 )
               : AppTextStyles.f14w500.copyWith(
-                  color: color ?? AppColors.blackColor,
+                  color: color ?? scheme.onSurface,
                 ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -194,18 +196,24 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
   }
 
   Widget categoryButton({
+    required BuildContext context,
     required String label,
     required bool isActive,
     required VoidCallback onTap,
   }) {
+    final scheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
-          backgroundColor: isActive ? Colors.black : Colors.white,
-          foregroundColor: isActive ? Colors.white : Colors.black,
+          backgroundColor: isActive
+              ? AppColors.primaryColorLight
+              : scheme.surface,
+          foregroundColor: isActive ? Colors.white : scheme.onSurface,
           side: BorderSide(
-            color: isActive ? Colors.black : Colors.grey.shade300,
+            color: isActive
+                ? AppColors.primaryColorLight
+                : scheme.outlineVariant,
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
@@ -240,7 +248,8 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
                 ? () => goToPage(currentPage - 1, pageCount)
                 : null,
           ),
-          for (int i = startPage; i <= endPage; i++) _pageButton(i, pageCount),
+          for (int i = startPage; i <= endPage; i++)
+            _pageButton(context, i, pageCount),
           IconButton(
             icon: const Icon(Icons.chevron_right),
             onPressed: currentPage < pageCount
@@ -252,7 +261,8 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
     );
   }
 
-  Widget _pageButton(int page, int pageCount) {
+  Widget _pageButton(BuildContext context, int page, int pageCount) {
+    final scheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2.0),
       child: OutlinedButton(
@@ -260,7 +270,10 @@ class _ForCounterpartiesPageState extends State<ForCounterpartiesPage> {
           backgroundColor: page == currentPage
               ? AppColors.primaryColorLight
               : null,
-          foregroundColor: page == currentPage ? Colors.white : Colors.black,
+          foregroundColor: page == currentPage
+              ? Colors.white
+              : scheme.onSurface,
+          side: BorderSide(color: scheme.outlineVariant),
           minimumSize: const Size(36, 36),
           padding: const EdgeInsets.symmetric(horizontal: 8),
         ),

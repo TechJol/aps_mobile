@@ -40,10 +40,10 @@ class _MetricsPageState extends State<MetricsPage> {
     final hasYearlyData = yearlyData.isNotEmpty;
 
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: t.menu.metrics.title,
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       body: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {

@@ -8,13 +8,14 @@ class IncomeSheetHandle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Center(
       child: Container(
         width: 100,
         height: 4,
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          color: Colors.grey[300],
+          color: scheme.outlineVariant,
           borderRadius: BorderRadius.circular(8),
         ),
       ),
@@ -62,13 +63,14 @@ class IncomeDateField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return TextFormField(
       readOnly: true,
       controller: controller,
       decoration: InputDecoration(
         filled: true,
         labelStyle: AppTextStyles.f16w500,
-        fillColor: AppColors.backroundColor,
+        fillColor: scheme.surfaceContainerHighest,
         suffixIcon: GestureDetector(
           onTap: onTap,
           child: Padding(
@@ -85,11 +87,11 @@ class IncomeDateField extends StatelessWidget {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(25),
-          borderSide: const BorderSide(color: AppColors.backroundColor),
+          borderSide: BorderSide(color: scheme.surfaceContainerHighest),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(25),
-          borderSide: const BorderSide(color: AppColors.backroundColor),
+          borderSide: BorderSide(color: scheme.surfaceContainerHighest),
         ),
       ),
     );
@@ -150,6 +152,7 @@ class IncomeAmountField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return TextFieldWid(
       label: t.income.sum,
       controller: controller,
@@ -166,13 +169,13 @@ class IncomeAmountField extends StatelessWidget {
               Text(
                 currencyLabel,
                 style: AppTextStyles.f14w500.copyWith(
-                  color: AppColors.blackColor,
+                  color: scheme.onSurface,
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.expand_more,
                 size: 18,
-                color: AppColors.blackColor,
+                color: scheme.onSurface,
               ),
             ],
           ),
@@ -189,6 +192,7 @@ class IncomeDescriptionField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return TextFormField(
       maxLength: 160,
       maxLines: 3,
@@ -196,7 +200,7 @@ class IncomeDescriptionField extends StatelessWidget {
       decoration: InputDecoration(
         filled: true,
         labelStyle: AppTextStyles.f16w500,
-        fillColor: AppColors.backroundColor,
+        fillColor: scheme.surfaceContainerHighest,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
         hintText: t.income.description,
       ),

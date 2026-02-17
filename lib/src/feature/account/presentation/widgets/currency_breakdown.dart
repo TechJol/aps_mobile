@@ -15,6 +15,7 @@ class CurrencyBreakdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: totals
@@ -27,7 +28,7 @@ class CurrencyBreakdown extends StatelessWidget {
                   Text(
                     item.currency,
                     style: AppTextStyles.f14w500.copyWith(
-                      color: AppColors.greyColor,
+                      color: scheme.onSurfaceVariant,
                       fontFamily: 'Inter',
                     ),
                   ),

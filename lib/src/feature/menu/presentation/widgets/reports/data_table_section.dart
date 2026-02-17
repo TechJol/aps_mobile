@@ -14,6 +14,8 @@ class DataTableSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (data.isEmpty) return const SizedBox.shrink();
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final textStyle = AppTextStyles.f16w500;
 
@@ -31,7 +33,7 @@ class DataTableSection extends StatelessWidget {
     const pctColW = 110.0;
     const cellHPad = 16.0;
     const cellVPad = 14.0;
-    const gridColor = Color(0xFFC9C7C7);
+    final gridColor = isDark ? scheme.outlineVariant : const Color(0xFFC9C7C7);
 
     final maxNameTextW = data.fold<double>(80.0, (maxW, row) {
       final name = (row['name'] ?? '').toString();
@@ -56,6 +58,7 @@ class DataTableSection extends StatelessWidget {
           children: [
             _cell(
               t.menu.common.numberSign,
+              context: context,
               isHeader: true,
               width: numColW,
               padH: cellHPad,
@@ -63,6 +66,7 @@ class DataTableSection extends StatelessWidget {
             ),
             _cell(
               nameColumnTitle,
+              context: context,
               isHeader: true,
               width: tableMinWidth == screenW ? nameColW : maxNameTextW,
               padH: cellHPad,
@@ -70,6 +74,7 @@ class DataTableSection extends StatelessWidget {
             ),
             _cell(
               t.menu.common.amountKgs,
+              context: context,
               isHeader: true,
               width: sumColW,
               padH: cellHPad,
@@ -77,6 +82,7 @@ class DataTableSection extends StatelessWidget {
             ),
             _cell(
               t.menu.common.percent,
+              context: context,
               isHeader: true,
               width: pctColW,
               padH: cellHPad,
@@ -96,19 +102,33 @@ class DataTableSection extends StatelessWidget {
 
           return TableRow(
             children: [
-              _cell('$i', width: numColW, padH: cellHPad, padV: cellVPad),
+              _cell(
+                '$i',
+                context: context,
+                width: numColW,
+                padH: cellHPad,
+                padV: cellVPad,
+              ),
               _cell(
                 name,
+                context: context,
                 width: isStretched ? nameColW : maxNameTextW,
                 padH: cellHPad,
                 padV: cellVPad,
                 ellipsis: isStretched,
               ),
-              _cell(amount, width: sumColW, padH: cellHPad, padV: cellVPad),
+              _cell(
+                amount,
+                context: context,
+                width: sumColW,
+                padH: cellHPad,
+                padV: cellVPad,
+              ),
               _cell(
                 percent is Decimal
                     ? '${percent.toString()}%'
                     : '${percent ?? 0}%',
+                context: context,
                 width: pctColW,
                 padH: cellHPad,
                 padV: cellVPad,
@@ -141,15 +161,17 @@ class DataTableSection extends StatelessWidget {
 
   Widget _cell(
     String text, {
+    required BuildContext context,
     required double width,
     required double padH,
     required double padV,
     bool isHeader = false,
     bool ellipsis = false,
   }) {
+    final scheme = Theme.of(context).colorScheme;
     final style = isHeader
         ? const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)
-        : AppTextStyles.f16w500;
+        : AppTextStyles.f16w500.copyWith(color: scheme.onSurface);
 
     return SizedBox(
       width: width,

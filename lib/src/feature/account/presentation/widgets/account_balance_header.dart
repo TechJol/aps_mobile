@@ -15,6 +15,7 @@ class AccountBalanceHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return LayoutBuilder(
       builder: (context, constraints) {
         final isNarrow = constraints.maxWidth < 360;
@@ -39,7 +40,7 @@ class AccountBalanceHeader extends StatelessWidget {
             Text(
               t.account.totalBalances,
               style: AppTextStyles.f14w500.copyWith(
-                color: AppColors.greyColor,
+                color: scheme.onSurfaceVariant,
                 fontFamily: 'Inter',
               ),
             ),
@@ -60,11 +61,11 @@ class AccountBalanceHeader extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: AppTextStyles.f16w500.copyWith(
-                  color: AppColors.blackColor,
+                  color: scheme.onSurface,
                 ),
               ),
               8.w,
-              const Icon(Icons.add, size: 20, color: AppColors.blackColor),
+              Icon(Icons.add, size: 20, color: scheme.onSurface),
             ],
           ),
         );

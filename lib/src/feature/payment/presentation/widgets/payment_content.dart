@@ -39,6 +39,7 @@ class _PaymentContentState extends State<PaymentContent> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return BlocListener<PaymentCubit, PaymentState>(
       listenWhen: (previous, current) =>
           previous.paymentUrl != current.paymentUrl &&
@@ -115,14 +116,14 @@ class _PaymentContentState extends State<PaymentContent> {
                 Text(
                   t.payment.subscribeTitle,
                   style: AppTextStyles.f20w600.copyWith(
-                    color: AppColors.blackColor,
+                    color: scheme.onSurface,
                   ),
                 ),
                 8.h,
                 Text(
                   t.payment.subscribeDescription,
                   style: AppTextStyles.f12w400.copyWith(
-                    color: AppColors.smallTextGreyColor,
+                    color: scheme.onSurfaceVariant,
                     height: 1.4,
                   ),
                 ),
@@ -136,7 +137,7 @@ class _PaymentContentState extends State<PaymentContent> {
                 Text(
                   t.payment.choosePlanTitle,
                   style: AppTextStyles.f14w600.copyWith(
-                    color: AppColors.blackColor,
+                    color: scheme.onSurface,
                   ),
                 ),
                 10.h,
@@ -144,7 +145,7 @@ class _PaymentContentState extends State<PaymentContent> {
                   Text(
                     t.payment.plansUnavailable,
                     style: AppTextStyles.f12w400.copyWith(
-                      color: AppColors.smallTextGreyColor,
+                      color: scheme.onSurfaceVariant,
                     ),
                   )
                 else
@@ -169,7 +170,7 @@ class _PaymentContentState extends State<PaymentContent> {
                   t.payment.autoRenew,
                   textAlign: TextAlign.center,
                   style: AppTextStyles.f9w400.copyWith(
-                    color: AppColors.smallTextGreyColor,
+                    color: scheme.onSurfaceVariant,
                     height: 1.4,
                   ),
                 ),
@@ -255,28 +256,35 @@ class _PaymentContentState extends State<PaymentContent> {
     final daysLeft = _daysLeft(active.endDate);
     if (daysLeft == null) return null;
 
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.greenColorLight,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.check_circle_rounded, color: AppColors.greenColor),
-          8.w,
-          Expanded(
-            child: Text(
-              t.payment.activeStatus
-                  .replaceAll('{planName}', planName)
-                  .replaceAll('{daysLeft}', daysLeft.toString()),
-              style: AppTextStyles.f12w500.copyWith(
-                color: AppColors.greenColor,
-              ),
-            ),
+    return Builder(
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: isDark
+                ? AppColors.greenColor.withValues(alpha: 0.18)
+                : AppColors.greenColorLight,
+            borderRadius: BorderRadius.circular(16),
           ),
-        ],
-      ),
+          child: Row(
+            children: [
+              const Icon(Icons.check_circle_rounded, color: AppColors.greenColor),
+              8.w,
+              Expanded(
+                child: Text(
+                  t.payment.activeStatus
+                      .replaceAll('{planName}', planName)
+                      .replaceAll('{daysLeft}', daysLeft.toString()),
+                  style: AppTextStyles.f12w500.copyWith(
+                    color: isDark ? AppColors.greenColor50 : AppColors.greenColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -345,6 +353,7 @@ class _FeatureRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -358,7 +367,7 @@ class _FeatureRow extends StatelessWidget {
           child: Text(
             text,
             style: AppTextStyles.f12w500.copyWith(
-              color: AppColors.blackColorLight,
+              color: scheme.onSurface,
               height: 1.4,
             ),
           ),
@@ -375,6 +384,7 @@ class _ErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -385,7 +395,7 @@ class _ErrorState extends StatelessWidget {
               message,
               textAlign: TextAlign.center,
               style: AppTextStyles.f12w400.copyWith(
-                color: AppColors.smallTextGreyColor,
+                color: scheme.onSurfaceVariant,
               ),
             ),
             12.h,

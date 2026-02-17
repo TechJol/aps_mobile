@@ -12,11 +12,13 @@ class MoreInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: t.account.moreInfo,
-        backgroundColor: AppColors.backroundColor,
+        backgroundColor: scheme.surface,
       ),
       body: BlocBuilder<MenuCubit, MenuState>(
         builder: (context, state) {
@@ -83,7 +85,7 @@ class MoreInfoPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.only(top: 20, bottom: 20),
                 decoration: BoxDecoration(
-                  color: AppColors.backroundColor,
+                  color: scheme.surface,
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(20),
                     bottomRight: Radius.circular(20),
@@ -226,8 +228,8 @@ class MoreInfoPage extends StatelessWidget {
                     ),
                     12.h,
                     _BoxedTable(
-                      headerBg: Colors.black,
-                      headerFg: Colors.white,
+                      headerBg: isDark ? scheme.surfaceContainerHighest : Colors.black,
+                      headerFg: isDark ? scheme.onSurface : Colors.white,
                       headers: [
                         t.account.currency,
                         t.account.totalSumIncome,
@@ -256,8 +258,8 @@ class MoreInfoPage extends StatelessWidget {
                     12.h,
 
                     _BoxedTable(
-                      headerBg: Colors.black,
-                      headerFg: Colors.white,
+                      headerBg: isDark ? scheme.surfaceContainerHighest : Colors.black,
+                      headerFg: isDark ? scheme.onSurface : Colors.white,
                       headers: [
                         'ID',
                         t.account.date,
@@ -348,6 +350,10 @@ class _BoxedTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final borderColor = isDark ? scheme.outlineVariant : const Color(0xFFE5E5EA);
+    final rowBg = isDark ? scheme.surface : Colors.white;
     final minWidth = MediaQuery.of(context).size.width - 40;
 
     return SingleChildScrollView(
@@ -360,18 +366,12 @@ class _BoxedTable extends StatelessWidget {
           },
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           border: TableBorder(
-            top: const BorderSide(color: Color(0xFFE5E5EA), width: 1),
-            left: const BorderSide(color: Color(0xFFE5E5EA), width: 1),
-            right: const BorderSide(color: Color(0xFFE5E5EA), width: 1),
-            bottom: const BorderSide(color: Color(0xFFE5E5EA), width: 1),
-            horizontalInside: const BorderSide(
-              color: Color(0xFFE5E5EA),
-              width: 1,
-            ),
-            verticalInside: const BorderSide(
-              color: Color(0xFFE5E5EA),
-              width: 1,
-            ),
+            top: BorderSide(color: borderColor, width: 1),
+            left: BorderSide(color: borderColor, width: 1),
+            right: BorderSide(color: borderColor, width: 1),
+            bottom: BorderSide(color: borderColor, width: 1),
+            horizontalInside: BorderSide(color: borderColor, width: 1),
+            verticalInside: BorderSide(color: borderColor, width: 1),
           ),
           children: [
             TableRow(
@@ -394,7 +394,7 @@ class _BoxedTable extends StatelessWidget {
 
             ...rows.map(
               (r) => TableRow(
-                decoration: const BoxDecoration(color: Colors.white),
+                decoration: BoxDecoration(color: rowBg),
                 children: r
                     .map(
                       (c) => Padding(

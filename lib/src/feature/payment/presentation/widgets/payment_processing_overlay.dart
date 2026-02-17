@@ -10,13 +10,14 @@ class PaymentProcessingOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       color: Colors.black.withOpacity(0.3),
       child: Center(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           decoration: BoxDecoration(
-            color: AppColors.whiteColor,
+            color: scheme.surface,
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
@@ -31,7 +32,7 @@ class PaymentProcessingOverlay extends StatelessWidget {
               Text(
                 t.payment.processingTitle,
                 style: AppTextStyles.f14w600.copyWith(
-                  color: AppColors.blackColor,
+                  color: scheme.onSurface,
                 ),
               ),
               8.h,
@@ -42,7 +43,7 @@ class PaymentProcessingOverlay extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
                 style: AppTextStyles.f12w400.copyWith(
-                  color: AppColors.smallTextGreyColor,
+                  color: scheme.onSurfaceVariant,
                 ),
               ),
             ],

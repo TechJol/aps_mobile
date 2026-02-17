@@ -56,10 +56,10 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppBar(
         title: t.menu.counterparties.editCounterparty,
-        backgroundColor: AppColors.backroundColor,
+        backgroundColor: Theme.of(context).colorScheme.surface,
       ),
       body: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {
@@ -77,7 +77,7 @@ class _EditCounterpartiesPageState extends State<EditCounterpartiesPage> {
               width: double.infinity,
               height: 50,
               decoration: BoxDecoration(
-                color: AppColors.backroundColor,
+                color: Theme.of(context).colorScheme.surface,
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(12),
                   bottomRight: Radius.circular(12),
