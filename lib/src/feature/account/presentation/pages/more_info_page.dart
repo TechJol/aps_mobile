@@ -228,7 +228,9 @@ class MoreInfoPage extends StatelessWidget {
                     ),
                     12.h,
                     _BoxedTable(
-                      headerBg: isDark ? scheme.surfaceContainerHighest : Colors.black,
+                      headerBg: isDark
+                          ? scheme.surfaceContainerHighest
+                          : Colors.black,
                       headerFg: isDark ? scheme.onSurface : Colors.white,
                       headers: [
                         t.account.currency,
@@ -258,7 +260,9 @@ class MoreInfoPage extends StatelessWidget {
                     12.h,
 
                     _BoxedTable(
-                      headerBg: isDark ? scheme.surfaceContainerHighest : Colors.black,
+                      headerBg: isDark
+                          ? scheme.surfaceContainerHighest
+                          : Colors.black,
                       headerFg: isDark ? scheme.onSurface : Colors.white,
                       headers: [
                         'ID',
@@ -352,7 +356,9 @@ class _BoxedTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark ? scheme.outlineVariant : const Color(0xFFE5E5EA);
+    final borderColor = isDark
+        ? scheme.outlineVariant
+        : const Color(0xFFE5E5EA);
     final rowBg = isDark ? scheme.surface : Colors.white;
     final minWidth = MediaQuery.of(context).size.width - 40;
 
