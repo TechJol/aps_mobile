@@ -46,7 +46,9 @@ class _LanguageSelectionState extends State<LanguageSelection> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           border: Border.all(
-            color: isSelected ? AppColors.primary200Color : scheme.outlineVariant,
+            color: isSelected
+                ? AppColors.primary200Color
+                : scheme.outlineVariant,
             width: 1,
           ),
           borderRadius: BorderRadius.circular(12),

@@ -328,7 +328,7 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
                   }
                   return ElevatedButton(
                     onPressed: isFormValid
-                          ? () {
+                        ? () {
                             final user = AuthModel(
                               username: usernameController.text,
                               password: passwordController.text,

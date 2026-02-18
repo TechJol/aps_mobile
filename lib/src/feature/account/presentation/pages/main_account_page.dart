@@ -125,12 +125,11 @@ class _MainAccountPageState extends State<MainAccountPage> {
                     if (!mounted) return;
                     menuCubit.getTransactionsWithAccounts();
                   },
-                  onOpenAccount:
-                      (account) => Navigator.pushNamed(
-                        context,
-                        AppRoutes.moreinfo,
-                        arguments: account,
-                      ),
+                  onOpenAccount: (account) => Navigator.pushNamed(
+                    context,
+                    AppRoutes.moreinfo,
+                    arguments: account,
+                  ),
                 );
               },
             );

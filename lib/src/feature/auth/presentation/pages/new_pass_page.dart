@@ -81,10 +81,9 @@ class _NewPassPageState extends State<NewPassPage> {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(30),
       borderSide: BorderSide(
-        color:
-            touched && text.trim().isNotEmpty
-                ? AppColors.primary200Color
-                : Colors.transparent,
+        color: touched && text.trim().isNotEmpty
+            ? AppColors.primary200Color
+            : Colors.transparent,
       ),
     );
   }
@@ -103,10 +102,9 @@ class _NewPassPageState extends State<NewPassPage> {
       controller: controller,
       focusNode: focusNode,
       obscureText: obscureText,
-      textInputAction:
-          focusNode == confirmPasswordFocus
-              ? TextInputAction.done
-              : TextInputAction.next,
+      textInputAction: focusNode == confirmPasswordFocus
+          ? TextInputAction.done
+          : TextInputAction.next,
       onSubmitted: (_) {
         if (focusNode == newPasswordFocus) {
           FocusScope.of(context).requestFocus(confirmPasswordFocus);
@@ -184,10 +182,9 @@ class _NewPassPageState extends State<NewPassPage> {
                     controller: newPasswordController,
                     focusNode: newPasswordFocus,
                     obscureText: obscureNewPassword,
-                    toggleObscure:
-                        () => setState(
-                          () => obscureNewPassword = !obscureNewPassword,
-                        ),
+                    toggleObscure: () => setState(
+                      () => obscureNewPassword = !obscureNewPassword,
+                    ),
                     touched: newPasswordTouched,
                   ),
                   const SizedBox(height: 25),
@@ -197,27 +194,23 @@ class _NewPassPageState extends State<NewPassPage> {
                     controller: confirmPasswordController,
                     focusNode: confirmPasswordFocus,
                     obscureText: obscureConfirmPassword,
-                    toggleObscure:
-                        () => setState(
-                          () =>
-                              obscureConfirmPassword = !obscureConfirmPassword,
-                        ),
+                    toggleObscure: () => setState(
+                      () => obscureConfirmPassword = !obscureConfirmPassword,
+                    ),
                     touched: confirmPasswordTouched,
                   ),
                   const SizedBox(height: 60),
                   ElevatedButton(
-                    onPressed:
-                        isFormValid
-                            ? () => Navigator.pushNamed(
-                              context,
-                              AppRoutes.passwordSuccess,
-                            )
-                            : null,
+                    onPressed: isFormValid
+                        ? () => Navigator.pushNamed(
+                            context,
+                            AppRoutes.passwordSuccess,
+                          )
+                        : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          isFormValid
-                              ? AppColors.primary200Color
-                              : AppColors.primary50Color,
+                      backgroundColor: isFormValid
+                          ? AppColors.primary200Color
+                          : AppColors.primary50Color,
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),

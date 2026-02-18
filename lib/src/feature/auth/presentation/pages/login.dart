@@ -122,7 +122,9 @@ class _LoginFormEmbeddedState extends State<LoginFormEmbedded> {
                   vertical: 14,
                 ),
                 hintText: t.auth.logIn,
-                hintStyle: TextStyle(color: scheme.onSurfaceVariant.withOpacity(0.7)),
+                hintStyle: TextStyle(
+                  color: scheme.onSurfaceVariant.withOpacity(0.7),
+                ),
                 border: _getBorder(usernameTouched, usernameController.text),
                 enabledBorder: _getBorder(
                   usernameTouched,
@@ -145,7 +147,9 @@ class _LoginFormEmbeddedState extends State<LoginFormEmbedded> {
                   vertical: 14,
                 ),
                 hintText: t.auth.password,
-                hintStyle: TextStyle(color: scheme.onSurfaceVariant.withOpacity(0.7)),
+                hintStyle: TextStyle(
+                  color: scheme.onSurfaceVariant.withOpacity(0.7),
+                ),
                 border: _getBorder(passwordTouched, passwordController.text),
                 enabledBorder: _getBorder(
                   passwordTouched,

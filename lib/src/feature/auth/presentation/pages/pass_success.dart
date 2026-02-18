@@ -55,10 +55,7 @@ class _PassSuccessPageState extends State<PassSuccessPage> {
             Text(
               'На почту ${_maskEmail(email)} отправлено подтверждение',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: scheme.onSurfaceVariant,
-              ),
+              style: TextStyle(fontSize: 16, color: scheme.onSurfaceVariant),
             ),
 
             const SizedBox(height: 32),

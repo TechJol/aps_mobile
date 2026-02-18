@@ -92,7 +92,7 @@ class _AccountPageState extends State<AccountPage> {
                               context,
                               AppRoutes.addAccount,
                             );
-                            if (!mounted) return; // ✅ важно
+                            if (!mounted) return;
                             menuCubit.getAccounts();
                           },
                           label: Text(
@@ -317,7 +317,7 @@ class _AccountPageState extends State<AccountPage> {
                                               AppRoutes.editAccount,
                                               arguments: acc,
                                             );
-                                        if (!mounted) return; // ✅ важно
+                                        if (!mounted) return;
                                         if (result == true) {
                                           menuCubit.getAccounts();
                                         }
