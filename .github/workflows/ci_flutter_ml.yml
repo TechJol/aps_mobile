@@ -1,0 +1,147 @@
+name: Flutter CI + ML Test Prioritization
+
+on:
+  pull_request:
+    branches: [ "main", "master", "develop" ]
+  push:
+    branches: [ "main", "master", "develop" ]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * *"
+
+concurrency:
+  group: flutter-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  flutter-ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Static analyze
+        run: dart analyze
+
+      - name: Determine changed files
+        id: changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          if [[ -z "${BASE_SHA}" || "${BASE_SHA}" == "null" ]]; then
+            BASE_SHA="$(git rev-parse HEAD~1 2>/dev/null || echo '')"
+          fi
+
+          if [[ -n "${BASE_SHA}" ]]; then
+            git diff --name-only "${BASE_SHA}" "${{ github.sha }}" > changed_files.txt
+          else
+            git ls-files > changed_files.txt
+          fi
+
+          echo "changed_count=$(wc -l < changed_files.txt | tr -d ' ')" >> "$GITHUB_OUTPUT"
+          echo "Changed files:" && cat changed_files.txt || true
+
+      - name: Setup Python for ML selector
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ML deps (optional)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f scripts/requirements.txt ]]; then
+            python -m pip install --upgrade pip
+            pip install -r scripts/requirements.txt
+          else
+            echo "scripts/requirements.txt not found. Skipping ML dependencies install."
+          fi
+
+      - name: Select prioritized tests (ML)
+        id: select_tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f scripts/predict_tests.py ]]; then
+            python scripts/predict_tests.py \
+              --changed-files changed_files.txt \
+              --output selected_tests.txt || true
+          fi
+
+          if [[ ! -s selected_tests.txt ]]; then
+            echo "No selected tests from ML. Building fallback list..."
+            rg --files test -g '*_test.dart' > selected_tests.txt || true
+          fi
+
+          if [[ ! -s selected_tests.txt ]]; then
+            echo "No tests found; fallback to full flutter test command"
+            echo "run_mode=full" >> "$GITHUB_OUTPUT"
+          else
+            echo "run_mode=selected" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "Selected tests:" && cat selected_tests.txt || true
+
+      - name: Run prioritized test suite
+        if: steps.select_tests.outputs.run_mode == 'selected'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t tests < selected_tests.txt
+          flutter test "${tests[@]}" --coverage
+
+      - name: Run full test suite fallback
+        if: steps.select_tests.outputs.run_mode == 'full'
+        run: flutter test --coverage
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-lcov
+          path: coverage/lcov.info
+          if-no-files-found: warn
+
+  nightly-full-regression:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Full analyze
+        run: dart analyze
+
+      - name: Full test regression
+        run: flutter test --coverage
+
+      - name: Upload nightly coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-coverage-lcov
+          path: coverage/lcov.info
+          if-no-files-found: warn
