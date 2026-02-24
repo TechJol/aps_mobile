@@ -96,16 +96,7 @@ jobs:
 
           echo "Selected tests:" && cat selected_tests.txt || true
 
-      - name: Run prioritized test suite
-        if: steps.select_tests.outputs.run_mode == 'selected'
-        shell: bash
-        run: |
-          set -euo pipefail
-          mapfile -t tests < selected_tests.txt
-          flutter test "${tests[@]}" --coverage
-
-      - name: Run full test suite fallback
-        if: steps.select_tests.outputs.run_mode == 'full'
+      - name: Run full test suite
         run: flutter test --coverage
 
       - name: Upload coverage artifact
