@@ -255,6 +255,9 @@ class TranslationsHomeEn {
 	/// en: 'Income'
 	String get income => 'Income';
 
+	/// en: 'Total income'
+	String get totalIncome => 'Total income';
+
 	/// en: 'Total'
 	String get all => 'Total';
 
@@ -1544,6 +1547,7 @@ extension on Translations {
 			case 'home.year': return 'Year';
 			case 'home.expenses': return 'Expenses';
 			case 'home.income': return 'Income';
+			case 'home.totalIncome': return 'Total income';
 			case 'home.all': return 'Total';
 			case 'home.operations': return 'Operations';
 			case 'home.seeAll': return 'see all';

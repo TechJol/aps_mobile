@@ -6,6 +6,7 @@ month: Месяц
 year: Год
 expenses: Расходы
 income: Доходы
+totalIncome: Общий доход
 all: Общий
 operations: Операции
 seeAll: смотреть все

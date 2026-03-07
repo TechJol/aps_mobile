@@ -134,6 +134,7 @@ class _TranslationsHomeRu extends TranslationsHomeEn {
 	@override String get year => 'Год';
 	@override String get expenses => 'Расходы';
 	@override String get income => 'Доходы';
+	@override String get totalIncome => 'Общий доход';
 	@override String get all => 'Общий';
 	@override String get operations => 'Операции';
 	@override String get seeAll => 'смотреть все';
@@ -857,6 +858,7 @@ extension on TranslationsRu {
 			case 'home.year': return 'Год';
 			case 'home.expenses': return 'Расходы';
 			case 'home.income': return 'Доходы';
+			case 'home.totalIncome': return 'Общий доход';
 			case 'home.all': return 'Общий';
 			case 'home.operations': return 'Операции';
 			case 'home.seeAll': return 'смотреть все';

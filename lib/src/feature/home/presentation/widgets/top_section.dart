@@ -44,9 +44,17 @@ class TopSection extends StatelessWidget {
         color: AppColors.redColor50,
         value: totals.expense,
       ),
+      _LegendItemData(
+        label: t.home.totalIncome,
+        color: AppColors.primaryColor,
+        value: totals.income - totals.expense,
+      ),
     ];
 
-    final chartItems = legendItems.where((item) => item.value > 0).toList();
+    final chartItems = legendItems
+        .take(2)
+        .where((item) => item.value > 0)
+        .toList();
     final chartData = {for (final item in chartItems) item.label: item.value};
     final colors = [for (final item in chartItems) item.color];
 
@@ -261,7 +269,7 @@ class _IncomeExpenseLegend extends StatelessWidget {
                     const SizedBox(width: 6),
                     Text(
                       '${item.label}: ${numberFormatter.format(item.value)} с',
-                      style: const TextStyle(fontSize: 13),
+                      style: const TextStyle(fontSize: 12),
                     ),
                   ],
                 ),
@@ -301,7 +309,11 @@ class _CircleIcon extends StatelessWidget {
           color: Theme.of(context).colorScheme.surfaceContainerHighest,
         ),
         padding: const EdgeInsets.all(5),
-        child: Icon(icon, size: 20, color: Theme.of(context).colorScheme.onSurface),
+        child: Icon(
+          icon,
+          size: 20,
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
       ),
     );
   }

@@ -134,6 +134,7 @@ class _TranslationsHomeKy extends TranslationsHomeEn {
 	@override String get year => 'Жыл';
 	@override String get expenses => 'Чыгымдар';
 	@override String get income => 'Кирешелер';
+	@override String get totalIncome => 'Жалпы киреше';
 	@override String get all => 'Жалпы';
 	@override String get operations => 'Операциялар';
 	@override String get seeAll => 'баарын көрүү';
@@ -857,6 +858,7 @@ extension on TranslationsKy {
 			case 'home.year': return 'Жыл';
 			case 'home.expenses': return 'Чыгымдар';
 			case 'home.income': return 'Кирешелер';
+			case 'home.totalIncome': return 'Жалпы киреше';
 			case 'home.all': return 'Жалпы';
 			case 'home.operations': return 'Операциялар';
 			case 'home.seeAll': return 'баарын көрүү';
