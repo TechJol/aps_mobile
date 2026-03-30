@@ -27,7 +27,9 @@ class AuthTabButton extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: active ? AppColors.primary200Color : scheme.onSurfaceVariant,
+              color: active
+                  ? AppColors.primary200Color
+                  : scheme.onSurfaceVariant,
             ),
           ),
           const SizedBox(height: 4),

@@ -211,7 +211,6 @@ class _RegistrationFormEmbeddedState extends State<RegistrationFormEmbedded> {
                 break;
             }
           });
-
           final handledCodes = <String>{
             AuthErrorCodes.emailExists,
             AuthErrorCodes.usernameExists,
