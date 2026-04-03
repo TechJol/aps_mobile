@@ -1,0 +1,4 @@
+run_timestamp,command,exit_code,tests,failures,duration_s
+2026-04-01T10:04:14,flutter test test/unit --machine,0,43,0,7.02
+2026-04-01T10:04:14,flutter test test/widget --machine,0,8,0,5.38
+2026-04-01T10:04:14,flutter test test/widget_test.dart --machine,0,4,0,5.05

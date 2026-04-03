@@ -1,0 +1,14 @@
+test_id,path,type,feature,scenario,manual_priority,duration_s,flakiness_rate,last_result,notes
+T001,test/unit/core/theme/theme_cubit_test.dart,unit,core,Переключение и сохранение темы приложения (dark/light),2,,,,
+T002,test/unit/feature/account/account_balance_calculator_test.dart,unit,account,Расчет балансов счетов и итогов по валютам,4,,,,
+T003,test/unit/feature/auth/auth_cubit_test.dart,unit,auth,Логика авторизации: проверка статуса входа и выход из аккаунта,5,,,,
+T004,test/unit/feature/auth/credential_cubit_test.dart,unit,auth,"Логика учетных данных: логин (успех/ошибка), получение и удаление пользователя",5,,,,
+T005,test/unit/feature/income/income_cubit_test.dart,unit,income,Добавление дохода и загрузка данных счетов/причин,4,,,,
+T006,test/unit/feature/menu/menu_cubit_test.dart,unit,menu,"Работа меню: баланс партнеров, загрузка транзакций и справочников",4,,,,
+T007,test/unit/feature/operation/operation_filter_test.dart,unit,operation,Фильтр операций: пустое состояние и формат метки периода,3,,,,
+T008,test/unit/feature/operation/operation_transactions_helper_test.dart,unit,operation,"Фильтрация, группировка операций и конвертация сумм в KGS",4,,,,
+T009,test/unit/feature/pages/all_pages_constructor_smoke_test.dart,unit,pages,Smoke‑проверка: страницы создаются без ошибок,3,,,,
+T010,test/unit/feature/payment/payment_cubit_test.dart,unit,payment,"Оплата: загрузка планов/периодов, старт платежа, ошибки подписок",5,,,,
+T011,test/widget/feature/pages/pages_widget_smoke_test.dart,widget,pages,"Smoke‑проверка виджетов ключевых страниц (Home, Menu, Payment и др.)",3,,,,
+T012,test/widget_test.dart,unknown,,Базовый счетчик: стартовое значение и инкремент,1,,,,
+ы
