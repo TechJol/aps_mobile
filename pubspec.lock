@@ -555,7 +555,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_gen_core:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: flutter_gen_core
       sha256: "3eaa2d3d8be58267ac4cd5e215ac965dd23cae0410dc073de2e82e227be32bfc"
