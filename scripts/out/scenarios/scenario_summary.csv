@@ -1,0 +1,39 @@
+scenario_id,title,category,approach,top_k,precision,hit_rate,expected_hits,expected_total,selected_files_count,test_case_count,duration_s,exit_code,status,test_output_path,changed_files,expected_tests
+S01,Изменение логики авторизации,auth,ml,5,0.4,1.0,2,2,5,16,6.171374666,0,passed,scripts/out/scenarios/test_logs/S01_ml.log,"lib/src/feature/auth/presentation/cubit/auth/auth_cubit.dart
+lib/src/feature/auth/data/repositories/auth_repo_impl.dart","test/unit/feature/auth/auth_cubit_test.dart
+test/unit/feature/auth/credential_cubit_test.dart"
+S01,Изменение логики авторизации,auth,baseline,5,0.4,1.0,2,2,5,16,4.284015041999999,0,passed,scripts/out/scenarios/test_logs/S01_baseline.log,"lib/src/feature/auth/presentation/cubit/auth/auth_cubit.dart
+lib/src/feature/auth/data/repositories/auth_repo_impl.dart","test/unit/feature/auth/auth_cubit_test.dart
+test/unit/feature/auth/credential_cubit_test.dart"
+S02,Изменение платежного сценария,payment,ml,5,0.4,1.0,2,2,5,13,5.095339625000001,0,passed,scripts/out/scenarios/test_logs/S02_ml.log,"lib/src/feature/payment/presentation/cubit/payment_cubit.dart
+lib/src/feature/payment/data/repositories/payment_repository_impl.dart","test/unit/feature/payment/payment_cubit_test.dart
+test/widget/feature/pages/pages_widget_smoke_test.dart"
+S02,Изменение платежного сценария,payment,baseline,5,0.2,0.5,1,2,5,16,4.725900457999998,0,passed,scripts/out/scenarios/test_logs/S02_baseline.log,"lib/src/feature/payment/presentation/cubit/payment_cubit.dart
+lib/src/feature/payment/data/repositories/payment_repository_impl.dart","test/unit/feature/payment/payment_cubit_test.dart
+test/widget/feature/pages/pages_widget_smoke_test.dart"
+S03,Изменение формы доходов и расходов,income,ml,5,0.2,1.0,1,1,5,13,5.056991249999999,0,passed,scripts/out/scenarios/test_logs/S03_ml.log,"lib/src/feature/income/presentation/cubit/income_cubit.dart
+lib/src/feature/income/data/repositories/income_repo_impl.dart",test/unit/feature/income/income_cubit_test.dart
+S03,Изменение формы доходов и расходов,income,baseline,5,0.2,1.0,1,1,5,16,4.133244667,0,passed,scripts/out/scenarios/test_logs/S03_baseline.log,"lib/src/feature/income/presentation/cubit/income_cubit.dart
+lib/src/feature/income/data/repositories/income_repo_impl.dart",test/unit/feature/income/income_cubit_test.dart
+S04,Изменение меню и транзакций,menu,ml,5,0.2,0.5,1,2,5,13,5.401782375000003,0,passed,scripts/out/scenarios/test_logs/S04_ml.log,"lib/src/feature/menu/presentation/cubit/menu_cubit.dart
+lib/src/feature/menu/data/repositories/menu_repo_impl.dart","test/unit/feature/menu/menu_cubit_test.dart
+test/unit/feature/operation/operation_transactions_helper_test.dart"
+S04,Изменение меню и транзакций,menu,baseline,5,0.2,0.5,1,2,5,16,4.112739916999999,0,passed,scripts/out/scenarios/test_logs/S04_baseline.log,"lib/src/feature/menu/presentation/cubit/menu_cubit.dart
+lib/src/feature/menu/data/repositories/menu_repo_impl.dart","test/unit/feature/menu/menu_cubit_test.dart
+test/unit/feature/operation/operation_transactions_helper_test.dart"
+S05,Изменение сетевого слоя и токенов,core/network,ml,5,0.6,1.0,3,3,5,14,4.4418573330000015,0,passed,scripts/out/scenarios/test_logs/S05_ml.log,"lib/src/core/network/auth_interceptor.dart
+lib/src/core/network/dio_client.dart","test/unit/feature/auth/auth_cubit_test.dart
+test/unit/feature/auth/credential_cubit_test.dart
+test/unit/feature/payment/payment_cubit_test.dart"
+S05,Изменение сетевого слоя и токенов,core/network,baseline,5,0.4,0.6666666666666666,2,3,5,14,4.928798624999999,0,passed,scripts/out/scenarios/test_logs/S05_baseline.log,"lib/src/core/network/auth_interceptor.dart
+lib/src/core/network/dio_client.dart","test/unit/feature/auth/auth_cubit_test.dart
+test/unit/feature/auth/credential_cubit_test.dart
+test/unit/feature/payment/payment_cubit_test.dart"
+S06,Изменение маршрутов и общих виджетов,routes/widgets,ml,5,0.6,1.0,3,3,5,15,5.286030540999995,0,passed,scripts/out/scenarios/test_logs/S06_ml.log,"lib/src/core/utils/routes/on_generate_route.dart
+lib/src/core/widgets/custom_app_bar.dart","test/unit/feature/pages/all_pages_constructor_smoke_test.dart
+test/widget/feature/pages/pages_widget_smoke_test.dart
+test/widget_test.dart"
+S06,Изменение маршрутов и общих виджетов,routes/widgets,baseline,5,0.2,0.3333333333333333,1,3,5,13,4.566283583999997,0,passed,scripts/out/scenarios/test_logs/S06_baseline.log,"lib/src/core/utils/routes/on_generate_route.dart
+lib/src/core/widgets/custom_app_bar.dart","test/unit/feature/pages/all_pages_constructor_smoke_test.dart
+test/widget/feature/pages/pages_widget_smoke_test.dart
+test/widget_test.dart"

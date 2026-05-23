@@ -1,0 +1,8 @@
+test/unit/feature/payment/payment_cubit_test.dart
+test/unit/feature/auth/auth_cubit_test.dart
+test/unit/feature/income/income_cubit_test.dart
+test/unit/feature/menu/menu_cubit_test.dart
+test/unit/feature/auth/credential_cubit_test.dart
+test/unit/feature/operation/operation_filter_test.dart
+test/widget/feature/pages/pages_widget_smoke_test.dart
+test/unit/feature/account/account_balance_calculator_test.dart

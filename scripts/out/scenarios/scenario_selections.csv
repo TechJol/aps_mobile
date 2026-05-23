@@ -1,0 +1,61 @@
+scenario_id,title,category,approach,rank,test_path,score,is_expected
+S01,Изменение логики авторизации,auth,ml,1,test/unit/feature/auth/auth_cubit_test.dart,0.9999091809874212,True
+S01,Изменение логики авторизации,auth,ml,2,test/unit/feature/auth/credential_cubit_test.dart,0.9999091809874212,True
+S01,Изменение логики авторизации,auth,ml,3,test/unit/feature/pages/all_pages_constructor_smoke_test.dart,0.002894335009558856,False
+S01,Изменение логики авторизации,auth,ml,4,test/widget_test.dart,0.002512446156381451,False
+S01,Изменение логики авторизации,auth,ml,5,test/widget/feature/pages/pages_widget_smoke_test.dart,0.002453141305377813,False
+S01,Изменение логики авторизации,auth,baseline,1,test/unit/feature/auth/auth_cubit_test.dart,5.0,True
+S01,Изменение логики авторизации,auth,baseline,2,test/unit/feature/auth/credential_cubit_test.dart,4.0,True
+S01,Изменение логики авторизации,auth,baseline,3,test/unit/feature/income/income_cubit_test.dart,3.0,False
+S01,Изменение логики авторизации,auth,baseline,4,test/unit/feature/menu/menu_cubit_test.dart,2.0,False
+S01,Изменение логики авторизации,auth,baseline,5,test/unit/feature/payment/payment_cubit_test.dart,1.0,False
+S02,Изменение платежного сценария,payment,ml,1,test/unit/feature/payment/payment_cubit_test.dart,0.9999052851748519,True
+S02,Изменение платежного сценария,payment,ml,2,test/unit/feature/pages/all_pages_constructor_smoke_test.dart,0.002894335009558856,False
+S02,Изменение платежного сценария,payment,ml,3,test/widget_test.dart,0.002512446156381451,False
+S02,Изменение платежного сценария,payment,ml,4,test/widget/feature/pages/pages_widget_smoke_test.dart,0.002453141305377813,True
+S02,Изменение платежного сценария,payment,ml,5,test/unit/feature/account/account_balance_calculator_test.dart,0.0009202119387727064,False
+S02,Изменение платежного сценария,payment,baseline,1,test/unit/feature/payment/payment_cubit_test.dart,5.0,True
+S02,Изменение платежного сценария,payment,baseline,2,test/unit/feature/auth/auth_cubit_test.dart,4.0,False
+S02,Изменение платежного сценария,payment,baseline,3,test/unit/feature/income/income_cubit_test.dart,3.0,False
+S02,Изменение платежного сценария,payment,baseline,4,test/unit/feature/menu/menu_cubit_test.dart,2.0,False
+S02,Изменение платежного сценария,payment,baseline,5,test/unit/feature/auth/credential_cubit_test.dart,1.0,False
+S03,Изменение формы доходов и расходов,income,ml,1,test/unit/feature/income/income_cubit_test.dart,0.999805354376759,True
+S03,Изменение формы доходов и расходов,income,ml,2,test/unit/feature/pages/all_pages_constructor_smoke_test.dart,0.002894335009558856,False
+S03,Изменение формы доходов и расходов,income,ml,3,test/widget_test.dart,0.002512446156381451,False
+S03,Изменение формы доходов и расходов,income,ml,4,test/widget/feature/pages/pages_widget_smoke_test.dart,0.002453141305377813,False
+S03,Изменение формы доходов и расходов,income,ml,5,test/unit/feature/account/account_balance_calculator_test.dart,0.0009202119387727064,False
+S03,Изменение формы доходов и расходов,income,baseline,1,test/unit/feature/income/income_cubit_test.dart,5.0,True
+S03,Изменение формы доходов и расходов,income,baseline,2,test/unit/feature/auth/auth_cubit_test.dart,4.0,False
+S03,Изменение формы доходов и расходов,income,baseline,3,test/unit/feature/menu/menu_cubit_test.dart,3.0,False
+S03,Изменение формы доходов и расходов,income,baseline,4,test/unit/feature/payment/payment_cubit_test.dart,2.0,False
+S03,Изменение формы доходов и расходов,income,baseline,5,test/unit/feature/auth/credential_cubit_test.dart,1.0,False
+S04,Изменение меню и транзакций,menu,ml,1,test/unit/feature/menu/menu_cubit_test.dart,0.999805354376759,True
+S04,Изменение меню и транзакций,menu,ml,2,test/unit/feature/pages/all_pages_constructor_smoke_test.dart,0.002894335009558856,False
+S04,Изменение меню и транзакций,menu,ml,3,test/widget_test.dart,0.002512446156381451,False
+S04,Изменение меню и транзакций,menu,ml,4,test/widget/feature/pages/pages_widget_smoke_test.dart,0.002453141305377813,False
+S04,Изменение меню и транзакций,menu,ml,5,test/unit/feature/account/account_balance_calculator_test.dart,0.0009202119387727064,False
+S04,Изменение меню и транзакций,menu,baseline,1,test/unit/feature/menu/menu_cubit_test.dart,5.0,True
+S04,Изменение меню и транзакций,menu,baseline,2,test/unit/feature/auth/auth_cubit_test.dart,4.0,False
+S04,Изменение меню и транзакций,menu,baseline,3,test/unit/feature/income/income_cubit_test.dart,3.0,False
+S04,Изменение меню и транзакций,menu,baseline,4,test/unit/feature/payment/payment_cubit_test.dart,2.0,False
+S04,Изменение меню и транзакций,menu,baseline,5,test/unit/feature/auth/credential_cubit_test.dart,1.0,False
+S05,Изменение сетевого слоя и токенов,core/network,ml,1,test/unit/feature/auth/credential_cubit_test.dart,0.9913834963600493,True
+S05,Изменение сетевого слоя и токенов,core/network,ml,2,test/unit/feature/auth/auth_cubit_test.dart,0.9897532787390461,True
+S05,Изменение сетевого слоя и токенов,core/network,ml,3,test/unit/feature/payment/payment_cubit_test.dart,0.9590349306973336,True
+S05,Изменение сетевого слоя и токенов,core/network,ml,4,test/unit/core/theme/theme_cubit_test.dart,0.9491583326330716,False
+S05,Изменение сетевого слоя и токенов,core/network,ml,5,test/unit/feature/account/account_balance_calculator_test.dart,0.6424625094027977,False
+S05,Изменение сетевого слоя и токенов,core/network,baseline,1,test/unit/core/theme/theme_cubit_test.dart,5.0,False
+S05,Изменение сетевого слоя и токенов,core/network,baseline,2,test/unit/feature/auth/auth_cubit_test.dart,4.0,True
+S05,Изменение сетевого слоя и токенов,core/network,baseline,3,test/unit/feature/auth/credential_cubit_test.dart,3.0,True
+S05,Изменение сетевого слоя и токенов,core/network,baseline,4,test/widget_test.dart,2.0,False
+S05,Изменение сетевого слоя и токенов,core/network,baseline,5,test/unit/feature/income/income_cubit_test.dart,1.0,False
+S06,Изменение маршрутов и общих виджетов,routes/widgets,ml,1,test/widget_test.dart,0.8920691383000947,True
+S06,Изменение маршрутов и общих виджетов,routes/widgets,ml,2,test/widget/feature/pages/pages_widget_smoke_test.dart,0.8862259154330241,True
+S06,Изменение маршрутов и общих виджетов,routes/widgets,ml,3,test/unit/feature/pages/all_pages_constructor_smoke_test.dart,0.8286844179103632,True
+S06,Изменение маршрутов и общих виджетов,routes/widgets,ml,4,test/unit/core/theme/theme_cubit_test.dart,0.4520199743949326,False
+S06,Изменение маршрутов и общих виджетов,routes/widgets,ml,5,test/unit/feature/operation/operation_filter_test.dart,0.38126406486416503,False
+S06,Изменение маршрутов и общих виджетов,routes/widgets,baseline,1,test/unit/core/theme/theme_cubit_test.dart,5.0,False
+S06,Изменение маршрутов и общих виджетов,routes/widgets,baseline,2,test/widget_test.dart,4.0,True
+S06,Изменение маршрутов и общих виджетов,routes/widgets,baseline,3,test/unit/feature/auth/auth_cubit_test.dart,3.0,False
+S06,Изменение маршрутов и общих виджетов,routes/widgets,baseline,4,test/unit/feature/income/income_cubit_test.dart,2.0,False
+S06,Изменение маршрутов и общих виджетов,routes/widgets,baseline,5,test/unit/feature/menu/menu_cubit_test.dart,1.0,False

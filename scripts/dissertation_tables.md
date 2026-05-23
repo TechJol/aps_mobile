@@ -1,61 +1,89 @@
-# Dissertation Tables and Figures (Templates)
+# Таблицы для практической части диссертации
 
-## Table A: Test Inventory (Baseline, No ML)
-Columns:
-- `test_id`
-- `path`
-- `type` (unit/widget/integration)
-- `feature`
-- `scenario`
-- `manual_priority` (1-5)
-- `duration_s`
-- `flakiness_rate`
-- `last_result`
-- `notes`
+Источник данных: `scripts/out/experiment_report.md`, `scripts/out/scenarios/scenario_summary.csv`, `scripts/out/ml_training_metrics.csv`.
 
-## Table B: Baseline Test Run Summary
-Columns:
-- `run_id`
-- `date`
-- `tests_run`
-- `failures`
-- `pass_rate`
-- `total_time_s`
-- `time_to_first_failure_s`
+## Таблица 1. Характеристика тестовой базы проекта aps_mobile
 
-## Table C: ML Prioritization Output
-Columns:
-- `run_id`
-- `test_id`
-- `score`
-- `rank`
-- `selected` (yes/no)
+| Показатель | Значение |
+|---|---:|
+| Количество тестов в inventory | 12 |
+| Количество уникальных анализируемых Dart-файлов | 297 |
+| Количество строк датасета | 3564 |
+| Количество релевантных пар `измененный файл - тест` | 457 |
+| Количество нерелевантных пар | 3107 |
+| Количество сценариев изменений | 6 |
+| Количество подходов сравнения | 2 |
 
-## Table D: Comparison of Baseline vs ML
-Columns:
-- `metric`
-- `baseline`
-- `ml`
-- `delta`
+## Таблица 2. Признаки, использованные для обучения модели
 
-Suggested metrics:
-- Time-to-First-Failure
-- Failures Found in First N Minutes
-- Tests Run Until First Failure
-- Total Runtime
-- Critical Scenario Coverage
+| Группа признаков | Примеры признаков | Назначение |
+|---|---|---|
+| Структурные признаки | `same_feature`, `same_layer`, `changed_depth`, `test_depth` | Определяют архитектурную близость измененного файла и теста. |
+| Лексические признаки | `token_jaccard`, `common_token_count` | Оценивают сходство имен модулей, файлов и тестов. |
+| Тип теста | `is_unit_test`, `is_widget_test`, `is_integration_test` | Учитывают уровень тестирования. |
+| Критичность | `manual_priority`, `high_business_priority` | Учитывают экспертную оценку важности теста. |
+| Инфраструктурные признаки | `changed_is_network`, `changed_is_routes`, `changed_is_widgets`, `changed_is_theme` | Улучшают выбор тестов при изменениях в общем коде приложения. |
+| Связь со smoke-тестами | `test_feature_is_pages`, `test_path_has_widget`, `test_path_is_global_smoke` | Помогают выбирать widget/smoke-тесты для изменений маршрутов и общих виджетов. |
 
-## Figure 1: Test Distribution by Type
-- Bar chart: unit vs widget vs integration counts.
+## Таблица 3. Результаты обучения моделей
 
-## Figure 2: Failures Found Over Time
-- Line chart: cumulative failures vs time (baseline vs ML).
+| Модель | Accuracy | Precision | Recall | Average Precision | ROC AUC |
+|---|---:|---:|---:|---:|---:|
+| Logistic Regression | 0.9416 | 0.6890 | 0.9912 | 0.9476 | 0.9909 |
+| Random Forest | 0.9618 | 0.7703 | 1.0000 | 0.9830 | 0.9975 |
 
-## Figure 3: Time-to-First-Failure
-- Box plot or bar chart across multiple runs.
+Лучшая модель по метрике Average Precision: `Random Forest`.
 
-## Figure 4: Priority vs Actual Failure Rate
-- Scatter plot: manual/ML priority vs failure probability.
+## Таблица 4. Сценарии изменений
 
-## Figure 5: Coverage of Critical Scenarios
-- Bar chart: percent of critical tests included in top-N.
+| ID | Категория | Описание | Измененных файлов | Ожидаемых тестов |
+|---|---|---|---:|---:|
+| S01 | auth | Изменение логики авторизации | 2 | 2 |
+| S02 | payment | Изменение платежного сценария | 2 | 2 |
+| S03 | income | Изменение формы доходов и расходов | 2 | 1 |
+| S04 | menu | Изменение меню и транзакций | 2 | 2 |
+| S05 | core/network | Изменение сетевого слоя и токенов | 2 | 3 |
+| S06 | routes/widgets | Изменение маршрутов и общих виджетов | 2 | 3 |
+
+## Таблица 5. Сравнение ML и baseline по сценариям
+
+| ID | Категория | Подход | Precision | Hit-rate | Найдено ожидаемых тестов | Файлов тестов | Test cases | Время, c | Статус |
+|---|---|---|---:|---:|---:|---:|---:|---:|---|
+| S01 | auth | ML | 0.4000 | 1.0000 | 2/2 | 5 | 16 | 6.17 | passed |
+| S01 | auth | Baseline | 0.4000 | 1.0000 | 2/2 | 5 | 16 | 4.28 | passed |
+| S02 | payment | ML | 0.4000 | 1.0000 | 2/2 | 5 | 13 | 5.10 | passed |
+| S02 | payment | Baseline | 0.2000 | 0.5000 | 1/2 | 5 | 16 | 4.73 | passed |
+| S03 | income | ML | 0.2000 | 1.0000 | 1/1 | 5 | 13 | 5.06 | passed |
+| S03 | income | Baseline | 0.2000 | 1.0000 | 1/1 | 5 | 16 | 4.13 | passed |
+| S04 | menu | ML | 0.2000 | 0.5000 | 1/2 | 5 | 13 | 5.40 | passed |
+| S04 | menu | Baseline | 0.2000 | 0.5000 | 1/2 | 5 | 16 | 4.11 | passed |
+| S05 | core/network | ML | 0.6000 | 1.0000 | 3/3 | 5 | 14 | 4.44 | passed |
+| S05 | core/network | Baseline | 0.4000 | 0.6667 | 2/3 | 5 | 14 | 4.93 | passed |
+| S06 | routes/widgets | ML | 0.6000 | 1.0000 | 3/3 | 5 | 15 | 5.29 | passed |
+| S06 | routes/widgets | Baseline | 0.2000 | 0.3333 | 1/3 | 5 | 13 | 4.57 | passed |
+
+## Таблица 6. Агрегированные результаты сценарного эксперимента
+
+| Подход | Средняя precision | Средняя hit-rate | Найдено ожидаемых тестов | Среднее время, c |
+|---|---:|---:|---:|---:|
+| Baseline | 0.2667 | 0.6667 | 8/13 | 4.46 |
+| ML | 0.4000 | 0.9167 | 12/13 | 5.24 |
+
+## Таблица 7. Интерпретация результатов по сценариям
+
+| Сценарий | Наблюдение | Интерпретация |
+|---|---|---|
+| S01 auth | ML и baseline нашли 2/2 ожидаемых теста. | Для feature-модулей с прямым совпадением путей оба подхода работают сопоставимо. |
+| S02 payment | ML нашел 2/2, baseline 1/2. | ML лучше учел связь платежного модуля с widget/smoke-проверками. |
+| S03 income | Оба подхода нашли 1/1. | Прямой feature-тест легко находится и ML, и baseline. |
+| S04 menu | Оба подхода нашли 1/2. | Связь menu с operation helper требует дополнительной истории дефектов или зависимостей. |
+| S05 core/network | ML нашел 3/3, baseline 2/3. | Инфраструктурные признаки помогают выбирать тесты авторизации и платежей при изменении сетевого слоя. |
+| S06 routes/widgets | ML нашел 3/3, baseline 1/3. | Специальные признаки для routes/widgets повысили качество выбора smoke/widget-тестов. |
+
+## Рекомендуемые рисунки для диссертации
+
+1. Диаграмма пайплайна: `changed files -> feature extraction -> ML model -> prioritized tests -> Flutter test run`.
+2. Столбчатая диаграмма сравнения hit-rate: ML против baseline.
+3. Столбчатая диаграмма найденных ожидаемых тестов: `12/13` против `8/13`.
+4. Таблица или диаграмма времени выполнения по сценариям.
+5. Матрица сценариев: категории изменений и выбранные тесты.

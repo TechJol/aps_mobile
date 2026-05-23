@@ -1,0 +1,13 @@
+scenario_id,title,category,approach,selected_files_count,test_case_count,duration_s,exit_code,status,test_output_path
+S01,Изменение логики авторизации,auth,ml,5,16,6.171374666,0,passed,scripts/out/scenarios/test_logs/S01_ml.log
+S01,Изменение логики авторизации,auth,baseline,5,16,4.284015041999999,0,passed,scripts/out/scenarios/test_logs/S01_baseline.log
+S02,Изменение платежного сценария,payment,ml,5,13,5.095339625000001,0,passed,scripts/out/scenarios/test_logs/S02_ml.log
+S02,Изменение платежного сценария,payment,baseline,5,16,4.725900457999998,0,passed,scripts/out/scenarios/test_logs/S02_baseline.log
+S03,Изменение формы доходов и расходов,income,ml,5,13,5.056991249999999,0,passed,scripts/out/scenarios/test_logs/S03_ml.log
+S03,Изменение формы доходов и расходов,income,baseline,5,16,4.133244667,0,passed,scripts/out/scenarios/test_logs/S03_baseline.log
+S04,Изменение меню и транзакций,menu,ml,5,13,5.401782375000003,0,passed,scripts/out/scenarios/test_logs/S04_ml.log
+S04,Изменение меню и транзакций,menu,baseline,5,16,4.112739916999999,0,passed,scripts/out/scenarios/test_logs/S04_baseline.log
+S05,Изменение сетевого слоя и токенов,core/network,ml,5,14,4.4418573330000015,0,passed,scripts/out/scenarios/test_logs/S05_ml.log
+S05,Изменение сетевого слоя и токенов,core/network,baseline,5,14,4.928798624999999,0,passed,scripts/out/scenarios/test_logs/S05_baseline.log
+S06,Изменение маршрутов и общих виджетов,routes/widgets,ml,5,15,5.286030540999995,0,passed,scripts/out/scenarios/test_logs/S06_ml.log
+S06,Изменение маршрутов и общих виджетов,routes/widgets,baseline,5,13,4.566283583999997,0,passed,scripts/out/scenarios/test_logs/S06_baseline.log

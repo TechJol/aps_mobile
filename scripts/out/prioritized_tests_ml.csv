@@ -1,0 +1,9 @@
+path,matched_changed_file,test_type,changed_feature,test_feature,changed_layer,test_layer,same_feature,same_layer,token_jaccard,common_token_count,manual_priority,changed_depth,test_depth,changed_is_core,changed_is_feature,is_unit_test,is_widget_test,is_integration_test,high_business_priority,score
+test/unit/feature/auth/auth_cubit_test.dart,lib/src/feature/auth/data/repositories/auth_repo_impl.dart,unit,auth,auth,data,unknown,1,0,0.5,1,5.0,7,5,0,1,1,0,0,1,0.9999320475055111
+test/unit/feature/auth/credential_cubit_test.dart,lib/src/feature/auth/data/repositories/auth_repo_impl.dart,unit,auth,auth,data,unknown,1,0,0.3333333333333333,1,5.0,7,5,0,1,1,0,0,1,0.9999320475055111
+test/unit/feature/payment/payment_cubit_test.dart,lib/src/feature/payment/presentation/cubit/payment_cubit.dart,unit,payment,payment,presentation,unknown,1,0,1.0,1,5.0,7,5,0,1,1,0,0,1,0.9999320475055111
+test/unit/core/theme/theme_cubit_test.dart,lib/src/core/network/auth_interceptor.dart,unit,network,core,core,core,0,1,0.2,1,2.0,5,5,1,0,1,0,0,0,0.8825540833004137
+test/widget/feature/pages/pages_widget_smoke_test.dart,lib/src/core/network/auth_interceptor.dart,widget,network,pages,core,pages,0,0,0.0,0,3.0,5,5,1,0,0,1,0,0,0.6712320780003376
+test/unit/feature/account/account_balance_calculator_test.dart,lib/src/core/network/auth_interceptor.dart,unit,network,account,core,unknown,0,0,0.0,0,4.0,5,5,1,0,1,0,0,1,0.525072089692197
+test/unit/feature/income/income_cubit_test.dart,lib/src/core/network/auth_interceptor.dart,unit,network,income,core,unknown,0,0,0.0,0,4.0,5,5,1,0,1,0,0,1,0.525072089692197
+test/unit/feature/menu/menu_cubit_test.dart,lib/src/core/network/auth_interceptor.dart,unit,network,menu,core,unknown,0,0,0.0,0,4.0,5,5,1,0,1,0,0,1,0.525072089692197

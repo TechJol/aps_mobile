@@ -1,0 +1,13 @@
+scenario_id,title,category,changed_file,expected_tests
+S01,Изменение логики авторизации,auth,lib/src/feature/auth/presentation/cubit/auth/auth_cubit.dart,test/unit/feature/auth/auth_cubit_test.dart;test/unit/feature/auth/credential_cubit_test.dart
+S01,Изменение логики авторизации,auth,lib/src/feature/auth/data/repositories/auth_repo_impl.dart,test/unit/feature/auth/auth_cubit_test.dart;test/unit/feature/auth/credential_cubit_test.dart
+S02,Изменение платежного сценария,payment,lib/src/feature/payment/presentation/cubit/payment_cubit.dart,test/unit/feature/payment/payment_cubit_test.dart;test/widget/feature/pages/pages_widget_smoke_test.dart
+S02,Изменение платежного сценария,payment,lib/src/feature/payment/data/repositories/payment_repository_impl.dart,test/unit/feature/payment/payment_cubit_test.dart;test/widget/feature/pages/pages_widget_smoke_test.dart
+S03,Изменение формы доходов и расходов,income,lib/src/feature/income/presentation/cubit/income_cubit.dart,test/unit/feature/income/income_cubit_test.dart
+S03,Изменение формы доходов и расходов,income,lib/src/feature/income/data/repositories/income_repo_impl.dart,test/unit/feature/income/income_cubit_test.dart
+S04,Изменение меню и транзакций,menu,lib/src/feature/menu/presentation/cubit/menu_cubit.dart,test/unit/feature/menu/menu_cubit_test.dart;test/unit/feature/operation/operation_transactions_helper_test.dart
+S04,Изменение меню и транзакций,menu,lib/src/feature/menu/data/repositories/menu_repo_impl.dart,test/unit/feature/menu/menu_cubit_test.dart;test/unit/feature/operation/operation_transactions_helper_test.dart
+S05,Изменение сетевого слоя и токенов,core/network,lib/src/core/network/auth_interceptor.dart,test/unit/feature/auth/auth_cubit_test.dart;test/unit/feature/auth/credential_cubit_test.dart;test/unit/feature/payment/payment_cubit_test.dart
+S05,Изменение сетевого слоя и токенов,core/network,lib/src/core/network/dio_client.dart,test/unit/feature/auth/auth_cubit_test.dart;test/unit/feature/auth/credential_cubit_test.dart;test/unit/feature/payment/payment_cubit_test.dart
+S06,Изменение маршрутов и общих виджетов,routes/widgets,lib/src/core/utils/routes/on_generate_route.dart,test/unit/feature/pages/all_pages_constructor_smoke_test.dart;test/widget/feature/pages/pages_widget_smoke_test.dart;test/widget_test.dart
+S06,Изменение маршрутов и общих виджетов,routes/widgets,lib/src/core/widgets/custom_app_bar.dart,test/unit/feature/pages/all_pages_constructor_smoke_test.dart;test/widget/feature/pages/pages_widget_smoke_test.dart;test/widget_test.dart
